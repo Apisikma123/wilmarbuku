@@ -31,7 +31,7 @@
         <div class="flex justify-between items-center px-6 md:px-12 xl:px-24 h-20 w-full">
             <div class="flex items-center gap-4">
                 <a href="/">
-                    <img alt="Wilmar Logo" class="h-10 object-contain" src="{{ asset('images/wil.png') }}"/>
+                    <img src="/images/wil.png" alt="WilmarBOOKS" class="h-10 object-contain bg-white px-3 py-1.5 rounded-lg shadow-sm">
                 </a>
             </div>
             <nav class="hidden md:flex gap-8">
@@ -52,14 +52,11 @@
     <!-- Footer -->
     <footer class="bg-primary-container text-white w-full py-20 px-6 md:px-12 mt-auto border-t border-white/10">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
                 <!-- Column 1: Brand Info -->
                 <div class="space-y-6">
-                    <a href="/" class="hover:opacity-90 transition-opacity">
-                        <span class="flex items-center gap-2">
-                            <img src="/images/wil.png" alt="WilmarBOOKS" class="h-8 md:h-10 object-contain">
-                            <span class="text-xl md:text-2xl font-bold font-display tracking-tight text-white">WilmarBOOKS</span>
-                        </span>
+                    <a href="/" class="hover:opacity-90 transition-opacity inline-block">
+                        <img src="/images/wil.png" alt="WilmarBOOKS" class="h-10 md:h-12 object-contain bg-white px-3 py-1.5 rounded-lg shadow-sm">
                     </a>
                     <p class="text-white/80 text-sm leading-relaxed">
                         Platform donasi buku resmi Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs through literacy and accessible education.
@@ -69,8 +66,8 @@
                 <div>
                     <h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">TAUTAN CEPAT</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Tentang Kami</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Panduan Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/donasi">Buku Donasi</a></li>
                     </ul>
                 </div>
@@ -78,27 +75,16 @@
                 <div>
                     <h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">INFORMASI</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Kebijakan Privasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Kontak</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">FAQ</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/kebijakan-privasi">Kebijakan Privasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/faq">FAQ</a></li>
                     </ul>
-                </div>
-                <!-- Column 4: Social/Contact -->
-                <div>
-                    <h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">HUBUNGI KAMI</h3>
-                    <div class="flex gap-4 mb-6">
-                        <a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">language</span></a>
-                        <a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">mail</span></a>
-                        <a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">share</span></a>
-                    </div>
-                    <p class="text-white/60 text-xs italic">Nurturing Entrepreneurs</p>
                 </div>
             </div>
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-xs text-white/50">© {{ date('Y') }} Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs.</p>
                 <div class="flex gap-8 text-xs text-white/50">
-                    <a class="hover:text-white transition-colors" href="#">Terms of Service</a>
-                    <a class="hover:text-white transition-colors" href="#">Cookie Policy</a>
+                    <a class="hover:text-white transition-colors" href="/terms">Terms of Service</a>
+                    <a class="hover:text-white transition-colors" href="/cookie-policy">Cookie Policy</a>
                 </div>
             </div>
         </div>

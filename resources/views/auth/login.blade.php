@@ -47,7 +47,7 @@
             </div>
 
             <!-- Form -->
-            <form action="/checkout" method="GET" class="space-y-5">
+            <form action="/dashboard" method="GET" class="space-y-5">
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email atau Username</label>
@@ -91,7 +91,7 @@
             </button>
 
             <p class="text-center text-sm text-gray-600 mt-8">
-                Belum punya akun? <a href="#" class="text-secondary font-bold hover:underline">Daftar Sekarang</a>
+                Belum punya akun? <a href="/register" class="text-secondary font-bold hover:underline">Daftar Sekarang</a>
             </p>
         </div>
     </div>

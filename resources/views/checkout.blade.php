@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.user')
 
 @section('content')
 <div class="px-6 md:px-12 xl:px-24 max-w-[1200px] mx-auto py-12">
