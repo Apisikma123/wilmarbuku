@@ -42,7 +42,7 @@
 <!-- Main Content -->
 <main class="flex-grow pt-20">
 <!-- Hero Section -->
-<section class="relative px-6 md:px-12 py-24 md:py-32 overflow-hidden flex items-center min-h-[819px]">
+<section class="bg-primary relative px-6 md:px-12 py-24 md:py-32 overflow-hidden flex items-center min-h-[819px]">
 <!-- Background Image with Overlay -->
 <div class="absolute inset-0 z-0">
 <img alt="Wilmar Building" class="w-full h-full object-cover object-center" src="{{ asset('images/landing.jpeg') }}"/>
@@ -75,7 +75,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">menu_book</span>
 </div>
 <div>
-<h3 class="text-4xl font-bold text-primary mb-1 tracking-tight">2,450+</h3>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">2,450+</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Buku Terkumpul</p>
 </div>
 </div>
@@ -84,7 +84,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">volunteer_activism</span>
 </div>
 <div>
-<h3 class="text-4xl font-bold text-primary mb-1 tracking-tight">845+</h3>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">845+</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Donatur Aktif</p>
 </div>
 </div>
@@ -93,7 +93,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">verified_user</span>
 </div>
 <div>
-<h3 class="text-4xl font-bold text-primary mb-1 tracking-tight">100%</h3>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">100%</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Transparansi Laporan</p>
 </div>
 </div>
@@ -299,7 +299,7 @@
 </div>
 <!-- Column 2: Tautan Cepat -->
 <div>
-<h4 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">TAUTAN CEPAT</h4>
+<h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">TAUTAN CEPAT</h3>
 <ul class="space-y-4">
 <li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Tentang Kami</a></li>
 <li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Panduan Donasi</a></li>
@@ -308,7 +308,7 @@
 </div>
 <!-- Column 3: Informasi -->
 <div>
-<h4 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">INFORMASI</h4>
+<h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">INFORMASI</h3>
 <ul class="space-y-4">
 <li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Kebijakan Privasi</a></li>
 <li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Kontak</a></li>
@@ -317,7 +317,7 @@
 </div>
 <!-- Column 4: Social/Contact -->
 <div>
-<h4 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">HUBUNGI KAMI</h4>
+<h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">HUBUNGI KAMI</h3>
 <div class="flex gap-4 mb-6">
 <a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">language</span></a>
 <a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">mail</span></a>
