@@ -47,7 +47,7 @@
             </div>
 
             <!-- Form -->
-            <form action="#" method="POST" class="space-y-5">
+            <form action="/checkout" method="GET" class="space-y-5">
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email atau Username</label>

@@ -4,7 +4,7 @@ Wilmar Literacy Hub - Book Checkout & Tracking System
 
 
 
-Version: 3.2 (Pembaruan Role Management & Syarat Kelulusan)
+Version: 1.0 (Pembaruan Role Management & Syarat Kelulusan)
 
 Project Type: Web Application
 
@@ -142,4 +142,4 @@ Paket Spatie Laravel Permission (Sangat disarankan untuk mengelola 4 roles ini).
 
 Database: MySQL.
 
-UI Framework: Tailwind CSS atau Bootstrap 5.
+UI Framework: Tailwind CSS

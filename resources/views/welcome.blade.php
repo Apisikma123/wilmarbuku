@@ -1,46 +1,6 @@
-<!DOCTYPE html>
+@extends('layouts.main')
 
-<html lang="id" style=""><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Wilmar Literacy Hub</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-tertiary": "#ffffff", "tertiary-fixed-dim": "#69d9c0", "surface-bright": "#f8f9ff", "outline-variant": "#c0c9be", "on-secondary-fixed": "#271900", "on-surface": "#121c29", "surface-dim": "#d0dbed", primary: "#003215", "on-tertiary-fixed-variant": "#005143", "tertiary-fixed": "#87f6dc", "on-primary-fixed-variant": "#0b5229", "inverse-surface": "#27313f", "error-container": "#ffdad6", error: "#ba1a1a", "primary-fixed": "#aef2bb", surface: "#f8f9ff", "on-surface-variant": "#404941", "on-secondary-container": "#715000", "surface-tint": "#2a6a3f", "surface-container-low": "#eff4ff", "surface-container": "#e6eeff", outline: "#707970", "tertiary-container": "#00493d", "secondary-container": "#fdc34d", "on-primary-container": "#79bb87", "surface-container-highest": "#d9e3f6", "on-error": "#ffffff", "secondary-fixed-dim": "#f7bd48", "on-background": "#121c29", "surface-container-high": "#dfe9fb", "surface-container-lowest": "#ffffff", background: "#f8f9ff", secondary: "#7b5800", "on-primary-fixed": "#00210c", "surface-variant": "#d9e3f6", "on-tertiary-container": "#4bbea5", "on-secondary-fixed-variant": "#5d4200", "primary-container": "#004b23", "on-primary": "#ffffff", tertiary: "#003128", "primary-fixed-dim": "#93d6a0", "on-error-container": "#93000a", "inverse-primary": "#93d6a0", "secondary-fixed": "#ffdea6", "on-secondary": "#ffffff", "inverse-on-surface": "#eaf1ff", "on-tertiary-fixed": "#00201a"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}, spacing: {}, fontFamily: {headline: ["Poppins"], display: ["Poppins"], body: ["Poppins"], label: ["Poppins"]}, fontSize: {}}}};</script>
-<style>
-        body { font-family: 'Poppins', sans-serif; }
-        .hover-lift {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0px 12px 24px -4px rgba(0, 50, 21, 0.1);
-        }
-        .book-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 10px 0px 15px -3px rgba(0,0,0,0.1) inset;
-        }
-    </style>
-</head>
-<body class="bg-background text-on-background min-h-screen flex flex-col">
-<!-- Navigation -->
-<header class="bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 fixed top-0 left-0 w-full z-50">
-<div class="flex justify-between items-center px-6 md:px-12 xl:px-24 h-20 w-full">
-<div class="flex items-center gap-4">
-<img alt="Wilmar Logo" class="h-10 object-contain" src="{{ asset('images/wil.png') }}"/>
-</div>
-<nav class="hidden md:flex gap-8">
-<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider" href="#">Katalog</a>
-<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider" href="#">Donasi</a>
-<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider" href="#">Lacak Status</a>
-</nav>
-<div class="flex items-center gap-4">
-<button class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi Sekarang</button>
-</div>
-</div>
-</header>
-<!-- Main Content -->
-<main class="flex-grow pt-20">
+@section('content')
 <!-- Hero Section -->
 <section class="bg-primary relative px-6 md:px-12 py-24 md:py-32 overflow-hidden flex items-center min-h-[819px]">
 <!-- Background Image with Overlay -->
@@ -55,11 +15,11 @@
         Bergabunglah dalam gerakan mencerdaskan kehidupan bangsa melalui donasi buku. Bersama Wilmar Business Indonesia Polytechnic, kita bangun ekosistem wirausaha yang berbasis literasi yang kuat.
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
-<button class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg">
+<a href="/login" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-block text-center">
           Donasi Sekarang
-        </button>
+        </a>
 <button class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm">
-          Lihat Katalog
+          Pilih Buku Donasi
         </button>
 </div>
 </div>
@@ -124,19 +84,24 @@
 <div class="px-6 md:px-12 max-w-7xl mx-auto">
 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
 <div>
-<h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 tracking-tight">Koleksi Pilihan</h2>
+<h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 tracking-tight">Pilihan Buku Donasi</h2>
 <p class="text-lg text-on-surface-variant">Buku-buku terbaru yang siap menginspirasi.</p>
 </div>
 <a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group" href="#">
-                Lihat Semua Katalog 
+                Lihat Semua Buku 
                 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
 </a>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
 <!-- Book 1 -->
 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
-<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a professional business strategy book titled 'Manajemen Strategis'. The design is modern and clean, utilizing a corporate aesthetic with geometric shapes in forest green and gold. The book is presented in a well-lit studio environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBdaUQ7L4Mr5iixZL3uW6VXBXFpbAGehotGSUrpvBFIOD-8a_TmyzZcq3h4ACCk0zUNqdKLTZOmQlqOqKPlWavSW2CV_W6mEsoyZe63nItZ-vhtAds-Pmo9xaLJvyARWqD0gGfFV_cV8efE-dldmOX6LDl4i2bfqqPvVVhsnFi2X_ifPANgF_fmPToPTvT4DDRxKVCU2tCGiEqB2v-mMZ5ec_H-nrDg_blYk0AbwbmDWbkYQLjty7QgrcsNiGwmgz-374-OuAkpsb0')"></div>
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-[#003215] to-[#004b23] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4">
+<span class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Manajemen<br/>Strategis</h3>
+<div class="w-12 h-[2px] bg-[#fdc34d] mx-auto mt-2 rounded-full"></div>
+</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">Prof. Dr. Budi Santoso</div>
 </div>
 <div class="mb-3">
 <span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Bisnis &amp; Manajemen</span>
@@ -149,8 +114,13 @@
 </div>
 <!-- Book 2 -->
 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
-<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a technical programming book titled 'Dasar Pemrograman'. The design features sleek, tech-inspired abstract graphics in dark blue and green tones. The book is presented professionally with a soft shadow." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBoVwRsCaz9oy9Y913JgCusXJU_d1bGkJBXljcl5N8iO-TdiZd_ypf8mGWS2fiF7CtKfNE60m4CHNivHyYdDKt02WdKNSH6rKkBoTJ-5lnVosXLQMd5fEQrAhgazDfUGX8Di68JwfDq-DT0N3kNyyxIqPpgyAV-ItKWHkU8vYrXM55SKL4G-2RiH1J7Sf0Kd43i5cV55n9w_8_j7_Or6A3gSPgbHKcv8zb_oUUqkr2AfT3haUQLiBqBydrCasdo7mPkOpEHQTZqbnQ')"></div>
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)] relative before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] before:from-blue-500/20 before:to-transparent">
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-10">
+<span class="material-symbols-outlined text-4xl text-cyan-300 opacity-80 font-light">terminal</span>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Dasar<br/>Pemrograman</h3>
+<div class="w-12 h-[2px] bg-cyan-400 mx-auto mt-2 rounded-full"></div>
+</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-10">Andreas Setiawan</div>
 </div>
 <div class="mb-3">
 <span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Teknologi</span>
@@ -163,8 +133,13 @@
 </div>
 <!-- Book 3 -->
 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
-<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a classic Indonesian literature book titled 'Senja di Jakarta'. The artwork is evocative and slightly melancholic, depicting a stylized sunset over a cityscape. The aesthetic is artistic and refined." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDp2oit0-2rGwp_D06OJ28SmaalBc9oYK18hMvz4YLX3WOqpAm-DGThkOcxj2fIhLbjrfFeb4aA7v_I-CQ0g-2HNFYWRuMcuP3G1HYcZ6yqqUBppMmKoEqh4YgUSMyo4tItRvnWY-lbU6tbEdhpJNW04X4w2JvQtPDib-jgnEf9NDW5rJI9Mrg36cOxlUV5SfGq5PmsU7SBOmfZlMhRbd3dKa5c-T4V7jnN23EqniQqgGfSqJ0sQVDNC8qr2YFodtAXX9m8bno0h-E')"></div>
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-amber-700 to-orange-950 flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4">
+<span class="material-symbols-outlined text-4xl opacity-80 font-light">location_city</span>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Senja di<br/>Jakarta</h3>
+<div class="w-12 h-[2px] bg-amber-200 mx-auto mt-2 rounded-full"></div>
+</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">Mochtar Lubis</div>
 </div>
 <div class="mb-3">
 <span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Sastra</span>
@@ -177,8 +152,13 @@
 </div>
 <!-- Book 4 -->
 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
-<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of an entrepreneurial success story book titled 'Kisah Sukses Pengusaha Muda'. The design is bold and motivational, featuring dynamic typography and gold accents on a deep green background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCuxfxL8fI_UEvD11E2WeYCtpt00cnQB2jxJZEt0spvfN80nGisNAY_bvcjQ8YlH3lEH59ocPOpZi3Xz23d5UDRp3NK60jyrIogXmBr4CUZ0oXqrR3cWSmxxNzWft_Q9glvc4NEYbfdEJdZo1-jTQCXc9Owzi8U6OdjlEIA37IH7sLQG4hSjnt8e0HP0Sh9gwc676ZUjYitVMxfztbSrvXp50JtdBGA8fknL_OEYFuLWDeozQvZbQZ1UsUHEHCzJyx1uJAMWFUBvx0')"></div>
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-teal-800 to-[#003128] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4">
+<span class="material-symbols-outlined text-4xl text-yellow-400 opacity-90 font-light">emoji_events</span>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Kisah Sukses<br/>Pengusaha Muda</h3>
+<div class="w-12 h-[2px] bg-yellow-400 mx-auto mt-2 rounded-full"></div>
+</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">Ahmad Setiawan &amp; Tim</div>
 </div>
 <div class="mb-3">
 <span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Motivasi</span>
@@ -279,62 +259,10 @@
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Mulai Berdampak Hari Ini</h2>
 <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Satu buku yang Anda berikan bisa menjadi awal dari seribu ide besar. Mari wujudkan ekosistem literasi yang kuat bersama kami.</p>
-<button class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg">
+<a href="/login" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
                         Donasi Sekarang
-                    </button>
+                    </a>
 </div>
 </div>
 </section>
-</main>
-<!-- Footer -->
-<footer class="bg-primary-container text-white w-full py-20 px-6 md:px-12 mt-auto border-t border-white/10">
-<div class="max-w-7xl mx-auto">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-<!-- Column 1: Brand Info -->
-<div class="space-y-6">
-<div class="flex items-center gap-3">
-<span class="text-xl font-bold tracking-tight">Wilmar Literacy Hub</span>
-</div>
-<p class="text-white/80 text-sm leading-relaxed">
-          Platform donasi buku resmi Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs through literacy and accessible education.
-        </p>
-</div>
-<!-- Column 2: Tautan Cepat -->
-<div>
-<h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">TAUTAN CEPAT</h3>
-<ul class="space-y-4">
-<li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Tentang Kami</a></li>
-<li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Panduan Donasi</a></li>
-<li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Katalog Buku</a></li>
-</ul>
-</div>
-<!-- Column 3: Informasi -->
-<div>
-<h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">INFORMASI</h3>
-<ul class="space-y-4">
-<li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Kebijakan Privasi</a></li>
-<li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">Kontak</a></li>
-<li class=""><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="#">FAQ</a></li>
-</ul>
-</div>
-<!-- Column 4: Social/Contact -->
-<div>
-<h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">HUBUNGI KAMI</h3>
-<div class="flex gap-4 mb-6">
-<a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">language</span></a>
-<a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">mail</span></a>
-<a class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">share</span></a>
-</div>
-<p class="text-white/60 text-xs italic">Nurturing Entrepreneurs</p>
-</div>
-</div>
-<div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-xs text-white/50">© {{ date('Y') }} Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs.</p>
-<div class="flex gap-8 text-xs text-white/50">
-<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
-<a class="hover:text-white transition-colors" href="#">Cookie Policy</a>
-</div>
-</div>
-</div>
-</footer>
-</body></html>
+@endsection
