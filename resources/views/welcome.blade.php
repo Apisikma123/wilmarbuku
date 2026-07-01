@@ -134,7 +134,7 @@
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
 <!-- Book 1 -->
-<div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
+<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
 <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a professional business strategy book titled 'Manajemen Strategis'. The design is modern and clean, utilizing a corporate aesthetic with geometric shapes in forest green and gold. The book is presented in a well-lit studio environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBdaUQ7L4Mr5iixZL3uW6VXBXFpbAGehotGSUrpvBFIOD-8a_TmyzZcq3h4ACCk0zUNqdKLTZOmQlqOqKPlWavSW2CV_W6mEsoyZe63nItZ-vhtAds-Pmo9xaLJvyARWqD0gGfFV_cV8efE-dldmOX6LDl4i2bfqqPvVVhsnFi2X_ifPANgF_fmPToPTvT4DDRxKVCU2tCGiEqB2v-mMZ5ec_H-nrDg_blYk0AbwbmDWbkYQLjty7QgrcsNiGwmgz-374-OuAkpsb0')"></div>
 </div>
@@ -143,12 +143,12 @@
 </div>
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Manajemen Strategis</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 150.000</p>
-<div class="mt-auto pt-4 border-t border-gray-100">
+<div class="mt-auto pt-4">
 <button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
 </div>
 </div>
 <!-- Book 2 -->
-<div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
+<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
 <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a technical programming book titled 'Dasar Pemrograman'. The design features sleek, tech-inspired abstract graphics in dark blue and green tones. The book is presented professionally with a soft shadow." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBoVwRsCaz9oy9Y913JgCusXJU_d1bGkJBXljcl5N8iO-TdiZd_ypf8mGWS2fiF7CtKfNE60m4CHNivHyYdDKt02WdKNSH6rKkBoTJ-5lnVosXLQMd5fEQrAhgazDfUGX8Di68JwfDq-DT0N3kNyyxIqPpgyAV-ItKWHkU8vYrXM55SKL4G-2RiH1J7Sf0Kd43i5cV55n9w_8_j7_Or6A3gSPgbHKcv8zb_oUUqkr2AfT3haUQLiBqBydrCasdo7mPkOpEHQTZqbnQ')"></div>
 </div>
@@ -157,12 +157,12 @@
 </div>
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Dasar Pemrograman</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 125.000</p>
-<div class="mt-auto pt-4 border-t border-gray-100">
+<div class="mt-auto pt-4">
 <button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
 </div>
 </div>
 <!-- Book 3 -->
-<div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
+<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
 <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a classic Indonesian literature book titled 'Senja di Jakarta'. The artwork is evocative and slightly melancholic, depicting a stylized sunset over a cityscape. The aesthetic is artistic and refined." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDp2oit0-2rGwp_D06OJ28SmaalBc9oYK18hMvz4YLX3WOqpAm-DGThkOcxj2fIhLbjrfFeb4aA7v_I-CQ0g-2HNFYWRuMcuP3G1HYcZ6yqqUBppMmKoEqh4YgUSMyo4tItRvnWY-lbU6tbEdhpJNW04X4w2JvQtPDib-jgnEf9NDW5rJI9Mrg36cOxlUV5SfGq5PmsU7SBOmfZlMhRbd3dKa5c-T4V7jnN23EqniQqgGfSqJ0sQVDNC8qr2YFodtAXX9m8bno0h-E')"></div>
 </div>
@@ -171,12 +171,12 @@
 </div>
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Senja di Jakarta</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 85.000</p>
-<div class="mt-auto pt-4 border-t border-gray-100">
+<div class="mt-auto pt-4">
 <button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
 </div>
 </div>
 <!-- Book 4 -->
-<div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
+<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
 <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of an entrepreneurial success story book titled 'Kisah Sukses Pengusaha Muda'. The design is bold and motivational, featuring dynamic typography and gold accents on a deep green background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCuxfxL8fI_UEvD11E2WeYCtpt00cnQB2jxJZEt0spvfN80nGisNAY_bvcjQ8YlH3lEH59ocPOpZi3Xz23d5UDRp3NK60jyrIogXmBr4CUZ0oXqrR3cWSmxxNzWft_Q9glvc4NEYbfdEJdZo1-jTQCXc9Owzi8U6OdjlEIA37IH7sLQG4hSjnt8e0HP0Sh9gwc676ZUjYitVMxfztbSrvXp50JtdBGA8fknL_OEYFuLWDeozQvZbQZ1UsUHEHCzJyx1uJAMWFUBvx0')"></div>
 </div>
@@ -185,7 +185,7 @@
 </div>
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Kisah Sukses Pengusaha Muda</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 110.000</p>
-<div class="mt-auto pt-4 border-t border-gray-100">
+<div class="mt-auto pt-4">
 <button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
 </div>
 </div>
