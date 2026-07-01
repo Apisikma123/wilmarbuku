@@ -135,7 +135,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
 <!-- Book 1 -->
 <div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] bg-gray-100 mb-4 relative overflow-hidden rounded-[4px] book-shadow">
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a professional business strategy book titled 'Manajemen Strategis'. The design is modern and clean, utilizing a corporate aesthetic with geometric shapes in forest green and gold. The book is presented in a well-lit studio environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBdaUQ7L4Mr5iixZL3uW6VXBXFpbAGehotGSUrpvBFIOD-8a_TmyzZcq3h4ACCk0zUNqdKLTZOmQlqOqKPlWavSW2CV_W6mEsoyZe63nItZ-vhtAds-Pmo9xaLJvyARWqD0gGfFV_cV8efE-dldmOX6LDl4i2bfqqPvVVhsnFi2X_ifPANgF_fmPToPTvT4DDRxKVCU2tCGiEqB2v-mMZ5ec_H-nrDg_blYk0AbwbmDWbkYQLjty7QgrcsNiGwmgz-374-OuAkpsb0')"></div>
 </div>
 <div class="mb-3">
@@ -149,7 +149,7 @@
 </div>
 <!-- Book 2 -->
 <div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] bg-gray-100 mb-4 relative overflow-hidden rounded-[4px] book-shadow">
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a technical programming book titled 'Dasar Pemrograman'. The design features sleek, tech-inspired abstract graphics in dark blue and green tones. The book is presented professionally with a soft shadow." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBoVwRsCaz9oy9Y913JgCusXJU_d1bGkJBXljcl5N8iO-TdiZd_ypf8mGWS2fiF7CtKfNE60m4CHNivHyYdDKt02WdKNSH6rKkBoTJ-5lnVosXLQMd5fEQrAhgazDfUGX8Di68JwfDq-DT0N3kNyyxIqPpgyAV-ItKWHkU8vYrXM55SKL4G-2RiH1J7Sf0Kd43i5cV55n9w_8_j7_Or6A3gSPgbHKcv8zb_oUUqkr2AfT3haUQLiBqBydrCasdo7mPkOpEHQTZqbnQ')"></div>
 </div>
 <div class="mb-3">
@@ -163,7 +163,7 @@
 </div>
 <!-- Book 3 -->
 <div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] bg-gray-100 mb-4 relative overflow-hidden rounded-[4px] book-shadow">
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of a classic Indonesian literature book titled 'Senja di Jakarta'. The artwork is evocative and slightly melancholic, depicting a stylized sunset over a cityscape. The aesthetic is artistic and refined." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDp2oit0-2rGwp_D06OJ28SmaalBc9oYK18hMvz4YLX3WOqpAm-DGThkOcxj2fIhLbjrfFeb4aA7v_I-CQ0g-2HNFYWRuMcuP3G1HYcZ6yqqUBppMmKoEqh4YgUSMyo4tItRvnWY-lbU6tbEdhpJNW04X4w2JvQtPDib-jgnEf9NDW5rJI9Mrg36cOxlUV5SfGq5PmsU7SBOmfZlMhRbd3dKa5c-T4V7jnN23EqniQqgGfSqJ0sQVDNC8qr2YFodtAXX9m8bno0h-E')"></div>
 </div>
 <div class="mb-3">
@@ -177,7 +177,7 @@
 </div>
 <!-- Book 4 -->
 <div class="bg-white rounded-[8px] border border-gray-200 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] bg-gray-100 mb-4 relative overflow-hidden rounded-[4px] book-shadow">
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px]">
 <div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="Cover of an entrepreneurial success story book titled 'Kisah Sukses Pengusaha Muda'. The design is bold and motivational, featuring dynamic typography and gold accents on a deep green background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCuxfxL8fI_UEvD11E2WeYCtpt00cnQB2jxJZEt0spvfN80nGisNAY_bvcjQ8YlH3lEH59ocPOpZi3Xz23d5UDRp3NK60jyrIogXmBr4CUZ0oXqrR3cWSmxxNzWft_Q9glvc4NEYbfdEJdZo1-jTQCXc9Owzi8U6OdjlEIA37IH7sLQG4hSjnt8e0HP0Sh9gwc676ZUjYitVMxfztbSrvXp50JtdBGA8fknL_OEYFuLWDeozQvZbQZ1UsUHEHCzJyx1uJAMWFUBvx0')"></div>
 </div>
 <div class="mb-3">
@@ -269,17 +269,19 @@
 </section>
 <!-- Final CTA -->
 <section class="px-6 md:px-12 max-w-7xl mx-auto py-24 text-center">
-<div class="bg-primary rounded-2xl p-16 md:p-24 shadow-2xl relative overflow-hidden">
+<div class="bg-primary rounded-2xl p-16 md:p-24 shadow-2xl relative">
+<div class="absolute inset-0 overflow-hidden rounded-2xl">
+<!-- Decorative element -->
+<div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[400px] text-white">auto_stories</span>
+</div>
+</div>
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Mulai Berdampak Hari Ini</h2>
 <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Satu buku yang Anda berikan bisa menjadi awal dari seribu ide besar. Mari wujudkan ekosistem literasi yang kuat bersama kami.</p>
 <button class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg">
                         Donasi Sekarang
                     </button>
-</div>
-<!-- Decorative element -->
-<div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none">
-<span class="material-symbols-outlined text-[400px] text-white">auto_stories</span>
 </div>
 </div>
 </section>
