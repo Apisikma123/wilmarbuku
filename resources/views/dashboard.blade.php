@@ -59,15 +59,15 @@
                     <span class="material-symbols-outlined">shopping_cart</span>
                     <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">3</span>
                 </a>
-                <div class="flex items-center gap-3 border-l border-white/20 pl-6 cursor-pointer group">
+                <a href="{{ route('admin.dashboard') }}" title="Masuk ke Admin Dashboard" class="flex items-center gap-3 border-l border-white/20 pl-6 cursor-pointer group">
                     <div class="w-8 h-8 bg-surface-container-low text-primary rounded-full flex items-center justify-center font-bold text-sm">
                         WS
                     </div>
                     <div>
                         <p class="text-xs text-white/70 group-hover:text-white leading-tight">Halo,</p>
-                        <p class="text-sm font-bold leading-tight">Wira Santoso</p>
+                        <p class="text-sm font-bold leading-tight">Admin Wira</p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         

@@ -21,3 +21,23 @@ Route::get('/checkout', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/admin/dashboard', function () {
+    return view('admins.dashboard');
+})->name('admin.dashboard');
+
+Route::get('/admin/catalog', function () {
+    return view('admins.catalog');
+})->name('admin.catalog');
+
+Route::get('/admin/transactions', function () {
+    return view('admins.transactions');
+})->name('admin.transactions');
+
+Route::get('/admin/users', function () {
+    return view('admins.users');
+})->name('admin.users');
+
+Route::get('/admin/reports', function () {
+    return view('admins.reports');
+})->name('admin.reports');

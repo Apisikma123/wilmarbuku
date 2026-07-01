@@ -58,6 +58,15 @@
                             <input type="email" class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg focus:border-[#004225] focus:ring-1 focus:ring-[#004225] outline-none transition-colors text-sm" placeholder="alamat@email.com" required>
                         </div>
                     </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface mb-1">Judul Buku (Pilihan dari Katalog) <span class="text-red-500">*</span></label>
+                        <input type="text" name="judul_buku" value="Manajemen Modern & Strategi Inovasi" class="w-full px-4 py-3 bg-gray-100 border border-outline-variant/30 rounded-lg outline-none text-sm text-gray-500 cursor-not-allowed" readonly>
+                        <div class="flex items-center gap-1 mt-1.5 text-on-surface-variant text-[11px]">
+                            <span class="material-symbols-outlined text-[14px]">info</span>
+                            <span>Sementara diisi manual/statis. Nanti akan otomatis ditarik dari database sesuai buku yang dipilih.</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
