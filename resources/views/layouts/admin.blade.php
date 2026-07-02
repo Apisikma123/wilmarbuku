@@ -109,7 +109,7 @@
                     </a>
 
                     <!-- Profile Pill & Dropdown -->
-                    <div class="group relative">
+                    <a href="{{ route('admin.settings') }}" class="group relative block">
                         <!-- Pill -->
                         <div class="flex items-center gap-3 cursor-pointer bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full p-1.5 pr-5 transition-colors">
                             <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden shrink-0">
@@ -133,7 +133,7 @@
                                 <span class="inline-flex px-3 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase tracking-widest rounded-full">Super Administrator</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </header>
 
