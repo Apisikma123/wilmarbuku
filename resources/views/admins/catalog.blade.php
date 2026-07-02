@@ -31,15 +31,15 @@
         </div>
 
         <!-- Card 2 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6">
-            <div class="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0">
+        <a href="{{ route('admin.dibutuhkan') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group">
+            <div class="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0 group-hover:bg-amber-100 transition-colors">
                 <i data-lucide="more-horizontal" class="w-6 h-6 fill-amber-700"></i>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Dibutuhkan Segera</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-amber-700 transition-colors">Dibutuhkan Segera</p>
                 <h3 class="text-3xl font-bold text-slate-900">18 Judul</h3>
             </div>
-        </div>
+        </a>
 
         <!-- Card 3 -->
         <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6">
@@ -82,7 +82,7 @@
                             <div class="font-medium text-slate-600">The Literacy Crisis in Modern<br>Education</div>
                         </td>
                         <td class="px-6 py-5 text-slate-500">Dr. Elizabeth Vance</td>
-                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp<br>245.000</td>
+                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp 245.000</td>
                         <td class="px-6 py-5 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Dibutuhkan</span>
                         </td>
@@ -100,7 +100,7 @@
                             <div class="font-medium text-slate-600">Pedagogi Kreatif Untuk Anak<br>Usia Dini</div>
                         </td>
                         <td class="px-6 py-5 text-slate-500">Ahmad Subagio,<br>M.Pd</td>
-                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp<br>128.500</td>
+                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp 128.500</td>
                         <td class="px-6 py-5 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Tersedia</span>
                         </td>
@@ -118,7 +118,7 @@
                             <div class="font-medium text-slate-600">Global Literacy Standards<br>2024</div>
                         </td>
                         <td class="px-6 py-5 text-slate-500">UNESCO Press</td>
-                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp<br>512.000</td>
+                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp 512.000</td>
                         <td class="px-6 py-5 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Dibutuhkan</span>
                         </td>
@@ -136,7 +136,7 @@
                             <div class="font-medium text-slate-600">Storytelling for Social Change</div>
                         </td>
                         <td class="px-6 py-5 text-slate-500">Maya Angelou<br>Institute</td>
-                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp<br>310.000</td>
+                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp 310.000</td>
                         <td class="px-6 py-5 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Tersedia</span>
                         </td>
@@ -154,7 +154,7 @@
                             <div class="font-medium text-slate-600">Digital Archive Management</div>
                         </td>
                         <td class="px-6 py-5 text-slate-500">Tech Librarian<br>Collective</td>
-                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp<br>195.000</td>
+                        <td class="px-6 py-5 font-medium text-slate-700 text-right">Rp 195.000</td>
                         <td class="px-6 py-5 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Dibutuhkan</span>
                         </td>

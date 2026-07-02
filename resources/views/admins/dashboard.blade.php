@@ -24,9 +24,9 @@
     <!-- Metrics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Card 1 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <a href="{{ route('admin.transactions') }}" class="block bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-700">
+                <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-700 group-hover:bg-green-100 transition-colors">
                     <i data-lucide="hand-coins" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 text-green-700 text-xs font-semibold">
@@ -34,15 +34,15 @@
                 </span>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Donations</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-slate-700 transition-colors">Total Donations</p>
                 <h3 class="text-3xl font-bold text-slate-900">Rp 42.850.000</h3>
             </div>
-        </div>
+        </a>
 
         <!-- Card 2 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <a href="{{ route('admin.dibutuhkan') }}" class="block bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-100 transition-colors">
                     <i data-lucide="book-copy" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-semibold">
@@ -50,15 +50,15 @@
                 </span>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Books Needed</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-amber-700 transition-colors">Books Needed</p>
                 <h3 class="text-3xl font-bold text-slate-900">312</h3>
             </div>
-        </div>
+        </a>
 
         <!-- Card 3 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <a href="{{ route('admin.catalog') }}" class="block bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                     <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-teal-50 text-teal-700 text-xs font-semibold">
@@ -66,15 +66,15 @@
                 </span>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Books In Process</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-blue-700 transition-colors">Books In Process</p>
                 <h3 class="text-3xl font-bold text-slate-900">85</h3>
             </div>
-        </div>
+        </a>
 
         <!-- Card 4 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <a href="{{ route('admin.users') }}" class="block bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition-colors">
                     <i data-lucide="users" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 text-green-700 text-xs font-semibold">
@@ -82,10 +82,10 @@
                 </span>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Users</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-emerald-700 transition-colors">Total Users</p>
                 <h3 class="text-3xl font-bold text-slate-900">1,240</h3>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Charts & Highlight Section -->

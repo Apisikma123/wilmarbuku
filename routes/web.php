@@ -41,3 +41,15 @@ Route::get('/admin/users', function () {
 Route::get('/admin/reports', function () {
     return view('admins.reports');
 })->name('admin.reports');
+
+Route::get('/admin/about', function () {
+    return view('admins.about');
+})->name('admin.about');
+
+Route::get('/admin/settings', function () {
+    return view('admins.settings');
+})->name('admin.settings');
+
+Route::get('/admin/dibutuhkan', function () {
+    return view('admins.dibutuhkan');
+})->name('admin.dibutuhkan');

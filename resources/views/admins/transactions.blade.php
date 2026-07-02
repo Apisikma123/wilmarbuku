@@ -3,6 +3,36 @@
 @section('content')
 <div class="max-w-7xl mx-auto space-y-6">
     
+    <!-- New Section: Total Donation Summary -->
+    <div class="bg-gradient-to-br from-green-900 via-green-800 to-green-950 rounded-2xl p-8 lg:p-10 shadow-xl text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden border border-green-800">
+        <!-- Decorative bg -->
+        <div class="absolute right-0 top-0 w-80 h-80 bg-green-400 opacity-10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>
+        <div class="absolute left-0 bottom-0 w-64 h-64 bg-green-500 opacity-10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
+        
+        <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6 w-full">
+            <div class="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner shrink-0">
+                <i data-lucide="wallet" class="w-10 h-10 text-green-100"></i>
+            </div>
+            <div>
+                <h3 class="text-green-200 font-bold uppercase tracking-widest text-xs mb-1.5">Total Donations Collected</h3>
+                <div class="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4 mt-2">
+                    <span class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-sm">Rp 42.850.000</span>
+                    <span class="text-sm font-bold text-green-100 mb-2 inline-flex items-center gap-1.5 bg-green-950/40 border border-green-700/50 px-2.5 py-1 rounded-lg backdrop-blur-sm self-center sm:self-auto">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i> +12% this month
+                    </span>
+                </div>
+                <p class="text-green-100/70 text-sm mt-3 max-w-md">Ringkasan total donasi yang telah diverifikasi dan masuk ke dalam sistem dari semua pengguna aktif.</p>
+            </div>
+        </div>
+        
+        <div class="relative z-10 shrink-0 w-full md:w-auto flex justify-center">
+            <button class="w-full md:w-auto px-6 py-4 bg-white text-green-900 font-black rounded-xl shadow-[0_4px_14px_0_rgba(255,255,255,0.2)] hover:shadow-[0_6px_20px_rgba(255,255,255,0.3)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="download" class="w-5 h-5"></i> 
+                Download Report
+            </button>
+        </div>
+    </div>
+
     <!-- Top Metrics Section -->
     <div class="flex flex-col md:flex-row gap-6">
         
@@ -283,7 +313,74 @@
         </div>
     </div>
 
+    <!-- New Section: Siapa Saja Yang Sudah Transaksi -->
+    <div class="mb-8 mt-10">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Recent Transactors</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Daftar pengguna yang baru saja melakukan transaksi</p>
+            </div>
+            <button class="text-sm font-bold text-green-700 hover:text-green-800 flex items-center gap-1 transition-colors">
+                View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
+            <!-- User 1 -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer">
+                <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-lg mb-3 shadow-sm border border-blue-100">JD</div>
+                <h4 class="font-bold text-slate-900 text-sm">Jane Doe</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Student</p>
+                <div class="mt-3 py-1.5 w-full bg-slate-50 rounded-lg border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Paid</p>
+                    <p class="text-sm font-black text-emerald-600">Rp 245.000</p>
+                </div>
+            </div>
+            
+            <!-- User 2 -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer">
+                <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-lg mb-3 shadow-sm border border-slate-200">BS</div>
+                <h4 class="font-bold text-slate-900 text-sm">Budi Santoso</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Educator</p>
+                <div class="mt-3 py-1.5 w-full bg-slate-50 rounded-lg border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Unpaid</p>
+                    <p class="text-sm font-black text-amber-600">Pending</p>
+                </div>
+            </div>
+            
+            <!-- User 3 -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer">
+                <div class="w-14 h-14 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-lg mb-3 shadow-sm border border-teal-100">AW</div>
+                <h4 class="font-bold text-slate-900 text-sm">Alice Wong</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Donor</p>
+                <div class="mt-3 py-1.5 w-full bg-slate-50 rounded-lg border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Paid</p>
+                    <p class="text-sm font-black text-emerald-600">Rp 512.000</p>
+                </div>
+            </div>
+            
+            <!-- User 4 -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer">
+                <div class="w-14 h-14 rounded-full bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-lg mb-3 shadow-sm border border-purple-100">RM</div>
+                <h4 class="font-bold text-slate-900 text-sm">Robert Miller</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Student</p>
+                <div class="mt-3 py-1.5 w-full bg-slate-50 rounded-lg border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Failed</p>
+                    <p class="text-sm font-black text-rose-600">Failed</p>
+                </div>
+            </div>
+            
+            <!-- User 5 -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer">
+                <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-lg mb-3 shadow-sm border border-rose-100">SA</div>
+                <h4 class="font-bold text-slate-900 text-sm">Siti Aminah</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Donor</p>
+                <div class="mt-3 py-1.5 w-full bg-slate-50 rounded-lg border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Paid</p>
+                    <p class="text-sm font-black text-emerald-600">Rp 1.500.000</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-</div>
 @endsection
