@@ -22,7 +22,7 @@
         <!-- Card 1 -->
         <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6">
             <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
-                <i data-lucide="book" class="w-6 h-6 fill-slate-700"></i>
+                <i data-lucide="book-open" class="w-6 h-6 text-slate-700"></i>
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Pengajuan</p>
@@ -33,7 +33,7 @@
         <!-- Card 2 -->
         <a href="{{ route('admin.dibutuhkan') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group">
             <div class="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0 group-hover:bg-amber-100 transition-colors">
-                <i data-lucide="more-horizontal" class="w-6 h-6 fill-amber-700"></i>
+                <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-700"></i>
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-amber-700 transition-colors">Dibutuhkan Segera</p>
@@ -44,7 +44,7 @@
         <!-- Card 3 -->
         <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6">
             <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 shrink-0">
-                <i data-lucide="check-circle-2" class="w-6 h-6 fill-emerald-700"></i>
+                <i data-lucide="check-circle" class="w-6 h-6 text-emerald-700"></i>
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Berhasil Tersedia</p>
