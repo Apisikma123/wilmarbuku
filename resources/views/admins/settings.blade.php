@@ -125,7 +125,7 @@
         </div>
     </section>
 
-    <!-- Other Actions (About & Logout) -->
+    <!-- Other Actions (Support & Logout) -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-12">
         <div class="px-6 py-5 border-b border-slate-200">
             <h3 class="text-lg font-bold text-slate-900">More Actions</h3>
@@ -133,11 +133,11 @@
         </div>
         <div class="p-6">
             <div class="flex flex-col sm:flex-row gap-4">
-                <a href="{{ route('admin.about') }}" class="flex-1 flex items-center justify-center gap-3 px-6 py-3.5 border border-slate-200 rounded-xl text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer group">
+                <a href="{{ route('admin.support') }}" class="flex-1 flex items-center justify-center gap-3 px-6 py-3.5 border border-slate-200 rounded-xl text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer group">
                     <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
-                        <i data-lucide="info" class="w-5 h-5"></i>
+                        <i data-lucide="life-buoy" class="w-5 h-5"></i>
                     </div>
-                    View About Page
+                    View Support Page
                 </a>
                 <a href="{{ route('login') }}" class="flex-1 flex items-center justify-center gap-3 px-6 py-3.5 bg-red-50 text-red-700 border border-red-100 rounded-xl font-bold hover:bg-red-100 transition-all cursor-pointer group">
                     <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-600 shadow-sm group-hover:bg-red-50 transition-colors">

@@ -121,9 +121,9 @@ Route::get('/admin/reports', function () {
     return view('admins.reports');
 })->name('admin.reports');
 
-Route::get('/admin/about', function () {
-    return view('admins.about');
-})->name('admin.about');
+Route::get('/admin/support', function () {
+    return view('admins.support');
+})->name('admin.support');
 
 Route::get('/admin/settings', function () {
     return view('admins.settings');
