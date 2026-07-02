@@ -1,96 +1,134 @@
 @extends('layouts.user')
 
 @section('content')
-<div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-8">
+<div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10 font-poppins">
     
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs font-medium text-on-surface-variant mb-8 overflow-x-auto whitespace-nowrap hide-scroll">
+    <nav class="flex items-center gap-2 text-sm font-medium text-on-surface-variant mb-10 overflow-x-auto whitespace-nowrap hide-scroll">
         <a href="/dashboard" class="hover:text-primary transition-colors">Beranda</a>
-        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
         <a href="#" class="hover:text-primary transition-colors">Katalog Buku</a>
-        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
         <span id="breadcrumb-category" class="hover:text-primary transition-colors cursor-pointer">Kategori</span>
-        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span id="breadcrumb-title" class="text-on-surface font-bold">Judul Buku</span>
+        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+        <span id="breadcrumb-title" class="text-on-surface font-semibold">Judul Buku</span>
     </nav>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         
         <!-- Left Column: Book Image -->
         <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-6">
-            <div class="bg-surface-bright rounded-2xl p-6 border border-outline-variant/30 flex items-center justify-center shadow-sm">
-                <div id="book-cover" class="w-full max-w-[280px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden">
+            <div class="rounded-lg p-4 md:p-8 flex items-center justify-center">
+                <div id="book-cover" class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden">
                     <div>
                         <h4 id="cover-title" class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight"></h4>
-                        <p class="text-xs text-white/80 border-t border-white/20 pt-2 mt-2">Edisi Terbaru</p>
+                        <p class="text-xs text-white border-t border-white/30 pt-2 mt-2 font-medium">Edisi Terbaru</p>
                     </div>
                 </div>
             </div>
             
             <!-- Quick Info Badges -->
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-surface-container-low rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 border border-outline-variant/20">
-                    <span class="material-symbols-outlined text-primary text-[24px]">import_contacts</span>
-                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Halaman</span>
-                    <span id="book-pages" class="text-sm font-semibold text-on-surface">-</span>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
+                    <span class="material-symbols-outlined text-primary text-[28px]">import_contacts</span>
+                    <div>
+                        <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Halaman</span>
+                        <span id="book-pages" class="block text-sm font-semibold text-on-surface">-</span>
+                    </div>
                 </div>
-                <div class="bg-surface-container-low rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 border border-outline-variant/20">
-                    <span class="material-symbols-outlined text-primary text-[24px]">inventory_2</span>
-                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Stok Dibutuhkan</span>
-                    <span id="book-stock" class="text-sm font-semibold text-on-surface">-</span>
+                <div class="bg-white rounded-lg p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
+                    <span class="material-symbols-outlined text-primary text-[28px]">inventory_2</span>
+                    <div>
+                        <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Dibutuhkan</span>
+                        <span id="book-stock" class="block text-sm font-semibold text-on-surface">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Validation Notice (from PRD) -->
+            <div class="bg-[#EDF6EE] rounded-lg p-5 border border-primary/20 flex items-start gap-4">
+                <div class="bg-primary text-white p-2 rounded-full flex-shrink-0 mt-0.5">
+                    <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-primary mb-1">Syarat Kelulusan</h4>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">Donasi buku ini valid sebagai syarat Surat Keterangan Bebas Pustaka bagi mahasiswa tingkat akhir.</p>
                 </div>
             </div>
         </div>
 
         <!-- Right Column: Book Details & Actions -->
-        <div class="lg:col-span-8 space-y-8">
+        <div class="lg:col-span-8 flex flex-col">
             
             <!-- Header Info -->
-            <div>
-                <div class="flex items-center gap-2 mb-4 flex-wrap">
-                    <span id="book-category-badge" class="bg-primary/10 text-primary text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest border border-primary/20"></span>
-                    <span id="book-badge" class="hidden bg-secondary/10 text-secondary text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest border border-secondary/20 items-center gap-1">
-                        <span class="material-symbols-outlined text-[12px]">verified</span> <span id="badge-text"></span>
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-5 flex-wrap">
+                    <span id="book-category-badge" class="bg-[#EDF6EE] text-primary text-[12px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-primary/20"></span>
+                    <span id="book-badge" class="hidden bg-[#FFF9E6] text-[#996B00] text-[12px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-[#996B00]/20 items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">verified</span> <span id="badge-text"></span>
                     </span>
                 </div>
                 
-                <h1 id="book-title" class="text-3xl md:text-4xl font-bold text-on-surface tracking-tight mb-2 leading-tight"></h1>
-                <p class="text-lg text-on-surface-variant font-medium mb-6">Oleh: <span id="book-author" class="text-primary font-bold"></span></p>
+                <h1 id="book-title" class="text-3xl md:text-[36px] lg:text-[44px] font-bold text-on-surface tracking-tight mb-4 leading-[1.2]"></h1>
+                <p class="text-lg text-on-surface-variant font-medium mb-8">Oleh <span id="book-author" class="text-on-surface font-semibold"></span></p>
                 
-                <div class="flex items-baseline gap-3 mb-6">
-                    <span id="book-price" class="text-3xl font-black text-primary tracking-tight"></span>
-                    <span class="text-sm text-on-surface-variant font-medium">/ buku</span>
+                <div class="flex items-baseline gap-3 mb-2 bg-surface-bright p-5 rounded-lg border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)] inline-block">
+                    <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Estimasi Harga Donasi</p>
+                    <div class="flex items-baseline gap-2">
+                        <span id="book-price" class="text-3xl lg:text-[36px] font-bold text-primary tracking-tight"></span>
+                        <span class="text-sm text-on-surface-variant font-medium">/ buku</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Action Box -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-primary/20">
-                <div class="flex flex-col sm:flex-row items-end sm:items-center gap-4">
-                    <div class="w-full sm:w-auto">
-                        <label class="block text-xs font-bold text-on-surface-variant mb-2">Jumlah Donasi</label>
-                        <div class="flex items-center bg-surface-bright border border-outline-variant/50 rounded-xl p-1 h-12 w-full sm:w-32">
-                            <button type="button" id="btn-minus" class="w-10 h-full rounded-lg text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors"><span class="material-symbols-outlined text-[20px]">remove</span></button>
-                            <input type="text" id="qty-input" value="1" readonly class="w-full h-full text-center bg-transparent border-none focus:ring-0 font-bold text-on-surface p-0">
-                            <button type="button" id="btn-plus" class="w-10 h-full rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">add</span></button>
+            <div class="bg-white rounded-lg p-6 lg:p-8 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/30 mb-10 transition-all hover:shadow-[0px_8px_30px_rgba(15,23,42,0.08)]">
+                <div class="flex flex-col md:flex-row items-end md:items-center gap-8 justify-between">
+                    
+                    <div class="w-full md:w-auto">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-3">Jumlah Donasi</label>
+                        <!-- Rounded pill quantity selector based on user image -->
+                        <div class="flex items-center bg-surface-bright rounded-full h-[52px] w-full md:w-[160px] p-1">
+                            <button type="button" id="btn-minus" class="w-11 h-11 rounded-full text-on-surface-variant flex items-center justify-center hover:bg-surface-variant/30 transition-colors active:bg-surface-variant/50">
+                                <span class="material-symbols-outlined font-bold text-[20px]">remove</span>
+                            </button>
+                            <input type="text" id="qty-input" value="1" readonly class="w-full h-full text-center bg-transparent border-none focus:ring-0 font-bold text-on-surface text-[17px] p-0">
+                            <!-- Distinct greenish/grayish background for the plus button -->
+                            <button type="button" id="btn-plus" class="w-11 h-11 rounded-full bg-[#E5ECE7] text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors active:scale-95">
+                                <span class="material-symbols-outlined font-bold text-[20px]">add</span>
+                            </button>
                         </div>
                     </div>
                     
-                    <a href="/cart" id="btn-add-cart" class="w-full flex-grow bg-primary text-white font-bold h-12 rounded-xl hover:bg-primary-container transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
-                        <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-                        Tambahkan ke Keranjang
-                    </a>
+                    <div class="w-full md:flex-1 flex flex-col items-end gap-3">
+                        <div class="flex items-center justify-between md:justify-end w-full gap-4 mb-1">
+                            <span class="text-sm text-on-surface-variant font-medium md:hidden">Total Donasi:</span>
+                            <p class="text-sm text-on-surface-variant font-medium hidden md:block">Total:</p>
+                            <span class="font-bold text-on-surface text-xl" id="subtotal-amount"></span>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3 w-full justify-end mt-2">
+                            <a href="/cart" id="btn-add-cart" class="w-full sm:w-auto flex-grow bg-white text-primary border border-primary font-semibold text-sm md:text-base h-[52px] rounded-lg hover:bg-primary/5 transition-all flex items-center justify-center gap-2 px-8">
+                                <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                                Keranjang
+                            </a>
+                            <a href="/checkout" id="btn-checkout" class="w-full sm:w-auto flex-grow bg-primary text-white font-semibold text-sm md:text-base h-[52px] rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-2 px-8">
+                                <span class="material-symbols-outlined text-[20px]">volunteer_activism</span>
+                                Donasi Sekarang
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <p id="subtotal-text" class="text-xs text-on-surface-variant mt-3 text-right font-medium"></p>
             </div>
 
             <!-- Description -->
-            <div class="pt-8 border-t border-outline-variant/30">
-                <div class="flex items-center gap-8 border-b border-outline-variant/30 mb-6">
-                    <button class="pb-3 text-primary font-bold border-b-2 border-primary text-sm">Deskripsi Buku</button>
-                    <button class="pb-3 text-on-surface-variant hover:text-on-surface font-medium text-sm transition-colors">Detail Distribusi</button>
+            <div class="border-t border-outline-variant/30 flex-grow pt-8">
+                <div class="flex items-center gap-8 border-b border-outline-variant/30 mb-8">
+                    <button class="pb-3 text-primary font-bold border-b-[3px] border-primary text-base">Deskripsi Buku</button>
+                    <button class="pb-3 text-on-surface-variant hover:text-on-surface font-semibold text-base transition-colors">Detail Distribusi</button>
                 </div>
                 
-                <div id="book-description" class="text-on-surface-variant text-sm md:text-base leading-relaxed space-y-4">
+                <div id="book-description" class="text-on-surface-variant text-base leading-relaxed space-y-5 prose prose-slate max-w-[75ch]">
                 </div>
             </div>
             
@@ -112,7 +150,7 @@
             stock: '15 Buku',
             gradient: 'linear-gradient(to bottom right, #003215, #004b23)',
             coverTextColor: '#ffffff',
-            description: '<p>Buku <strong>"Manajemen Modern & Strategi Inovasi"</strong> mengulas pendekatan terbaru dalam pengelolaan organisasi di era digital. Membahas bagaimana perusahaan merumuskan strategi yang agile, membangun budaya inovasi, dan beradaptasi terhadap perubahan pasar.</p><p>Buku ini sangat dibutuhkan oleh mahasiswa Fakultas Bisnis dan Manajemen di Wilmar Business Indonesia Polytechnic sebagai referensi utama dalam mata kuliah Manajemen Strategis.</p><h3 class="text-on-surface font-bold text-lg mt-6 mb-3">Topik Pembahasan:</h3><ul class="list-disc pl-5 space-y-2"><li>Konsep dasar manajemen strategis kontemporer.</li><li>Kerangka kerja inovasi dan Design Thinking dalam bisnis.</li><li>Studi kasus perusahaan rintisan (startup) Indonesia.</li><li>Strategi kepemimpinan dalam transformasi digital.</li></ul>'
+            description: '<p>Buku <strong>"Manajemen Modern & Strategi Inovasi"</strong> mengulas pendekatan terbaru dalam pengelolaan organisasi di era digital. Membahas bagaimana perusahaan merumuskan strategi yang agile, membangun budaya inovasi, dan beradaptasi terhadap perubahan pasar.</p><p>Buku ini sangat dibutuhkan oleh mahasiswa Fakultas Bisnis dan Manajemen di Wilmar Business Indonesia Polytechnic sebagai referensi utama dalam mata kuliah Manajemen Strategis.</p><h2 class="text-on-surface font-bold text-lg mt-6 mb-3">Topik Pembahasan:</h2><ul class="list-disc pl-5 space-y-2"><li>Konsep dasar manajemen strategis kontemporer.</li><li>Kerangka kerja inovasi dan Design Thinking dalam bisnis.</li><li>Studi kasus perusahaan rintisan (startup) Indonesia.</li><li>Strategi kepemimpinan dalam transformasi digital.</li></ul>'
         },
         2: {
             title: 'Pengantar Kecerdasan Buatan',
@@ -125,7 +163,7 @@
             stock: '20 Buku',
             gradient: 'linear-gradient(to bottom right, #1e293b, #0f172a)',
             coverTextColor: '#67e8f9',
-            description: '<p>Buku <strong>"Pengantar Kecerdasan Buatan"</strong> memperkenalkan konsep dasar AI mulai dari Machine Learning, Neural Networks, hingga aplikasi NLP. Sangat cocok untuk mahasiswa Teknik Informatika dan Sistem Informasi.</p><p>Dibutuhkan sebagai referensi wajib mata kuliah AI semester 5 di program studi Informatika WBI.</p><h3 class="text-on-surface font-bold text-lg mt-6 mb-3">Topik Pembahasan:</h3><ul class="list-disc pl-5 space-y-2"><li>Dasar-dasar Machine Learning dan Deep Learning.</li><li>Natural Language Processing (NLP).</li><li>Computer Vision dan implementasinya.</li><li>Etika dan masa depan Kecerdasan Buatan.</li></ul>'
+            description: '<p>Buku <strong>"Pengantar Kecerdasan Buatan"</strong> memperkenalkan konsep dasar AI mulai dari Machine Learning, Neural Networks, hingga aplikasi NLP. Sangat cocok untuk mahasiswa Teknik Informatika dan Sistem Informasi.</p><p>Dibutuhkan sebagai referensi wajib mata kuliah AI semester 5 di program studi Informatika WBI.</p><h2 class="text-on-surface font-bold text-lg mt-6 mb-3">Topik Pembahasan:</h2><ul class="list-disc pl-5 space-y-2"><li>Dasar-dasar Machine Learning dan Deep Learning.</li><li>Natural Language Processing (NLP).</li><li>Computer Vision dan implementasinya.</li><li>Etika dan masa depan Kecerdasan Buatan.</li></ul>'
         },
         3: {
             title: 'Sastra: Senja di Jakarta Klasik',
@@ -241,7 +279,7 @@
         document.getElementById('book-pages').textContent = book.pages;
         document.getElementById('book-stock').textContent = book.stock;
         document.getElementById('book-description').innerHTML = book.description;
-        document.getElementById('subtotal-text').textContent = 'Subtotal: ' + formatRupiah(book.price * qty);
+        document.getElementById('subtotal-amount').textContent = formatRupiah(book.price * qty);
         document.getElementById('qty-input').value = qty;
 
         // Cover styling

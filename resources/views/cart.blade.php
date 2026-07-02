@@ -2,6 +2,14 @@
 
 @section('content')
     <div class="flex-grow max-w-[1280px] mx-auto w-full px-6 py-10">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="javascript:void(0)" onclick="if(document.referrer) { window.history.back(); } else { window.location.href='/donasi'; }" class="inline-flex items-center text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-lg mr-1">arrow_back</span>
+                Kembali
+            </a>
+        </div>
+
         <div class="flex items-center gap-3 mb-8">
             <span class="material-symbols-outlined text-primary text-3xl">shopping_bag</span>
             <h1 class="text-3xl font-bold font-display text-on-surface tracking-tight">Keranjang Donasi</h1>
@@ -13,10 +21,7 @@
                 <!-- Select All Row -->
                 <div class="bg-white rounded-2xl p-5 shadow-sm border border-outline-variant/40 flex justify-between items-center transition-shadow hover:shadow-md">
                     <label class="flex items-center gap-4 cursor-pointer group">
-                        <div class="relative flex items-center justify-center">
-                            <input type="checkbox" checked class="peer appearance-none w-6 h-6 border-2 border-outline-variant rounded-md checked:bg-primary checked:border-primary transition-colors cursor-pointer">
-                            <span class="material-symbols-outlined absolute text-white text-sm opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity font-bold">check</span>
-                        </div>
+                        <input type="checkbox" checked class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
                         <span class="font-semibold text-on-surface text-base group-hover:text-primary transition-colors">Pilih Semua Buku</span>
                     </label>
                     <button class="text-sm font-semibold text-error hover:bg-error/10 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
@@ -27,9 +32,8 @@
                 <!-- Cart Item 1 -->
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group">
                     <div class="flex gap-5">
-                        <div class="relative flex items-start justify-center pt-2">
-                            <input type="checkbox" checked class="peer appearance-none w-6 h-6 border-2 border-outline-variant rounded-md checked:bg-primary checked:border-primary transition-colors cursor-pointer">
-                            <span class="material-symbols-outlined absolute text-white text-sm opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity font-bold top-[13px]">check</span>
+                        <div class="flex items-start justify-center pt-2">
+                            <input type="checkbox" checked class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
                         </div>
                         <div class="flex-grow">
                             <!-- Header Info -->
@@ -89,9 +93,8 @@
                 <!-- Cart Item 2 -->
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group">
                     <div class="flex gap-5">
-                        <div class="relative flex items-start justify-center pt-2">
-                            <input type="checkbox" checked class="peer appearance-none w-6 h-6 border-2 border-outline-variant rounded-md checked:bg-primary checked:border-primary transition-colors cursor-pointer">
-                            <span class="material-symbols-outlined absolute text-white text-sm opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity font-bold top-[13px]">check</span>
+                        <div class="flex items-start justify-center pt-2">
+                            <input type="checkbox" checked class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
                         </div>
                         <div class="flex-grow">
                             <!-- Header Info -->

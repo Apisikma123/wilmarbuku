@@ -4,7 +4,7 @@
 <div class="px-6 md:px-12 xl:px-24 max-w-[1200px] mx-auto py-12">
     <!-- Back Button -->
     <div class="mb-6">
-        <a href="/donasi" class="inline-flex items-center text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">
+        <a href="javascript:void(0)" onclick="if(document.referrer) { window.history.back(); } else { window.location.href='/donasi'; }" class="inline-flex items-center text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">
             <span class="material-symbols-outlined text-lg mr-1">arrow_back</span>
             Kembali
         </a>
@@ -159,10 +159,10 @@
                         </div>
                     </div>
 
-                    <button class="w-full bg-[#004225] text-white font-bold text-sm px-6 py-4 rounded-xl hover:bg-primary transition-colors shadow-md flex justify-center items-center gap-2 mb-4">
+                    <a href="/success" class="w-full bg-[#004225] text-white font-bold text-sm px-6 py-4 rounded-xl hover:bg-primary transition-colors shadow-md flex justify-center items-center gap-2 mb-4">
                         <span class="material-symbols-outlined text-lg">lock</span>
                         Bayar Sekarang
-                    </button>
+                    </a>
                     
                     <div class="flex items-center justify-center gap-1.5 text-[11px] text-on-surface-variant">
                         <span class="material-symbols-outlined text-[14px]">verified_user</span>

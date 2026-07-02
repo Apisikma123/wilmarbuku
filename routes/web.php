@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    session(['is_user' => false]);
     return view('welcome');
 })->name('home');
 
@@ -40,6 +41,7 @@ Route::get('/register', function () {
 */
 
 Route::get('/dashboard', function () {
+    session(['is_user' => true]);
     return view('dashboard');
 })->name('dashboard');
 
@@ -59,18 +61,42 @@ Route::get('/track', function () {
     return view('track');
 })->name('track');
 
+Route::get('/kategori', function () {
+    return view('kategori');
+})->name('kategori');
+
 Route::get('/akun', function () {
     return view('akun');
 })->name('akun');
+
+Route::get('/success', function () {
+    return view('success');
+})->name('success');
 
 Route::get('/buku', function () {
     return view('buku');
 })->name('buku');
 
 // Static Pages
-Route::get('/tentang-kami', function () { return view('static.tentang'); })->name('tentang');
-Route::get('/panduan-donasi', function () { return view('static.panduan'); })->name('panduan');
-Route::get('/kebijakan-privasi', function () { return view('static.privasi'); })->name('privasi');
-Route::get('/faq', function () { return view('static.faq'); })->name('faq');
-Route::get('/terms', function () { return view('static.terms'); })->name('terms');
-Route::get('/cookie-policy', function () { return view('static.cookie'); })->name('cookie');
+$staticPages = [
+    'tentang-kami' => 'static.tentang',
+    'panduan-donasi' => 'static.panduan',
+    'kebijakan-privasi' => 'static.privasi',
+    'faq' => 'static.faq',
+    'terms' => 'static.terms',
+    'cookie-policy' => 'static.cookie'
+];
+
+foreach ($staticPages as $uri => $view) {
+    Route::get('/' . $uri, function () use ($view) {
+        $referer = request()->headers->get('referer');
+        if ($referer) {
+            if (str_ends_with($referer, '8000/') || str_contains($referer, '/login') || str_contains($referer, '/register')) {
+                session(['is_user' => false]);
+            } else {
+                session(['is_user' => true]);
+            }
+        }
+        return view($view);
+    })->name(str_replace('static.', '', $view));
+}

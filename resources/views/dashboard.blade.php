@@ -8,10 +8,12 @@
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
         
         <div class="max-w-[1280px] mx-auto px-0 md:px-6 py-6 md:py-8 relative z-10">
+
+
             <div class="flex overflow-x-auto hide-scroll snap-x snap-mandatory gap-4 px-4 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4">
                 
                 <!-- Hero Card 1 -->
-                <div class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#1E293B] to-[#0F172A] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden">
+                <a href="/buku?id=1" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#1E293B] to-[#0F172A] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
                         <span class="inline-block bg-secondary text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">Terlaris</span>
@@ -19,12 +21,12 @@
                         <p class="text-[10px] md:text-xs text-white/70">Tingkatkan Skill Kepemimpinan</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
-                        <button class="bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full hover:bg-white hover:text-slate-900 transition-colors">Lihat Detail</button>
+                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-slate-900 transition-colors">Lihat Detail</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Hero Card 2 -->
-                <div class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#065F46] to-[#022C22] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden">
+                <a href="/buku?id=2" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#065F46] to-[#022C22] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
                         <span class="inline-block bg-yellow-400 text-black text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">Spesial WBI</span>
@@ -32,12 +34,12 @@
                         <p class="text-[10px] md:text-xs text-white/70">Masa Depan Pertanian</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
-                        <button class="bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full hover:bg-white hover:text-[#065F46] transition-colors">Donasi Sekarang</button>
+                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-[#065F46] transition-colors">Donasi Sekarang</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Hero Card 3 -->
-                <div class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#991B1B] to-[#450A0A] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden">
+                <a href="/buku?id=3" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#991B1B] to-[#450A0A] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
                         <span class="inline-block bg-white text-red-700 text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">Baru Rilis</span>
@@ -45,12 +47,12 @@
                         <p class="text-[10px] md:text-xs text-white/70">AI untuk Dunia Nyata</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
-                        <button class="bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full hover:bg-white hover:text-red-900 transition-colors">Lihat Detail</button>
+                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-red-900 transition-colors">Lihat Detail</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Hero Card 4 -->
-                <div class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#3730A3] to-[#1E1B4B] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden">
+                <a href="/buku?id=4" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b from-[#3730A3] to-[#1E1B4B] rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
                         <span class="inline-block bg-cyan-400 text-indigo-900 text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">Literasi 2024</span>
@@ -58,9 +60,9 @@
                         <p class="text-[10px] md:text-xs text-white/70">Panduan Praktis Founder</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
-                        <button class="bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full hover:bg-white hover:text-indigo-900 transition-colors">Donasi Sekarang</button>
+                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-indigo-900 transition-colors">Donasi Sekarang</span>
                     </div>
-                </div>
+                </a>
 
             </div>
         </div>
@@ -81,50 +83,50 @@
         <!-- Quick Categories -->
         <div class="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
             <!-- Icon 1 -->
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=buku-donasi" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">volunteer_activism</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Buku<br>Donasi</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=ebook" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)] relative">
                     <span class="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 bg-secondary text-white text-[8px] md:text-[9px] px-1.5 py-0.5 rounded font-bold">BARU</span>
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">devices</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">E-Book<br>Eksklusif</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=jurnal" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">article</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Jurnal<br>Akademik</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=modul" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">menu_book</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Modul<br>Kuliah</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=bisnis" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">lightbulb</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Inspirasi<br>Bisnis</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=teknologi" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">science</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Sains &<br>Teknologi</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori?filter=sastra" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">auto_stories</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Sastra &<br>Novel</span>
             </a>
-            <a href="#" class="flex flex-col items-center gap-2 md:gap-3 group">
+            <a href="/kategori" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">more_horiz</span>
                 </div>
@@ -223,30 +225,30 @@
 
                 <div class="grid grid-cols-3 gap-4">
                     <!-- Publisher Brand -->
-                    <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    <a href="/donasi?penerbit=erlangga" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">menu_book</span>
                         <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Erlangga</span>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    </a>
+                    <a href="/donasi?penerbit=gramedia" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">import_contacts</span>
                         <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Gramedia</span>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    </a>
+                    <a href="/donasi?penerbit=andi" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">school</span>
                         <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Andi Publ.</span>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    </a>
+                    <a href="/donasi?penerbit=informatika" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">science</span>
                         <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Informatika</span>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    </a>
+                    <a href="/donasi?penerbit=pearson" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">language</span>
                         <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Pearson</span>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    </a>
+                    <a href="/donasi?penerbit=wiley" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">workspace_premium</span>
                         <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Wiley</span>
-                    </div>
+                    </a>
                 </div>
             </div>
             
@@ -353,7 +355,7 @@
                     <div>
                         <h4 class="text-xs font-bold text-on-surface line-clamp-1">Kecerdasan Buatan</h4>
                         <p class="text-[10px] text-on-surface-variant">Donasi: 12 Jun 2024</p>
-                        <button class="mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</button>
+                        <a href="/buku?id=2" class="inline-block mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</a>
                     </div>
                 </div>
                 <!-- History Item -->
@@ -362,7 +364,7 @@
                     <div>
                         <h4 class="text-xs font-bold text-on-surface line-clamp-1">Manajemen Strategis</h4>
                         <p class="text-[10px] text-on-surface-variant">Donasi: 05 Jun 2024</p>
-                        <button class="mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</button>
+                        <a href="/buku?id=1" class="inline-block mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</a>
                     </div>
                 </div>
             </div>

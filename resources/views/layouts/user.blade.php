@@ -16,7 +16,12 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .item-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        /* SweetAlert2 Theme Overrides based on DESIGN.md */
+        div:where(.swal2-container) div:where(.swal2-popup) { font-family: 'Poppins', sans-serif; border-radius: 16px; }
+        div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm { border-radius: 8px; font-weight: 600; background-color: #003215; }
+        div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus { box-shadow: 0 0 0 3px rgba(0, 50, 21, 0.5); }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col overflow-x-hidden">
 
@@ -73,15 +78,18 @@
         <!-- Sub Navigation Desktop -->
         <div class="hidden md:block bg-surface-container-low border-b border-outline-variant/30">
             <div class="max-w-[1280px] mx-auto px-6 py-3 flex items-center gap-8 text-sm overflow-x-auto hide-scroll text-on-surface-variant font-medium">
-                <a href="#" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors">
+                <a href="/dashboard" class="flex items-center gap-2 font-bold text-on-surface hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-lg">home</span> Beranda
+                </a>
+                <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors">
                     <span class="material-symbols-outlined text-lg">grid_view</span> Kategori
                 </a>
-                <a href="#" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
-                <a href="#" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                <a href="#" class="hover:text-primary transition-colors whitespace-nowrap">Event Literasi</a>
-                <a href="#" class="hover:text-primary transition-colors whitespace-nowrap">Koleksi WBI</a>
-                <a href="#" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
-                <a href="#" class="hover:text-primary transition-colors whitespace-nowrap">Pertanian Modern</a>
+                <a href="/kategori?filter=terbaru" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
+                <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
+                <a href="/kategori?filter=event" class="hover:text-primary transition-colors whitespace-nowrap">Event Literasi</a>
+                <a href="/kategori?filter=koleksi" class="hover:text-primary transition-colors whitespace-nowrap">Koleksi WBI</a>
+                <a href="/kategori?filter=startup" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
+                <a href="/kategori?filter=pertanian" class="hover:text-primary transition-colors whitespace-nowrap">Pertanian Modern</a>
             </div>
         </div>
     </header>
@@ -123,7 +131,7 @@
                 </div>
                 <!-- Column 2: Tautan Cepat -->
                 <div>
-                    <h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">TAUTAN CEPAT</h3>
+                    <h2 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">TAUTAN CEPAT</h2>
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
@@ -132,7 +140,7 @@
                 </div>
                 <!-- Column 3: Informasi -->
                 <div>
-                    <h3 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">INFORMASI</h3>
+                    <h2 class="text-sm font-bold text-secondary-fixed mb-6 uppercase tracking-widest">INFORMASI</h2>
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/kebijakan-privasi">Kebijakan Privasi</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/faq">FAQ</a></li>

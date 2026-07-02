@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends((auth()->check() || session('is_user')) ? 'layouts.user' : 'layouts.main')
 
 @section('content')
 <div class="px-6 min-h-[70vh] flex flex-col items-center justify-center text-center bg-surface">
