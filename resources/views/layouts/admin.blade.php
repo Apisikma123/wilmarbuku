@@ -77,9 +77,9 @@
                     <i data-lucide="settings" class="w-5 h-5"></i>
                     Settings
                 </a>
-                <a href="{{ route('admin.about') }}" class="flex items-center gap-3 px-4 py-2 {{ request()->routeIs('admin.about') ? 'text-slate-900 bg-slate-50' : 'text-slate-600 hover:text-slate-900' }} font-medium transition-colors">
-                    <i data-lucide="info" class="w-5 h-5"></i>
-                    About
+                <a href="{{ route('admin.support') }}" class="flex items-center gap-3 px-4 py-2 {{ request()->routeIs('admin.support') ? 'text-slate-900 bg-slate-50' : 'text-slate-600 hover:text-slate-900' }} font-medium transition-colors">
+                    <i data-lucide="life-buoy" class="w-5 h-5"></i>
+                    Support
                 </a>
             </div>
         </aside>
