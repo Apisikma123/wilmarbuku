@@ -23,6 +23,12 @@ class DatabaseSeeder extends Seeder
             'role' => 'user_internal',
         ]);
 
+        User::factory()->create([
+            'nama_lengkap' => 'Administrator',
+            'email' => 'admin@wilmar.com',
+            'role' => 'admin',
+        ]);
+
         $this->call([
             KatalogBukuSeeder::class,
         ]);

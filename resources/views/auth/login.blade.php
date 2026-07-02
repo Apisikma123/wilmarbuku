@@ -97,10 +97,7 @@
                 Masuk dengan Google
             </button>
             
-            <a href="{{ route('admin.dashboard') }}" class="w-full mt-3 bg-slate-800 border border-slate-800 text-white font-medium py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center justify-center gap-3 shadow-sm">
-                <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
-                Masuk sebagai Admin (Demo)
-            </a>
+
 
             <p class="text-center text-sm text-gray-600 mt-8">
                 Belum punya akun? <a href="/register" class="text-secondary font-bold hover:underline">Daftar Sekarang</a>

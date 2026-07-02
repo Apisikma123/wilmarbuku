@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('google_id')->nullable();
             $table->string('identitas_kampus')->nullable();
-            $table->enum('role', ['super_admin', 'admin', 'user_internal', 'user_external'])->default('user_external');
+            $table->enum('role', ['admin', 'user_internal', 'user_external'])->default('user_external');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
