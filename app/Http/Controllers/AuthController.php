@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
 {
@@ -14,23 +17,19 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // For now, this is a placeholder or you can implement actual login
-        // But since we mock login state, maybe we just fake it
-        // session(['is_user' => true]);
-        // return redirect()->route('dashboard');
-
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->has('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+
+            return redirect()->intended(route('dashboard', absolute: false));
         }
 
         return back()->withErrors([
-            'email' => 'Email atau kata sandi salah.',
+            'email' => 'Email atau kata sandi yang Anda masukkan salah.',
         ])->onlyInput('email');
     }
 
@@ -41,8 +40,22 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // Placeholder for register
-        return redirect()->route('login')->with('success', 'Akun berhasil dibuat. Silakan login.');
+        $request->validate([
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'nama_lengkap' => $request->nama_lengkap,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user_external',
+        ]);
+
+        Auth::login($user);
+
+        return redirect(route('dashboard', absolute: false));
     }
 
     public function logout(Request $request)
@@ -50,7 +63,6 @@ class AuthController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

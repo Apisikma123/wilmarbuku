@@ -68,38 +68,7 @@
                     @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Tipe Pengguna -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Pengguna</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="relative cursor-pointer">
-                            <input type="radio" name="tipe_user" value="user_external" class="peer sr-only" checked>
-                            <div class="border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/5 rounded-xl p-3 text-center transition-all hover:border-gray-300">
-                                <span class="material-symbols-outlined text-2xl text-gray-400 peer-checked:text-primary mb-1 block mx-auto">public</span>
-                                <p class="text-xs font-bold text-gray-700">Publik / Umum</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">Donatur eksternal</p>
-                            </div>
-                        </label>
-                        <label class="relative cursor-pointer">
-                            <input type="radio" name="tipe_user" value="user_internal" class="peer sr-only" id="radio-internal">
-                            <div class="border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/5 rounded-xl p-3 text-center transition-all hover:border-gray-300">
-                                <span class="material-symbols-outlined text-2xl text-gray-400 peer-checked:text-primary mb-1 block mx-auto">school</span>
-                                <p class="text-xs font-bold text-gray-700">Internal Kampus</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">Mahasiswa / Dosen</p>
-                            </div>
-                        </label>
-                    </div>
-                </div>
 
-                <!-- NIM/NIDN (Muncul jika Internal) -->
-                <div id="nim-field" class="hidden">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">NIM / NIDN <span class="text-red-500">*</span></label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">badge</span>
-                        <input type="text" name="identitas_kampus" id="nim-input" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan NIM atau NIDN">
-                    </div>
-                    <p class="text-[11px] text-gray-400 mt-1.5">Wajib diisi untuk mahasiswa/dosen sebagai syarat validasi kelulusan.</p>
-                </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
@@ -153,23 +122,6 @@
         </div>
     </footer>
 
-    <script>
-        // Toggle NIM field based on user type selection
-        const radios = document.querySelectorAll('input[name="tipe_user"]');
-        const nimField = document.getElementById('nim-field');
-        const nimInput = document.getElementById('nim-input');
 
-        radios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                if (radio.value === 'user_internal' && radio.checked) {
-                    nimField.classList.remove('hidden');
-                    nimInput.required = true;
-                } else if (radio.value === 'user_external' && radio.checked) {
-                    nimField.classList.add('hidden');
-                    nimInput.required = false;
-                }
-            });
-        });
-    </script>
 </body>
 </html>

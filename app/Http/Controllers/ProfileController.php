@@ -16,6 +16,7 @@ class ProfileController extends Controller
         return view('akun');
     }
 
+
     /**
      * Display the user's profile form.
      */
