@@ -100,3 +100,35 @@ foreach ($staticPages as $uri => $view) {
         return view($view);
     })->name(str_replace('static.', '', $view));
 }
+
+Route::get('/admin/dashboard', function () {
+    return view('admins.dashboard');
+})->name('admin.dashboard');
+
+Route::get('/admin/catalog', function () {
+    return view('admins.catalog');
+})->name('admin.catalog');
+
+Route::get('/admin/transactions', function () {
+    return view('admins.transactions');
+})->name('admin.transactions');
+
+Route::get('/admin/users', function () {
+    return view('admins.users');
+})->name('admin.users');
+
+Route::get('/admin/reports', function () {
+    return view('admins.reports');
+})->name('admin.reports');
+
+Route::get('/admin/about', function () {
+    return view('admins.about');
+})->name('admin.about');
+
+Route::get('/admin/settings', function () {
+    return view('admins.settings');
+})->name('admin.settings');
+
+Route::get('/admin/dibutuhkan', function () {
+    return view('admins.dibutuhkan');
+})->name('admin.dibutuhkan');
