@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends((auth()->check() || session('is_user')) ? 'layouts.user' : 'layouts.main')
 
 @section('content')
 <div class="px-6 md:px-12 xl:px-24 max-w-[1400px] mx-auto py-12 flex flex-col md:flex-row gap-10">

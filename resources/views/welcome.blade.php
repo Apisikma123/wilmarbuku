@@ -10,15 +10,17 @@
 </div>
 <div class="relative z-10 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
 <div class="space-y-8">
-<h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight">Transformasi Literasi,<br/>Berdayakan Bangsa</h1>
+<h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight">Belikan Buku,<br/>Bantu Mahasiswa WBI Lulus</h1>
 <p class="text-lg md:text-xl text-white/90 max-w-lg leading-relaxed font-light">
-        Bergabunglah dalam gerakan mencerdaskan kehidupan bangsa melalui donasi buku. Bersama Wilmar Business Indonesia Polytechnic, kita bangun ekosistem wirausaha yang berbasis literasi yang kuat.
+        Pilih buku dari katalog, bayar online, dan buku langsung dikirim ke perpustakaan kampus WBI. Donasi Anda jadi referensi belajar mahasiswa — bukan cuma angka di laporan.
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
-<a href="/login" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-block text-center">
+<a href="/login" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
+          <span class="material-symbols-outlined">volunteer_activism</span>
           Donasi Sekarang
         </a>
-<button class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm">
+<button class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
+          <span class="material-symbols-outlined">library_books</span>
           Pilih Buku Donasi
         </button>
 </div>
@@ -70,10 +72,10 @@
 <h2 class="text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight">Nurturing Entrepreneurs through Literacy</h2>
 <div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
 <p class="">
-                        Kami percaya bahwa literasi adalah fondasi utama dalam membangun jiwa kewirausahaan. Setiap buku yang Anda donasikan tidak hanya menambah koleksi perpustakaan, tetapi juga membuka peluang baru bagi mahasiswa untuk mengeksplorasi ide, strategi, dan inovasi bisnis.
+                        Perpustakaan WBI melayani 3.000+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
                     </p>
 <p class="">
-                        Dengan akses ke sumber daya berkualitas, kita memberdayakan generasi penerus untuk menjadi pemimpin dan inovator masa depan.
+                        Bonus: mahasiswa WBI wajib donasi 1 buku sebagai syarat lulus. Jadi kontribusi Anda juga menginspirasi mereka untuk memberi balik.
                     </p>
 </div>
 </div>
@@ -85,7 +87,7 @@
 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
 <div>
 <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 tracking-tight">Pilihan Buku Donasi</h2>
-<p class="text-lg text-on-surface-variant">Buku-buku terbaru yang siap menginspirasi.</p>
+<p class="text-lg text-on-surface-variant">Sedang dibutuhkan perpustakaan kampus.</p>
 </div>
 <a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group" href="#">
                 Lihat Semua Buku 
@@ -257,8 +259,8 @@
 </div>
 </div>
 <div class="relative z-10">
-<h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Mulai Berdampak Hari Ini</h2>
-<p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Satu buku yang Anda berikan bisa menjadi awal dari seribu ide besar. Mari wujudkan ekosistem literasi yang kuat bersama kami.</p>
+<h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Rak Perpustakaan Masih Kosong</h2>
+<p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.</p>
 <a href="/login" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
                         Donasi Sekarang
                     </a>

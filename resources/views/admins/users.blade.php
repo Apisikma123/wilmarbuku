@@ -78,6 +78,10 @@
             
             <!-- Actions -->
             <div class="flex items-center gap-3">
+                <div class="relative w-48 md:w-64 shrink-0">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" onkeyup="filterTable(this)" placeholder="Search users..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                </div>
                 <button class="flex items-center gap-2 px-3 py-1.5 border border-slate-200 text-slate-600 bg-white rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors">
                     <i data-lucide="filter" class="w-3.5 h-3.5"></i>
                     Filter By Role
@@ -239,3 +243,20 @@
 
 </div>
 @endsection
+
+<script>
+function filterTable(input) {
+    let filter = input.value.toLowerCase();
+    let table = input.closest('div.bg-white').querySelector('table');
+    if(!table) return;
+    let tr = table.getElementsByTagName("tr");
+    for (let i = 1; i < tr.length; i++) { 
+        let txtValue = tr[i].textContent || tr[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+</script>

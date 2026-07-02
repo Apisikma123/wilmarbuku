@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Wilmar Literacy Hub</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: "#003215",
+                        secondary: "#7b5800",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen flex flex-col justify-between">
+    
+    <div class="flex-grow flex items-center justify-center p-6">
+        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.05)] max-w-md w-full relative z-10">
+            <!-- Logo -->
+            <div class="flex justify-center mb-6">
+                <img src="{{ asset('images/wil.png') }}" alt="Wilmar Logo" class="h-12 object-contain">
+            </div>
+            
+            <!-- Headers -->
+            <div class="text-center mb-8">
+                <h1 class="text-xl font-bold text-primary mb-2">Daftar Akun Baru</h1>
+                <p class="text-sm text-gray-500">Buat akun untuk mulai berdonasi buku.</p>
+            </div>
+
+            <!-- Form -->
+            <form action="/dashboard" method="GET" class="space-y-5">
+                @csrf
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
+                        <input type="text" name="nama_lengkap" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">mail</span>
+                        <input type="email" name="email" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email" required>
+                    </div>
+                </div>
+
+                <!-- Tipe Pengguna -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Pengguna</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="tipe_user" value="user_external" class="peer sr-only" checked>
+                            <div class="border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/5 rounded-xl p-3 text-center transition-all hover:border-gray-300">
+                                <span class="material-symbols-outlined text-2xl text-gray-400 peer-checked:text-primary mb-1 block mx-auto">public</span>
+                                <p class="text-xs font-bold text-gray-700">Publik / Umum</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Donatur eksternal</p>
+                            </div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="tipe_user" value="user_internal" class="peer sr-only" id="radio-internal">
+                            <div class="border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/5 rounded-xl p-3 text-center transition-all hover:border-gray-300">
+                                <span class="material-symbols-outlined text-2xl text-gray-400 peer-checked:text-primary mb-1 block mx-auto">school</span>
+                                <p class="text-xs font-bold text-gray-700">Internal Kampus</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Mahasiswa / Dosen</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- NIM/NIDN (Muncul jika Internal) -->
+                <div id="nim-field" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">NIM / NIDN <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">badge</span>
+                        <input type="text" name="identitas_kampus" id="nim-input" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan NIM atau NIDN">
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-1.5">Wajib diisi untuk mahasiswa/dosen sebagai syarat validasi kelulusan.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
+                        <input type="password" name="password" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Buat kata sandi (min 8 karakter)" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Kata Sandi</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
+                        <input type="password" name="password_confirmation" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Ulangi kata sandi" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm mt-2">
+                    <span class="material-symbols-outlined text-lg">how_to_reg</span>
+                    Daftar Sekarang
+                </button>
+            </form>
+
+            <div class="my-6 flex items-center gap-3">
+                <hr class="flex-grow border-gray-200">
+                <span class="text-sm text-gray-500">Atau</span>
+                <hr class="flex-grow border-gray-200">
+            </div>
+
+            <button type="button" class="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-3 shadow-sm">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
+                Daftar dengan Google
+            </button>
+
+            <p class="text-center text-sm text-gray-600 mt-8">
+                Sudah punya akun? <a href="/login" class="text-secondary font-bold hover:underline">Masuk</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#e2e8f0]/60 border-t border-gray-200 py-8 px-6 md:px-12 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="font-bold text-gray-800">
+            &copy; {{ date('Y') }} Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs.
+        </p>
+        <div class="flex items-center gap-6 underline font-medium text-gray-600">
+            <a href="#" class="hover:text-gray-900">Privacy Policy</a>
+            <a href="#" class="hover:text-gray-900">Terms of Service</a>
+            <a href="#" class="hover:text-gray-900">Contact Support</a>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle NIM field based on user type selection
+        const radios = document.querySelectorAll('input[name="tipe_user"]');
+        const nimField = document.getElementById('nim-field');
+        const nimInput = document.getElementById('nim-input');
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === 'user_internal' && radio.checked) {
+                    nimField.classList.remove('hidden');
+                    nimInput.required = true;
+                } else if (radio.value === 'user_external' && radio.checked) {
+                    nimField.classList.add('hidden');
+                    nimInput.required = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

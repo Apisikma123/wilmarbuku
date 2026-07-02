@@ -55,11 +55,11 @@
 
     <!-- Wishlist Detail Table -->
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-6">
-        <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-            <h3 class="text-[11px] font-bold text-slate-900 uppercase tracking-widest">WISHLIST DETAIL</h3>
-            <div class="flex gap-4 text-slate-500">
-                <button class="hover:text-slate-900 transition-colors"><i data-lucide="filter" class="w-4 h-4"></i></button>
-                <button class="hover:text-slate-900 transition-colors"><i data-lucide="download" class="w-4 h-4"></i></button>
+        <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 flex-wrap gap-4">
+            <h3 class="text-lg font-bold text-slate-900">All Books</h3>
+            <div class="relative w-64 shrink-0">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" onkeyup="filterTable(this)" placeholder="Search books..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -185,3 +185,20 @@
 
 </div>
 @endsection
+
+<script>
+function filterTable(input) {
+    let filter = input.value.toLowerCase();
+    let table = input.closest('div.bg-white').querySelector('table');
+    if(!table) return;
+    let tr = table.getElementsByTagName("tr");
+    for (let i = 1; i < tr.length; i++) { 
+        let txtValue = tr[i].textContent || tr[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+</script>
