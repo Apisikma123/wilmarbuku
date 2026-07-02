@@ -47,14 +47,17 @@
             </div>
 
             <!-- Form -->
-            <form action="/dashboard" method="GET" class="space-y-5">
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email atau Username</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                        <input type="text" name="email" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email atau username" required>
+                        <input type="text" name="email" value="{{ old('email') }}" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email atau username" required autofocus>
                     </div>
+                    @error('email')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
@@ -67,7 +70,7 @@
 
                 <div class="flex items-center justify-between text-sm">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
+                        <input type="checkbox" name="remember" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
                         <span class="text-gray-600">Ingat saya</span>
                     </label>
                     <a href="#" class="text-primary font-semibold hover:underline">Lupa Kata Sandi?</a>
@@ -96,7 +99,7 @@
             </a>
 
             <p class="text-center text-sm text-gray-600 mt-8">
-                Belum punya akun? <a href="/register" class="text-secondary font-bold hover:underline">Daftar Sekarang</a>
+                Belum punya akun? <a href="{{ route('register') }}" class="text-secondary font-bold hover:underline">Daftar Sekarang</a>
             </p>
         </div>
     </div>

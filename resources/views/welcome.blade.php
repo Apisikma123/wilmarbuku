@@ -15,14 +15,14 @@
         Pilih buku dari katalog, bayar online, dan buku langsung dikirim ke perpustakaan kampus WBI. Donasi Anda jadi referensi belajar mahasiswa — bukan cuma angka di laporan.
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
-<a href="/login" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
+<a href="{{ route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">volunteer_activism</span>
           Donasi Sekarang
         </a>
-<button class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
+<a href="{{ route('login') }}" class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">library_books</span>
           Pilih Buku Donasi
-        </button>
+        </a>
 </div>
 </div>
 <div class="hidden md:block"></div>
@@ -111,7 +111,7 @@
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Manajemen Strategis</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 150.000</p>
 <div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+<a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
 </div>
 </div>
 <!-- Book 2 -->
@@ -130,7 +130,7 @@
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Dasar Pemrograman</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 125.000</p>
 <div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+<a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
 </div>
 </div>
 <!-- Book 3 -->
@@ -149,7 +149,7 @@
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Senja di Jakarta</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 85.000</p>
 <div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+<a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
 </div>
 </div>
 <!-- Book 4 -->
@@ -168,7 +168,7 @@
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Kisah Sukses Pengusaha Muda</h3>
 <p class="text-primary font-bold text-lg mb-4">Rp 110.000</p>
 <div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+<a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
 </div>
 </div>
 </div>
@@ -241,9 +241,9 @@
 <input class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: DON-2024-892" type="text"/>
 </div>
 </div>
-<button class="w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
+<a href="{{ route('login') }}" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
                         Cek Status
-                    </button>
+                    </a>
 </div>
 </div>
 </div>
@@ -261,7 +261,7 @@
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Rak Perpustakaan Masih Kosong</h2>
 <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.</p>
-<a href="/login" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
+<a href="{{ route('login') }}" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
                         Donasi Sekarang
                     </a>
 </div>

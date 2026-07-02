@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,58 +26,54 @@ Route::get('/donasi', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+});
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Halaman khusus user yang sudah terautentikasi
+    Route::get('/dashboard', function () {
+        session(['is_user' => true]);
+        return view('dashboard');
+    })->name('dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| User Routes (Perlu Login)
-|--------------------------------------------------------------------------
-| Halaman khusus user yang sudah terautentikasi.
-| TODO: Tambahkan middleware('auth') setelah auth system aktif.
-*/
+    Route::get('/cart', function () {
+        return view('cart');
+    })->name('cart');
 
-Route::get('/dashboard', function () {
-    session(['is_user' => true]);
-    return view('dashboard');
-})->name('dashboard');
+    Route::get('/checkout', function () {
+        return view('checkout');
+    })->name('checkout');
 
-Route::get('/cart', function () {
-    return view('cart');
-})->name('cart');
+    Route::get('/transaksi', function () {
+        return view('transaksi');
+    })->name('transaksi');
 
-Route::get('/checkout', function () {
-    return view('checkout');
-})->name('checkout');
+    Route::get('/track', function () {
+        return view('track');
+    })->name('track');
 
-Route::get('/transaksi', function () {
-    return view('transaksi');
-})->name('transaksi');
+    Route::get('/kategori', function () {
+        return view('kategori');
+    })->name('kategori');
 
-Route::get('/track', function () {
-    return view('track');
-})->name('track');
+    Route::get('/akun', function () {
+        return view('akun');
+    })->name('akun');
 
-Route::get('/kategori', function () {
-    return view('kategori');
-})->name('kategori');
+    Route::get('/success', function () {
+        return view('success');
+    })->name('success');
 
-Route::get('/akun', function () {
-    return view('akun');
-})->name('akun');
-
-Route::get('/success', function () {
-    return view('success');
-})->name('success');
-
-Route::get('/buku', function () {
-    return view('buku');
-})->name('buku');
+    Route::get('/buku', function () {
+        return view('buku');
+    })->name('buku');
+});
 
 // Static Pages
 $staticPages = [
