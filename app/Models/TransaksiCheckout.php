@@ -24,6 +24,7 @@ class TransaksiCheckout extends Model
         'midtrans_id',
         'status_pembayaran',
         'status_tracking',
+        'alasan_pembatalan',
         'validasi_lulus',
         'tanggal_checkout',
         'is_read_by_user',

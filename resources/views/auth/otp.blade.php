@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lupa Kata Sandi - WilmarBOOKS</title>
+    <title>Verifikasi OTP - WilmarBOOKS</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -47,12 +47,12 @@
             
             <!-- Headers -->
             <div class="text-center mb-8">
-                <h1 class="text-xl font-bold text-primary mb-2">Lupa Kata Sandi</h1>
-                <p class="text-sm text-gray-500">Masukkan email Anda. Kami akan mengirimkan 6 digit OTP untuk mereset kata sandi Anda.</p>
+                <h1 class="text-xl font-bold text-primary mb-2">Verifikasi Login</h1>
+                <p class="text-sm text-gray-500">Kami telah mengirimkan 6 digit kode OTP ke email Anda.</p>
             </div>
 
             <!-- Form -->
-            <form action="{{ route('password.email') }}" method="POST" class="space-y-5">
+            <form action="{{ route('otp.verify') }}" method="POST" class="space-y-5">
                 @csrf
                 
                 @if($errors->any())
@@ -60,22 +60,58 @@
                     {{ $errors->first() }}
                 </div>
                 @endif
+                
+                @if(session('status'))
+                <div class="bg-green-50 text-green-600 text-sm p-3 rounded-lg border border-green-100">
+                    {{ session('status') }}
+                </div>
+                @endif
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kode OTP (6 Digit)</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">mail</span>
-                        <input type="email" name="email" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email Anda" required autofocus>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">pin</span>
+                        <input type="text" name="otp_code" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm text-center tracking-[0.5em] font-bold text-lg" placeholder="••••••" maxlength="6" required autofocus>
                     </div>
                 </div>
 
                 <div class="pt-4">
                     <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                        <span class="material-symbols-outlined text-lg">send</span>
-                        Kirim OTP
+                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                        Verifikasi OTP
                     </button>
                 </div>
             </form>
+
+            <div class="text-center mt-8 text-sm">
+                <form action="{{ route('otp.resend') }}" method="POST" id="resendForm">
+                    @csrf
+                    <span class="text-gray-600">Belum menerima kode?</span> 
+                    <button type="submit" id="resendButton" class="text-secondary font-bold hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline ml-1" {{ $cooldown > 0 ? 'disabled' : '' }}>
+                        Kirim Ulang OTP <span id="countdownText" class="{{ $cooldown > 0 ? '' : 'hidden' }}">(<span id="timer">{{ $cooldown }}</span>s)</span>
+                    </button>
+                </form>
+            </div>
+            
+            <script>
+                let cooldown = {{ $cooldown }};
+                const resendButton = document.getElementById('resendButton');
+                const countdownText = document.getElementById('countdownText');
+                const timerSpan = document.getElementById('timer');
+
+                if (cooldown > 0) {
+                    const interval = setInterval(() => {
+                        cooldown--;
+                        timerSpan.textContent = cooldown;
+                        
+                        if (cooldown <= 0) {
+                            clearInterval(interval);
+                            resendButton.disabled = false;
+                            countdownText.classList.add('hidden');
+                        }
+                    }, 1000);
+                }
+            </script>
         </div>
     </div>
 

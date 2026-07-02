@@ -31,6 +31,26 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    
+    // Google OAuth Routes
+    Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+    
+    // OTP Routes (Login)
+    Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp.show');
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
+
+    // Forgot Password Routes
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
+    
+    Route::get('/forgot-password/otp', [AuthController::class, 'showForgotOtpForm'])->name('password.otp.show');
+    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->name('password.otp.verify');
+    Route::post('/forgot-password/otp/resend', [AuthController::class, 'resendForgotOtp'])->name('password.otp.resend');
+    
+    Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -83,34 +103,29 @@ foreach ($staticPages as $uri => $view) {
     })->name(str_replace('static.', '', $view));
 }
 
-Route::get('/admin/dashboard', function () {
-    return view('admins.dashboard');
-})->name('admin.dashboard');
+use App\Http\Controllers\AdminController;
 
-Route::get('/admin/catalog', function () {
-    return view('admins.catalog');
-})->name('admin.catalog');
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard/export', [AdminController::class, 'exportDashboardPdf'])->name('admin.dashboard.export');
+    Route::get('/catalog', [AdminController::class, 'catalog'])->name('admin.catalog');
+    Route::post('/catalog/store', [AdminController::class, 'storeBook'])->name('admin.catalog.store');
+    Route::post('/catalog/update/{id}', [AdminController::class, 'updateBook'])->name('admin.catalog.update');
+    Route::post('/catalog/delete/{id}', [AdminController::class, 'destroyBook'])->name('admin.catalog.delete');
 
-Route::get('/admin/transactions', function () {
-    return view('admins.transactions');
-})->name('admin.transactions');
+    Route::get('/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+    Route::post('/transactions/status/{kode_tracking}', [AdminController::class, 'updateTransactionStatus'])->name('admin.transactions.status');
+    Route::post('/transactions/confirm/{kode_tracking}', [AdminController::class, 'confirmTransaction'])->name('admin.transactions.confirm');
+    Route::post('/transactions/cancel/{kode_tracking}', [AdminController::class, 'cancelTransaction'])->name('admin.transactions.cancel');
 
-Route::get('/admin/users', function () {
-    return view('admins.users');
-})->name('admin.users');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::post('/users/role/{id}', [AdminController::class, 'updateUserRole'])->name('admin.users.role');
+    Route::post('/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::post('/users/delete/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.delete');
 
-Route::get('/admin/reports', function () {
-    return view('admins.reports');
-})->name('admin.reports');
-
-Route::get('/admin/support', function () {
-    return view('admins.support');
-})->name('admin.support');
-
-Route::get('/admin/settings', function () {
-    return view('admins.settings');
-})->name('admin.settings');
-
-Route::get('/admin/dibutuhkan', function () {
-    return view('admins.dibutuhkan');
-})->name('admin.dibutuhkan');
+    Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');
+    Route::get('/reports/export', [AdminController::class, 'exportPdf'])->name('admin.reports.export');
+    Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::get('/dibutuhkan', [AdminController::class, 'dibutuhkan'])->name('admin.dibutuhkan');
+});
