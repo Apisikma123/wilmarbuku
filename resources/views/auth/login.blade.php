@@ -47,13 +47,20 @@
             </div>
 
             <!-- Form -->
-            <form action="/dashboard" method="GET" class="space-y-5">
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                 @csrf
+                
+                @if($errors->any())
+                <div class="bg-red-50 text-red-500 text-sm p-3 rounded-lg border border-red-100">
+                    {{ $errors->first() }}
+                </div>
+                @endif
+
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email atau Username</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                        <input type="text" name="email" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email atau username" required>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">email</span>
+                        <input type="email" name="email" value="{{ old('email') }}" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email" required>
                     </div>
                 </div>
 
