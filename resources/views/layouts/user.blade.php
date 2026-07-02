@@ -22,8 +22,14 @@
         div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus { box-shadow: 0 0 0 3px rgba(0, 50, 21, 0.5); }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-background flex flex-col items-center justify-center transition-all duration-700 ease-in-out">
+        <dotlottie-wc src="https://lottie.host/2d5c7c63-ff45-4c14-9996-735ccba19274/c09TN00OAQ.lottie" style="width: 120px; height: 120px;" autoplay loop></dotlottie-wc>
+        <p class="text-primary font-semibold text-xs tracking-[0.2em] mt-2 animate-pulse">MEMUAT</p>
+    </div>
 
     <!-- Main Header -->
     <header class="bg-primary md:bg-white text-white md:text-on-surface shadow-sm relative z-50">
@@ -166,6 +172,28 @@
           }).catch(err => console.log('SW registration failed', err));
         });
       }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.querySelector('button.md\\:hidden');
+            if(btn) {
+                btn.addEventListener('click', () => {
+                    alert('Mobile menu clicked! (Mockup only)');
+                });
+            }
+        });
+
+        // Loading Overlay Logic
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loading-overlay');
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500); 
+                }, 800);
+            }
+        });
     </script>
 </body>
 </html>

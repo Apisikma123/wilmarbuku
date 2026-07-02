@@ -94,11 +94,7 @@
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
 
-                <!-- Search -->
-                <div class="flex-1 max-w-2xl relative hidden md:block">
-                    <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" placeholder="Search resources, users, or reports..." class="w-full bg-slate-100/80 border border-transparent rounded-full py-3 pl-12 pr-6 text-sm focus:border-slate-200 focus:bg-white transition-all outline-none">
-                </div>
+
 
                 <!-- Right items -->
                 <div class="flex items-center gap-5 ml-auto">
