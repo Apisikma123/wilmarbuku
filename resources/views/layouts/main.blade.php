@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Wilmar Literacy Hub</title>
+    <title>WilmarBOOKS</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#003215">
     <link rel="apple-touch-icon" href="/images/wil.png">

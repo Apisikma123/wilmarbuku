@@ -69,15 +69,106 @@
                     <span class="material-symbols-outlined">shopping_cart</span>
                     <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">3</span>
                 </a>
-                <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer group">
-                    <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm">
-                        WS
+                <div class="relative group pt-4 pb-4">
+                    <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
+                        <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm">
+                            WS
+                        </div>
+                        <div>
+                            <p class="text-xs text-on-surface-variant group-hover:text-primary leading-tight transition-colors">Halo,</p>
+                            <p class="text-sm font-bold text-on-surface leading-tight group-hover:text-primary transition-colors">Wira Santoso</p>
+                        </div>
+                    </a>
+
+                    <!-- Hover Dropdown Menu -->
+                    <div class="absolute right-0 top-full w-80 bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
+                        
+                        <!-- User Info Header -->
+                        <div class="bg-primary text-white p-4 rounded-t-2xl relative overflow-hidden">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                            <div class="flex items-center justify-between relative z-10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-2 border-primary-fixed">
+                                        WS
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-base leading-tight">Wira Santoso</h4>
+                                            <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors">edit</span>
+                                        </div>
+                                        <p class="text-xs text-white/80 mt-0.5">Anggota Reguler</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Points & Badges -->
+                            <div class="flex gap-2 mt-4 relative z-10">
+                                <div class="bg-black/20 rounded-full px-3 py-1 flex items-center gap-1.5 backdrop-blur-sm border border-white/10">
+                                    <span class="material-symbols-outlined text-secondary-fixed-dim text-[14px]">stars</span>
+                                    <span class="text-xs font-semibold">1,250 Poin</span>
+                                </div>
+                                <div class="bg-black/20 rounded-full px-3 py-1 flex items-center gap-1.5 backdrop-blur-sm border border-white/10">
+                                    <span class="material-symbols-outlined text-tertiary-fixed text-[14px]">local_activity</span>
+                                    <span class="text-xs font-semibold">3 Kupon</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="p-4 border-b border-outline-variant/20 bg-surface-container-lowest">
+                            <div class="flex justify-between items-center mb-3">
+                                <h5 class="text-sm font-bold text-on-surface">Riwayat Transaksi</h5>
+                                <a href="/transaksi" class="text-xs font-bold text-primary hover:text-primary/80 flex items-center group/link2">Lihat Semua <span class="material-symbols-outlined text-[14px] group-hover/link2:translate-x-1 transition-transform">chevron_right</span></a>
+                            </div>
+                            <div class="flex justify-between items-start text-center">
+                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">pending_actions</span>
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">1</span>
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Menunggu Konfirmasi</span>
+                                </a>
+                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                    <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">local_shipping</span>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Sedang Dikirim</span>
+                                </a>
+                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                    <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">done_all</span>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Selesai</span>
+                                </a>
+                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                    <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">cancel</span>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Dibatalkan</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Menu Links -->
+                        <div class="py-2 bg-surface-container-lowest rounded-b-2xl shadow-[inset_0px_2px_4px_rgba(0,0,0,0.02)]">
+                            <a href="#" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">favorite</span>
+                                <span class="text-sm font-medium">Buku Favorit</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">mail</span>
+                                <span class="text-sm font-medium">Pesan Masuk</span>
+                                <span class="ml-auto bg-error text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+                            </a>
+                            <a href="/track" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">location_on</span>
+                                <span class="text-sm font-medium">Lacak Donasi</span>
+                            </a>
+                            <div class="h-px bg-outline-variant/30 my-1 mx-4"></div>
+                            <a href="/akun" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">settings</span>
+                                <span class="text-sm font-medium">Pengaturan Akun</span>
+                            </a>
+                            <a href="/login" class="flex items-center gap-3 px-5 py-2.5 hover:bg-error-container hover:text-error transition-colors text-on-surface group/link mt-1">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-error text-[20px] transition-colors">logout</span>
+                                <span class="text-sm font-bold">Keluar</span>
+                            </a>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-xs text-on-surface-variant group-hover:text-primary leading-tight">Halo,</p>
-                        <p class="text-sm font-bold text-on-surface leading-tight">Wira Santoso</p>
-                    </div>
-                </a>
+                </div>
             </div>
         </div>
         
