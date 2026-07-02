@@ -15,15 +15,15 @@
                 <div class="h-24 bg-gradient-to-r from-primary to-primary-container"></div>
                 <div class="px-6 pb-6 relative">
                     <div class="w-20 h-20 bg-surface-bright rounded-full border-4 border-white flex items-center justify-center -mt-10 mb-4 shadow-sm relative mx-auto lg:mx-0">
-                        <span class="text-3xl font-bold text-primary">WS</span>
+                        <span class="text-3xl font-bold text-primary uppercase">{{ substr(Auth::user()->nama_lengkap, 0, 2) }}</span>
                         <div class="absolute bottom-0 right-0 w-6 h-6 bg-secondary text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                             <span class="material-symbols-outlined text-[12px]">verified</span>
                         </div>
                     </div>
                     
                     <div class="text-center lg:text-left">
-                        <h2 class="text-xl font-bold text-on-surface mb-1">Wira Santoso</h2>
-                        <p class="text-sm text-on-surface-variant font-medium mb-4">Mahasiswa / Internal Kampus</p>
+                        <h2 class="text-xl font-bold text-on-surface mb-1">{{ Auth::user()->nama_lengkap }}</h2>
+                        <p class="text-sm text-on-surface-variant font-medium mb-4">{{ Auth::user()->role == 'user_internal' ? 'Internal Kampus' : 'Donatur Eksternal' }}</p>
                         
                         <div class="space-y-3 pt-4 border-t border-outline-variant/30">
                             <div class="flex items-center gap-3">
@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="text-left">
                                     <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">NIM / NIDN</p>
-                                    <p class="text-sm font-semibold text-on-surface">202310105</p>
+                                    <p class="text-sm font-semibold text-on-surface">{{ Auth::user()->identitas_kampus ?? '-' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="text-left">
                                     <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Email Akun</p>
-                                    <p class="text-sm font-semibold text-on-surface">wira.santoso@mhs.wbi.ac.id</p>
+                                    <p class="text-sm font-semibold text-on-surface">{{ Auth::user()->email }}</p>
                                 </div>
                             </div>
                         </div>
@@ -85,11 +85,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-xs font-bold text-on-surface-variant mb-2">Nama Lengkap</label>
-                            <input type="text" value="Wira Santoso" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary">
+                            <input type="text" value="{{ Auth::user()->nama_lengkap }}" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-on-surface-variant mb-2">NIM / NIDN (Internal Kampus)</label>
-                            <input type="text" value="202310105" readonly class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-3 px-4 text-sm text-on-surface/70 font-medium cursor-not-allowed">
+                            <input type="text" value="{{ Auth::user()->identitas_kampus ?? '-' }}" readonly class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-3 px-4 text-sm text-on-surface/70 font-medium cursor-not-allowed">
                         </div>
                     </div>
                     

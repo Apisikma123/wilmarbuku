@@ -49,34 +49,34 @@
                 <div class="flex md:hidden items-center gap-4">
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
-                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">3</span>
+                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ session('cart') ? count(session('cart')) : 0 }}</span>
                     </a>
                 </div>
             </div>
             
             <!-- Search Bar -->
             <div class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
-                <div class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none">
+                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none">
                     <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500">search</span>
-                    <input type="text" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
-                    <button class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
-                </div>
+                    <input type="text" name="search" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
+                    <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
+                </form>
             </div>
             
             <!-- User Actions Desktop -->
             <div class="hidden md:flex items-center gap-6 ml-auto">
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">3</span>
+                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ session('cart') ? count(session('cart')) : 0 }}</span>
                 </a>
                 <div class="relative group pt-4 pb-4">
                     <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
-                        <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm">
-                            WS
+                        <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm uppercase">
+                            {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
                         </div>
                         <div>
                             <p class="text-xs text-on-surface-variant group-hover:text-primary leading-tight transition-colors">Halo,</p>
-                            <p class="text-sm font-bold text-on-surface leading-tight group-hover:text-primary transition-colors">Wira Santoso</p>
+                            <p class="text-sm font-bold text-on-surface leading-tight group-hover:text-primary transition-colors">{{ Auth::user()->nama_lengkap }}</p>
                         </div>
                     </a>
 
@@ -88,27 +88,16 @@
                             <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
                             <div class="flex items-center justify-between relative z-10">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-2 border-primary-fixed">
-                                        WS
+                                    <div class="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-2 border-primary-fixed uppercase">
+                                        {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-base leading-tight">Wira Santoso</h4>
+                                            <h4 class="font-bold text-base leading-tight">{{ Auth::user()->nama_lengkap }}</h4>
                                             <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors">edit</span>
                                         </div>
-                                        <p class="text-xs text-white/80 mt-0.5">Anggota Reguler</p>
+                                        <p class="text-xs text-white/80 mt-0.5">{{ Auth::user()->role == 'user_internal' ? 'Internal WBI' : 'Donatur Umum' }}</p>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- Points & Badges -->
-                            <div class="flex gap-2 mt-4 relative z-10">
-                                <div class="bg-black/20 rounded-full px-3 py-1 flex items-center gap-1.5 backdrop-blur-sm border border-white/10">
-                                    <span class="material-symbols-outlined text-secondary-fixed-dim text-[14px]">stars</span>
-                                    <span class="text-xs font-semibold">1,250 Poin</span>
-                                </div>
-                                <div class="bg-black/20 rounded-full px-3 py-1 flex items-center gap-1.5 backdrop-blur-sm border border-white/10">
-                                    <span class="material-symbols-outlined text-tertiary-fixed text-[14px]">local_activity</span>
-                                    <span class="text-xs font-semibold">3 Kupon</span>
                                 </div>
                             </div>
                         </div>
@@ -119,39 +108,67 @@
                                 <h5 class="text-sm font-bold text-on-surface">Riwayat Transaksi</h5>
                                 <a href="/transaksi" class="text-xs font-bold text-primary hover:text-primary/80 flex items-center group/link2">Lihat Semua <span class="material-symbols-outlined text-[14px] group-hover/link2:translate-x-1 transition-transform">chevron_right</span></a>
                             </div>
-                            <div class="flex justify-between items-start text-center">
+                            @php
+                                $unreadTrx = \App\Models\TransaksiCheckout::where('user_id', Auth::id())
+                                    ->where('is_read_by_user', false)
+                                    ->get();
+                                    
+                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Dana Diterima', 'Dipesan Admin'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDikirim = $unreadTrx->where('status_tracking', 'Dikirim ke Perpus')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countSelesai = $unreadTrx->where('status_tracking', 'Masuk Katalog')->count();
+                                $countBatal = $unreadTrx->whereIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                            @endphp
+                            <div class="flex justify-between px-2">
                                 <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
-                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">pending_actions</span>
-                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">1</span>
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">assignment</span>
+                                        @if($countMenunggu > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countMenunggu }}</span>
+                                        @endif
                                     </div>
-                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Menunggu Konfirmasi</span>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Menunggu Konfirmasi</span>
                                 </a>
                                 <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
-                                    <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">local_shipping</span>
-                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Sedang Dikirim</span>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">local_shipping</span>
+                                        @if($countDikirim > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countDikirim }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Sedang Dikirim</span>
                                 </a>
                                 <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
-                                    <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">done_all</span>
-                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Selesai</span>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">done_all</span>
+                                        @if($countSelesai > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countSelesai }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Selesai</span>
                                 </a>
                                 <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
-                                    <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">cancel</span>
-                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16">Dibatalkan</span>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">cancel</span>
+                                        @if($countBatal > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countBatal }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Dibatalkan</span>
                                 </a>
                             </div>
                         </div>
 
                         <!-- Menu Links -->
                         <div class="py-2 bg-surface-container-lowest rounded-b-2xl shadow-[inset_0px_2px_4px_rgba(0,0,0,0.02)]">
-                            <a href="#" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
-                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">favorite</span>
-                                <span class="text-sm font-medium">Buku Favorit</span>
-                            </a>
-                            <a href="#" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                            <a href="/pesan-masuk" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
                                 <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">mail</span>
                                 <span class="text-sm font-medium">Pesan Masuk</span>
-                                <span class="ml-auto bg-error text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+                                @php
+                                    $unread = \App\Models\PesanMasuk::where('user_id', Auth::id())->where('is_read', false)->count();
+                                @endphp
+                                @if($unread > 0)
+                                <span class="ml-auto bg-error text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $unread }}</span>
+                                @endif
                             </a>
                             <a href="/track" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
                                 <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">location_on</span>
@@ -162,10 +179,13 @@
                                 <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">settings</span>
                                 <span class="text-sm font-medium">Pengaturan Akun</span>
                             </a>
-                            <a href="/login" class="flex items-center gap-3 px-5 py-2.5 hover:bg-error-container hover:text-error transition-colors text-on-surface group/link mt-1">
-                                <span class="material-symbols-outlined text-outline group-hover/link:text-error text-[20px] transition-colors">logout</span>
-                                <span class="text-sm font-bold">Keluar</span>
-                            </a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-error-container hover:text-error transition-colors text-on-surface group/link mt-1 text-left">
+                                    <span class="material-symbols-outlined text-outline group-hover/link:text-error text-[20px] transition-colors">logout</span>
+                                    <span class="text-sm font-bold">Keluar</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

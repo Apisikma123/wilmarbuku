@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     session(['is_user' => false]);
-    return view('welcome');
+    return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('home');
 
 Route::get('/donasi', function () {
-    return view('donasi');
+    return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('donasi');
 
 /*
@@ -24,58 +26,38 @@ Route::get('/donasi', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+});
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Halaman khusus user yang sudah terautentikasi
+    Route::get('/dashboard', [App\Http\Controllers\KatalogController::class, 'dashboard'])->name('dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| User Routes (Perlu Login)
-|--------------------------------------------------------------------------
-| Halaman khusus user yang sudah terautentikasi.
-| TODO: Tambahkan middleware('auth') setelah auth system aktif.
-*/
+    Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
+    Route::post('/cart/add/{id}', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
-Route::get('/dashboard', function () {
-    session(['is_user' => true]);
-    return view('dashboard');
-})->name('dashboard');
+    Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
-Route::get('/cart', function () {
-    return view('cart');
-})->name('cart');
+    Route::get('/transaksi', [App\Http\Controllers\TransaksiController::class, 'index'])->name('transaksi');
+    Route::get('/track', [App\Http\Controllers\TransaksiController::class, 'track'])->name('track');
+    Route::get('/kategori', [App\Http\Controllers\KatalogController::class, 'kategori'])->name('kategori');
+    Route::get('/pesan-masuk', [App\Http\Controllers\PesanController::class, 'index'])->name('pesan-masuk');
+    Route::post('/pesan-masuk/read', [App\Http\Controllers\PesanController::class, 'markAsRead'])->name('pesan.read');
 
-Route::get('/checkout', function () {
-    return view('checkout');
-})->name('checkout');
+    Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'index'])->name('akun');
+    Route::get('/success', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
 
-Route::get('/transaksi', function () {
-    return view('transaksi');
-})->name('transaksi');
-
-Route::get('/track', function () {
-    return view('track');
-})->name('track');
-
-Route::get('/kategori', function () {
-    return view('kategori');
-})->name('kategori');
-
-Route::get('/akun', function () {
-    return view('akun');
-})->name('akun');
-
-Route::get('/success', function () {
-    return view('success');
-})->name('success');
-
-Route::get('/buku', function () {
-    return view('buku');
-})->name('buku');
+    Route::get('/buku/{id}', [App\Http\Controllers\KatalogController::class, 'show'])->name('buku.detail');
+});
 
 // Static Pages
 $staticPages = [
@@ -121,9 +103,9 @@ Route::get('/admin/reports', function () {
     return view('admins.reports');
 })->name('admin.reports');
 
-Route::get('/admin/support', function () {
-    return view('admins.support');
-})->name('admin.support');
+Route::get('/admin/about', function () {
+    return view('admins.about');
+})->name('admin.about');
 
 Route::get('/admin/settings', function () {
     return view('admins.settings');

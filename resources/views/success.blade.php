@@ -53,7 +53,7 @@
                 
                 <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">KODE TRACKING ANDA</p>
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <p class="text-3xl font-black text-primary tracking-tight" id="tracking-code">WLH-202607-001</p>
+                    <p class="text-3xl font-black text-primary tracking-tight" id="tracking-code">{{ $transaksi->kode_tracking }}</p>
                     <button class="shrink-0 bg-white border border-outline-variant/50 hover:bg-surface-variant text-on-surface-variant hover:text-primary text-sm font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-sm" onclick="navigator.clipboard.writeText(document.getElementById('tracking-code').innerText); Swal.fire({ title: 'Berhasil!', text: 'Kode Tracking telah disalin ke clipboard.', icon: 'success', confirmButtonText: 'Tutup' })">
                         <span class="material-symbols-outlined text-[18px]">content_copy</span> Salin Kode
                     </button>
@@ -69,20 +69,20 @@
             <!-- Receipt Info -->
             <div class="bg-white rounded-lg p-5 mb-10 border border-outline-variant/40 text-left shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="text-sm font-medium text-on-surface-variant">Donasi Buku</span>
-                    <span class="text-sm font-semibold text-on-surface text-right">Manajemen Modern & Strategi Inovasi</span>
+                    <span class="text-sm font-medium text-on-surface-variant">Item Donasi</span>
+                    <span class="text-sm font-semibold text-on-surface text-right">{{ $detail ? $detail->buku->judul_buku : 'Paket Buku' }}</span>
                 </div>
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-sm font-medium text-on-surface-variant">Total Pembayaran</span>
-                    <span class="text-sm font-bold text-on-surface">Rp 150.000</span>
+                    <span class="text-sm font-bold text-on-surface">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
                     <span class="text-xs font-medium text-on-surface-variant">Metode Pembayaran</span>
-                    <span class="text-xs font-medium text-on-surface">Virtual Account BNI</span>
+                    <span class="text-xs font-medium text-on-surface">Transfer Bank / VA (Menunggu Integrasi)</span>
                 </div>
                 <div class="flex justify-between items-center mt-2">
                     <span class="text-xs font-medium text-on-surface-variant">Waktu Transaksi</span>
-                    <span class="text-xs font-medium text-on-surface">02 Juli 2026, 09:30 WIB</span>
+                    <span class="text-xs font-medium text-on-surface">{{ $transaksi->created_at->format('d M Y, H:i') }} WIB</span>
                 </div>
             </div>
 

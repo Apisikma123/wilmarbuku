@@ -15,14 +15,14 @@
         Pilih buku dari katalog, bayar online, dan buku langsung dikirim ke perpustakaan kampus WBI. Donasi Anda jadi referensi belajar mahasiswa — bukan cuma angka di laporan.
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
-<a href="/login" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
+<a href="{{ route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">volunteer_activism</span>
           Donasi Sekarang
         </a>
-<button class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
+<a href="{{ route('login') }}" class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">library_books</span>
           Pilih Buku Donasi
-        </button>
+        </a>
 </div>
 </div>
 <div class="hidden md:block"></div>
@@ -95,82 +95,35 @@
 </a>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-<!-- Book 1 -->
+@foreach($buku as $item)
 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-[#003215] to-[#004b23] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
+<a href="{{ route('buku.detail', $item->id) }}" class="block">
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br {{ $item->cover_image }} flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
 <div class="flex-grow flex flex-col justify-center items-center text-center space-y-4">
 <span class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
-<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Manajemen<br/>Strategis</h3>
-<div class="w-12 h-[2px] bg-[#fdc34d] mx-auto mt-2 rounded-full"></div>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+<div class="w-12 h-[2px] bg-white/50 mx-auto mt-2 rounded-full"></div>
 </div>
-<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">Prof. Dr. Budi Santoso</div>
-</div>
-<div class="mb-3">
-<span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Bisnis &amp; Manajemen</span>
-</div>
-<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Manajemen Strategis</h3>
-<p class="text-primary font-bold text-lg mb-4">Rp 150.000</p>
-<div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
-</div>
-</div>
-<!-- Book 2 -->
-<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)] relative before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] before:from-blue-500/20 before:to-transparent">
-<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-10">
-<span class="material-symbols-outlined text-4xl text-cyan-300 opacity-80 font-light">terminal</span>
-<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Dasar<br/>Pemrograman</h3>
-<div class="w-12 h-[2px] bg-cyan-400 mx-auto mt-2 rounded-full"></div>
-</div>
-<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-10">Andreas Setiawan</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">{{ $item->pengarang }}</div>
 </div>
 <div class="mb-3">
-<span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Teknologi</span>
+<span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">{{ $item->kategori }}</span>
 </div>
-<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Dasar Pemrograman</h3>
-<p class="text-primary font-bold text-lg mb-4">Rp 125.000</p>
+<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">{{ $item->judul_buku }}</h3>
+<p class="text-primary font-bold text-lg mb-4">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+</a>
 <div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+@if(Auth::check())
+<form action="{{ route('cart.add', $item->id) }}" method="POST">
+    @csrf
+    <button type="submit" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+</form>
+@else
+<a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
+@endif
 </div>
 </div>
-<!-- Book 3 -->
-<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-amber-700 to-orange-950 flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
-<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4">
-<span class="material-symbols-outlined text-4xl opacity-80 font-light">location_city</span>
-<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Senja di<br/>Jakarta</h3>
-<div class="w-12 h-[2px] bg-amber-200 mx-auto mt-2 rounded-full"></div>
-</div>
-<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">Mochtar Lubis</div>
-</div>
-<div class="mb-3">
-<span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Sastra</span>
-</div>
-<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Senja di Jakarta</h3>
-<p class="text-primary font-bold text-lg mb-4">Rp 85.000</p>
-<div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
-</div>
-</div>
-<!-- Book 4 -->
-<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] bg-gradient-to-br from-teal-800 to-[#003128] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
-<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4">
-<span class="material-symbols-outlined text-4xl text-yellow-400 opacity-90 font-light">emoji_events</span>
-<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">Kisah Sukses<br/>Pengusaha Muda</h3>
-<div class="w-12 h-[2px] bg-yellow-400 mx-auto mt-2 rounded-full"></div>
-</div>
-<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase">Ahmad Setiawan &amp; Tim</div>
-</div>
-<div class="mb-3">
-<span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">Motivasi</span>
-</div>
-<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">Kisah Sukses Pengusaha Muda</h3>
-<p class="text-primary font-bold text-lg mb-4">Rp 110.000</p>
-<div class="mt-auto pt-4">
-<button class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
-</div>
-</div>
+@endforeach
 </div>
 </div>
 </section>
@@ -212,16 +165,7 @@
 <p class="text-on-surface-variant leading-relaxed">Dapatkan Kode Tracking untuk memantau status pesanan hingga buku tiba di rak perpustakaan.</p>
 </div>
 </div>
-<!-- Step 4 -->
-<div class="relative flex items-start gap-6">
-<div class="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-on-secondary ring-4 ring-surface shrink-0 z-10 shadow-md">
-<span class="material-symbols-outlined text-lg">workspace_premium</span>
-</div>
-<div class="pt-1">
-<h3 class="text-xl font-bold text-on-surface mb-2">4. E-Sertifikat &amp; Kelulusan</h3>
-<p class="text-on-surface-variant leading-relaxed">Unduh e-sertifikat sebagai bukti donasi atau validasi syarat kelulusan (khusus mahasiswa).</p>
-</div>
-</div>
+
 </div>
 </div>
 <!-- Tracking Utility -->
@@ -241,9 +185,9 @@
 <input class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: DON-2024-892" type="text"/>
 </div>
 </div>
-<button class="w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
+<a href="{{ route('login') }}" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
                         Cek Status
-                    </button>
+                    </a>
 </div>
 </div>
 </div>
@@ -261,7 +205,7 @@
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Rak Perpustakaan Masih Kosong</h2>
 <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.</p>
-<a href="/login" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
+<a href="{{ route('login') }}" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
                         Donasi Sekarang
                     </a>
 </div>
