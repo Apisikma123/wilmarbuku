@@ -14,10 +14,10 @@
                 <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
                 This Month
             </button>
-            <button class="flex items-center gap-2 px-4 py-2 bg-green-900 hover:bg-green-800 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">
+            <a href="{{ route('admin.dashboard.export') }}" class="flex items-center gap-2 px-4 py-2 bg-green-900 hover:bg-green-800 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">
                 <i data-lucide="download" class="w-4 h-4"></i>
                 Export Data
-            </button>
+            </a>
         </div>
     </div>
 
@@ -30,12 +30,12 @@
                     <i data-lucide="hand-coins" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 text-green-700 text-xs font-semibold">
-                    <i data-lucide="trending-up" class="w-3 h-3"></i> +12%
+                    <i data-lucide="trending-up" class="w-3 h-3"></i> Realtime
                 </span>
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-slate-700 transition-colors">Total Donations</p>
-                <h3 class="text-3xl font-bold text-slate-900">Rp 42.850.000</h3>
+                <h3 class="text-3xl font-bold text-slate-900">Rp {{ number_format($totalDonations, 0, ',', '.') }}</h3>
             </div>
         </a>
 
@@ -46,12 +46,12 @@
                     <i data-lucide="book-copy" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-semibold">
-                    ! 14 Urgent
+                    Target Stok
                 </span>
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-amber-700 transition-colors">Books Needed</p>
-                <h3 class="text-3xl font-bold text-slate-900">312</h3>
+                <h3 class="text-3xl font-bold text-slate-900">{{ number_format($booksNeeded) }}</h3>
             </div>
         </a>
 
@@ -67,7 +67,7 @@
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-blue-700 transition-colors">Books In Process</p>
-                <h3 class="text-3xl font-bold text-slate-900">85</h3>
+                <h3 class="text-3xl font-bold text-slate-900">{{ number_format($booksInProcess) }}</h3>
             </div>
         </a>
 
@@ -78,68 +78,57 @@
                     <i data-lucide="users" class="w-5 h-5"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 text-green-700 text-xs font-semibold">
-                    <i data-lucide="trending-up" class="w-3 h-3"></i> +4%
+                    Active Users
                 </span>
             </div>
             <div>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-emerald-700 transition-colors">Total Users</p>
-                <h3 class="text-3xl font-bold text-slate-900">1,240</h3>
+                <h3 class="text-3xl font-bold text-slate-900">{{ number_format($totalUsers) }}</h3>
             </div>
         </a>
     </div>
 
     <!-- Charts & Highlight Section -->
     <div class="mb-6">
-        <!-- Donation Trends Chart (Mocked UI) -->
-        <div class="w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col">
+        <!-- Donation Trends Chart -->
+        <div class="w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col h-[350px]">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-lg font-bold text-slate-900">Donation Trends</h3>
-                <div class="flex items-center gap-2 text-sm text-slate-500">
-                    <span class="w-3 h-3 rounded-full bg-green-900"></span> Total Funds
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-sm text-slate-500">
+                        <span class="w-3 h-3 rounded-full bg-green-900"></span> Total Funds
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-500">
+                        <span class="w-3 h-3 rounded-full bg-amber-500"></span> Books
+                    </div>
                 </div>
             </div>
             
-            <div class="flex-1 flex items-end gap-2 sm:gap-4 lg:gap-8 h-48 mt-auto px-2">
-                <!-- Bar 1 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-blue-100 rounded-t-sm h-[40%] transition-colors group-hover:bg-blue-200"></div>
-                    <span class="text-xs text-slate-400 font-medium">Jan</span>
+            <div class="flex-1 flex items-end gap-2 sm:gap-4 px-2 mt-auto border-b border-slate-200 pb-2 relative">
+                
+                <!-- Grid Lines Background -->
+                <div class="absolute inset-0 flex flex-col justify-between z-0 border-t border-slate-100 pointer-events-none">
+                    <div class="w-full border-b border-slate-100 border-dashed flex-1"></div>
+                    <div class="w-full border-b border-slate-100 border-dashed flex-1"></div>
+                    <div class="w-full border-b border-slate-100 border-dashed flex-1"></div>
+                    <div class="w-full flex-1"></div>
                 </div>
-                <!-- Bar 2 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-green-900 rounded-t-sm h-[60%] transition-opacity group-hover:opacity-90"></div>
-                    <span class="text-xs text-slate-400 font-medium">Feb</span>
+
+                @foreach($chartData as $data)
+                <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
+                    <!-- Funds Bar -->
+                    <div class="w-full max-w-[20px] sm:max-w-[30px] bg-green-900 rounded-t transition-opacity hover:opacity-80 cursor-pointer" 
+                         style="height: {{ $data['funds'] > 0 ? max(10, ($data['funds'] / $maxFunds) * 100) : 10 }}%" 
+                         title="Funds: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
+                         
+                    <!-- Books Bar -->
+                    <div class="w-full max-w-[20px] sm:max-w-[30px] bg-amber-500 rounded-t transition-opacity hover:opacity-80 cursor-pointer" 
+                         style="height: {{ $data['books'] > 0 ? max(10, ($data['books'] / $maxBooks) * 100) : 10 }}%" 
+                         title="Books: {{ $data['books'] }}"></div>
+                    
+                    <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">{{ $data['name'] }}</span>
                 </div>
-                <!-- Bar 3 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-blue-100 rounded-t-sm h-[30%] transition-colors group-hover:bg-blue-200"></div>
-                    <span class="text-xs text-slate-400 font-medium">Mar</span>
-                </div>
-                <!-- Bar 4 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-blue-100 rounded-t-sm h-[45%] transition-colors group-hover:bg-blue-200"></div>
-                    <span class="text-xs text-slate-400 font-medium">Apr</span>
-                </div>
-                <!-- Bar 5 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-green-900 rounded-t-sm h-[70%] transition-opacity group-hover:opacity-90"></div>
-                    <span class="text-xs text-slate-400 font-medium">May</span>
-                </div>
-                <!-- Bar 6 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-blue-100 rounded-t-sm h-[50%] transition-colors group-hover:bg-blue-200"></div>
-                    <span class="text-xs text-slate-400 font-medium">Jun</span>
-                </div>
-                <!-- Bar 7 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-green-900 rounded-t-sm h-[85%] transition-opacity group-hover:opacity-90"></div>
-                    <span class="text-xs text-slate-400 font-medium">Jul</span>
-                </div>
-                <!-- Bar 8 -->
-                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div class="w-full bg-blue-100 rounded-t-sm h-[40%] transition-colors group-hover:bg-blue-200"></div>
-                    <span class="text-xs text-slate-400 font-medium">Aug</span>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -169,105 +158,43 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    <!-- Row 1 -->
+                    @forelse($recentTransactions as $trx)
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">WLH-202310-001</td>
+                        <td class="px-6 py-4 font-bold text-slate-900">#{{ $trx->kode_tracking }}</td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-xs shrink-0">AS</div>
+                                <div class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-xs shrink-0">
+                                    {{ strtoupper(substr($trx->user->nama_lengkap ?? 'US', 0, 2)) }}
+                                </div>
                                 <div>
-                                    <div class="font-bold text-slate-900">Alice Smith</div>
-                                    <div class="text-xs text-slate-500">asmith@example.com</div>
+                                    <div class="font-bold text-slate-900">{{ $trx->user->nama_lengkap ?? 'User' }}</div>
+                                    <div class="text-xs text-slate-500">{{ $trx->user->email ?? '-' }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-slate-600 font-medium">Manajemen Modern & Strategi</td>
-                        <td class="px-6 py-4 text-slate-600">24 Okt 2024</td>
-                        <td class="px-6 py-4 font-bold text-slate-900">Rp 150.000</td>
+                        <td class="px-6 py-4 text-slate-600 font-medium">
+                            {{ $trx->details->first()->buku->judul_buku ?? 'Buku Donasi' }}
+                            @if($trx->details->count() > 1)
+                            <span class="text-xs text-slate-400">(+{{ $trx->details->count() - 1 }} lainnya)</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-slate-600">{{ $trx->tanggal_checkout ? \Carbon\Carbon::parse($trx->tanggal_checkout)->format('d M Y') : $trx->created_at->format('d M Y') }}</td>
+                        <td class="px-6 py-4 font-bold text-slate-900">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                         <td class="px-6 py-4">
+                            @if($trx->status_tracking == 'Selesai')
                             <span class="inline-flex px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide">Selesai</span>
+                            @elseif($trx->status_tracking == 'Dalam Pengiriman')
+                            <span class="inline-flex px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wide">Pengiriman</span>
+                            @else
+                            <span class="inline-flex px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wide">{{ $trx->status_tracking }}</span>
+                            @endif
                         </td>
                     </tr>
-                    
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">WLH-202310-002</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs shrink-0">RJ</div>
-                                <div>
-                                    <div class="font-bold text-slate-900">Robert Jones</div>
-                                    <div class="text-xs text-slate-500">rjones@hub.org</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-600 font-medium">Senja di Jakarta Klasik</td>
-                        <td class="px-6 py-4 text-slate-600">23 Okt 2024</td>
-                        <td class="px-6 py-4 font-bold text-slate-900">Rp 85.000</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wide">Diproses</span>
-                        </td>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-slate-400">Belum ada transaksi terkini.</td>
                     </tr>
-
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">WLH-202310-003</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">EL</div>
-                                <div>
-                                    <div class="font-bold text-slate-900">Elena Lopez</div>
-                                    <div class="text-xs text-slate-500">elena@school.edu</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-600 font-medium">Pengantar Kecerdasan Buatan</td>
-                        <td class="px-6 py-4 text-slate-600">22 Okt 2024</td>
-                        <td class="px-6 py-4 font-bold text-slate-900">Rp 125.000</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wide">Pending</span>
-                        </td>
-                    </tr>
-
-                    <!-- Row 4 -->
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">WLH-202310-004</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs shrink-0">MK</div>
-                                <div>
-                                    <div class="font-bold text-slate-900">Michael Kim</div>
-                                    <div class="text-xs text-slate-500">mkim@nonprofit.org</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-600 font-medium">Dasar Kewirausahaan Berkelanjutan</td>
-                        <td class="px-6 py-4 text-slate-600">21 Okt 2024</td>
-                        <td class="px-6 py-4 font-bold text-slate-900">Rp 95.000</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide">Selesai</span>
-                        </td>
-                    </tr>
-
-                    <!-- Row 5 -->
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">WLH-202310-005</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0">SW</div>
-                                <div>
-                                    <div class="font-bold text-slate-900">Sarah White</div>
-                                    <div class="text-xs text-slate-500">swhite@donor.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-600 font-medium">Start-Up Playbook</td>
-                        <td class="px-6 py-4 text-slate-600">20 Okt 2024</td>
-                        <td class="px-6 py-4 font-bold text-slate-900">Rp 200.000</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold uppercase tracking-wide">Dibatalkan</span>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

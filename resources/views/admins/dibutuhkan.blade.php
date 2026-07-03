@@ -13,14 +13,39 @@
         </div>
     </div>
     
-    <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
-        <div class="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-5 border border-amber-100 shadow-sm">
-            <i data-lucide="alert-circle" class="w-10 h-10 text-amber-500"></i>
+    <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900">Total {{ $books->count() }} Judul Buku Dibutuhkan</h3>
+            <span class="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-full">Prioritas Tinggi</span>
         </div>
-        <h3 class="text-xl font-bold text-slate-900 mb-2">Halaman Dibutuhkan Segera</h3>
-        <p class="text-slate-500 max-w-md mx-auto">
-            Di sini Anda dapat melihat daftar buku yang sangat dibutuhkan. Saat ini terdapat <strong>18 Judul</strong> buku yang masuk dalam kategori prioritas ini.
-        </p>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4 font-bold">Judul Buku</th>
+                        <th class="px-6 py-4 font-bold">Pengarang</th>
+                        <th class="px-6 py-4 font-bold">Kategori</th>
+                        <th class="px-6 py-4 font-bold text-center">Target Stok</th>
+                        <th class="px-6 py-4 font-bold text-right">Harga Estimasi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($books as $b)
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-slate-900">{{ $b->judul_buku }}</td>
+                        <td class="px-6 py-4 text-slate-600">{{ $b->pengarang }}</td>
+                        <td class="px-6 py-4"><span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-full text-xs font-medium">{{ $b->kategori }}</span></td>
+                        <td class="px-6 py-4 text-center font-bold text-amber-600">{{ $b->stok_dibutuhkan }} eksemplar</td>
+                        <td class="px-6 py-4 font-bold text-slate-900 text-right">Rp {{ number_format($b->harga_estimasi, 0, ',', '.') }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">Saat ini belum ada buku yang dibutuhkan segera.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 @endsection

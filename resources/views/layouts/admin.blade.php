@@ -99,20 +99,23 @@
                 <!-- Right items -->
                 <div class="flex items-center gap-5 ml-auto">
                     
-                    <!-- Logout Button -->
-                    <a href="{{ route('login') }}" class="w-10 h-10 shrink-0 rounded-full border border-slate-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-100 hover:text-red-700 flex items-center justify-center transition-colors shadow-sm" title="Logout">
-                        <i data-lucide="log-out" class="w-4 h-4"></i>
-                    </a>
+                    <!-- Logout Button Form -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-10 h-10 shrink-0 rounded-full border border-slate-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-100 hover:text-red-700 flex items-center justify-center transition-colors shadow-sm" title="Logout">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                        </button>
+                    </form>
 
                     <!-- Profile Pill & Dropdown -->
                     <a href="{{ route('admin.settings') }}" class="group relative block">
                         <!-- Pill -->
                         <div class="flex items-center gap-3 cursor-pointer bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full p-1.5 pr-5 transition-colors">
                             <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden shrink-0">
-                                <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="Admin" class="w-full h-full object-cover">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama_lengkap ?? 'Admin') }}&background=0D8ABC&color=fff" alt="Admin" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
-                                <span class="text-[13px] font-bold text-slate-700 leading-tight">Admin</span>
+                                <span class="text-[13px] font-bold text-slate-700 leading-tight">{{ auth()->user()->nama_lengkap ?? 'Admin' }}</span>
                                 <span class="text-[10px] font-medium text-slate-400 leading-tight">Administrator</span>
                             </div>
                             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 ml-1 transition-transform group-hover:rotate-180"></i>
@@ -122,11 +125,11 @@
                         <div class="absolute top-full right-0 mt-3 w-64 bg-white border border-slate-200 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 flex flex-col overflow-hidden translate-y-2 group-hover:translate-y-0">
                             <div class="p-5 flex flex-col items-center text-center">
                                 <div class="w-16 h-16 rounded-full bg-slate-200 overflow-hidden mb-3 border-4 border-slate-50 shadow-sm">
-                                    <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="Admin" class="w-full h-full object-cover">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama_lengkap ?? 'Admin') }}&background=0D8ABC&color=fff" alt="Admin" class="w-full h-full object-cover">
                                 </div>
-                                <h4 class="font-bold text-slate-900 text-lg leading-tight">Admin</h4>
-                                <p class="text-sm text-slate-500 mb-3">admin@wilmar.ac.id</p>
-                                <span class="inline-flex px-3 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase tracking-widest rounded-full">Super Administrator</span>
+                                <h4 class="font-bold text-slate-900 text-lg leading-tight">{{ auth()->user()->nama_lengkap ?? 'Admin' }}</h4>
+                                <p class="text-sm text-slate-500 mb-3">{{ auth()->user()->email ?? 'admin@wilmar.com' }}</p>
+                                <span class="inline-flex px-3 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase tracking-widest rounded-full">Administrator</span>
                             </div>
                         </div>
                     </a>

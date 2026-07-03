@@ -42,18 +42,25 @@
             
             <!-- Headers -->
             <div class="text-center mb-8">
-                <h1 class="text-xl font-bold text-primary mb-2">Masuk ke Wilmar Literacy Hub</h1>
+                <h1 class="text-xl font-bold text-primary mb-2">Masuk ke WilmarBOOKS</h1>
                 <p class="text-sm text-gray-500">Silakan masuk dengan akun institusi Anda.</p>
             </div>
 
             <!-- Form -->
-            <form action="/dashboard" method="GET" class="space-y-5">
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                 @csrf
+                
+                @if($errors->any())
+                <div class="bg-red-50 text-red-500 text-sm p-3 rounded-lg border border-red-100">
+                    {{ $errors->first() }}
+                </div>
+                @endif
+
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email atau Username</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                        <input type="text" name="email" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email atau username" required>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">email</span>
+                        <input type="email" name="email" value="{{ old('email') }}" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan email" required>
                     </div>
                 </div>
 
@@ -67,10 +74,10 @@
 
                 <div class="flex items-center justify-between text-sm">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
+                        <input type="checkbox" name="remember" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
                         <span class="text-gray-600">Ingat saya</span>
                     </label>
-                    <a href="#" class="text-primary font-semibold hover:underline">Lupa Kata Sandi?</a>
+                    <a href="{{ route('password.request') }}" class="text-primary font-semibold hover:underline">Lupa Kata Sandi?</a>
                 </div>
 
                 <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm mt-2">
@@ -85,15 +92,12 @@
                 <hr class="flex-grow border-gray-200">
             </div>
 
-            <button type="button" class="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-3 shadow-sm">
+            <a href="{{ route('auth.google') }}" class="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-3 shadow-sm">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
                 Masuk dengan Google
-            </button>
-            
-            <a href="{{ route('admin.dashboard') }}" class="w-full mt-3 bg-slate-800 border border-slate-800 text-white font-medium py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center justify-center gap-3 shadow-sm">
-                <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
-                Masuk sebagai Admin (Demo)
             </a>
+            
+
 
             <p class="text-center text-sm text-gray-600 mt-8">
                 Belum punya akun? <a href="/register" class="text-secondary font-bold hover:underline">Daftar Sekarang</a>

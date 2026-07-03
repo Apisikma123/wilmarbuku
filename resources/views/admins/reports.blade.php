@@ -19,10 +19,10 @@
                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
             </div>
             
-            <button class="flex items-center gap-2 px-5 py-2 bg-green-900 hover:bg-green-800 text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
+            <a href="{{ route('admin.reports.export') }}" class="flex items-center gap-2 px-5 py-2 bg-green-900 hover:bg-green-800 text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
                 <i data-lucide="download" class="w-4 h-4"></i>
                 Export Report
-            </button>
+            </a>
         </div>
     </div>
 
@@ -33,10 +33,10 @@
                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                     <i data-lucide="trending-up" class="w-5 h-5"></i>
                 </div>
-                <span class="inline-flex px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-md">+15.2%</span>
+                <span class="inline-flex px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-md">Realtime</span>
             </div>
             <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Transactions (IDR)</p>
-            <h3 class="text-3xl font-bold text-slate-900">Rp 124.5M</h3>
+            <h3 class="text-3xl font-bold text-slate-900">Rp {{ number_format($totalDonations, 0, ',', '.') }}</h3>
         </div>
         
         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col">
@@ -44,21 +44,21 @@
                 <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                 </div>
-                <span class="inline-flex px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-md">+8.4%</span>
+                <span class="inline-flex px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-md">Checkout</span>
             </div>
-            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Books Distributed</p>
-            <h3 class="text-3xl font-bold text-slate-900">3,420</h3>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Transaksi</p>
+            <h3 class="text-3xl font-bold text-slate-900">{{ number_format($totalTransactions) }}</h3>
         </div>
 
         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
-                    <i data-lucide="users" class="w-5 h-5"></i>
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
                 </div>
-                <span class="inline-flex px-2 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-md">Stable</span>
+                <span class="inline-flex px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-md">Selesai</span>
             </div>
-            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Active Users</p>
-            <h3 class="text-3xl font-bold text-slate-900">1,284</h3>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Transaksi Selesai</p>
+            <h3 class="text-3xl font-bold text-slate-900">{{ number_format($completedTransactions) }}</h3>
         </div>
     </div>
 
@@ -90,140 +90,25 @@
                 <div class="w-full flex-1"></div>
             </div>
 
-            <!-- Month 1 -->
+            @foreach($chartData as $data)
             <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[40%] transition-opacity hover:opacity-80 cursor-pointer" title="Funds: High"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[30%] transition-opacity hover:opacity-80 cursor-pointer" title="Books: Medium"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Jan</span>
+                <!-- Funds Bar -->
+                <div class="w-full max-w-[20px] bg-green-900 rounded-t transition-opacity hover:opacity-80 cursor-pointer" 
+                     style="height: {{ $data['funds'] > 0 ? max(10, ($data['funds'] / $maxFunds) * 100) : 10 }}%" 
+                     title="Funds: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
+                
+                <!-- Books Bar -->
+                <div class="w-full max-w-[20px] bg-amber-500 rounded-t transition-opacity hover:opacity-80 cursor-pointer" 
+                     style="height: {{ $data['books'] > 0 ? max(10, ($data['books'] / $maxBooks) * 100) : 10 }}%" 
+                     title="Books: {{ $data['books'] }}"></div>
+                
+                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">{{ $data['name'] }}</span>
             </div>
-            
-            <!-- Month 2 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[55%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[45%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Feb</span>
-            </div>
-
-            <!-- Month 3 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[35%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[25%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Mar</span>
-            </div>
-
-            <!-- Month 4 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[65%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[60%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Apr</span>
-            </div>
-
-            <!-- Month 5 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[80%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[40%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">May</span>
-            </div>
-
-            <!-- Month 6 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[50%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[70%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Jun</span>
-            </div>
-
-            <!-- Month 7 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-green-900 rounded-t h-[90%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <div class="w-full max-w-[20px] bg-amber-500 rounded-t h-[85%] transition-opacity hover:opacity-80 cursor-pointer"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-900 uppercase">Jul</span>
-            </div>
-
-            <!-- Month 8 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Aug</span>
-            </div>
-
-            <!-- Month 9 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Sep</span>
-            </div>
-
-            <!-- Month 10 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full hidden md:flex">
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Oct</span>
-            </div>
-
-            <!-- Month 11 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full hidden md:flex">
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Nov</span>
-            </div>
-
-            <!-- Month 12 -->
-            <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full hidden md:flex">
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <div class="w-full max-w-[20px] bg-slate-200 rounded-t h-[10%]"></div>
-                <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">Dec</span>
-            </div>
+            @endforeach
 
         </div>
     </div>
 
-    <!-- Generated Reports List -->
-    <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mt-8">
-        <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center flex-wrap gap-4">
-            <h3 class="text-lg font-bold text-slate-900">Previously Exported Reports</h3>
-            <div class="relative w-64 shrink-0">
-                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" onkeyup="filterTable(this)" placeholder="Search reports..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
-            </div>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm whitespace-nowrap">
-                <thead class="text-[10px] text-slate-500 font-black uppercase tracking-widest bg-white border-b border-slate-200">
-                    <tr>
-                        <th class="px-6 py-4">Report Name</th>
-                        <th class="px-6 py-4">Generated By</th>
-                        <th class="px-6 py-4">Date</th>
-                        <th class="px-6 py-4 text-center">Format</th>
-                        <th class="px-6 py-4 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">Q2 2024 Performance Overview</td>
-                        <td class="px-6 py-4 text-slate-600">Bambang Sugiharto</td>
-                        <td class="px-6 py-4 text-slate-600">July 1, 2024</td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-flex px-2 py-1 bg-red-100 text-red-700 font-bold text-[10px] uppercase rounded">PDF</span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <button class="text-green-700 hover:text-green-900 font-semibold text-sm">Download</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-900">User Growth & Activity - June</td>
-                        <td class="px-6 py-4 text-slate-600">Siti Aminah</td>
-                        <td class="px-6 py-4 text-slate-600">June 30, 2024</td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-flex px-2 py-1 bg-emerald-100 text-emerald-700 font-bold text-[10px] uppercase rounded">CSV</span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <button class="text-green-700 hover:text-green-900 font-semibold text-sm">Download</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 @endsection
 
