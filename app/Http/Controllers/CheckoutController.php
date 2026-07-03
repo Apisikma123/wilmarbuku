@@ -76,6 +76,47 @@ class CheckoutController extends Controller
 
         session()->forget('cart');
 
+        return redirect()->route('payment')->with('kode_tracking', $kode_tracking);
+    }
+
+    public function payment(Request $request)
+    {
+        $kode_tracking = session('kode_tracking') ?? $request->input('kode');
+        
+        if (!$kode_tracking) {
+            $transaksi = TransaksiCheckout::where('user_id', auth()->id())->where('status_pembayaran', 'Unpaid')->latest()->first();
+        } else {
+            $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->first();
+        }
+
+        if (!$transaksi) {
+            return redirect()->route('dashboard');
+        }
+        
+        if ($transaksi->bukti_pembayaran) {
+            return redirect()->route('success')->with('kode_tracking', $kode_tracking);
+        }
+
+        return view('payment', compact('transaksi'));
+    }
+
+    public function uploadProof(Request $request)
+    {
+        $kode_tracking = $request->input('kode_tracking');
+        $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
+
+        $request->validate([
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        if ($request->hasFile('bukti_pembayaran')) {
+            $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+            $transaksi->update([
+                'bukti_pembayaran' => '/storage/' . $path,
+                'status_tracking' => 'Menunggu Konfirmasi'
+            ]);
+        }
+
         return redirect()->route('success')->with('kode_tracking', $kode_tracking);
     }
 
@@ -93,22 +134,6 @@ class CheckoutController extends Controller
             return redirect()->route('dashboard');
         }
 
-        // Simulate successful payment if it's unpaid
-        if ($transaksi->status_pembayaran == 'Unpaid') {
-            $transaksi->update([
-                'status_pembayaran' => 'Paid',
-                'status_tracking' => 'Dana Diterima',
-                'is_read_by_user' => false // Trigger notification
-            ]);
-
-            \App\Models\PesanMasuk::create([
-                'user_id' => $transaksi->user_id,
-                'judul' => 'Pembayaran Berhasil',
-                'isi_pesan' => "Pembayaran untuk {$transaksi->kode_tracking} telah diterima. Menunggu verifikasi Admin.",
-                'jenis' => 'pembayaran',
-                'is_read' => false,
-            ]);
-        }
 
         $detail = TransaksiDetail::with('buku')->where('kode_tracking', $transaksi->kode_tracking)->first();
 

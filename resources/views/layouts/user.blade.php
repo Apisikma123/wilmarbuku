@@ -201,12 +201,12 @@
                 <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors">
                     <span class="material-symbols-outlined text-lg">grid_view</span> Kategori
                 </a>
-                <a href="/kategori?filter=terbaru" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
+                <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
                 <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                <a href="/kategori?filter=event" class="hover:text-primary transition-colors whitespace-nowrap">Event Literasi</a>
-                <a href="/kategori?filter=koleksi" class="hover:text-primary transition-colors whitespace-nowrap">Koleksi WBI</a>
-                <a href="/kategori?filter=startup" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
-                <a href="/kategori?filter=pertanian" class="hover:text-primary transition-colors whitespace-nowrap">Pertanian Modern</a>
+                <a href="/kategori?kategori[]=Sosial+%26+Budaya" class="hover:text-primary transition-colors whitespace-nowrap">Sosial & Budaya</a>
+                <a href="/kategori?kategori[]=Fiksi+%26+Sastra" class="hover:text-primary transition-colors whitespace-nowrap">Fiksi & Sastra</a>
+                <a href="/kategori?kategori[]=Ekonomi+%26+Bisnis" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
+                <a href="/kategori?kategori[]=Sains+%26+Matematika" class="hover:text-primary transition-colors whitespace-nowrap">Sains & Matematika</a>
             </div>
         </div>
     </header>

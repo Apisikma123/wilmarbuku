@@ -138,6 +138,8 @@
                         <td class="px-6 py-5 text-center">
                             @if($trx->status_pembayaran == 'Paid')
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Lunas</span>
+                            @elseif($trx->bukti_pembayaran)
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 whitespace-nowrap">Menunggu Konfirmasi</span>
                             @else
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Belum Dibayar</span>
                             @endif
@@ -157,18 +159,6 @@
                         </td>
                         <td class="px-6 py-5 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                @if($trx->status_tracking == 'Menunggu Konfirmasi' || $trx->status_tracking == 'Menunggu Pembayaran')
-                                <!-- Tombol Konfirmasi -->
-                                <button onclick='openConfirmModal({{ json_encode($trx) }})' class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1">
-                                    <i data-lucide="check" class="w-3.5 h-3.5"></i> Konfirmasi
-                                </button>
-                                
-                                <!-- Tombol Batalkan -->
-                                <button onclick='openCancelModal({{ json_encode($trx) }})' class="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
-                                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Batalkan
-                                </button>
-                                @endif
-
                                 <!-- Ubah Status Manual & Kirim Pesan -->
                                 @if($trx->status_tracking != 'Selesai')
                                 <button onclick='openStatusModal({{ json_encode($trx) }})' class="px-3 py-1.5 border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1" title="Update Pesanan">
@@ -197,76 +187,29 @@
     </div>
 </div>
 
-<!-- Modal Konfirmasi Pesanan -->
-<div id="confirmModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i>
-                Konfirmasi Pesanan
-            </h3>
-            <button onclick="closeConfirmModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-
-        <form id="confirmForm" method="POST" class="space-y-4">
-            @csrf
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                <p class="text-xs text-slate-600">Pesanan akan diubah statusnya menjadi <strong class="text-emerald-700">"Dalam Pengiriman"</strong> dan pembayaran ditandai sebagai <strong class="text-emerald-700">Lunas</strong>.</p>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pesan Tambahan ke Inbox Donatur (Opsional)</label>
-                <textarea name="pesan_admin" rows="3" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Pesanan Anda #... telah kami terima dan dalam proses pengiriman. Terima kasih atas bantuan donasi Anda!"></textarea>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeConfirmModal()" class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-50">Batal</button>
-                <button type="submit" class="px-5 py-2.5 bg-emerald-600 text-white rounded-lg text-sm font-bold hover:bg-emerald-700 shadow-sm">Ya, Konfirmasi Pesanan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal Pembatalan Pesanan -->
-<div id="cancelModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <i data-lucide="x-circle" class="w-6 h-6 text-red-600"></i>
-                Batalkan Pesanan
-            </h3>
-            <button onclick="closeCancelModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-
-        <form id="cancelForm" method="POST" class="space-y-4">
-            @csrf
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Alasan Pembatalan *</label>
-                <textarea name="alasan_pembatalan" required rows="3" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="Contoh: Stok buku di penyedia habis / Pembayaran tidak dapat diverifikasi..."></textarea>
-                <p class="text-[11px] text-slate-400 mt-1">Alasan ini akan otomatis dikirimkan ke kotak masuk (Inbox) donatur.</p>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeCancelModal()" class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-50">Batal</button>
-                <button type="submit" class="px-5 py-2.5 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 shadow-sm">Batalkan Pesanan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <!-- Modal Update Status Manual & Kirim Pesan -->
 <div id="statusModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
         <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
             <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="refresh-cw" class="w-6 h-6 text-green-900"></i>
-                Update Status & Kirim Pesan
+                Update Pesanan
             </h3>
             <button onclick="closeStatusModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
         <form id="statusForm" method="POST" class="space-y-4">
             @csrf
+            
+            <div id="buktiPembayaranContainerStatus" class="hidden mb-4">
+                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Bukti Pembayaran Donatur</label>
+                <a id="buktiPembayaranLinkStatus" href="#" target="_blank" class="block group relative rounded-lg border border-slate-200 overflow-hidden bg-slate-50">
+                    <img id="buktiPembayaranImgStatus" src="" alt="Bukti Pembayaran" class="w-full h-auto max-h-60 object-contain group-hover:opacity-80 transition-opacity">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="bg-black/70 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Buka Penuh</span>
+                    </div>
+                </a>
+            </div>
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pilih Status Baru *</label>
                 <select id="modal_status_tracking" name="status_tracking" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 bg-white">
@@ -294,27 +237,18 @@
 @endsection
 
 <script>
-function openConfirmModal(trx) {
-    document.getElementById('confirmForm').action = "/admin/transactions/confirm/" + trx.kode_tracking;
-    document.getElementById('confirmModal').classList.remove('hidden');
-}
-
-function closeConfirmModal() {
-    document.getElementById('confirmModal').classList.add('hidden');
-}
-
-function openCancelModal(trx) {
-    document.getElementById('cancelForm').action = "/admin/transactions/cancel/" + trx.kode_tracking;
-    document.getElementById('cancelModal').classList.remove('hidden');
-}
-
-function closeCancelModal() {
-    document.getElementById('cancelModal').classList.add('hidden');
-}
-
 function openStatusModal(trx) {
     document.getElementById('statusForm').action = "/admin/transactions/status/" + trx.kode_tracking;
     document.getElementById('modal_status_tracking').value = trx.status_tracking || 'Menunggu Konfirmasi';
+    
+    if (trx.bukti_pembayaran) {
+        document.getElementById('buktiPembayaranImgStatus').src = trx.bukti_pembayaran;
+        document.getElementById('buktiPembayaranLinkStatus').href = trx.bukti_pembayaran;
+        document.getElementById('buktiPembayaranContainerStatus').classList.remove('hidden');
+    } else {
+        document.getElementById('buktiPembayaranContainerStatus').classList.add('hidden');
+    }
+    
     document.getElementById('statusModal').classList.remove('hidden');
 }
 

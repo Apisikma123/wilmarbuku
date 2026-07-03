@@ -51,7 +51,7 @@
                             @endif
                         </div>
                         <p class="text-sm {{ $p->is_read ? 'text-on-surface-variant/80' : 'text-on-surface-variant' }} leading-relaxed">
-                            {{ $p->isi_pesan }}
+                            {!! $p->isi_pesan !!}
                         </p>
                     </div>
                 </div>

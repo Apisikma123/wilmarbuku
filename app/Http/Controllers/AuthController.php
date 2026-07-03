@@ -30,6 +30,25 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
+            \Illuminate\Support\Facades\Log::info('Login attempt', [
+                'user_id' => $user->id,
+                'has_trusted_cookie' => $request->hasCookie('trusted_device_user_' . $user->id),
+                'all_cookies' => $request->cookies->all(),
+                'remember_input' => $request->has('remember'),
+                'remember_value' => $request->input('remember')
+            ]);
+
+            // Jika memilih Ingat Saya sebelumnya dan ada cookie, langsung login
+            if ($request->cookie('trusted_device_user_' . $user->id) === '1') {
+                Auth::login($user, $request->has('remember'));
+                $request->session()->regenerate();
+                
+                if ($user->role === 'admin') {
+                    return redirect()->intended(route('admin.dashboard', absolute: false));
+                }
+                return redirect()->intended('dashboard');
+            }
+
             // Generate 6-digit OTP
             $otpCode = (string) mt_rand(100000, 999999);
             
@@ -44,6 +63,7 @@ class AuthController extends Controller
             // Store user id and timestamp in session temporarily
             $request->session()->put('otp_user_id', $user->id);
             $request->session()->put('last_otp_sent_at', now()->timestamp);
+            $request->session()->put('remember_me', $request->has('remember'));
 
             return redirect()->route('otp.show');
         }
@@ -120,15 +140,21 @@ class AuthController extends Controller
             'otp_expires_at' => null,
         ]);
 
-        Auth::login($user, $request->session()->get('remember', false));
-        $request->session()->forget('otp_user_id');
+        $remember = $request->session()->get('remember_me', false);
+        Auth::login($user, $remember);
+        
+        $request->session()->forget(['otp_user_id', 'last_otp_sent_at', 'remember_me']);
         $request->session()->regenerate();
 
-        if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+        $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
+        $response = redirect()->intended($redirectUrl);
+
+        // Jika user memilih Ingat Saya, simpan cookie trusted device selama 30 hari
+        if ($remember) {
+            \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
         }
-        
-        return redirect()->intended('dashboard');
+
+        return $response;
     }
 
     public function showRegister()

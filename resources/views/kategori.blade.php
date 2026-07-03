@@ -36,12 +36,23 @@
                     <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">KATEGORI</h3>
                     <div class="space-y-3">
                         @php
-                            $dbCategories = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
+                            $allCategories = [];
+                            foreach($dbCategoriesStr as $catStr) {
+                                if($catStr) {
+                                    $parts = array_map('trim', explode(',', $catStr));
+                                    $allCategories = array_merge($allCategories, $parts);
+                                }
+                            }
+                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                            $dbCategories = array_unique(array_merge($baseCats, $allCategories));
+                            sort($dbCategories);
+                            
                             $selectedCategories = request('kategori', []);
                         @endphp
                         @foreach($dbCategories as $cat)
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" onchange="document.getElementById('filterForm').submit()" @if(in_array($cat, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" @if(in_array($cat, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
                             <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">{{ $cat }}</span>
                         </label>
                         @endforeach
@@ -58,7 +69,7 @@
                         @endphp
                         @foreach($dbPenerbit as $pen)
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="penerbit[]" value="{{ $pen }}" onchange="document.getElementById('filterForm').submit()" @if(in_array($pen, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <input type="checkbox" name="penerbit[]" value="{{ $pen }}" @if(in_array($pen, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
                             <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors line-clamp-1" title="{{ $pen }}">{{ $pen }}</span>
                         </label>
                         @endforeach
@@ -67,6 +78,11 @@
                         @endif
                     </div>
                 </div>
+
+                <!-- Action Button -->
+                <button type="submit" class="w-full bg-primary text-white font-bold py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-8">
+                    Terapkan Filter
+                </button>
             </div>
         </aside>
 

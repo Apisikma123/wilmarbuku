@@ -8,19 +8,31 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Mark all unread transactions for this user as read
         TransaksiCheckout::where('user_id', auth()->id())
             ->where('is_read_by_user', false)
             ->update(['is_read_by_user' => true]);
 
-        $transaksi = TransaksiCheckout::with('details.buku')
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->get();
+        $filter = $request->query('status', 'menunggu_konfirmasi');
+
+        $query = TransaksiCheckout::with('details.buku')
+            ->where('user_id', auth()->id());
+
+        if ($filter == 'menunggu_konfirmasi') {
+            $query->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Dana Diterima']);
+        } elseif ($filter == 'sedang_dikirim') {
+            $query->whereIn('status_tracking', ['Dalam Pengiriman', 'Dipesan Admin', 'Dikirim ke Perpus']);
+        } elseif ($filter == 'selesai') {
+            $query->whereIn('status_tracking', ['Masuk Katalog', 'Selesai']);
+        } elseif ($filter == 'dibatalkan') {
+            $query->whereIn('status_tracking', ['Dibatalkan'])->orWhere('status_pembayaran', 'Failed');
+        }
+
+        $transaksi = $query->latest()->get();
             
-        return view('transaksi', compact('transaksi'));
+        return view('transaksi', compact('transaksi', 'filter'));
     }
 
     public function track(Request $request)

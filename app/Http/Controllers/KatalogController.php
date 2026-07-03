@@ -48,6 +48,15 @@ class KatalogController extends Controller
             });
         }
 
+        if ($request->has('filter') && !empty($request->filter)) {
+            if ($request->filter == 'bulan_ini') {
+                $query->where('created_at', '>=', now()->subMonth());
+            } elseif ($request->filter == 'bestseller') {
+                // Dummy logic for bestseller: assume books with high stok_dibutuhkan or specific badge
+                $query->where('stok_dibutuhkan', '>', 10)->orWhere('badge', 'like', '%Bestseller%');
+            }
+        }
+
         if ($request->has('penerbit') && is_array($request->penerbit)) {
             // Kita filter berdasarkan pengarang karena tidak ada kolom penerbit
             $query->whereIn('pengarang', $request->penerbit);

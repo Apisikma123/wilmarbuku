@@ -23,6 +23,7 @@ class TransaksiCheckout extends Model
         'total_harga',
         'midtrans_id',
         'status_pembayaran',
+        'bukti_pembayaran',
         'status_tracking',
         'alasan_pembatalan',
         'validasi_lulus',

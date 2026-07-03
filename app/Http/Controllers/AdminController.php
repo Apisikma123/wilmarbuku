@@ -81,8 +81,9 @@ class AdminController extends Controller
         $validated = $request->validate([
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
-            'kategori' => 'required|array',
+            'kategori' => 'nullable|array',
             'kategori.*' => 'string',
+            'kategori_baru' => 'nullable|string',
             'deskripsi' => 'nullable|string',
             'jumlah_halaman' => 'nullable|string',
             'badge' => 'nullable|string',
@@ -99,7 +100,20 @@ class AdminController extends Controller
         }
 
         unset($validated['cover_file']);
-        $validated['kategori'] = implode(', ', $request->kategori);
+        
+        $categories = $request->kategori ?? [];
+        if (!empty($request->kategori_baru)) {
+            $newCats = array_map('trim', explode(',', $request->kategori_baru));
+            $categories = array_merge($categories, $newCats);
+        }
+        $categories = array_unique(array_filter($categories));
+        
+        if (empty($categories)) {
+            return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+        }
+        
+        $validated['kategori'] = implode(', ', $categories);
+        unset($validated['kategori_baru']);
 
         KatalogBuku::create($validated);
 
@@ -113,8 +127,9 @@ class AdminController extends Controller
         $validated = $request->validate([
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
-            'kategori' => 'required|array',
+            'kategori' => 'nullable|array',
             'kategori.*' => 'string',
+            'kategori_baru' => 'nullable|string',
             'deskripsi' => 'nullable|string',
             'jumlah_halaman' => 'nullable|string',
             'badge' => 'nullable|string',
@@ -131,7 +146,20 @@ class AdminController extends Controller
         }
 
         unset($validated['cover_file']);
-        $validated['kategori'] = implode(', ', $request->kategori);
+
+        $categories = $request->kategori ?? [];
+        if (!empty($request->kategori_baru)) {
+            $newCats = array_map('trim', explode(',', $request->kategori_baru));
+            $categories = array_merge($categories, $newCats);
+        }
+        $categories = array_unique(array_filter($categories));
+        
+        if (empty($categories)) {
+            return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+        }
+        
+        $validated['kategori'] = implode(', ', $categories);
+        unset($validated['kategori_baru']);
 
         $book->update($validated);
 
@@ -176,7 +204,7 @@ class AdminController extends Controller
 
         $pesanContent = $request->pesan_admin 
             ? $request->pesan_admin 
-            : "Pesanan Anda #{$transaction->kode_tracking} telah dikonfirmasi oleh Admin dan saat ini sedang dalam proses pengiriman.";
+            : "<b>Donasi anda dikonfirmasi, nomor pesanan/resi anda: {$transaction->kode_tracking}</b><br><br>Terima kasih atas donasi Anda. Pesanan Anda saat ini sedang dalam proses pengadaan/pengiriman oleh Admin.<br><br><a href='/track?kode={$transaction->kode_tracking}' class='inline-flex items-center gap-2 bg-[#004225] hover:bg-[#004225]/90 text-white font-semibold py-2 px-4 rounded-lg text-sm mt-2'><span class='material-symbols-outlined text-[18px]'>location_on</span>Lacak Sekarang</a>";
 
         PesanMasuk::create([
             'user_id' => $transaction->user_id,
@@ -227,11 +255,28 @@ class AdminController extends Controller
             'pesan_admin' => 'nullable|string',
         ]);
 
-        $transaction->update([
+        $updateData = [
             'status_tracking' => $request->status_tracking,
             'is_read_by_user' => false,
-        ]);
+        ];
 
+        if (in_array($request->status_tracking, ['Dana Diterima', 'Dalam Pengiriman', 'Selesai'])) {
+            $updateData['status_pembayaran'] = 'Paid';
+        } elseif ($request->status_tracking == 'Dibatalkan') {
+            $updateData['status_pembayaran'] = 'Failed';
+        }
+
+        $transaction->update($updateData);
+
+        if ($request->status_tracking === 'Selesai') {
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $newStok = max(0, $detail->buku->stok_dibutuhkan - $detail->qty);
+                    $detail->buku->update(['stok_dibutuhkan' => $newStok]);
+                }
+            }
+        }
         $pesanText = "Status pesanan buku Anda #{$transaction->kode_tracking} saat ini: **{$request->status_tracking}**.";
         
         if ($request->pesan_admin) {

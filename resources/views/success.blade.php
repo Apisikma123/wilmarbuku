@@ -42,29 +42,11 @@
         </style>
 
         <div class="pt-20 pb-10 px-6 sm:px-10 md:px-12 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-on-surface mb-3 tracking-tight">Pembayaran Berhasil!</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-on-surface mb-3 tracking-tight">Bukti Pembayaran Terkirim!</h1>
             <p class="text-on-surface-variant text-base leading-relaxed mb-8 max-w-lg mx-auto">
-                Terima kasih atas partisipasi Anda dalam program donasi literasi Wilmar Business Indonesia Polytechnic.
+                Terima kasih sudah berdonasi, donasi anda sedang dikonfirmasi admin. <br>
+                Nomor pelacakan (resi) akan dikirimkan ke <b>Kotak Masuk</b> Anda setelah pembayaran berhasil diverifikasi.
             </p>
-
-            <!-- Tracking Code Box -->
-            <div class="bg-[#f8f9ff] rounded-xl border border-outline-variant/50 p-6 mb-8 text-left relative overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                
-                <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">KODE TRACKING ANDA</p>
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <p class="text-3xl font-black text-primary tracking-tight" id="tracking-code">{{ $transaksi->kode_tracking }}</p>
-                    <button class="shrink-0 bg-white border border-outline-variant/50 hover:bg-surface-variant text-on-surface-variant hover:text-primary text-sm font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-sm" onclick="navigator.clipboard.writeText(document.getElementById('tracking-code').innerText); Swal.fire({ title: 'Berhasil!', text: 'Kode Tracking telah disalin ke clipboard.', icon: 'success', confirmButtonText: 'Tutup' })">
-                        <span class="material-symbols-outlined text-[18px]">content_copy</span> Salin Kode
-                    </button>
-                </div>
-                <div class="mt-5 pt-4 border-t border-outline-variant/30 flex items-start gap-3">
-                    <span class="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">workspace_premium</span>
-                    <p class="text-xs text-on-surface-variant leading-relaxed">
-                        Gunakan kode ini untuk melacak status pengadaan buku. Khusus <span class="font-bold">pengguna internal</span>, kode ini juga digunakan untuk memvalidasi syarat Surat Keterangan Bebas Pustaka.
-                    </p>
-                </div>
-            </div>
 
             <!-- Receipt Info -->
             <div class="bg-white rounded-lg p-5 mb-10 border border-outline-variant/40 text-left shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
@@ -73,12 +55,12 @@
                     <span class="text-sm font-semibold text-on-surface text-right">{{ $detail ? $detail->buku->judul_buku : 'Paket Buku' }}</span>
                 </div>
                 <div class="flex justify-between items-center mb-4">
-                    <span class="text-sm font-medium text-on-surface-variant">Total Pembayaran</span>
+                    <span class="text-sm font-medium text-on-surface-variant">Total Tagihan</span>
                     <span class="text-sm font-bold text-on-surface">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
                     <span class="text-xs font-medium text-on-surface-variant">Metode Pembayaran</span>
-                    <span class="text-xs font-medium text-on-surface">Transfer Bank / VA (Menunggu Integrasi)</span>
+                    <span class="text-xs font-medium text-on-surface">Transfer Rekening</span>
                 </div>
                 <div class="flex justify-between items-center mt-2">
                     <span class="text-xs font-medium text-on-surface-variant">Waktu Transaksi</span>
@@ -87,12 +69,8 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center w-full">
-                <a href="/track" class="w-full sm:w-auto bg-primary text-white font-semibold py-4 px-8 rounded-lg hover:bg-primary-container transition-all shadow-md flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[20px]">location_on</span>
-                    Lacak Donasi
-                </a>
-                <a href="/dashboard" class="w-full sm:w-auto bg-white border border-primary text-primary font-semibold py-4 px-8 rounded-lg hover:bg-primary/5 transition-all flex items-center justify-center gap-2">
+            <div class="flex justify-center w-full">
+                <a href="/dashboard" class="w-full sm:w-auto bg-primary text-white font-semibold py-4 px-8 rounded-lg hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined text-[20px]">home</span>
                     Kembali ke Beranda
                 </a>

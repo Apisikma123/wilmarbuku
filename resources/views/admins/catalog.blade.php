@@ -174,9 +174,19 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori (Pilih 1 atau lebih) *</label>
-                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                         @php
-                            $cats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
+                            $allCategories = [];
+                            foreach($dbCategoriesStr as $catStr) {
+                                if($catStr) {
+                                    $parts = array_map('trim', explode(',', $catStr));
+                                    $allCategories = array_merge($allCategories, $parts);
+                                }
+                            }
+                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                            $cats = array_unique(array_merge($baseCats, $allCategories));
+                            sort($cats);
                         @endphp
                         @foreach($cats as $cat)
                         <label class="flex items-center gap-2 cursor-pointer text-sm">
@@ -185,6 +195,8 @@
                         </label>
                         @endforeach
                     </div>
+                    <label class="block text-[11px] font-medium text-slate-500 mb-1">Atau ketik genre/kategori baru (opsional, pisahkan dengan koma jika lebih dari satu)</label>
+                    <input type="text" name="kategori_baru" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: Otomotif, Kedokteran">
                 </div>
             </div>
 
@@ -270,9 +282,19 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori (Pilih 1 atau lebih) *</label>
-                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                         @php
-                            $cats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
+                            $allCategories = [];
+                            foreach($dbCategoriesStr as $catStr) {
+                                if($catStr) {
+                                    $parts = array_map('trim', explode(',', $catStr));
+                                    $allCategories = array_merge($allCategories, $parts);
+                                }
+                            }
+                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                            $cats = array_unique(array_merge($baseCats, $allCategories));
+                            sort($cats);
                         @endphp
                         @foreach($cats as $cat)
                         <label class="flex items-center gap-2 cursor-pointer text-sm">
@@ -281,6 +303,8 @@
                         </label>
                         @endforeach
                     </div>
+                    <label class="block text-[11px] font-medium text-slate-500 mb-1">Atau ketik genre/kategori baru (opsional, pisahkan dengan koma jika lebih dari satu)</label>
+                    <input type="text" id="edit_kategori_baru" name="kategori_baru" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: Otomotif, Kedokteran">
                 </div>
             </div>
 
@@ -361,6 +385,7 @@ function openEditModal(book) {
     document.querySelectorAll('.edit_kategori_checkbox').forEach(cb => {
         cb.checked = categories.includes(cb.value);
     });
+    document.getElementById('edit_kategori_baru').value = '';
     document.getElementById('edit_harga_estimasi').value = book.harga_estimasi || '';
     document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 1;
     document.getElementById('edit_status_buku').value = book.status_buku || 'Dibutuhkan';

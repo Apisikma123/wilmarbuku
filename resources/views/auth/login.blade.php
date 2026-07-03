@@ -74,7 +74,7 @@
 
                 <div class="flex items-center justify-between text-sm">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
+                        <input type="checkbox" name="remember" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
                         <span class="text-gray-600">Ingat saya</span>
                     </label>
                     <a href="{{ route('password.request') }}" class="text-primary font-semibold hover:underline">Lupa Kata Sandi?</a>

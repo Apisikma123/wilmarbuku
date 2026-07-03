@@ -16,6 +16,13 @@ Route::get('/', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('home');
 
+Route::get('/debug-cookies', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'cookies' => $request->cookies->all(),
+        'session' => $request->session()->all()
+    ]);
+});
+
 Route::get('/donasi', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('donasi');
@@ -66,6 +73,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+
+    Route::get('/payment', [App\Http\Controllers\CheckoutController::class, 'payment'])->name('payment');
+    Route::post('/payment/upload', [App\Http\Controllers\CheckoutController::class, 'uploadProof'])->name('payment.upload');
 
     Route::get('/transaksi', [App\Http\Controllers\TransaksiController::class, 'index'])->name('transaksi');
     Route::get('/track', [App\Http\Controllers\TransaksiController::class, 'track'])->name('track');
