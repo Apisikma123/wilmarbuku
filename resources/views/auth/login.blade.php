@@ -42,7 +42,7 @@
             
             <!-- Headers -->
             <div class="text-center mb-8">
-                <h1 class="text-xl font-bold text-primary mb-2">Masuk ke Wilmar Literacy Hub</h1>
+                <h1 class="text-xl font-bold text-primary mb-2">Masuk ke WilmarBOOKS</h1>
                 <p class="text-sm text-gray-500">Silakan masuk dengan akun institusi Anda.</p>
             </div>
 

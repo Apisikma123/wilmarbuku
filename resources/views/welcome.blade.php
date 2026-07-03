@@ -37,7 +37,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">menu_book</span>
 </div>
 <div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">2,450+</p>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">{{ number_format($global_total_buku, 0, ',', '.') }}+</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Buku Terkumpul</p>
 </div>
 </div>
@@ -46,7 +46,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">volunteer_activism</span>
 </div>
 <div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">845+</p>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">{{ number_format($global_donatur_aktif, 0, ',', '.') }}+</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Donatur Aktif</p>
 </div>
 </div>

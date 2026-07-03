@@ -87,6 +87,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/support', function () {
         return view('support');
     })->name('support');
+    Route::post('/akun/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('akun.updateProfile');
+    Route::post('/akun/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('akun.updatePassword');
     Route::get('/success', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
 
     Route::get('/buku/{id}', [App\Http\Controllers\KatalogController::class, 'show'])->name('buku.detail');

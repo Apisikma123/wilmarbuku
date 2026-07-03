@@ -205,12 +205,9 @@
                 <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors">
                     <span class="material-symbols-outlined text-lg">grid_view</span> Kategori
                 </a>
-                <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
-                <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                <a href="/kategori?kategori[]=Sosial+%26+Budaya" class="hover:text-primary transition-colors whitespace-nowrap">Sosial & Budaya</a>
-                <a href="/kategori?kategori[]=Fiksi+%26+Sastra" class="hover:text-primary transition-colors whitespace-nowrap">Fiksi & Sastra</a>
-                <a href="/kategori?kategori[]=Ekonomi+%26+Bisnis" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
-                <a href="/kategori?kategori[]=Sains+%26+Matematika" class="hover:text-primary transition-colors whitespace-nowrap">Sains & Matematika</a>
+                @foreach($global_kategoris->take(6) as $kategori)
+                <a href="/kategori?kategori[]={{ urlencode($kategori->nama_kategori) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
+                @endforeach
             </div>
         </div>
     </header>

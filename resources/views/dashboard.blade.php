@@ -49,50 +49,14 @@
         
         <!-- Quick Categories -->
         <div class="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
-            <!-- Icon 1 -->
-            <a href="/kategori?filter=buku-donasi" class="flex flex-col items-center gap-2 md:gap-3 group">
+            @foreach($global_kategoris->take(7) as $kategori)
+            <a href="/kategori?filter={{ urlencode($kategori->nama_kategori) }}" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">volunteer_activism</span>
+                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">{{ $kategori->icon }}</span>
                 </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Buku<br>Donasi</span>
+                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">{!! str_replace(' ', '<br>', $kategori->nama_kategori) !!}</span>
             </a>
-            <a href="/kategori?filter=ebook" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)] relative">
-                    <span class="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 bg-secondary text-white text-[8px] md:text-[9px] px-1.5 py-0.5 rounded font-bold">BARU</span>
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">devices</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">E-Book<br>Eksklusif</span>
-            </a>
-            <a href="/kategori?filter=jurnal" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">article</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Jurnal<br>Akademik</span>
-            </a>
-            <a href="/kategori?filter=modul" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">menu_book</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Modul<br>Kuliah</span>
-            </a>
-            <a href="/kategori?filter=bisnis" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">lightbulb</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Inspirasi<br>Bisnis</span>
-            </a>
-            <a href="/kategori?filter=teknologi" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">science</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Sains &<br>Teknologi</span>
-            </a>
-            <a href="/kategori?filter=sastra" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">auto_stories</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Sastra &<br>Novel</span>
-            </a>
+            @endforeach
             <a href="/kategori" class="flex flex-col items-center gap-2 md:gap-3 group">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">more_horiz</span>
@@ -149,30 +113,12 @@
 
                 <div class="grid grid-cols-3 gap-4">
                     <!-- Publisher Brand -->
-                    <a href="/donasi?penerbit=erlangga" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">menu_book</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Erlangga</span>
+                    @foreach($global_penerbits->take(6) as $penerbit)
+                    <a href="/donasi?penerbit={{ urlencode($penerbit->nama_penerbit) }}" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">{{ $penerbit->icon }}</span>
+                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">{{ $penerbit->nama_penerbit }}</span>
                     </a>
-                    <a href="/donasi?penerbit=gramedia" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">import_contacts</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Gramedia</span>
-                    </a>
-                    <a href="/donasi?penerbit=andi" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">school</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Andi Publ.</span>
-                    </a>
-                    <a href="/donasi?penerbit=informatika" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">science</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Informatika</span>
-                    </a>
-                    <a href="/donasi?penerbit=pearson" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">language</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Pearson</span>
-                    </a>
-                    <a href="/donasi?penerbit=wiley" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">workspace_premium</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Wiley</span>
-                    </a>
+                    @endforeach
                 </div>
             </div>
             
