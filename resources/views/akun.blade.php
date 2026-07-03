@@ -50,9 +50,12 @@
             </div>
 
             <!-- Logout Button -->
-            <a href="/" class="w-full bg-white border border-error/50 text-error font-bold py-3.5 rounded-xl hover:bg-error/10 transition-colors shadow-sm flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">logout</span> Keluar Akun
-            </a>
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                @csrf
+                <button type="submit" class="w-full bg-white border border-error/50 text-error font-bold py-3.5 rounded-xl hover:bg-error/10 transition-colors shadow-sm flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">logout</span> Keluar Akun
+                </button>
+            </form>
         </div>
 
         <!-- Right Column: Settings & Certs -->

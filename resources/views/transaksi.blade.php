@@ -47,6 +47,10 @@
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#005143] bg-[#87f6dc]/30 px-2.5 py-1 rounded-full border border-[#87f6dc]/50 uppercase tracking-wider mb-2">
                             <span class="material-symbols-outlined text-[14px]">{{ $trx->status_tracking == 'Dana Diterima' ? 'pending_actions' : 'check_circle' }}</span> {{ $trx->status_tracking == 'Dana Diterima' ? 'Menunggu Konfirmasi Admin' : $trx->status_tracking }}
                         </span>
+                        @elseif($trx->status_tracking == 'Dibatalkan' || $trx->status_pembayaran == 'Failed')
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-800 bg-red-100 px-2.5 py-1 rounded-full border border-red-200 uppercase tracking-wider mb-2">
+                            <span class="material-symbols-outlined text-[14px]">cancel</span> Donasi Gagal
+                        </span>
                         @elseif($trx->bukti_pembayaran)
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#005143] bg-[#87f6dc]/30 px-2.5 py-1 rounded-full border border-[#87f6dc]/50 uppercase tracking-wider mb-2">
                             <span class="material-symbols-outlined text-[14px]">pending_actions</span> Menunggu Konfirmasi Admin

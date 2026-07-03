@@ -177,9 +177,23 @@ class AuthController extends Controller
             'role' => 'user_external',
         ]);
 
-        Auth::login($user);
+        // Generate 6-digit OTP
+        $otpCode = (string) mt_rand(100000, 999999);
+        
+        $user->update([
+            'otp_code' => $otpCode,
+            'otp_expires_at' => Carbon::now()->addMinutes(5),
+        ]);
 
-        return redirect(route('dashboard', absolute: false));
+        // Send OTP email
+        Mail::to($user->email)->send(new OtpMail($otpCode));
+
+        // Store user id and timestamp in session temporarily
+        $request->session()->put('otp_user_id', $user->id);
+        $request->session()->put('last_otp_sent_at', now()->timestamp);
+        $request->session()->put('remember_me', false); // No remember me on register by default
+
+        return redirect()->route('otp.show');
     }
 
     public function logout(Request $request)

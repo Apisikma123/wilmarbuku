@@ -174,29 +174,20 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori (Pilih 1 atau lebih) *</label>
-                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
-                        @php
-                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
-                            $allCategories = [];
-                            foreach($dbCategoriesStr as $catStr) {
-                                if($catStr) {
-                                    $parts = array_map('trim', explode(',', $catStr));
-                                    $allCategories = array_merge($allCategories, $parts);
-                                }
-                            }
-                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
-                            $cats = array_unique(array_merge($baseCats, $allCategories));
-                            sort($cats);
-                        @endphp
-                        @foreach($cats as $cat)
-                        <label class="flex items-center gap-2 cursor-pointer text-sm">
-                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600">
-                            <span class="text-slate-700">{{ $cat }}</span>
-                        </label>
-                        @endforeach
+                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 max-h-48 overflow-y-auto mb-2">
+                        <div id="category_list_add" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                            @foreach($categories as $cat)
+                            <label class="flex items-center gap-2 cursor-pointer text-sm">
+                                <input type="checkbox" name="kategori[]" value="{{ $cat->nama_kategori }}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600">
+                                <span class="text-slate-700">{{ $cat->nama_kategori }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                        <div class="border-t border-slate-200 pt-3 mt-2 flex items-center gap-2">
+                            <input type="text" id="new_category_input_add" class="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Ketik kategori baru...">
+                            <button type="button" onclick="addCategoryAJAX('add')" class="px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap">Tambah</button>
+                        </div>
                     </div>
-                    <label class="block text-[11px] font-medium text-slate-500 mb-1">Atau ketik genre/kategori baru (opsional, pisahkan dengan koma jika lebih dari satu)</label>
-                    <input type="text" name="kategori_baru" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: Otomotif, Kedokteran">
                 </div>
             </div>
 
@@ -282,29 +273,20 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori (Pilih 1 atau lebih) *</label>
-                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
-                        @php
-                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
-                            $allCategories = [];
-                            foreach($dbCategoriesStr as $catStr) {
-                                if($catStr) {
-                                    $parts = array_map('trim', explode(',', $catStr));
-                                    $allCategories = array_merge($allCategories, $parts);
-                                }
-                            }
-                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
-                            $cats = array_unique(array_merge($baseCats, $allCategories));
-                            sort($cats);
-                        @endphp
-                        @foreach($cats as $cat)
-                        <label class="flex items-center gap-2 cursor-pointer text-sm">
-                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600 edit_kategori_checkbox">
-                            <span class="text-slate-700">{{ $cat }}</span>
-                        </label>
-                        @endforeach
+                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 max-h-48 overflow-y-auto mb-2">
+                        <div id="category_list_edit" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                            @foreach($categories as $cat)
+                            <label class="flex items-center gap-2 cursor-pointer text-sm">
+                                <input type="checkbox" name="kategori[]" value="{{ $cat->nama_kategori }}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600 edit_kategori_checkbox">
+                                <span class="text-slate-700">{{ $cat->nama_kategori }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                        <div class="border-t border-slate-200 pt-3 mt-2 flex items-center gap-2">
+                            <input type="text" id="new_category_input_edit" class="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Ketik kategori baru...">
+                            <button type="button" onclick="addCategoryAJAX('edit')" class="px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap">Tambah</button>
+                        </div>
                     </div>
-                    <label class="block text-[11px] font-medium text-slate-500 mb-1">Atau ketik genre/kategori baru (opsional, pisahkan dengan koma jika lebih dari satu)</label>
-                    <input type="text" id="edit_kategori_baru" name="kategori_baru" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: Otomotif, Kedokteran">
                 </div>
             </div>
 
@@ -368,6 +350,55 @@
 @endsection
 
 <script>
+function addCategoryAJAX(modalType) {
+    let inputEl = document.getElementById('new_category_input_' + modalType);
+    let name = inputEl.value.trim();
+    if (!name) return;
+
+    fetch('{{ route("admin.kategori.store") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ nama_kategori: name })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            let catName = data.kategori.nama_kategori;
+            // Append to both Add and Edit modals
+            ['add', 'edit'].forEach(type => {
+                let container = document.getElementById('category_list_' + type);
+                if (container) {
+                    let lbl = document.createElement('label');
+                    lbl.className = 'flex items-center gap-2 cursor-pointer text-sm';
+                    let checkboxClass = type === 'edit' ? 'edit_kategori_checkbox' : '';
+                    lbl.innerHTML = `<input type="checkbox" name="kategori[]" value="${catName}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600 ${checkboxClass}" checked>
+                                     <span class="text-slate-700">${catName}</span>`;
+                    container.appendChild(lbl);
+                }
+            });
+            inputEl.value = '';
+            // Show tiny success indicator
+            let btn = inputEl.nextElementSibling;
+            let oldText = btn.innerText;
+            btn.innerText = 'Tersimpan!';
+            btn.classList.add('bg-green-600');
+            setTimeout(() => {
+                btn.innerText = oldText;
+                btn.classList.remove('bg-green-600');
+            }, 2000);
+        } else {
+            alert('Gagal menambahkan kategori. Mungkin kategori sudah ada.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menambahkan kategori.');
+    });
+}
+
 function openAddModal() {
     document.getElementById('addModal').classList.remove('hidden');
 }
@@ -385,7 +416,6 @@ function openEditModal(book) {
     document.querySelectorAll('.edit_kategori_checkbox').forEach(cb => {
         cb.checked = categories.includes(cb.value);
     });
-    document.getElementById('edit_kategori_baru').value = '';
     document.getElementById('edit_harga_estimasi').value = book.harga_estimasi || '';
     document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 1;
     document.getElementById('edit_status_buku').value = book.status_buku || 'Dibutuhkan';

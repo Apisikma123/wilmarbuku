@@ -42,8 +42,7 @@ class CheckoutController extends Controller
         $user = Auth::user();
         
         // Update user data if internal
-        if ($request->tipe_donatur == 'internal') {
-            $user->role = 'user_internal';
+        if ($request->tipe_donatur == 'internal' && empty($user->identitas_kampus)) {
             $user->identitas_kampus = $request->identitas_kampus;
         }
         $user->nama_lengkap = $request->nama_lengkap;

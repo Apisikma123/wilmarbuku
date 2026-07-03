@@ -6,6 +6,7 @@ use App\Models\KatalogBuku;
 use App\Models\PesanMasuk;
 use App\Models\TransaksiCheckout;
 use App\Models\User;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -72,8 +73,23 @@ class AdminController extends Controller
         $totalPengajuan = KatalogBuku::count();
         $dibutuhkanSegera = KatalogBuku::where('status_buku', 'Dibutuhkan')->count();
         $berhasilTersedia = KatalogBuku::where('status_buku', 'Tersedia')->count();
+        $categories = Kategori::orderBy('nama_kategori')->get();
 
-        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia'));
+        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories'));
+    }
+
+    public function storeKategori(Request $request)
+    {
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori'
+        ]);
+
+        $kategori = Kategori::create(['nama_kategori' => trim($request->nama_kategori)]);
+
+        return response()->json([
+            'success' => true,
+            'kategori' => $kategori
+        ]);
     }
 
     public function storeBook(Request $request)
@@ -102,10 +118,6 @@ class AdminController extends Controller
         unset($validated['cover_file']);
         
         $categories = $request->kategori ?? [];
-        if (!empty($request->kategori_baru)) {
-            $newCats = array_map('trim', explode(',', $request->kategori_baru));
-            $categories = array_merge($categories, $newCats);
-        }
         $categories = array_unique(array_filter($categories));
         
         if (empty($categories)) {
@@ -113,7 +125,6 @@ class AdminController extends Controller
         }
         
         $validated['kategori'] = implode(', ', $categories);
-        unset($validated['kategori_baru']);
 
         KatalogBuku::create($validated);
 
@@ -148,10 +159,6 @@ class AdminController extends Controller
         unset($validated['cover_file']);
 
         $categories = $request->kategori ?? [];
-        if (!empty($request->kategori_baru)) {
-            $newCats = array_map('trim', explode(',', $request->kategori_baru));
-            $categories = array_merge($categories, $newCats);
-        }
         $categories = array_unique(array_filter($categories));
         
         if (empty($categories)) {
@@ -159,7 +166,6 @@ class AdminController extends Controller
         }
         
         $validated['kategori'] = implode(', ', $categories);
-        unset($validated['kategori_baru']);
 
         $book->update($validated);
 

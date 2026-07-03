@@ -119,7 +119,7 @@
                                 $countBatal = $unreadTrx->whereIn('status_pembayaran', ['Failed', 'Expired'])->count();
                             @endphp
                             <div class="flex justify-between px-2">
-                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                <a href="/transaksi?status=menunggu_konfirmasi" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
                                         <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">assignment</span>
                                         @if($countMenunggu > 0)
@@ -128,7 +128,7 @@
                                     </div>
                                     <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Menunggu Konfirmasi</span>
                                 </a>
-                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                <a href="/transaksi?status=sedang_dikirim" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
                                         <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">local_shipping</span>
                                         @if($countDikirim > 0)
@@ -137,7 +137,7 @@
                                     </div>
                                     <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Sedang Dikirim</span>
                                 </a>
-                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                <a href="/transaksi?status=selesai" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
                                         <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">done_all</span>
                                         @if($countSelesai > 0)
@@ -146,7 +146,7 @@
                                     </div>
                                     <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Selesai</span>
                                 </a>
-                                <a href="/transaksi" class="flex flex-col items-center gap-1.5 group/item">
+                                <a href="/transaksi?status=dibatalkan" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
                                         <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">cancel</span>
                                         @if($countBatal > 0)

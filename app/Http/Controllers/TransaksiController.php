@@ -21,9 +21,9 @@ class TransaksiController extends Controller
             ->where('user_id', auth()->id());
 
         if ($filter == 'menunggu_konfirmasi') {
-            $query->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Dana Diterima']);
+            $query->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi']);
         } elseif ($filter == 'sedang_dikirim') {
-            $query->whereIn('status_tracking', ['Dalam Pengiriman', 'Dipesan Admin', 'Dikirim ke Perpus']);
+            $query->whereIn('status_tracking', ['Dana Diterima', 'Dalam Pengiriman', 'Dipesan Admin', 'Dikirim ke Perpus']);
         } elseif ($filter == 'selesai') {
             $query->whereIn('status_tracking', ['Masuk Katalog', 'Selesai']);
         } elseif ($filter == 'dibatalkan') {

@@ -138,6 +138,8 @@
                         <td class="px-6 py-5 text-center">
                             @if($trx->status_pembayaran == 'Paid')
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Lunas</span>
+                            @elseif($trx->status_pembayaran == 'Failed')
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">Gagal</span>
                             @elseif($trx->bukti_pembayaran)
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 whitespace-nowrap">Menunggu Konfirmasi</span>
                             @else
