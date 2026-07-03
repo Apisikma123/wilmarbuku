@@ -109,6 +109,49 @@
                 </form>
             </div>
 
+            <!-- Change Password Form -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-outline-variant/30 mt-6">
+                <h3 class="font-bold text-on-surface text-lg mb-6 pb-4 border-b border-outline-variant/30">Ganti Password</h3>
+                
+                <form method="POST" action="{{ route('user.password.update') }}" class="space-y-5">
+                    @csrf
+                    @method('put')
+
+                    @if(session('status') === 'password-updated')
+                        <div class="mb-4 text-sm font-medium text-green-600 bg-green-50 border border-green-200 rounded-lg p-3">
+                            Password berhasil diperbarui!
+                        </div>
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-2">Password Saat Ini</label>
+                        <input type="password" name="current_password" required class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary">
+                        @error('current_password')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-2">Password Baru</label>
+                        <input type="password" name="password" required class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary">
+                        @error('password')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-2">Konfirmasi Password Baru</label>
+                        <input type="password" name="password_confirmation" required class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button type="submit" class="bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-primary-container transition-colors shadow-sm">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>

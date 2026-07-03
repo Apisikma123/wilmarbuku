@@ -206,7 +206,7 @@
 function filterTable(input) {
     let filter = input.value.toLowerCase();
     // find the closest table inside the parent card (div.bg-white)
-    let table = input.closest('div.bg-white').querySelector('table');
+    let table = input.closest('.shadow-sm').querySelector('table');
     if(!table) return;
     let tr = table.getElementsByTagName("tr");
     for (let i = 1; i < tr.length; i++) { // start from 1 to skip thead

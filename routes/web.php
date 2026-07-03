@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/pesan-masuk/read', [App\Http\Controllers\PesanController::class, 'markAsRead'])->name('pesan.read');
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'index'])->name('akun');
+    Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('user.password.update');
     Route::get('/support', function () {
         return view('support');
     })->name('support');
