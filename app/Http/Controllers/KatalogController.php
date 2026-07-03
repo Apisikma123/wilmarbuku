@@ -10,10 +10,11 @@ class KatalogController extends Controller
     public function index(Request $request)
     {
         $buku = KatalogBuku::all();
+        $mahasiswaCount = \App\Models\User::where('role', 'user')->count();
         if ($request->is('donasi')) {
             return view('donasi', compact('buku'));
         }
-        return view('welcome', compact('buku'));
+        return view('welcome', compact('buku', 'mahasiswaCount'));
     }
 
     public function dashboard()

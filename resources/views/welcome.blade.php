@@ -72,7 +72,7 @@
 <h2 class="text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight">Nurturing Entrepreneurs through Literacy</h2>
 <div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
 <p class="">
-                        Perpustakaan WBI melayani 3.000+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
+                        Perpustakaan WBI melayani {{ number_format($mahasiswaCount, 0, ',', '.') }}+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
                     </p>
 <p class="">
                         Bonus: mahasiswa WBI wajib donasi 1 buku sebagai syarat lulus. Jadi kontribusi Anda juga menginspirasi mereka untuk memberi balik.

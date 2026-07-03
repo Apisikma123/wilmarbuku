@@ -23,16 +23,7 @@
 
         <div class="space-y-4">
             
-            <!-- Email -->
-            <div class="flex items-center gap-4 bg-surface-bright rounded-xl p-5 border border-outline-variant/30">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-outline-variant/30 shrink-0">
-                    <span class="material-symbols-outlined text-outline">mail</span>
-                </div>
-                <div>
-                    <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-0.5">EMAIL</p>
-                    <p class="text-base font-semibold text-on-surface">support@wilmarbuku.com</p>
-                </div>
-            </div>
+            
             
             <!-- Telepon -->
             <div class="flex items-center gap-4 bg-surface-bright rounded-xl p-5 border border-outline-variant/30">
@@ -41,7 +32,7 @@
                 </div>
                 <div>
                     <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-0.5">TELEPON</p>
-                    <p class="text-base font-semibold text-on-surface">+62 812 3456 7890</p>
+                    <p class="text-base font-semibold text-on-surface">(061) 42074111</p>
                 </div>
             </div>
             
@@ -53,8 +44,9 @@
                 <div>
                     <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-0.5">ALAMAT</p>
                     <p class="text-sm font-medium text-on-surface leading-relaxed">
-                        Gedung Wilmar Lt. 5, Jl. Jend. Sudirman Kav. 1,<br>
-                        Jakarta Pusat, DKI Jakarta 10220
+                        Laut Dendang, Jl. Warakauri, Kenangan, Kec. Percut Sei Tuan,
+                        Kabupaten Deli Serdang,
+                        Sumatera Utara 20371
                     </p>
                 </div>
             </div>
