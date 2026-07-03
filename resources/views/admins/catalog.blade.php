@@ -276,7 +276,13 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label (Opsional)</label>
-                    <input type="text" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: Pilihan Utama / Trending">
+                    <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                        <option value="">Tidak Ada Label</option>
+                        <option value="Prioritas">Prioritas</option>
+                        <option value="Pilihan Utama">Pilihan Utama</option>
+                        <option value="Trending">Trending</option>
+                        <option value="Rekomendasi">Rekomendasi</option>
+                    </select>
                 </div>
             </div>
 
@@ -383,7 +389,13 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label (Opsional)</label>
-                    <input type="text" id="edit_badge" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                    <select id="edit_badge" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                        <option value="">Tidak Ada Label</option>
+                        <option value="Prioritas">Prioritas</option>
+                        <option value="Pilihan Utama">Pilihan Utama</option>
+                        <option value="Trending">Trending</option>
+                        <option value="Rekomendasi">Rekomendasi</option>
+                    </select>
                 </div>
             </div>
 

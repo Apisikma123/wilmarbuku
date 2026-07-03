@@ -81,7 +81,7 @@
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    @foreach($buku->take(4) as $item)
+                    @forelse($buku->where('badge', 'Prioritas')->take(4) as $item)
                     <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-lg shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 p-3 hover:-translate-y-0.5 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block">
                         <div class="w-full aspect-[3/4] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
                             @if(str_starts_with($item->cover_image, '/storage/'))
@@ -98,7 +98,7 @@
                                 <h3 class="text-xs font-bold text-on-surface line-clamp-2 leading-tight mb-1">{{ $item->judul_buku }}</h3>
                                 <p class="text-[10px] text-on-surface-variant mb-1">{{ $item->pengarang }}</p>
                                 @if($item->penerbit)
-                                <p class="text-[10px] text-primary/80 flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[12px]">building</span> {{ $item->penerbit }}</p>
+                                <p class="text-[10px] text-primary/80 flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[12px]">apartment</span> {{ $item->penerbit }}</p>
                                 @else
                                 <div class="mb-2"></div>
                                 @endif
@@ -106,7 +106,11 @@
                             <p class="text-primary font-bold text-sm mt-auto">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
                         </div>
                     </a>
-                    @endforeach
+                    @empty
+                    <div class="col-span-2 md:col-span-4 text-center text-sm text-slate-400 py-8 italic border border-dashed border-outline-variant/50 rounded-xl">
+                        Belum ada buku pilihan prioritas saat ini.
+                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -149,7 +153,7 @@
 
             <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    @foreach($buku->skip(4)->take(5) as $item)
+                    @forelse($buku->where('badge', '!=', 'Prioritas')->take(5) as $item)
                     <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-lg p-3 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 hover:-translate-y-0.5 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block">
                         <div class="w-full aspect-[3/4] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
                             @if(str_starts_with($item->cover_image, '/storage/'))
@@ -168,7 +172,11 @@
                             </div>
                         </div>
                     </a>
-                    @endforeach
+                    @empty
+                    <div class="col-span-2 md:col-span-5 text-center text-sm text-slate-400 py-8 italic">
+                        Belum ada referensi buku lainnya.
+                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>
