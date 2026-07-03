@@ -179,6 +179,10 @@
                                 <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">settings</span>
                                 <span class="text-sm font-medium">Pengaturan Akun</span>
                             </a>
+                            <a href="/support" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">help</span>
+                                <span class="text-sm font-medium">Support</span>
+                            </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-error-container hover:text-error transition-colors text-on-surface group/link mt-1 text-left">
