@@ -92,7 +92,13 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
                                 @if($b->cover_image)
-                                <img src="{{ $b->cover_image }}" alt="Cover" class="w-10 h-14 object-cover rounded shadow-sm border border-slate-200 shrink-0">
+                                    @if(str_starts_with($b->cover_image, '/storage/'))
+                                        <img src="{{ $b->cover_image }}" alt="Cover" class="w-10 h-14 object-cover rounded shadow-sm border border-slate-200 shrink-0">
+                                    @else
+                                        <div class="w-10 h-14 rounded shadow-sm border border-slate-200 shrink-0 bg-gradient-to-br {{ $b->cover_image }} flex items-center justify-center overflow-hidden">
+                                            <span class="text-[5px] text-white font-bold leading-[1.1] text-center p-0.5 uppercase break-all">{!! str_replace(' ', '<br>', $b->judul_buku) !!}</span>
+                                        </div>
+                                    @endif
                                 @else
                                 <div class="w-10 h-14 bg-slate-100 border border-slate-200 rounded flex items-center justify-center text-slate-400 shrink-0">
                                     <i data-lucide="book" class="w-5 h-5"></i>
@@ -161,22 +167,24 @@
                 <input type="text" name="judul_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: Manajemen Strategi Bisnis Modern">
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pengarang / Penulis *</label>
                     <input type="text" name="pengarang" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Nama pengarang">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori *</label>
-                    <select name="kategori" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
-                        <option value="Teknologi & Informasi">Teknologi & Informasi</option>
-                        <option value="Ekonomi & Bisnis">Ekonomi & Bisnis</option>
-                        <option value="Sains & Matematika">Sains & Matematika</option>
-                        <option value="Sosial & Budaya">Sosial & Budaya</option>
-                        <option value="Pengembangan Diri">Pengembangan Diri</option>
-                        <option value="Fiksi & Sastra">Fiksi & Sastra</option>
-                        <option value="Umum">Umum</option>
-                    </select>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori (Pilih 1 atau lebih) *</label>
+                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        @php
+                            $cats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                        @endphp
+                        @foreach($cats as $cat)
+                        <label class="flex items-center gap-2 cursor-pointer text-sm">
+                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600">
+                            <span class="text-slate-700">{{ $cat }}</span>
+                        </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -255,22 +263,24 @@
                 <input type="text" id="edit_judul_buku" name="judul_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pengarang / Penulis *</label>
                     <input type="text" id="edit_pengarang" name="pengarang" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori *</label>
-                    <select id="edit_kategori" name="kategori" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
-                        <option value="Teknologi & Informasi">Teknologi & Informasi</option>
-                        <option value="Ekonomi & Bisnis">Ekonomi & Bisnis</option>
-                        <option value="Sains & Matematika">Sains & Matematika</option>
-                        <option value="Sosial & Budaya">Sosial & Budaya</option>
-                        <option value="Pengembangan Diri">Pengembangan Diri</option>
-                        <option value="Fiksi & Sastra">Fiksi & Sastra</option>
-                        <option value="Umum">Umum</option>
-                    </select>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori (Pilih 1 atau lebih) *</label>
+                    <div class="w-full border border-slate-200 rounded-lg p-3 bg-slate-50 h-32 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        @php
+                            $cats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
+                        @endphp
+                        @foreach($cats as $cat)
+                        <label class="flex items-center gap-2 cursor-pointer text-sm">
+                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" class="w-4 h-4 text-green-600 rounded border-slate-300 focus:ring-green-600 edit_kategori_checkbox">
+                            <span class="text-slate-700">{{ $cat }}</span>
+                        </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -346,7 +356,11 @@ function openEditModal(book) {
     document.getElementById('editForm').action = "/admin/catalog/update/" + book.id;
     document.getElementById('edit_judul_buku').value = book.judul_buku || '';
     document.getElementById('edit_pengarang').value = book.pengarang || '';
-    document.getElementById('edit_kategori').value = book.kategori || 'Umum';
+    
+    let categories = book.kategori ? book.kategori.split(',').map(s => s.trim()) : [];
+    document.querySelectorAll('.edit_kategori_checkbox').forEach(cb => {
+        cb.checked = categories.includes(cb.value);
+    });
     document.getElementById('edit_harga_estimasi').value = book.harga_estimasi || '';
     document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 1;
     document.getElementById('edit_status_buku').value = book.status_buku || 'Dibutuhkan';

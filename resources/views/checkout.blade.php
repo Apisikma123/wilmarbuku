@@ -74,8 +74,12 @@
                 @foreach($cart as $id => $item)
                 <div class="flex flex-col sm:flex-row gap-6 mb-6">
                     <!-- Book Cover -->
-                    <div class="w-24 aspect-[2/3] rounded-lg bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md">
-                        <h4 class="text-[9px] font-bold uppercase leading-tight mb-1">{!! str_replace(' ', '<br>', $item['judul_buku']) !!}</h4>
+                    <div class="w-24 aspect-[2/3] rounded-lg @if(!str_starts_with($item['cover_image'] ?? '', '/storage/')) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden">
+                        @if(str_starts_with($item['cover_image'] ?? '', '/storage/'))
+                            <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
+                        @else
+                            <h4 class="text-[9px] font-bold uppercase leading-tight mb-1 relative z-10">{!! str_replace(' ', '<br>', $item['judul_buku']) !!}</h4>
+                        @endif
                     </div>
 
                     <!-- Book Info -->

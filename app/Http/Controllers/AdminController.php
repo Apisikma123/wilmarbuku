@@ -81,7 +81,8 @@ class AdminController extends Controller
         $validated = $request->validate([
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
-            'kategori' => 'required|string',
+            'kategori' => 'required|array',
+            'kategori.*' => 'string',
             'deskripsi' => 'nullable|string',
             'jumlah_halaman' => 'nullable|string',
             'badge' => 'nullable|string',
@@ -98,6 +99,7 @@ class AdminController extends Controller
         }
 
         unset($validated['cover_file']);
+        $validated['kategori'] = implode(', ', $request->kategori);
 
         KatalogBuku::create($validated);
 
@@ -111,7 +113,8 @@ class AdminController extends Controller
         $validated = $request->validate([
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
-            'kategori' => 'required|string',
+            'kategori' => 'required|array',
+            'kategori.*' => 'string',
             'deskripsi' => 'nullable|string',
             'jumlah_halaman' => 'nullable|string',
             'badge' => 'nullable|string',
@@ -128,6 +131,7 @@ class AdminController extends Controller
         }
 
         unset($validated['cover_file']);
+        $validated['kategori'] = implode(', ', $request->kategori);
 
         $book->update($validated);
 

@@ -16,11 +16,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-6">
             <div class="rounded-lg p-4 md:p-8 flex items-center justify-center">
-                <div class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden bg-gradient-to-br {{ $buku->cover_image }}">
-                    <div>
-                        <h4 class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight">{!! str_replace(' ', '<br/>', $buku->judul_buku) !!}</h4>
-                        <p class="text-xs text-white border-t border-white/30 pt-2 mt-2 font-medium">Edisi Terbaru</p>
-                    </div>
+                <div class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden @if(!str_starts_with($buku->cover_image, '/storage/')) bg-gradient-to-br {{ $buku->cover_image }} @endif">
+                    @if(str_starts_with($buku->cover_image, '/storage/'))
+                        <img src="{{ $buku->cover_image }}" alt="{{ $buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
+                    @else
+                        <div class="relative z-20">
+                            <h4 class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight">{!! str_replace(' ', '<br/>', $buku->judul_buku) !!}</h4>
+                            <p class="text-xs text-white border-t border-white/30 pt-2 mt-2 font-medium">Edisi Terbaru</p>
+                        </div>
+                    @endif
                 </div>
             </div>
             

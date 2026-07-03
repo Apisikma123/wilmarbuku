@@ -40,13 +40,32 @@ class KatalogController extends Controller
                   ->orWhere('pengarang', 'like', "%{$search}%");
         }
 
-        if ($request->has('filter') && !empty($request->filter)) {
-            $filter = $request->filter;
-            if ($filter == 'terbaru') {
+        if ($request->has('kategori') && is_array($request->kategori)) {
+            $query->where(function($q) use ($request) {
+                foreach ($request->kategori as $cat) {
+                    $q->orWhere('kategori', 'like', '%' . $cat . '%');
+                }
+            });
+        }
+
+        if ($request->has('penerbit') && is_array($request->penerbit)) {
+            // Kita filter berdasarkan pengarang karena tidak ada kolom penerbit
+            $query->whereIn('pengarang', $request->penerbit);
+        }
+
+        if ($request->has('sort') && !empty($request->sort)) {
+            if ($request->sort == 'Terbaru') {
                 $query->latest();
-            } else {
-                $query->where('kategori', 'like', "%{$filter}%");
+            } elseif ($request->sort == 'Terpopuler') {
+                // Dummy sort for popular (we can just use id for now)
+                $query->orderBy('id', 'desc');
+            } elseif ($request->sort == 'Harga: Rendah ke Tinggi') {
+                $query->orderBy('harga_estimasi', 'asc');
+            } elseif ($request->sort == 'Harga: Tinggi ke Rendah') {
+                $query->orderBy('harga_estimasi', 'desc');
             }
+        } else {
+            $query->latest();
         }
 
         $buku = $query->paginate(12);

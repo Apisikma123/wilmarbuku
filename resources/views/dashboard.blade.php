@@ -13,12 +13,17 @@
             <div class="flex overflow-x-auto hide-scroll snap-x snap-mandatory gap-4 px-4 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4">
                 
                 @foreach($buku->take(4) as $index => $item)
-                <a href="{{ route('buku.detail', $item->id) }}" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] bg-gradient-to-b {{ $item->cover_image }} rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
+                <a href="{{ route('buku.detail', $item->id) }}" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-b {{ $item->cover_image }} @endif rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
+                    @if(str_starts_with($item->cover_image, '/storage/'))
+                        <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+                    @endif
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
                         <span class="inline-block bg-secondary text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">{{ $item->kategori }}</span>
-                        <h3 class="text-xl md:text-2xl font-bold font-display uppercase tracking-tight leading-tight">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
-                        <p class="text-[10px] md:text-xs text-white/70">Oleh: {{ $item->pengarang }}</p>
+                        @if(!str_starts_with($item->cover_image, '/storage/'))
+                            <h3 class="text-xl md:text-2xl font-bold font-display uppercase tracking-tight leading-tight">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+                        @endif
+                        <p class="text-[10px] md:text-xs text-white/90 drop-shadow-md font-medium">Oleh: {{ $item->pengarang }}</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
                         <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-slate-900 transition-colors">Lihat Detail</span>
@@ -111,11 +116,15 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @foreach($buku->take(4) as $item)
                     <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-lg shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 p-3 hover:-translate-y-0.5 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block">
-                        <div class="w-full aspect-[3/4] bg-gradient-to-br {{ $item->cover_image }} rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div class="w-full aspect-[3/4] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
+                            @if(str_starts_with($item->cover_image, '/storage/'))
+                                <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover">
+                            @else
+                                <h4 class="text-[9px] font-bold uppercase leading-tight z-10">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                            @endif
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                                 <span class="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-4 group-hover:translate-y-0 transition-transform">Lihat Detail</span>
                             </div>
-                            <h4 class="text-[9px] font-bold uppercase leading-tight">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
                         </div>
                         <div class="flex-grow flex flex-col justify-between">
                             <div>
@@ -185,8 +194,12 @@
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     @foreach($buku->skip(4)->take(5) as $item)
                     <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-lg p-3 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 hover:-translate-y-0.5 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block">
-                        <div class="w-full aspect-[3/4] bg-gradient-to-br {{ $item->cover_image }} rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
-                            <h4 class="text-[9px] font-bold uppercase leading-tight">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                        <div class="w-full aspect-[3/4] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
+                            @if(str_starts_with($item->cover_image, '/storage/'))
+                                <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover">
+                            @else
+                                <h4 class="text-[9px] font-bold uppercase leading-tight">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                            @endif
                         </div>
                         <div class="flex-grow flex flex-col">
                             <h3 class="text-xs font-bold text-on-surface line-clamp-2 leading-tight mb-1">{{ $item->judul_buku }}</h3>
