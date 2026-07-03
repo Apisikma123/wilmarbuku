@@ -71,59 +71,7 @@
         </div>
     </section>
 
-    <!-- Notifications -->
-    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-slate-200">
-            <h3 class="text-lg font-bold text-slate-900">Notifications</h3>
-            <p class="text-sm text-slate-500">Manage how you receive alerts and updates.</p>
-        </div>
-        <div class="p-6">
-            <div class="space-y-6">
-                <!-- Email Alerts -->
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">Email Notifications</h4>
-                        <p class="text-sm text-slate-500 mt-0.5">Receive emails for new donations and urgent requests.</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                        <input type="checkbox" class="sr-only peer" checked>
-                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                    </label>
-                </div>
-                
-                <hr class="border-slate-100">
 
-                <!-- Push Alerts -->
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">System Alerts</h4>
-                        <p class="text-sm text-slate-500 mt-0.5">Show notification dots in the dashboard for new activity.</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                        <input type="checkbox" class="sr-only peer" checked>
-                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                    </label>
-                </div>
-                
-                <hr class="border-slate-100">
-
-                <!-- Weekly Reports -->
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">Weekly Reports</h4>
-                        <p class="text-sm text-slate-500 mt-0.5">Receive a weekly summary of the hub's performance.</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                        <input type="checkbox" class="sr-only peer">
-                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                    </label>
-                </div>
-            </div>
-            <div class="flex justify-end pt-2 border-t border-slate-100 mt-6">
-                <button class="px-6 py-2.5 border border-slate-200 text-slate-700 bg-white font-bold rounded-lg hover:bg-slate-50 transition-colors shadow-sm text-sm mt-3">Save Preferences</button>
-            </div>
-        </div>
-    </section>
 
     <!-- Other Actions (Support & Logout) -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-12">
