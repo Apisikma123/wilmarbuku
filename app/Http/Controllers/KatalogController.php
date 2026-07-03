@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\KatalogBuku;
+use App\Models\Kategori;
+use App\Models\Penerbit;
 use Illuminate\Http\Request;
 
 class KatalogController extends Controller
@@ -27,7 +29,11 @@ class KatalogController extends Controller
             ->latest()
             ->take(4)
             ->get();
-        return view('dashboard', compact('buku', 'riwayat'));
+        
+        $categories = Kategori::orderBy('nama_kategori')->get();
+        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
+        
+        return view('dashboard', compact('buku', 'riwayat', 'categories', 'penerbits'));
     }
     public function kategori(Request $request)
     {
@@ -58,8 +64,11 @@ class KatalogController extends Controller
         }
 
         if ($request->has('penerbit') && is_array($request->penerbit)) {
-            // Kita filter berdasarkan pengarang karena tidak ada kolom penerbit
-            $query->whereIn('pengarang', $request->penerbit);
+            $query->whereIn('penerbit', $request->penerbit);
+        }
+
+        if ($request->has('pengarang') && is_array($request->pengarang)) {
+            $query->whereIn('pengarang', $request->pengarang);
         }
 
         if ($request->has('sort') && !empty($request->sort)) {
@@ -79,7 +88,10 @@ class KatalogController extends Controller
 
         $buku = $query->paginate(12);
         
-        return view('kategori', compact('buku'));
+        $categories = Kategori::orderBy('nama_kategori')->get();
+        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
+
+        return view('kategori', compact('buku', 'categories', 'penerbits'));
     }
 
     public function show($id)

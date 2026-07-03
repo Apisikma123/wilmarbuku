@@ -36,26 +36,34 @@
                     <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">KATEGORI</h3>
                     <div class="space-y-3">
                         @php
-                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
-                            $allCategories = [];
-                            foreach($dbCategoriesStr as $catStr) {
-                                if($catStr) {
-                                    $parts = array_map('trim', explode(',', $catStr));
-                                    $allCategories = array_merge($allCategories, $parts);
-                                }
-                            }
-                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
-                            $dbCategories = array_unique(array_merge($baseCats, $allCategories));
-                            sort($dbCategories);
-                            
                             $selectedCategories = request('kategori', []);
                         @endphp
-                        @foreach($dbCategories as $cat)
+                        @forelse($categories as $cat)
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" @if(in_array($cat, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
-                            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">{{ $cat }}</span>
+                            <input type="checkbox" name="kategori[]" value="{{ $cat->nama_kategori }}" @if(in_array($cat->nama_kategori, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">{{ $cat->nama_kategori }}</span>
                         </label>
-                        @endforeach
+                        @empty
+                        <span class="text-xs text-slate-400 italic">Belum ada kategori</span>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- Penerbit -->
+                <div class="mb-8">
+                    <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">PENERBIT</h3>
+                    <div class="space-y-3">
+                        @php
+                            $selectedPenerbit = request('penerbit', []);
+                        @endphp
+                        @forelse($penerbits as $pub)
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="penerbit[]" value="{{ $pub->nama_penerbit }}" @if(in_array($pub->nama_penerbit, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors line-clamp-1" title="{{ $pub->nama_penerbit }}">{{ $pub->nama_penerbit }}</span>
+                        </label>
+                        @empty
+                        <span class="text-xs text-slate-400 italic">Belum ada penerbit</span>
+                        @endforelse
                     </div>
                 </div>
 
@@ -64,16 +72,16 @@
                     <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">PENGARANG</h3>
                     <div class="space-y-3">
                         @php
-                            $dbPenerbit = \App\Models\KatalogBuku::select('pengarang')->whereNotNull('pengarang')->where('pengarang', '!=', '')->distinct()->pluck('pengarang');
-                            $selectedPenerbit = request('penerbit', []);
+                            $dbPengarang = \App\Models\KatalogBuku::select('pengarang')->whereNotNull('pengarang')->where('pengarang', '!=', '')->distinct()->pluck('pengarang');
+                            $selectedPengarang = request('pengarang', []);
                         @endphp
-                        @foreach($dbPenerbit as $pen)
+                        @foreach($dbPengarang as $pen)
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="penerbit[]" value="{{ $pen }}" @if(in_array($pen, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <input type="checkbox" name="pengarang[]" value="{{ $pen }}" @if(in_array($pen, $selectedPengarang)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
                             <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors line-clamp-1" title="{{ $pen }}">{{ $pen }}</span>
                         </label>
                         @endforeach
-                        @if($dbPenerbit->isEmpty())
+                        @if($dbPengarang->isEmpty())
                             <span class="text-xs text-slate-400 italic">Belum ada data</span>
                         @endif
                     </div>

@@ -120,6 +120,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard/export', [AdminController::class, 'exportDashboardPdf'])->name('admin.dashboard.export');
     Route::get('/catalog', [AdminController::class, 'catalog'])->name('admin.catalog');
     Route::post('/catalog/kategori', [AdminController::class, 'storeKategori'])->name('admin.kategori.store');
+    Route::post('/catalog/penerbit', [AdminController::class, 'storePenerbit'])->name('admin.penerbit.store');
     Route::post('/catalog/store', [AdminController::class, 'storeBook'])->name('admin.catalog.store');
     Route::post('/catalog/update/{id}', [AdminController::class, 'updateBook'])->name('admin.catalog.update');
     Route::post('/catalog/delete/{id}', [AdminController::class, 'destroyBook'])->name('admin.catalog.delete');

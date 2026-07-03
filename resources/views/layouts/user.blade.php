@@ -58,7 +58,7 @@
             <div class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
                 <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none">
                     <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500">search</span>
-                    <input type="text" name="search" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
+                    <input type="text" name="search" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
                     <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
                 </form>
             </div>
@@ -203,10 +203,12 @@
                 </a>
                 <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
                 <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                <a href="/kategori?kategori[]=Sosial+%26+Budaya" class="hover:text-primary transition-colors whitespace-nowrap">Sosial & Budaya</a>
-                <a href="/kategori?kategori[]=Fiksi+%26+Sastra" class="hover:text-primary transition-colors whitespace-nowrap">Fiksi & Sastra</a>
-                <a href="/kategori?kategori[]=Ekonomi+%26+Bisnis" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
-                <a href="/kategori?kategori[]=Sains+%26+Matematika" class="hover:text-primary transition-colors whitespace-nowrap">Sains & Matematika</a>
+                @php
+                    $navCategories = \App\Models\Kategori::orderBy('nama_kategori')->take(6)->get();
+                @endphp
+                @foreach($navCategories as $cat)
+                <a href="{{ route('kategori', ['kategori' => [$cat->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $cat->nama_kategori }}</a>
+                @endforeach
             </div>
         </div>
     </header>

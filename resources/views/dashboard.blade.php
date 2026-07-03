@@ -48,57 +48,24 @@
     <div class="flex-grow max-w-[1280px] mx-auto w-full px-4 md:px-6 py-6 md:py-12 space-y-8 md:space-y-16 pb-24 md:pb-12">
         
         <!-- Quick Categories -->
-        <div class="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
-            <!-- Icon 1 -->
-            <a href="/kategori?filter=buku-donasi" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">volunteer_activism</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Buku<br>Donasi</span>
-            </a>
-            <a href="/kategori?filter=ebook" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)] relative">
-                    <span class="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 bg-secondary text-white text-[8px] md:text-[9px] px-1.5 py-0.5 rounded font-bold">BARU</span>
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">devices</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">E-Book<br>Eksklusif</span>
-            </a>
-            <a href="/kategori?filter=jurnal" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">article</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Jurnal<br>Akademik</span>
-            </a>
-            <a href="/kategori?filter=modul" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">menu_book</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Modul<br>Kuliah</span>
-            </a>
-            <a href="/kategori?filter=bisnis" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">lightbulb</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Inspirasi<br>Bisnis</span>
-            </a>
-            <a href="/kategori?filter=teknologi" class="flex flex-col items-center gap-2 md:gap-3 group">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">science</span>
-                </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Sains &<br>Teknologi</span>
-            </a>
-            <a href="/kategori?filter=sastra" class="flex flex-col items-center gap-2 md:gap-3 group">
+        <div class="grid grid-cols-4 md:flex md:flex-wrap md:justify-center gap-3 md:gap-4">
+            @foreach($categories->take(7) as $cat)
+            <a href="{{ route('kategori', ['kategori' => [$cat->nama_kategori]]) }}" class="flex flex-col items-center gap-2 md:gap-3 group min-w-[72px]">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">auto_stories</span>
                 </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Sastra &<br>Novel</span>
+                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight line-clamp-2">{!! str_replace(' ', '<br>', $cat->nama_kategori) !!}</span>
             </a>
-            <a href="/kategori" class="flex flex-col items-center gap-2 md:gap-3 group">
+            @endforeach
+            
+            @if($categories->count() > 0)
+            <a href="/kategori" class="flex flex-col items-center gap-2 md:gap-3 group min-w-[72px]">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">more_horiz</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight">Lihat<br>Semua</span>
             </a>
+            @endif
         </div>
 
         <!-- Split Layout (Pilihan Kampus & Kategori Terpopuler) -->
@@ -129,7 +96,12 @@
                         <div class="flex-grow flex flex-col justify-between">
                             <div>
                                 <h3 class="text-xs font-bold text-on-surface line-clamp-2 leading-tight mb-1">{{ $item->judul_buku }}</h3>
-                                <p class="text-[10px] text-on-surface-variant mb-2">{{ $item->pengarang }}</p>
+                                <p class="text-[10px] text-on-surface-variant mb-1">{{ $item->pengarang }}</p>
+                                @if($item->penerbit)
+                                <p class="text-[10px] text-primary/80 flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[12px]">building</span> {{ $item->penerbit }}</p>
+                                @else
+                                <div class="mb-2"></div>
+                                @endif
                             </div>
                             <p class="text-primary font-bold text-sm mt-auto">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
                         </div>
@@ -148,31 +120,16 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-4">
-                    <!-- Publisher Brand -->
-                    <a href="/donasi?penerbit=erlangga" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                    @forelse($penerbits->take(6) as $pub)
+                    <a href="{{ route('kategori', ['penerbit' => [$pub->nama_penerbit]]) }}" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">menu_book</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Erlangga</span>
+                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary leading-tight line-clamp-2" title="{{ $pub->nama_penerbit }}">{{ $pub->nama_penerbit }}</span>
                     </a>
-                    <a href="/donasi?penerbit=gramedia" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">import_contacts</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Gramedia</span>
-                    </a>
-                    <a href="/donasi?penerbit=andi" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">school</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Andi Publ.</span>
-                    </a>
-                    <a href="/donasi?penerbit=informatika" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">science</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Informatika</span>
-                    </a>
-                    <a href="/donasi?penerbit=pearson" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">language</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Pearson</span>
-                    </a>
-                    <a href="/donasi?penerbit=wiley" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">workspace_premium</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary">Wiley</span>
-                    </a>
+                    @empty
+                    <div class="col-span-3 text-center text-sm text-slate-400 py-8 italic border border-dashed border-outline-variant/50 rounded-xl">
+                        Belum ada partner penerbit
+                    </div>
+                    @endforelse
                 </div>
             </div>
             

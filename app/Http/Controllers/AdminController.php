@@ -7,6 +7,7 @@ use App\Models\PesanMasuk;
 use App\Models\TransaksiCheckout;
 use App\Models\User;
 use App\Models\Kategori;
+use App\Models\Penerbit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -18,7 +19,7 @@ class AdminController extends Controller
     {
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $booksNeeded = KatalogBuku::where('status_buku', 'Dibutuhkan')->sum('stok_dibutuhkan');
-        $booksInProcess = TransaksiCheckout::where('status_tracking', '!=', 'Selesai')->count();
+        $booksInProcess = TransaksiCheckout::whereNotIn('status_tracking', ['Selesai', 'Dibatalkan'])->count();
         $totalUsers = User::where('role', '!=', 'admin')->count();
 
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])
@@ -74,8 +75,9 @@ class AdminController extends Controller
         $dibutuhkanSegera = KatalogBuku::where('status_buku', 'Dibutuhkan')->count();
         $berhasilTersedia = KatalogBuku::where('status_buku', 'Tersedia')->count();
         $categories = Kategori::orderBy('nama_kategori')->get();
+        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
 
-        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories'));
+        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories', 'penerbits'));
     }
 
     public function storeKategori(Request $request)
@@ -92,11 +94,26 @@ class AdminController extends Controller
         ]);
     }
 
+    public function storePenerbit(Request $request)
+    {
+        $request->validate([
+            'nama_penerbit' => 'required|string|max:255|unique:penerbits,nama_penerbit'
+        ]);
+
+        $penerbit = Penerbit::create(['nama_penerbit' => trim($request->nama_penerbit)]);
+
+        return response()->json([
+            'success' => true,
+            'penerbit' => $penerbit
+        ]);
+    }
+
     public function storeBook(Request $request)
     {
         $validated = $request->validate([
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
+            'penerbit' => 'nullable|string|max:255',
             'kategori' => 'nullable|array',
             'kategori.*' => 'string',
             'kategori_baru' => 'nullable|string',
@@ -116,17 +133,28 @@ class AdminController extends Controller
         }
 
         unset($validated['cover_file']);
+        unset($validated['kategori_baru']);
         
         $categories = $request->kategori ?? [];
         $categories = array_unique(array_filter($categories));
         
         if (empty($categories)) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
+            }
             return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
         }
         
         $validated['kategori'] = implode(', ', $categories);
 
         KatalogBuku::create($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Buku berhasil ditambahkan ke katalog!'
+            ]);
+        }
 
         return back()->with('success', 'Buku berhasil ditambahkan ke katalog!');
     }
@@ -138,6 +166,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
+            'penerbit' => 'nullable|string|max:255',
             'kategori' => 'nullable|array',
             'kategori.*' => 'string',
             'kategori_baru' => 'nullable|string',
@@ -157,6 +186,7 @@ class AdminController extends Controller
         }
 
         unset($validated['cover_file']);
+        unset($validated['kategori_baru']);
 
         $categories = $request->kategori ?? [];
         $categories = array_unique(array_filter($categories));
