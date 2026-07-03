@@ -18,7 +18,7 @@ Platform ini berfungsi sebagai sistem e-commerce donasi literasi. Perpustakaan m
 
 
 
-Pengguna dapat login (via Google/Email), memilih buku, dan membayar otomatis menggunakan Payment Gateway (Midtrans). Sistem akan menerbitkan Kode Tracking untuk memantau proses hingga buku masuk ke rak perpustakaan, sekaligus menjadi bukti validasi kelulusan bagi pengguna internal.
+Pengguna dapat login (via Google/Email), memilih buku, dan melakukan transfer pembayaran ke rekening Admin. Setelah itu, pengguna wajib mengunggah bukti transfer yang akan divalidasi oleh Admin. Setelah disetujui, Sistem akan menerbitkan Kode Tracking untuk memantau proses hingga buku masuk ke rak perpustakaan, sekaligus menjadi bukti validasi kelulusan bagi pengguna internal.
 
 
 
@@ -30,9 +30,9 @@ Otentikasi & Pemisahan Role: Pengguna mendaftar dan memilih apakah mereka penggu
 
 Pemilihan Buku: Pengguna melihat daftar buku yang dibutuhkan perpustakaan di halaman Katalog Publik dan menekan tombol Checkout.
 
-Pembayaran Otomatis (Midtrans): Pengguna diarahkan ke halaman pembayaran Midtrans. Status pembayaran terverifikasi otomatis via Webhook.
+Pembayaran & Upload Bukti: Pengguna melakukan transfer ke rekening Admin dan mengunggah screenshot bukti pembayaran di sistem.
 
-Generate Kode Tracking & Validasi: Sistem menerbitkan Kode Tracking (Contoh: WLH-202310-001). Khusus pengguna internal, transaksi yang berhasil otomatis tercatat sebagai pemenuhan syarat kelulusan.
+Validasi Admin & Generate Tracking: Admin memverifikasi bukti transfer. Jika dana sesuai dan disetujui, sistem menerbitkan Kode Tracking (Contoh: WLH-202310-001). Khusus pengguna internal, transaksi yang berhasil disetujui akan tercatat sebagai pemenuhan syarat kelulusan.
 
 Proses Pembelian (Oleh Admin): Admin membelikan buku fisik menggunakan dana yang masuk dan mengubah status menjadi "Sedang Dipesan Admin".
 
@@ -64,7 +64,7 @@ Tombol "Belikan Buku Ini" (Add to Cart / Checkout).
 
 Halaman Checkout & Pembayaran:
 
-Ringkasan pesanan dan integrasi Midtrans (Snap API) untuk pembayaran instan.
+Ringkasan pesanan, instruksi rekening tujuan, dan form upload bukti transfer/pembayaran (screenshot).
 
 Halaman Pelacakan & Dashboard User:
 
@@ -84,13 +84,13 @@ Sistem memiliki otorisasi bertingkat untuk mengelola operasional:
 
 Super Admin (Developer/IT):
 
-Akses penuh ke seluruh konfigurasi sistem, API Keys (Midtrans, Google OAuth), dan manajemen akun semua level.
+Akses penuh ke seluruh konfigurasi sistem, API Keys (Google OAuth), dan manajemen akun semua level.
 
 Admin (Petugas Perpustakaan):
 
 Manajemen Katalog Buku (menambah wishlist, mengupdate status ketersediaan di rak).
 
-Manajemen Checkout (melihat daftar pesanan, memproses pembelian, mengubah status tracking).
+Manajemen Checkout (memvalidasi bukti transfer yang diunggah, melihat daftar pesanan, memproses pembelian, mengubah status tracking).
 
 Rekapitulasi laporan donasi mahasiswa untuk validasi ke bagian akademik.
 
@@ -102,25 +102,49 @@ Rekapitulasi laporan donasi mahasiswa untuk validasi ke bagian akademik.
 
 
 
-Column NameData TypeKeteranganidPK (UUID/Int)Primary Keynama_lengkapVarcharNama donaturemailVarcharEmail untuk notifikasi & loginpasswordVarcharHash password (kosong jika login via Google)google_idVarcharNullable, ID unik dari Google OAuthidentitas_kampusVarcharNullable, berisi NIM/NIDN (Wajib diisi jika role = user_internal)roleEnum'super_admin', 'admin', 'user_internal', 'user_external'
+| Column Name | Data Type | Keterangan |
+| --- | --- | --- |
+| id | PK (UUID/Int) | Primary Key |
+| nama_lengkap | Varchar | Nama donatur |
+| email | Varchar | Email untuk notifikasi & login |
+| password | Varchar | Hash password (kosong jika login via Google) |
+| google_id | Varchar | Nullable, ID unik dari Google OAuth |
+| identitas_kampus | Varchar | Nullable, berisi NIM/NIDN (Wajib diisi jika role = user_internal) |
+| role | Enum | 'super_admin', 'admin', 'user_internal', 'user_external' |
 
 2. Tabel transaksi_checkout (Sistem Tracking & Payment)
 
 
 
-Column NameData TypeKeterangankode_trackingPK (Varchar)Primary Key (Contoh: WLH-XXXX)user_idFK (Int)Relasi ke tabel usersbuku_idFK (Int)Buku apa yang dibelikanmidtrans_idVarcharNullable, ID Transaksi dari Midtransstatus_pembayaranEnum'Unpaid', 'Paid', 'Expired', 'Failed'status_trackingEnum'Menunggu Pembayaran', 'Dana Diterima', 'Dipesan Admin', 'Dikirim ke Perpus', 'Masuk Katalog'validasi_lulusBooleantrue jika status_tracking mencapai 'Masuk Katalog' (Khusus mempermudah filter mahasiswa lulus)tanggal_checkoutTimestampWaktu user melakukan checkout
+| Column Name | Data Type | Keterangan |
+| --- | --- | --- |
+| kode_tracking | PK (Varchar) | Primary Key (Contoh: WLH-XXXX) |
+| user_id | FK (Int) | Relasi ke tabel users |
+| buku_id | FK (Int) | Buku apa yang dibelikan |
+| bukti_pembayaran | Varchar | Path/URL file screenshot bukti transfer |
+| status_pembayaran | Enum | 'Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Paid', 'Failed' |
+| status_tracking | Enum | 'Menunggu Pembayaran', 'Dana Diterima', 'Dipesan Admin', 'Dikirim ke Perpus', 'Masuk Katalog' |
+| validasi_lulus | Boolean | true jika status_tracking mencapai 'Masuk Katalog' |
+| tanggal_checkout | Timestamp | Waktu user melakukan checkout |
 
 3. Tabel katalog_buku (Wishlist & Inventaris)
 
 
 
-Column NameData TypeKeteranganidPK (UUID/Int)Primary Keyjudul_bukuVarcharJudul bukupengarangVarcharNama penulisharga_estimasiDecimal/IntHarga buku untuk acuan checkout via Midtransstatus_bukuEnum'Dibutuhkan' (Bisa di-checkout), 'Tersedia' (Sudah di rak)donatur_idFK (Varchar)Relasi ke kode_tracking untuk menampilkan nama penyumbang di detail katalog
+| Column Name | Data Type | Keterangan |
+| --- | --- | --- |
+| id | PK (UUID/Int) | Primary Key |
+| judul_buku | Varchar | Judul buku |
+| pengarang | Varchar | Nama penulis |
+| harga_estimasi | Decimal/Int | Harga buku untuk acuan checkout |
+| status_buku | Enum | 'Dibutuhkan' (Bisa di-checkout), 'Tersedia' (Sudah di rak) |
+| donatur_id | FK (Varchar) | Relasi ke kode_tracking penyumbang |
 
 5. Non-Functional Requirements
 
 
 
-Payment Gateway Integration: Sistem menggunakan Midtrans Snap API dan Webhook/Callback di backend untuk mendengarkan perubahan status pembayaran secara real-time.
+Manual Payment Validation: Pembayaran dilakukan secara manual via transfer bank. User harus mengunggah bukti bayar yang kemudian akan dicek/divalidasi oleh admin di dashboard.
 
 Authentication: Google OAuth 2.0 untuk menangani otentikasi.
 
