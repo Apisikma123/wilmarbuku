@@ -12,10 +12,11 @@ class KatalogController extends Controller
     public function index(Request $request)
     {
         $buku = KatalogBuku::orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")->latest()->get();
+        $mahasiswaCount = \App\Models\User::where('role', 'user')->count();
         if ($request->is('donasi')) {
             return view('donasi', compact('buku'));
         }
-        return view('welcome', compact('buku'));
+        return view('welcome', compact('buku', 'mahasiswaCount'));
     }
 
     public function dashboard()

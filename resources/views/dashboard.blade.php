@@ -48,17 +48,17 @@
     <div class="flex-grow max-w-[1280px] mx-auto w-full px-4 md:px-6 py-6 md:py-12 space-y-8 md:space-y-16 pb-24 md:pb-12">
         
         <!-- Quick Categories -->
-        <div class="grid grid-cols-4 md:flex md:flex-wrap md:justify-center gap-3 md:gap-4">
-            @foreach($categories->take(7) as $cat)
-            <a href="{{ route('kategori', ['kategori' => [$cat->nama_kategori]]) }}" class="flex flex-col items-center gap-2 md:gap-3 group min-w-[72px]">
+        <div class="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
+            @foreach($global_kategoris->take(7) as $kategori)
+            <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="flex flex-col items-center gap-2 md:gap-3 group min-w-[72px]">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">auto_stories</span>
+                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">{{ $kategori->icon ?? 'auto_stories' }}</span>
                 </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight line-clamp-2">{!! str_replace(' ', '<br>', $cat->nama_kategori) !!}</span>
+                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight line-clamp-2">{!! str_replace(' ', '<br>', $kategori->nama_kategori) !!}</span>
             </a>
             @endforeach
             
-            @if($categories->count() > 0)
+            @if($global_kategoris->count() > 0)
             <a href="/kategori" class="flex flex-col items-center gap-2 md:gap-3 group min-w-[72px]">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">more_horiz</span>
@@ -124,10 +124,11 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-4">
-                    @forelse($penerbits->take(6) as $pub)
-                    <a href="{{ route('kategori', ['penerbit' => [$pub->nama_penerbit]]) }}" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
-                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">menu_book</span>
-                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary leading-tight line-clamp-2" title="{{ $pub->nama_penerbit }}">{{ $pub->nama_penerbit }}</span>
+                    <!-- Publisher Brand -->
+                    @forelse($global_penerbits->take(6) as $penerbit)
+                    <a href="{{ route('kategori', ['penerbit' => [$penerbit->nama_penerbit]]) }}" class="bg-white rounded-xl shadow-sm border border-outline-variant/30 aspect-square flex flex-col items-center justify-center p-4 hover:border-primary transition-colors cursor-pointer group">
+                        <span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary mb-2 transition-colors">{{ $penerbit->icon ?? 'menu_book' }}</span>
+                        <span class="text-[11px] font-semibold text-center text-on-surface-variant group-hover:text-primary leading-tight line-clamp-2" title="{{ $penerbit->nama_penerbit }}">{{ $penerbit->nama_penerbit }}</span>
                     </a>
                     @empty
                     <div class="col-span-3 text-center text-sm text-slate-400 py-8 italic border border-dashed border-outline-variant/50 rounded-xl">

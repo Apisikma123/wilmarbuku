@@ -19,7 +19,7 @@
                 <!-- Avatar -->
                 <div class="flex flex-col items-center gap-3">
                     <div class="w-24 h-24 rounded-full bg-slate-200 overflow-hidden border-4 border-white shadow-md relative group cursor-pointer">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="Admin" class="w-full h-full object-cover">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->nama_lengkap) }}&background=0D8ABC&color=fff" alt="{{ Auth::user()->nama_lengkap }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                         </div>
@@ -30,11 +30,11 @@
                 <div class="flex-1 space-y-5">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name</label>
-                        <input type="text" value="Admin" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
+                        <input type="text" value="{{ Auth::user()->nama_lengkap }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Email Address</label>
-                        <input type="email" value="admin@wilmar.ac.id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
+                        <input type="email" value="{{ Auth::user()->email }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
                     </div>
                 </div>
             </div>

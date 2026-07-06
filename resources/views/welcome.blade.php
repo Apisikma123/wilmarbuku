@@ -37,7 +37,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">menu_book</span>
 </div>
 <div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">2,450+</p>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">{{ number_format($global_total_buku, 0, ',', '.') }}+</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Buku Terkumpul</p>
 </div>
 </div>
@@ -46,7 +46,7 @@
 <span class="material-symbols-outlined text-3xl text-primary">volunteer_activism</span>
 </div>
 <div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">845+</p>
+<p class="text-4xl font-bold text-primary mb-1 tracking-tight">{{ number_format($global_donatur_aktif, 0, ',', '.') }}+</p>
 <p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Donatur Aktif</p>
 </div>
 </div>
@@ -72,7 +72,7 @@
 <h2 class="text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight">Nurturing Entrepreneurs through Literacy</h2>
 <div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
 <p class="">
-                        Perpustakaan WBI melayani 3.000+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
+                        Perpustakaan WBI melayani {{ number_format($mahasiswaCount, 0, ',', '.') }}+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
                     </p>
 <p class="">
                         Bonus: mahasiswa WBI wajib donasi 1 buku sebagai syarat lulus. Jadi kontribusi Anda juga menginspirasi mereka untuk memberi balik.

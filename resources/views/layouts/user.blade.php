@@ -49,7 +49,9 @@
                 <div class="flex md:hidden items-center gap-4">
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
-                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                        @if(session('cart') && count(session('cart')) > 0)
+                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ count(session('cart')) }}</span>
+                        @endif
                     </a>
                 </div>
             </div>
@@ -67,7 +69,9 @@
             <div class="hidden md:flex items-center gap-6 ml-auto">
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                    @if(session('cart') && count(session('cart')) > 0)
+                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ count(session('cart')) }}</span>
+                    @endif
                 </a>
                 <div class="relative group pt-4 pb-4">
                     <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
@@ -179,6 +183,10 @@
                                 <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">settings</span>
                                 <span class="text-sm font-medium">Pengaturan Akun</span>
                             </a>
+                            <a href="/support" class="flex items-center gap-3 px-5 py-2.5 hover:bg-surface-container-low transition-colors text-on-surface group/link">
+                                <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">help</span>
+                                <span class="text-sm font-medium">Support</span>
+                            </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-error-container hover:text-error transition-colors text-on-surface group/link mt-1 text-left">
@@ -203,11 +211,8 @@
                 </a>
                 <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
                 <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                @php
-                    $navCategories = \App\Models\Kategori::orderBy('nama_kategori')->take(6)->get();
-                @endphp
-                @foreach($navCategories as $cat)
-                <a href="{{ route('kategori', ['kategori' => [$cat->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $cat->nama_kategori }}</a>
+                @foreach($global_kategoris->take(6) as $kategori)
+                <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
                 @endforeach
             </div>
         </div>
