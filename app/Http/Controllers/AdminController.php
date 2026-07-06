@@ -127,23 +127,29 @@ class AdminController extends Controller
             'harga_estimasi' => 'required|numeric',
             'status_buku' => 'required|string',
             'cover_image' => 'nullable|string',
-            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048', // Maksimal 2MB
+            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
         ]);
 
         if ($request->hasFile('cover_file')) {
             $file = $request->file('cover_file');
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($file->getRealPath());
-            
-            // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
-            $image->scale(width: 800);
-            $filename = time() . '_' . uniqid() . '.webp';
-            $path = 'covers/' . $filename;
-            
-            Storage::disk('public')->makeDirectory('covers');
-            $image->toWebp(75)->save(storage_path('app/public/' . $path));
-            
-            $validated['cover_image'] = '/storage/' . $path;
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file->getRealPath());
+                
+                // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+                $image->scale(width: 800);
+                $filename = time() . '_' . uniqid() . '.webp';
+                $path = 'covers/' . $filename;
+                
+                Storage::disk('public')->makeDirectory('covers');
+                $image->toWebp(75)->save(storage_path('app/public/' . $path));
+                
+                $validated['cover_image'] = '/storage/' . $path;
+            } catch (\Exception $e) {
+                // Fallback jika ekstensi GD tidak aktif
+                $path = $file->store('covers', 'public');
+                $validated['cover_image'] = '/storage/' . $path;
+            }
         }
 
         unset($validated['cover_file']);
@@ -191,23 +197,33 @@ class AdminController extends Controller
             'harga_estimasi' => 'required|numeric',
             'status_buku' => 'required|string',
             'cover_image' => 'nullable|string',
-            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048', // Maksimal 2MB
+            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
         ]);
 
         if ($request->hasFile('cover_file')) {
             $file = $request->file('cover_file');
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($file->getRealPath());
-            
-            // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
-            $image->scale(width: 800);
-            $filename = time() . '_' . uniqid() . '.webp';
-            $path = 'covers/' . $filename;
-            
-            Storage::disk('public')->makeDirectory('covers');
-            $image->toWebp(75)->save(storage_path('app/public/' . $path));
-            
-            $validated['cover_image'] = '/storage/' . $path;
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file->getRealPath());
+                
+                // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+                $image->scale(width: 800);
+                $filename = time() . '_' . uniqid() . '.webp';
+                $path = 'covers/' . $filename;
+                
+                Storage::disk('public')->makeDirectory('covers');
+                $image->toWebp(75)->save(storage_path('app/public/' . $path));
+                
+                $validated['cover_image'] = '/storage/' . $path;
+            } catch (\Exception $e) {
+                // Fallback jika ekstensi GD tidak aktif
+                $path = $file->store('covers', 'public');
+                $validated['cover_image'] = '/storage/' . $path;
+            }
+        } elseif (empty($validated['cover_image'])) {
+            // User did not upload a new file AND did not provide a new URL.
+            // Preserve the existing image by removing 'cover_image' from the update array.
+            unset($validated['cover_image']);
         }
 
         unset($validated['cover_file']);
@@ -217,12 +233,22 @@ class AdminController extends Controller
         $categories = array_unique(array_filter($categories));
         
         if (empty($categories)) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
+            }
             return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
         }
         
         $validated['kategori'] = implode(', ', $categories);
 
         $book->update($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data buku berhasil diperbarui!'
+            ]);
+        }
 
         return back()->with('success', 'Data buku berhasil diperbarui!');
     }

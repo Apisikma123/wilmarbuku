@@ -91,8 +91,8 @@
                         <div class="flex flex-col sm:flex-row gap-6 mb-6">
                             <!-- Book Cover -->
                             <div
-                                class="w-24 aspect-[2/3] rounded-lg @if(!str_starts_with($item['cover_image'] ?? '', '/storage/')) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden">
-                                @if(str_starts_with($item['cover_image'] ?? '', '/storage/'))
+                                class="w-24 aspect-[2/3] rounded-lg @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http'))) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden">
+                                @if((str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')))
                                     <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0"
                                         alt="">
                                 @else

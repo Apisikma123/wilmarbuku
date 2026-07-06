@@ -77,8 +77,8 @@
                 
                 @foreach($trx->details as $detail)
                 <div class="flex flex-col sm:flex-row gap-5 mb-5">
-                    <div class="w-16 h-24 rounded-lg @if(!str_starts_with($detail->buku->cover_image ?? '', '/storage/')) bg-gradient-to-br {{ $detail->buku->cover_image ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center shrink-0 shadow-sm text-center p-2 text-white overflow-hidden relative">
-                        @if(str_starts_with($detail->buku->cover_image ?? '', '/storage/'))
+                    <div class="w-16 h-24 rounded-lg @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http'))) bg-gradient-to-br {{ $detail->buku->cover_image ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center shrink-0 shadow-sm text-center p-2 text-white overflow-hidden relative">
+                        @if((str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')))
                             <img src="{{ $detail->buku->cover_image }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
                         @else
                             <div class="absolute inset-0 bg-black/30"></div>

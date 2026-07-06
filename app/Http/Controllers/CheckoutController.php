@@ -108,7 +108,7 @@ class CheckoutController extends Controller
         $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
 
         $request->validate([
-            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {

@@ -37,7 +37,7 @@
                     <div class="flex flex-col items-center gap-2 pointer-events-none" id="file-info">
                         <span class="material-symbols-outlined text-outline-variant text-3xl">upload_file</span>
                         <span class="text-sm text-on-surface-variant font-medium">Pilih gambar (JPG, PNG)</span>
-                        <span class="text-xs text-outline-variant">Maksimal 5MB</span>
+                        <span class="text-xs text-outline-variant">Auto Compress</span>
                     </div>
                 </div>
                 @error('bukti_pembayaran')
@@ -72,9 +72,72 @@
             fileInfo.innerHTML = `
                 <span class="material-symbols-outlined text-outline-variant text-3xl">upload_file</span>
                 <span class="text-sm text-on-surface-variant font-medium">Pilih gambar (JPG, PNG)</span>
-                <span class="text-xs text-outline-variant">Maksimal 5MB</span>
+                <span class="text-xs text-outline-variant">Auto Compress</span>
             `;
         }
     }
+    async function compressImage(file, maxWidth, maxHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height *= maxWidth / width));
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width *= maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob((blob) => {
+                        resolve(new File([blob], file.name.replace(/\.[^/.]+$/, ".webp"), {
+                            type: 'image/webp',
+                            lastModified: Date.now()
+                        }));
+                    }, 'image/webp', quality);
+                };
+                img.onerror = (error) => reject(error);
+            };
+            reader.onerror = (error) => reject(error);
+        });
+    }
+
+    document.querySelector('form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let form = this;
+        let btn = form.querySelector('button[type="submit"]');
+        let fileInput = form.querySelector('input[type="file"]');
+        
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">sync</span> Mengompres...';
+            
+            let originalFile = fileInput.files[0];
+            if (originalFile.type.startsWith('image/')) {
+                let compressedFile = await compressImage(originalFile, 1200, 1200, 0.8);
+                let dt = new DataTransfer();
+                dt.items.add(compressedFile);
+                fileInput.files = dt.files;
+            }
+        }
+        
+        form.submit();
+    });
 </script>
 @endsection

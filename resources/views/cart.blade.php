@@ -36,8 +36,8 @@
                                     <!-- Header Info -->
                                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
                                         <div class="flex gap-5">
-                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow @if(!str_starts_with($item['cover_image'] ?? '', '/storage/')) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center p-2 text-center text-white">
-                                                @if(str_starts_with($item['cover_image'] ?? '', '/storage/'))
+                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http'))) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center p-2 text-center text-white">
+                                                @if((str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')))
                                                     <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
                                                 @else
                                                     <h4 class="font-bold text-xs leading-tight tracking-tight relative z-20">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>

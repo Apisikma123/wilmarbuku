@@ -91,7 +91,7 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
                                 @if($b->cover_image)
-                                    @if(str_starts_with($b->cover_image, '/storage/'))
+                                    @if(str_starts_with($b->cover_image, '/storage/') || str_starts_with($b->cover_image, 'http'))
                                         <img src="{{ $b->cover_image }}" alt="Cover" class="w-10 h-14 object-cover rounded shadow-sm border border-slate-200 shrink-0">
                                     @else
                                         <div class="w-10 h-14 rounded shadow-sm border border-slate-200 shrink-0 bg-gradient-to-br {{ $b->cover_image }} flex items-center justify-center overflow-hidden">
@@ -251,15 +251,20 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Harga Estimasi (Rp) *</label>
-                    <input type="number" name="harga_estimasi" required min="0" step="1000" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="150000">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Harga Estimasi *</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">Rp</span>
+                        <input type="text" inputmode="numeric" name="harga_estimasi" required class="w-full border border-slate-200 rounded-lg py-2.5 pl-10 pr-3 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="150000">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Stok Dibutuhkan *</label>
-                    <input type="number" name="stok_dibutuhkan" required min="1" value="1" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                    <input type="text" inputmode="numeric" name="stok_dibutuhkan" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="10">
                 </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Buku *</label>
                     <select name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
@@ -290,13 +295,13 @@
                 <p class="text-xs font-bold uppercase text-slate-700">Gambar Sampul / Cover Buku</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload Berkas Gambar (Maks. 2MB)</label>
-                        <input type="file" name="cover_file" accept="image/jpeg,image/png,image/webp" onchange="validateFileSize(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-900 file:text-white hover:file:bg-green-800 transition-colors">
-                        <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 2 Megabyte.</p>
+                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload Berkas Gambar</label>
+                        <input type="file" id="cover_file_add" name="cover_file" accept="image/jpeg,image/png,image/webp" onchange="document.getElementById('cover_image_add').value = ''" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-900 file:text-white hover:file:bg-green-800 transition-colors">
+                        <p class="text-[10px] text-slate-400 mt-1">Sistem akan otomatis mengecilkan gambar.</p>
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-slate-600 mb-1">Atau Gunakan Link URL Gambar</label>
-                        <input type="text" name="cover_image" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-green-600 bg-white" placeholder="https://domain.com/image.jpg">
+                        <input type="text" id="cover_image_add" name="cover_image" oninput="document.getElementById('cover_file_add').value = ''" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-green-600 bg-white" placeholder="https://domain.com/image.jpg">
                     </div>
                 </div>
             </div>
@@ -325,7 +330,7 @@
             <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
-        <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-4" novalidate>
+        <form id="editForm" onsubmit="submitEditBook(event)" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Judul Buku *</label>
@@ -364,15 +369,20 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Harga Estimasi (Rp) *</label>
-                    <input type="number" id="edit_harga_estimasi" name="harga_estimasi" required min="0" step="1000" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Harga Estimasi *</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">Rp</span>
+                        <input type="text" inputmode="numeric" id="edit_harga_estimasi" name="harga_estimasi" required class="w-full border border-slate-200 rounded-lg py-2.5 pl-10 pr-3 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Stok Dibutuhkan *</label>
-                    <input type="number" id="edit_stok_dibutuhkan" name="stok_dibutuhkan" required min="1" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                    <input type="text" inputmode="numeric" id="edit_stok_dibutuhkan" name="stok_dibutuhkan" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
                 </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Buku *</label>
                     <select id="edit_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
@@ -403,13 +413,13 @@
                 <p class="text-xs font-bold uppercase text-slate-700">Gambar Sampul / Cover Buku</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload File Gambar Baru (Maks. 2MB)</label>
-                        <input type="file" name="cover_file" accept="image/jpeg,image/png,image/webp" onchange="validateFileSize(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-900 file:text-white hover:file:bg-green-800 transition-colors">
-                        <p class="text-[10px] text-slate-400 mt-1">Maksimal 2 Megabyte.</p>
+                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload File Gambar Baru</label>
+                        <input type="file" id="cover_file_edit" name="cover_file" accept="image/jpeg,image/png,image/webp" onchange="document.getElementById('edit_cover_image').value = ''" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-900 file:text-white hover:file:bg-green-800 transition-colors">
+                        <p class="text-[10px] text-slate-400 mt-1">Sistem akan otomatis mengecilkan gambar.</p>
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-slate-600 mb-1">Atau Gunakan Link URL Gambar</label>
-                        <input type="text" id="edit_cover_image" name="cover_image" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-green-600 bg-white">
+                        <input type="text" id="edit_cover_image" name="cover_image" oninput="document.getElementById('cover_file_edit').value = ''" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-green-600 bg-white" placeholder="https://domain.com/image.jpg">
                     </div>
                 </div>
             </div>
@@ -421,7 +431,10 @@
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-50">Batal</button>
-                <button type="submit" class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm">Perbarui Buku</button>
+                <button type="submit" id="btnSubmitEditBook" class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm flex items-center justify-center gap-2">
+                    <span class="btn-text">Perbarui Buku</span>
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin hidden spinner"></i>
+                </button>
             </div>
         </form>
     </div>
@@ -621,24 +634,65 @@ function confirmDelete(event, form) {
         }
     });
 }
-function validateFileSize(input) {
-    if (input.files && input.files[0]) {
-        if (input.files[0].size > 2 * 1024 * 1024) { // 2MB
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran File Terlalu Besar',
-                text: 'Maksimal ukuran file gambar adalah 2 MB. Silakan kompres atau pilih gambar lain.',
-                confirmButtonColor: '#dc2626'
-            });
-            input.value = ''; // Reset input
-        }
-    }
+
+
+async function compressImage(file, maxWidth, maxHeight, quality) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round((height *= maxWidth / width));
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round((width *= maxHeight / height));
+                        height = maxHeight;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name.replace(/\.[^/.]+$/, ".webp"), {
+                        type: 'image/webp',
+                        lastModified: Date.now()
+                    }));
+                }, 'image/webp', quality);
+            };
+            img.onerror = (error) => reject(error);
+        };
+        reader.onerror = (error) => reject(error);
+    });
 }
 
-function submitAddBook(event) {
+async function submitAddBook(event) {
     event.preventDefault();
     let form = event.target;
     let formData = new FormData(form);
+    
+    // Client-side compression
+    let fileInput = form.querySelector('input[type="file"]');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        let originalFile = fileInput.files[0];
+        if (originalFile.type.startsWith('image/')) {
+            let compressedFile = await compressImage(originalFile, 1200, 1200, 0.8);
+            formData.set('cover_file', compressedFile);
+        }
+    }
+
     let btn = document.getElementById('btnSubmitAddBook');
     
     // Disable button & show loading state
@@ -675,7 +729,13 @@ function submitAddBook(event) {
             result = JSON.parse(text);
         } catch(e) {
             console.error("RAW RESPONSE:", text);
-            throw new Error('Server merespons dengan HTML (Bukan JSON). Status: ' + response.status + '. Kemungkinan file gambar Anda terlalu besar (Max 2MB) atau koneksi terputus.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Menyimpan',
+                text: 'Terjadi kesalahan sistem atau ukuran file gambar melampaui batas wajar server (Maks. 8MB). Jika menggunakan Link URL, pastikan kolom file gambar dikosongkan.',
+                confirmButtonColor: '#003215'
+            });
+            return;
         }
 
         if (response.ok) {
@@ -745,5 +805,120 @@ function submitAddBook(event) {
         btn.innerHTML = originalHtml;
         lucide.createIcons();
     });
+}
+
+async function submitEditBook(event) {
+    event.preventDefault();
+    let form = event.target;
+    let formData = new FormData(form);
+    
+    // Client-side compression
+    let fileInput = form.querySelector('input[type="file"]');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        let originalFile = fileInput.files[0];
+        if (originalFile.type.startsWith('image/')) {
+            let compressedFile = await compressImage(originalFile, 1200, 1200, 0.8);
+            formData.set('cover_file', compressedFile);
+        }
+    }
+
+    let btn = document.getElementById('btnSubmitEditBook');
+    
+    // Disable button & show loading state
+    btn.disabled = true;
+    btn.querySelector('.btn-text').classList.add('hidden');
+    btn.querySelector('.spinner').classList.remove('hidden');
+
+    // Hapus error sebelumnya
+    form.querySelectorAll('.text-red-500').forEach(el => el.remove());
+    form.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+
+    try {
+        let response = await fetch(form.action, {
+            method: 'POST', // We use POST but FormData has _method=PUT
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: formData
+        });
+
+        if (response.status === 419) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sesi Kedaluwarsa',
+                text: 'Sesi Anda telah berakhir, silakan refresh halaman ini.',
+                confirmButtonColor: '#003215'
+            });
+            return;
+        }
+
+        let text = await response.text();
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch(e) {
+            console.error("RAW RESPONSE:", text);
+            // Show the first 1000 characters of the raw HTML to help debug
+            let errorPreview = text.substring(0, 500).replace(/<[^>]*>?/gm, ''); // Strip HTML tags
+            Swal.fire({
+                icon: 'error',
+                title: 'Server Error',
+                text: 'Response: ' + errorPreview,
+                confirmButtonColor: '#003215'
+            });
+            return;
+        }
+
+        if (response.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Data buku berhasil diperbarui!',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.reload();
+            });
+        } else {
+            if (response.status === 422 && result.errors) {
+                // Tampilkan error inline
+                for (let field in result.errors) {
+                    let inputName = field;
+                    if (field.startsWith('kategori.')) {
+                        inputName = 'kategori[]';
+                    }
+                    
+                    let input = form.querySelector(`[name="${inputName}"]`);
+                    if (input) {
+                        input.classList.add('border-red-500');
+                        let errorText = document.createElement('p');
+                        errorText.className = 'text-red-500 text-[10px] font-bold mt-1';
+                        errorText.innerText = result.errors[field][0];
+                        input.parentElement.appendChild(errorText);
+                    }
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memperbarui',
+                    text: result.message || 'Terjadi kesalahan.',
+                    confirmButtonColor: '#003215'
+                });
+            }
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Koneksi Terputus',
+            text: 'Gagal menghubungi server.',
+            confirmButtonColor: '#003215'
+        });
+    } finally {
+        // Re-enable button
+        btn.disabled = false;
+        btn.querySelector('.btn-text').classList.remove('hidden');
+        btn.querySelector('.spinner').classList.add('hidden');
+    }
 }
 </script>

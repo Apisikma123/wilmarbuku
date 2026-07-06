@@ -52,8 +52,8 @@
             <!-- Book Info -->
             <div class="p-6 border-b border-outline-variant/30">
                 <div class="flex gap-5">
-                    <div class="w-16 h-24 rounded-lg @if(!str_starts_with($transaksiDetail->buku->cover_image ?? '', '/storage/')) bg-gradient-to-br {{ $transaksiDetail->buku->cover_image }} @endif flex items-center justify-center shrink-0 shadow-sm text-center overflow-hidden relative bg-slate-100">
-                        @if(str_starts_with($transaksiDetail->buku->cover_image ?? '', '/storage/'))
+                    <div class="w-16 h-24 rounded-lg @if((!str_starts_with($transaksiDetail->buku->cover_image ?? '', '/storage/') && !str_starts_with($transaksiDetail->buku->cover_image ?? '', 'http'))) bg-gradient-to-br {{ $transaksiDetail->buku->cover_image }} @endif flex items-center justify-center shrink-0 shadow-sm text-center overflow-hidden relative bg-slate-100">
+                        @if((str_starts_with($transaksiDetail->buku->cover_image ?? '', '/storage/') || str_starts_with($transaksiDetail->buku->cover_image ?? '', 'http')))
                             <img src="{{ $transaksiDetail->buku->cover_image }}" alt="{{ $transaksiDetail->buku->judul_buku }}" class="w-full h-full object-cover">
                         @else
                             <div class="absolute inset-0 bg-black/30"></div>

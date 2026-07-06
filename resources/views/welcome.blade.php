@@ -98,8 +98,8 @@
 @foreach($buku as $item)
 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
 <a href="{{ route('buku.detail', $item->id) }}" class="block">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
-@if(str_starts_with($item->cover_image, '/storage/'))
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
+@if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
 <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
 <div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20">
