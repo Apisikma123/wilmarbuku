@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\TransaksiCheckout;
 use App\Models\TransaksiDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class CheckoutController extends Controller
 {
@@ -109,7 +112,18 @@ class CheckoutController extends Controller
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {
-            $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+            $file = $request->file('bukti_pembayaran');
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file->getRealPath());
+            
+            // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+            $image->scale(width: 800);
+            $filename = time() . '_' . uniqid() . '.webp';
+            $path = 'bukti_pembayaran/' . $filename;
+            
+            Storage::disk('public')->makeDirectory('bukti_pembayaran');
+            $image->toWebp(75)->save(storage_path('app/public/' . $path));
+            
             $transaksi->update([
                 'bukti_pembayaran' => '/storage/' . $path,
                 'status_tracking' => 'Menunggu Konfirmasi'

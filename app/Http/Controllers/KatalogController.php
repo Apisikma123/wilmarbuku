@@ -11,7 +11,10 @@ class KatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $buku = KatalogBuku::orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")->latest()->get();
+        $buku = KatalogBuku::where('status_buku', 'Dibutuhkan')
+            ->orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")
+            ->latest()
+            ->get();
         $mahasiswaCount = \App\Models\User::where('role', 'user')->count();
         if ($request->is('donasi')) {
             return view('donasi', compact('buku'));
@@ -22,7 +25,10 @@ class KatalogController extends Controller
     public function dashboard()
     {
         session(['is_user' => true]);
-        $buku = KatalogBuku::orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")->latest()->get();
+        $buku = KatalogBuku::where('status_buku', 'Dibutuhkan')
+            ->orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")
+            ->latest()
+            ->get();
         $riwayat = \App\Models\TransaksiDetail::with('buku')
             ->whereHas('transaksi', function($q) {
                 $q->where('user_id', auth()->id());
@@ -39,7 +45,7 @@ class KatalogController extends Controller
     public function kategori(Request $request)
     {
         session(['is_user' => true]);
-        $query = KatalogBuku::query();
+        $query = KatalogBuku::where('status_buku', 'Dibutuhkan');
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;

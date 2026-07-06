@@ -275,9 +275,9 @@
                     <input type="text" name="jumlah_halaman" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: 320 Halaman">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label (Opsional)</label>
-                    <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
-                        <option value="">Tidak Ada Label</option>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
+                    <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
+                        <option value="" disabled selected>-- Pilih Label --</option>
                         <option value="Prioritas">Prioritas</option>
                         <option value="Pilihan Utama">Pilihan Utama</option>
                         <option value="Trending">Trending</option>
@@ -388,9 +388,9 @@
                     <input type="text" id="edit_jumlah_halaman" name="jumlah_halaman" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label (Opsional)</label>
-                    <select id="edit_badge" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
-                        <option value="">Tidak Ada Label</option>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
+                    <select id="edit_badge" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
+                        <option value="" disabled selected>-- Pilih Label --</option>
                         <option value="Prioritas">Prioritas</option>
                         <option value="Pilihan Utama">Pilihan Utama</option>
                         <option value="Trending">Trending</option>
@@ -691,20 +691,43 @@ function submitAddBook(event) {
         } else {
             // Validation errors (422)
             if (response.status === 422) {
-                let errorHtml = '<ul class="text-left text-sm text-red-600 list-disc pl-5">';
-                for (let field in result.errors) {
-                    errorHtml += `<li>${result.errors[field][0]}</li>`;
-                }
-                errorHtml += '</ul>';
+                // Clear previous errors
+                form.querySelectorAll('.error-text').forEach(el => el.remove());
+                form.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
                 
+                let firstErrorField = null;
+                for (let field in result.errors) {
+                    // Handle array fields like kategori.0
+                    let inputName = field.includes('.') ? field.split('.')[0] + '[]' : field;
+                    let inputs = form.querySelectorAll(`[name="${inputName}"]`);
+                    
+                    if (inputs.length > 0) {
+                        let targetInput = inputs[inputs.length - 1]; // for checkboxes, put error after last checkbox container
+                        if(inputs[0].type === 'checkbox') {
+                            targetInput = inputs[0].closest('.grid') || inputs[0].parentElement;
+                        }
+                        
+                        inputs.forEach(inp => inp.classList.add('border-red-500'));
+                        
+                        let errorMsg = document.createElement('p');
+                        errorMsg.className = 'error-text text-red-500 text-[10px] mt-1 font-semibold';
+                        errorMsg.innerText = result.errors[field][0];
+                        targetInput.parentNode.insertBefore(errorMsg, targetInput.nextSibling);
+                        
+                        if (!firstErrorField) firstErrorField = inputs[0];
+                    }
+                }
+                
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Validasi Gagal!',
-                    html: errorHtml,
-                    confirmButtonColor: '#dc2626'
+                    title: 'Gagal',
+                    text: result.message || 'Terjadi kesalahan sistem.',
+                    confirmButtonColor: '#003215'
                 });
-            } else {
-                throw new Error(result.message || 'Gagal menyimpan buku. Status: ' + response.status);
             }
         }
     })

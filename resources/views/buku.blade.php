@@ -119,7 +119,6 @@
             <div class="border-t border-outline-variant/30 flex-grow pt-8">
                 <div class="flex items-center gap-8 border-b border-outline-variant/30 mb-8">
                     <button class="pb-3 text-primary font-bold border-b-[3px] border-primary text-base">Deskripsi Buku</button>
-                    <button class="pb-3 text-on-surface-variant hover:text-on-surface font-semibold text-base transition-colors">Detail Distribusi</button>
                 </div>
                 <div class="text-on-surface-variant text-base leading-relaxed space-y-5 prose prose-slate max-w-[75ch]">
                     {!! $buku->deskripsi !!}
@@ -131,6 +130,7 @@
 
 <script>
     const price = {{ $buku->harga_estimasi }};
+    const maxQty = {{ $buku->stok_dibutuhkan }};
     let qty = 1;
 
     function formatRupiah(num) {
@@ -144,8 +144,17 @@
     }
 
     document.getElementById('btn-plus').addEventListener('click', () => {
-        qty++;
-        render();
+        if (qty < maxQty) {
+            qty++;
+            render();
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'Stok Maksimal',
+                text: 'Anda tidak dapat mendonasikan lebih dari jumlah buku yang dibutuhkan saat ini.',
+                confirmButtonColor: '#003215'
+            });
+        }
     });
     document.getElementById('btn-minus').addEventListener('click', () => {
         if (qty > 1) qty--;

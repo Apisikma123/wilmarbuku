@@ -10,6 +10,9 @@ use App\Models\Kategori;
 use App\Models\Penerbit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -128,7 +131,18 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('cover_file')) {
-            $path = $request->file('cover_file')->store('covers', 'public');
+            $file = $request->file('cover_file');
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file->getRealPath());
+            
+            // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+            $image->scale(width: 800);
+            $filename = time() . '_' . uniqid() . '.webp';
+            $path = 'covers/' . $filename;
+            
+            Storage::disk('public')->makeDirectory('covers');
+            $image->toWebp(75)->save(storage_path('app/public/' . $path));
+            
             $validated['cover_image'] = '/storage/' . $path;
         }
 
@@ -181,7 +195,18 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('cover_file')) {
-            $path = $request->file('cover_file')->store('covers', 'public');
+            $file = $request->file('cover_file');
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file->getRealPath());
+            
+            // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+            $image->scale(width: 800);
+            $filename = time() . '_' . uniqid() . '.webp';
+            $path = 'covers/' . $filename;
+            
+            Storage::disk('public')->makeDirectory('covers');
+            $image->toWebp(75)->save(storage_path('app/public/' . $path));
+            
             $validated['cover_image'] = '/storage/' . $path;
         }
 
@@ -309,7 +334,11 @@ class AdminController extends Controller
             foreach ($transaction->details as $detail) {
                 if ($detail->buku) {
                     $newStok = max(0, $detail->buku->stok_dibutuhkan - $detail->qty);
-                    $detail->buku->update(['stok_dibutuhkan' => $newStok]);
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok == 0) {
+                        $updateDataBuku['status_buku'] = 'Tersedia';
+                    }
+                    $detail->buku->update($updateDataBuku);
                 }
             }
         }
@@ -384,45 +413,79 @@ class AdminController extends Controller
         return back()->with('success', 'Pengguna berhasil dihapus!');
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
-        $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
-        $totalTransactions = TransaksiCheckout::count();
-        $completedTransactions = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
-        $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])->latest()->take(10)->get();
+        $filter = $request->input('filter', '12_months');
 
-        $months = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
-            $months[$month->format('Y-m')] = [
-                'name' => $month->format('M'),
-                'funds' => 0,
-                'books' => 0,
-            ];
-        }
+        $query = TransaksiCheckout::query();
+        
+        $chartDataRaw = [];
+        $startDate = null;
 
-        $transactions = TransaksiCheckout::with('details')
-            ->where('status_pembayaran', 'Paid')
-            ->where('created_at', '>=', Carbon::now()->subMonths(11)->startOfMonth())
-            ->get();
-
-        foreach ($transactions as $trx) {
-            $key = $trx->created_at->format('Y-m');
-            if (isset($months[$key])) {
-                $months[$key]['funds'] += $trx->total_harga;
-                $months[$key]['books'] += $trx->details->sum('qty');
+        if ($filter == 'this_year') {
+            $startDate = Carbon::now()->startOfYear();
+            $diff = $startDate->diffInMonths(Carbon::now());
+            for ($i = $diff; $i >= 0; $i--) {
+                $month = Carbon::now()->subMonths($i);
+                $chartDataRaw[$month->format('Y-m')] = [
+                    'name' => $month->format('M'),
+                    'funds' => 0,
+                    'books' => 0,
+                ];
+            }
+        } elseif ($filter == '30_days') {
+            $startDate = Carbon::now()->subDays(29)->startOfDay();
+            for ($i = 29; $i >= 0; $i--) {
+                $day = Carbon::now()->subDays($i);
+                $chartDataRaw[$day->format('Y-m-d')] = [
+                    'name' => $day->format('d M'),
+                    'funds' => 0,
+                    'books' => 0,
+                ];
+            }
+        } else { // 12_months
+            $startDate = Carbon::now()->subMonths(11)->startOfMonth();
+            for ($i = 11; $i >= 0; $i--) {
+                $month = Carbon::now()->subMonths($i);
+                $chartDataRaw[$month->format('Y-m')] = [
+                    'name' => $month->format('M'),
+                    'funds' => 0,
+                    'books' => 0,
+                ];
             }
         }
 
-        $maxFunds = max(array_column($months, 'funds'));
-        $maxBooks = max(array_column($months, 'books'));
+        // Apply date filter to top metrics
+        $metricsQuery = TransaksiCheckout::where('created_at', '>=', $startDate);
+        
+        $totalDonations = (clone $metricsQuery)->where('status_pembayaran', 'Paid')->sum('total_harga');
+        $totalTransactions = (clone $metricsQuery)->count();
+        $completedTransactions = (clone $metricsQuery)->where('status_tracking', 'Selesai')->count();
+        
+        $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])->latest()->take(10)->get();
+
+        $transactions = TransaksiCheckout::with('details')
+            ->where('status_pembayaran', 'Paid')
+            ->where('created_at', '>=', $startDate)
+            ->get();
+
+        foreach ($transactions as $trx) {
+            $key = $filter == '30_days' ? $trx->created_at->format('Y-m-d') : $trx->created_at->format('Y-m');
+            if (isset($chartDataRaw[$key])) {
+                $chartDataRaw[$key]['funds'] += $trx->total_harga;
+                $chartDataRaw[$key]['books'] += $trx->details->sum('qty');
+            }
+        }
+
+        $maxFunds = max(array_column($chartDataRaw, 'funds') ?: [0]);
+        $maxBooks = max(array_column($chartDataRaw, 'books') ?: [0]);
         
         $maxFunds = $maxFunds > 0 ? $maxFunds : 1;
         $maxBooks = $maxBooks > 0 ? $maxBooks : 1;
 
-        $chartData = array_values($months);
+        $chartData = array_values($chartDataRaw);
 
-        return view('admins.reports', compact('totalDonations', 'totalTransactions', 'completedTransactions', 'recentTransactions', 'chartData', 'maxFunds', 'maxBooks'));
+        return view('admins.reports', compact('totalDonations', 'totalTransactions', 'completedTransactions', 'recentTransactions', 'chartData', 'maxFunds', 'maxBooks', 'filter'));
     }
 
     public function exportPdf()
