@@ -121,7 +121,7 @@
                     <button class="pb-3 text-primary font-bold border-b-[3px] border-primary text-base">Deskripsi Buku</button>
                 </div>
                 <div class="text-on-surface-variant text-base leading-relaxed space-y-5 prose prose-slate max-w-[75ch]">
-                    {!! $buku->deskripsi !!}
+                    {!! nl2br(htmlspecialchars($buku->deskripsi, ENT_QUOTES, 'UTF-8')) !!}
                 </div>
             </div>
         </div>

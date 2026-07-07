@@ -33,7 +33,6 @@ class AuthController extends Controller
             \Illuminate\Support\Facades\Log::info('Login attempt', [
                 'user_id' => $user->id,
                 'has_trusted_cookie' => $request->hasCookie('trusted_device_user_' . $user->id),
-                'all_cookies' => $request->cookies->all(),
                 'remember_input' => $request->has('remember'),
                 'remember_value' => $request->input('remember')
             ]);
@@ -50,7 +49,7 @@ class AuthController extends Controller
             }
 
             // Generate 6-digit OTP
-            $otpCode = (string) mt_rand(100000, 999999);
+            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             
             $user->update([
                 'otp_code' => $otpCode,
@@ -101,7 +100,7 @@ class AuthController extends Controller
         if (!$user) return redirect()->route('login');
 
         // Generate new 6-digit OTP
-        $otpCode = (string) mt_rand(100000, 999999);
+        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
             'otp_code' => $otpCode,
@@ -178,7 +177,7 @@ class AuthController extends Controller
         ]);
 
         // Generate 6-digit OTP
-        $otpCode = (string) mt_rand(100000, 999999);
+        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
             'otp_code' => $otpCode,
@@ -215,7 +214,8 @@ class AuthController extends Controller
     {
         try {
             // Disable SSL verification for local Windows development (cURL error 60)
-            $guzzleClient = new \GuzzleHttp\Client(['verify' => false]);
+            $verifySSL = config('app.env') === 'production';
+        $guzzleClient = new \GuzzleHttp\Client(['verify' => $verifySSL]);
             $googleUser = Socialite::driver('google')->setHttpClient($guzzleClient)->user();
 
             // Check if user already exists
@@ -272,7 +272,7 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email tidak ditemukan di sistem kami.']);
         }
 
-        $otpCode = (string) mt_rand(100000, 999999);
+        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
             'otp_code' => $otpCode,
@@ -314,7 +314,7 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
         if (!$user) return redirect()->route('password.request');
 
-        $otpCode = (string) mt_rand(100000, 999999);
+        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
             'otp_code' => $otpCode,

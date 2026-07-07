@@ -16,12 +16,7 @@ Route::get('/', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('home');
 
-Route::get('/debug-cookies', function (\Illuminate\Http\Request $request) {
-    return response()->json([
-        'cookies' => $request->cookies->all(),
-        'session' => $request->session()->all()
-    ]);
-});
+
 
 Route::get('/donasi', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
@@ -45,7 +40,7 @@ Route::middleware('guest')->group(function () {
     
     // OTP Routes (Login)
     Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp.show');
-    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->middleware('throttle:5,1')->name('otp.verify');
     Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
     // Forgot Password Routes
@@ -53,7 +48,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
     
     Route::get('/forgot-password/otp', [AuthController::class, 'showForgotOtpForm'])->name('password.otp.show');
-    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->name('password.otp.verify');
+    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->middleware('throttle:5,1')->name('password.otp.verify');
     Route::post('/forgot-password/otp/resend', [AuthController::class, 'resendForgotOtp'])->name('password.otp.resend');
     
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
@@ -120,7 +115,7 @@ foreach ($staticPages as $uri => $view) {
 
 use App\Http\Controllers\AdminController;
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard/export', [AdminController::class, 'exportDashboardPdf'])->name('admin.dashboard.export');
     Route::get('/catalog', [AdminController::class, 'catalog'])->name('admin.catalog');

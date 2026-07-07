@@ -22,6 +22,7 @@ class ProfileController extends Controller
 
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
+            'identitas_kampus' => 'nullable|string|max:255',
         ];
 
         // If not logged in via google, they can update their email
@@ -32,6 +33,8 @@ class ProfileController extends Controller
         $request->validate($rules);
 
         $user->nama_lengkap = $request->nama_lengkap;
+        $user->identitas_kampus = $request->identitas_kampus;
+        
         if (!$user->google_id) {
             $user->email = $request->email;
         }
