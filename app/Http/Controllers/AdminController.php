@@ -134,7 +134,7 @@ class AdminController extends Controller
             $file = $request->file('cover_file');
             try {
                 $manager = new ImageManager(new Driver());
-                $image = $manager->read($file->getRealPath());
+                $image = $manager->decode($file->getRealPath());
                 
                 // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
                 $image->scale(width: 800);
@@ -142,7 +142,7 @@ class AdminController extends Controller
                 $path = 'covers/' . $filename;
                 
                 Storage::disk('public')->makeDirectory('covers');
-                $image->toWebp(75)->save(storage_path('app/public/' . $path));
+                $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
                 
                 $validated['cover_image'] = '/storage/' . $path;
             } catch (\Exception $e) {
@@ -204,7 +204,7 @@ class AdminController extends Controller
             $file = $request->file('cover_file');
             try {
                 $manager = new ImageManager(new Driver());
-                $image = $manager->read($file->getRealPath());
+                $image = $manager->decode($file->getRealPath());
                 
                 // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
                 $image->scale(width: 800);
@@ -212,7 +212,7 @@ class AdminController extends Controller
                 $path = 'covers/' . $filename;
                 
                 Storage::disk('public')->makeDirectory('covers');
-                $image->toWebp(75)->save(storage_path('app/public/' . $path));
+                $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
                 
                 $validated['cover_image'] = '/storage/' . $path;
             } catch (\Exception $e) {

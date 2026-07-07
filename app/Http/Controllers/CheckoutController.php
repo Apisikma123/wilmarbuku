@@ -126,7 +126,7 @@ class CheckoutController extends Controller
             $file = $request->file('bukti_pembayaran');
             try {
                 $manager = new ImageManager(new Driver());
-                $image = $manager->read($file->getRealPath());
+                $image = $manager->decode($file->getRealPath());
                 
                 // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
                 $image->scale(width: 800);
@@ -134,7 +134,7 @@ class CheckoutController extends Controller
                 $path = 'bukti_pembayaran/' . $filename;
                 
                 Storage::disk('public')->makeDirectory('bukti_pembayaran');
-                $image->toWebp(75)->save(storage_path('app/public/' . $path));
+                $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
                 
                 $transaksi->update([
                     'bukti_pembayaran' => '/storage/' . $path,
