@@ -43,11 +43,11 @@
                 </a>
             </div>
             <nav class="hidden md:flex gap-8">
-                <a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider" href="/donasi">Donasi</a>
-                <a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider" href="#">Lacak Status</a>
+                <a class="font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider {{ request()->is('/') ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant' }}" href="/">Donasi</a>
+                <a class="font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider {{ request()->is('track') ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant' }}" href="/track">Lacak Status</a>
             </nav>
             <div class="flex items-center gap-4">
-                <a href="/login" class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi Sekarang</a>
+                <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi Sekarang</a>
             </div>
         </div>
     </header>
@@ -76,7 +76,7 @@
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/donasi">Buku Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/">Buku Donasi</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Informasi -->

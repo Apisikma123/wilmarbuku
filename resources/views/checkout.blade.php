@@ -14,6 +14,7 @@
 
         <form action="{{ route('checkout.process') }}" method="POST" class="flex flex-col lg:flex-row gap-8 items-start">
             @csrf
+            <input type="hidden" name="type" value="{{ request('type') }}">
             <!-- Kiri: Identitas & Buku -->
             <div class="w-full lg:w-[60%] flex flex-col gap-6">
 

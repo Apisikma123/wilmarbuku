@@ -46,11 +46,20 @@
                     </a>
                 </div>
                 
+                @php
+                    $cartQty = 0;
+                    if(session('cart')) {
+                        foreach(session('cart') as $c) {
+                            $cartQty += $c['qty'];
+                        }
+                    }
+                @endphp
+
                 <div class="flex md:hidden items-center gap-4">
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
-                        @if(session('cart') && count(session('cart')) > 0)
-                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ count(session('cart')) }}</span>
+                        @if($cartQty > 0)
+                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $cartQty }}</span>
                         @endif
                     </a>
                 </div>
@@ -74,8 +83,8 @@
             <div class="hidden md:flex items-center gap-6 ml-auto">
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    @if(session('cart') && count(session('cart')) > 0)
-                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ count(session('cart')) }}</span>
+                    @if($cartQty > 0)
+                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
                     @endif
                 </a>
                 <div class="relative group pt-4 pb-4">
@@ -276,7 +285,7 @@
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/donasi">Buku Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/">Buku Donasi</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Informasi -->
@@ -492,5 +501,36 @@
             }
         }
     </script>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        });
+    </script>
+    @endif
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>

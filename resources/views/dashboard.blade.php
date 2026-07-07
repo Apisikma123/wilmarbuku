@@ -205,7 +205,7 @@
                 </div>
                 @empty
                 <div class="col-span-full py-8 text-center text-on-surface-variant border border-dashed border-outline-variant/50 rounded-xl">
-                    <p class="text-sm font-medium">Anda belum pernah melakukan donasi buku. <a href="{{ route('donasi') }}" class="text-primary hover:underline">Mulai sekarang!</a></p>
+                    <p class="text-sm font-medium">Anda belum pernah melakukan donasi buku. <a href="{{ route('home') }}" class="text-primary hover:underline">Mulai sekarang!</a></p>
                 </div>
                 @endforelse
             </div>

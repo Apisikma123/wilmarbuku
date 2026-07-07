@@ -16,12 +16,12 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-6">
             <div class="rounded-lg p-4 md:p-8 flex items-center justify-center">
-                <div class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden @if((!str_starts_with($buku->cover_image, '/storage/') && !str_starts_with($buku->cover_image, 'http'))) bg-gradient-to-br {{ $buku->cover_image }} @endif">
+                <div id="product-cover-image" class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden @if((!str_starts_with($buku->cover_image, '/storage/') && !str_starts_with($buku->cover_image, 'http'))) bg-gradient-to-br {{ $buku->cover_image }} @endif">
                     @if((str_starts_with($buku->cover_image, '/storage/') || str_starts_with($buku->cover_image, 'http')))
                         <img src="{{ $buku->cover_image }}" alt="{{ $buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
                     @else
-                        <div class="relative z-20">
+                        <div class="relative z-20 pointer-events-none">
                             <h4 class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight">{!! str_replace(' ', '<br/>', $buku->judul_buku) !!}</h4>
                             <p class="text-xs text-white border-t border-white/30 pt-2 mt-2 font-medium">Edisi Terbaru</p>
                         </div>
@@ -103,14 +103,31 @@
                         </div>
                         
                         <div class="flex flex-col sm:flex-row gap-3 w-full justify-end mt-2">
-                            <form action="{{ route('cart.add', $buku->id) }}" method="POST" class="w-full sm:w-auto flex-grow">
+                            @if($buku->stok_dibutuhkan <= 0)
+                            <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                Target Buku Terpenuhi
+                            </button>
+                            @elseif(isset(session('cart')[$buku->id]) && session('cart')[$buku->id]['qty'] >= $buku->stok_dibutuhkan)
+                            <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                                <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Maksimal di Keranjang
+                            </button>
+                            @else
+                            <form id="add-to-cart-form" action="{{ route('cart.add', $buku->id) }}" method="POST" class="w-full sm:w-auto flex-grow flex gap-3">
                                 @csrf
                                 <input type="hidden" name="qty" id="form-qty" value="1">
-                                <button type="submit" class="w-full bg-white text-primary border border-primary font-semibold text-sm md:text-base h-[52px] rounded-lg hover:bg-primary/5 transition-all flex items-center justify-center gap-2 px-8">
+                                <input type="hidden" name="action" id="form-action" value="cart">
+                                <button type="button" onclick="submitForm('cart')" class="flex-1 bg-white text-primary border border-primary font-semibold text-sm md:text-base h-[52px] rounded-lg hover:bg-primary/5 transition-all flex items-center justify-center gap-2">
                                     <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
                                     Keranjang
                                 </button>
+                                <button type="button" onclick="submitForm('checkout')" class="flex-1 bg-primary text-white font-semibold text-sm md:text-base h-[52px] rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]">payments</span>
+                                    Beli Langsung
+                                </button>
                             </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -128,6 +145,76 @@
     </div>
 </div>
 
+@if($buku_terkait->count() > 0)
+<div class="w-full bg-surface-container-low py-12 mt-12 border-t border-outline-variant/30">
+    <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl md:text-2xl font-bold text-on-surface tracking-tight">Buku Terkait Kategori {{ $buku->kategori }}</h2>
+            <a href="/kategori" class="bg-transparent border border-outline-variant text-primary font-semibold text-sm px-4 py-2 rounded-md hover:bg-primary/5 transition-colors">Lihat Semua</a>
+        </div>
+        
+        <div class="relative group/slider">
+            <div id="related-books-container" class="flex gap-6 overflow-x-auto hide-scroll snap-x snap-mandatory pb-8 pt-2">
+                @foreach($buku_terkait as $item)
+                <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/30 hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col w-[240px] md:w-[260px] flex-shrink-0 snap-start relative overflow-hidden">
+                    <a href="{{ route('buku.detail', $item->id) }}" class="flex-grow flex flex-col block">
+                        <!-- Image Area -->
+                        <div class="w-full aspect-[5/3] relative @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif flex items-center justify-center p-3 text-white text-center">
+                            @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
+                                <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+                                <div class="absolute inset-0 bg-black/40 z-10 pointer-events-none"></div>
+                                <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{{ $item->judul_buku }}</h3>
+                            @else
+                                <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+                            @endif
+                            @if($item->stok_dibutuhkan <= 0)
+                                <div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none">
+                                    <span class="bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-md">Terpenuhi</span>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <!-- Text Area -->
+                        <div class="p-4 md:p-5 flex flex-col flex-grow">
+                            <h3 class="text-[13px] md:text-sm font-semibold text-on-surface mb-2 line-clamp-2 leading-relaxed">{{ $item->judul_buku }}</h3>
+                            <p class="text-[11px] text-outline mb-5">{{ $item->kategori }}</p>
+                            
+                            <p class="text-primary font-bold text-sm md:text-base mb-5 mt-auto">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+                            
+                            <div class="flex justify-between items-center text-[10px] text-outline font-medium">
+                                <span class="text-primary">{{ $item->stok_dibutuhkan }} Dibutuhkan</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+            
+            <button onclick="scrollRelated(1)" class="absolute right-0 top-[40%] -translate-y-1/2 translate-x-4 w-12 h-12 bg-white shadow-[0_4px_20px_rgba(15,23,42,0.15)] rounded-full text-on-surface flex items-center justify-center hover:bg-surface-bright transition-colors z-10 opacity-0 group-hover/slider:opacity-100 hidden md:flex active:scale-95">
+                <span class="material-symbols-outlined text-[24px]">chevron_right</span>
+            </button>
+            <button onclick="scrollRelated(-1)" class="absolute left-0 top-[40%] -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white shadow-[0_4px_20px_rgba(15,23,42,0.15)] rounded-full text-on-surface flex items-center justify-center hover:bg-surface-bright transition-colors z-10 opacity-0 group-hover/slider:opacity-100 hidden md:flex active:scale-95">
+                <span class="material-symbols-outlined text-[24px]">chevron_left</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+    <style>
+    .hide-scroll::-webkit-scrollbar { display: none; }
+    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    
+    <script>
+    function scrollRelated(direction) {
+        const container = document.getElementById('related-books-container');
+        const scrollAmount = 280;
+        container.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+    }
+    </script>
+    @endif
+</div>
+
 <script>
     const price = {{ $buku->harga_estimasi }};
     const maxQty = {{ $buku->stok_dibutuhkan }};
@@ -138,27 +225,136 @@
     }
 
     function render() {
-        document.getElementById('subtotal-amount').textContent = formatRupiah(price * qty);
-        document.getElementById('qty-input').value = qty;
-        document.getElementById('form-qty').value = qty;
+        if (maxQty > 0) {
+            document.getElementById('subtotal-amount').textContent = formatRupiah(price * qty);
+            document.getElementById('qty-input').value = qty;
+            if(document.getElementById('form-qty')) {
+                document.getElementById('form-qty').value = qty;
+            }
+        }
     }
 
-    document.getElementById('btn-plus').addEventListener('click', () => {
-        if (qty < maxQty) {
-            qty++;
+    if(maxQty > 0) {
+        document.getElementById('btn-plus').addEventListener('click', () => {
+            if (qty < maxQty) {
+                qty++;
+                render();
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Stok Maksimal',
+                    text: 'Anda tidak dapat mendonasikan lebih dari jumlah buku yang dibutuhkan saat ini.',
+                    confirmButtonColor: '#003215'
+                });
+            }
+        });
+        document.getElementById('btn-minus').addEventListener('click', () => {
+            if (qty > 1) qty--;
             render();
+        });
+    }
+
+    function flyToCart() {
+        const cartBtns = document.querySelectorAll('a[href="/cart"]');
+        let cartBtn = null;
+        cartBtns.forEach(btn => {
+            if(btn.offsetParent !== null) {
+                cartBtn = btn;
+            }
+        });
+        
+        if(!cartBtn) return;
+        
+        const productImgContainer = document.getElementById('product-cover-image');
+        const productImg = productImgContainer ? (productImgContainer.querySelector('img') || productImgContainer) : null;
+        if(!productImg) return;
+        
+        const imgClone = productImg.cloneNode(true);
+        const rect = productImg.getBoundingClientRect();
+        const cartRect = cartBtn.getBoundingClientRect();
+        
+        imgClone.style.position = 'fixed';
+        imgClone.style.top = rect.top + 'px';
+        imgClone.style.left = rect.left + 'px';
+        imgClone.style.width = rect.width + 'px';
+        imgClone.style.height = rect.height + 'px';
+        imgClone.style.zIndex = '9999';
+        imgClone.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        imgClone.style.borderRadius = '8px';
+        imgClone.style.opacity = '0.9';
+        imgClone.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        if(imgClone.tagName !== 'IMG') {
+            imgClone.style.background = getComputedStyle(productImg).background;
+        }
+        
+        document.body.appendChild(imgClone);
+        
+        setTimeout(() => {
+            imgClone.style.top = cartRect.top + 'px';
+            imgClone.style.left = cartRect.left + 'px';
+            imgClone.style.width = '20px';
+            imgClone.style.height = '20px';
+            imgClone.style.opacity = '0.1';
+            imgClone.style.transform = 'scale(0.1)';
+        }, 50);
+        
+        setTimeout(() => {
+            imgClone.remove();
+            cartBtn.style.transition = 'transform 0.3s ease';
+            cartBtn.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                cartBtn.style.transform = 'scale(1)';
+            }, 300);
+        }, 800);
+    }
+
+    function submitForm(action) {
+        document.getElementById('form-action').value = action;
+        if (action === 'checkout') {
+            document.getElementById('add-to-cart-form').submit();
         } else {
-            Swal.fire({
-                icon: 'info',
-                title: 'Stok Maksimal',
-                text: 'Anda tidak dapat mendonasikan lebih dari jumlah buku yang dibutuhkan saat ini.',
-                confirmButtonColor: '#003215'
+            // Trigger animation first
+            flyToCart();
+            
+            let form = document.getElementById('add-to-cart-form');
+            let formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true,
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+                }
+            }).catch(err => {
+                console.error(err);
+                document.getElementById('add-to-cart-form').submit();
             });
         }
-    });
-    document.getElementById('btn-minus').addEventListener('click', () => {
-        if (qty > 1) qty--;
-        render();
-    });
+    }
 </script>
 @endsection

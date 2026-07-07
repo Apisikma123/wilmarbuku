@@ -15,11 +15,11 @@
         Pilih buku dari katalog, bayar online, dan buku langsung dikirim ke perpustakaan kampus WBI. Donasi Anda jadi referensi belajar mahasiswa — bukan cuma angka di laporan.
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
-<a href="{{ route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
+<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">volunteer_activism</span>
           Donasi Sekarang
         </a>
-<a href="{{ route('login') }}" class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
+<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">library_books</span>
           Pilih Buku Donasi
         </a>
@@ -72,7 +72,7 @@
 <h2 class="text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight">Nurturing Entrepreneurs through Literacy</h2>
 <div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
 <p class="">
-                        Perpustakaan WBI melayani {{ number_format($mahasiswaCount, 0, ',', '.') }}+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
+                        Perpustakaan WBI melayani 300+ mahasiswa aktif, tapi koleksi bukunya belum memadai. Donasi Anda langsung mengisi rak yang kosong — buku bisnis, teknologi, sampai sastra.
                     </p>
 <p class="">
                         Bonus: mahasiswa WBI wajib donasi 1 buku sebagai syarat lulus. Jadi kontribusi Anda juga menginspirasi mereka untuk memberi balik.
@@ -107,12 +107,17 @@
 </div>
 <div class="mt-auto text-center opacity-90 font-medium text-[10px] tracking-widest uppercase relative z-20">{{ $item->pengarang }}</div>
 @else
-<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20">
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20 pointer-events-none">
 <span class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
 <h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
 <div class="w-12 h-[2px] bg-white/50 mx-auto mt-2 rounded-full"></div>
 </div>
-<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-20">{{ $item->pengarang }}</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-20 pointer-events-none">{{ $item->pengarang }}</div>
+@endif
+@if($item->stok_dibutuhkan <= 0)
+<div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none">
+<span class="bg-primary text-white text-[12px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-md">Terpenuhi</span>
+</div>
 @endif
 </div>
 <div class="mb-3">
@@ -122,13 +127,19 @@
 <p class="text-primary font-bold text-lg mb-4">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
 </a>
 <div class="mt-auto pt-4">
+@if($item->stok_dibutuhkan <= 0)
+<button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Target Terpenuhi</button>
+@elseif(isset(session('cart')[$item->id]) && session('cart')[$item->id]['qty'] >= $item->stok_dibutuhkan)
+<button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Maksimal di Keranjang</button>
+@else
 @if(Auth::check())
-<form action="{{ route('cart.add', $item->id) }}" method="POST">
+<form class="ajax-cart-form" action="{{ route('cart.add', $item->id) }}" method="POST">
     @csrf
-    <button type="submit" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+    <button type="button" class="add-cart-btn w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
 </form>
 @else
 <a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
+@endif
 @endif
 </div>
 </div>
@@ -214,10 +225,119 @@
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Rak Perpustakaan Masih Kosong</h2>
 <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.</p>
-<a href="{{ route('login') }}" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
+<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
                         Donasi Sekarang
                     </a>
 </div>
 </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cartForms = document.querySelectorAll('.ajax-cart-form');
+    cartForms.forEach(form => {
+        const btn = form.querySelector('.add-cart-btn');
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Fly animation specific to homepage cards
+            const card = form.closest('.group');
+            const productImg = card.querySelector('.aspect-\\[2\\/3\\] img') || card.querySelector('.aspect-\\[2\\/3\\]');
+            const cartBtns = document.querySelectorAll('a[href="/cart"]');
+            let cartBtn = null;
+            cartBtns.forEach(b => { if(b.offsetParent !== null) cartBtn = b; });
+            
+            if (productImg && cartBtn) {
+                const imgClone = productImg.cloneNode(true);
+                const rect = productImg.getBoundingClientRect();
+                const cartRect = cartBtn.getBoundingClientRect();
+                
+                imgClone.style.position = 'fixed';
+                imgClone.style.top = rect.top + 'px';
+                imgClone.style.left = rect.left + 'px';
+                imgClone.style.width = rect.width + 'px';
+                imgClone.style.height = rect.height + 'px';
+                imgClone.style.zIndex = '9999';
+                imgClone.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                imgClone.style.borderRadius = '4px';
+                imgClone.style.opacity = '0.9';
+                imgClone.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                if(imgClone.tagName !== 'IMG') {
+                    imgClone.style.background = getComputedStyle(productImg).background;
+                }
+                
+                document.body.appendChild(imgClone);
+                
+                setTimeout(() => {
+                    imgClone.style.top = cartRect.top + 'px';
+                    imgClone.style.left = cartRect.left + 'px';
+                    imgClone.style.width = '20px';
+                    imgClone.style.height = '20px';
+                    imgClone.style.opacity = '0.1';
+                    imgClone.style.transform = 'scale(0.1)';
+                }, 50);
+                
+                setTimeout(() => {
+                    imgClone.remove();
+                    cartBtn.style.transition = 'transform 0.3s ease';
+                    cartBtn.style.transform = 'scale(1.3)';
+                    setTimeout(() => cartBtn.style.transform = 'scale(1)', 300);
+                }, 800);
+            }
+            
+            // Submit form via AJAX
+            const formData = new FormData(form);
+            formData.append('qty', 1);
+            formData.append('action', 'cart');
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                    
+                    // Update badges
+                    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+                    if(badges.length > 0) {
+                        badges.forEach(badge => {
+                            badge.innerText = data.cart_count;
+                        });
+                    } else if(cartBtn) {
+                        // Create badge if it didn't exist
+                        const badgeHtml = `<span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm md:top-[-6px] md:right-[-6px]">${data.cart_count}</span>`;
+                        cartBtn.insertAdjacentHTML('beforeend', badgeHtml);
+                    }
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+                }
+            }).catch(err => {
+                console.error(err);
+                form.submit();
+            });
+        });
+    });
+});
+</script>
 @endsection

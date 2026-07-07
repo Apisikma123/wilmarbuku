@@ -13,9 +13,11 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $type = $request->query('type');
+        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : session()->get('cart', []);
+        
         if (empty($cart)) {
             return redirect()->route('cart')->with('error', 'Keranjang Anda kosong.');
         }
@@ -30,7 +32,9 @@ class CheckoutController extends Controller
 
     public function process(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $type = $request->input('type');
+        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : session()->get('cart', []);
+        
         if (empty($cart)) {
             return redirect()->route('cart');
         }
@@ -87,7 +91,11 @@ class CheckoutController extends Controller
             }
         }
 
-        session()->forget('cart');
+        if ($type === 'buy_now') {
+            session()->forget('buy_now_cart');
+        } else {
+            session()->forget('cart');
+        }
 
         return redirect()->route('payment')->with('kode_tracking', $kode_tracking);
     }

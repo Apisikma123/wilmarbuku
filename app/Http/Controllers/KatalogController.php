@@ -106,6 +106,21 @@ class KatalogController extends Controller
     public function show($id)
     {
         $buku = KatalogBuku::findOrFail($id);
-        return view('buku', compact('buku'));
+        $buku_terkait = KatalogBuku::where('kategori', $buku->kategori)
+            ->where('id', '!=', $id)
+            ->where('status_buku', 'Dibutuhkan')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+            
+        if ($buku_terkait->isEmpty()) {
+            $buku_terkait = KatalogBuku::where('id', '!=', $id)
+                ->where('status_buku', 'Dibutuhkan')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        }
+
+        return view('buku', compact('buku', 'buku_terkait'));
     }
 }

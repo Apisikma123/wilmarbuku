@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
-                <span class="text-sm font-medium text-on-surface-variant">Total Tagihan</span>
+                <span class="text-sm font-medium text-on-surface-variant">Total Tagihan ({{ $transaksi->details->sum('qty') }} Buku)</span>
                 <span class="text-lg font-bold text-primary">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</span>
             </div>
         </div>

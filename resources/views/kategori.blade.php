@@ -125,6 +125,11 @@
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                             <span class="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-4 group-hover:translate-y-0 transition-transform">Lihat Detail</span>
                         </div>
+                        @if($item->stok_dibutuhkan <= 0)
+                            <div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none">
+                                <span class="bg-primary text-white text-[12px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-md">Terpenuhi</span>
+                            </div>
+                        @endif
                     </div>
                     <div class="flex-grow flex flex-col justify-between">
                         <div>
@@ -132,14 +137,20 @@
                             <h3 class="text-xs md:text-sm font-bold text-on-surface line-clamp-2 leading-tight mb-1 group-hover:text-primary transition-colors">{{ $item->judul_buku }}</h3>
                             <p class="text-[10px] text-on-surface-variant mb-2">{{ $item->pengarang }}</p>
                         </div>
-                        <div class="flex items-end justify-between mt-auto pt-3 border-t border-outline-variant/20">
-                            <div>
-                                <p class="text-primary font-bold text-sm md:text-base">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+                            <div class="flex items-end justify-between mt-auto pt-3 border-t border-outline-variant/20">
+                                <div>
+                                    <p class="text-primary font-bold text-sm md:text-base">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+                                </div>
+                                @if($item->stok_dibutuhkan > 0)
+                                <button class="bg-primary/10 text-primary hover:bg-primary hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                                </button>
+                                @else
+                                <div class="bg-surface-variant text-on-surface-variant w-8 h-8 rounded-full flex items-center justify-center cursor-not-allowed">
+                                    <span class="material-symbols-outlined text-[18px]">check</span>
+                                </div>
+                                @endif
                             </div>
-                            <button class="bg-primary/10 text-primary hover:bg-primary hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
-                            </button>
-                        </div>
                     </div>
                 </a>
                 @empty
