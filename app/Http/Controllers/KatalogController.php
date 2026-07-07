@@ -67,6 +67,8 @@ class KatalogController extends Controller
             } elseif ($request->filter == 'bestseller') {
                 // Dummy logic for bestseller: assume books with high stok_dibutuhkan or specific badge
                 $query->where('stok_dibutuhkan', '>', 10)->orWhere('badge', 'like', '%Bestseller%');
+            } elseif ($request->filter == 'prioritas') {
+                $query->where('badge', 'Prioritas');
             }
         }
 

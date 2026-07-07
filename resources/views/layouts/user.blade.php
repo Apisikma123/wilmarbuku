@@ -85,7 +85,7 @@
                     </a>
 
                     <!-- Hover Dropdown Menu -->
-                    <div class="absolute right-0 top-full w-80 bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
+                    <div class="absolute right-0 top-full w-[400px] bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
                         
                         <!-- User Info Header -->
                         <div class="bg-primary text-white p-4 rounded-t-2xl relative overflow-hidden">
@@ -117,10 +117,13 @@
                                     ->where('is_read_by_user', false)
                                     ->get();
                                     
-                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Dana Diterima', 'Dipesan Admin'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
-                                $countDikirim = $unreadTrx->where('status_tracking', 'Dikirim ke Perpus')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
-                                $countSelesai = $unreadTrx->where('status_tracking', 'Masuk Katalog')->count();
-                                $countBatal = $unreadTrx->whereIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDana = $unreadTrx->where('status_tracking', 'Dana Diterima')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDikirim = $unreadTrx->where('status_tracking', 'Dalam Pengiriman')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countSelesai = $unreadTrx->where('status_tracking', 'Selesai')->count();
+                                $countBatal = $unreadTrx->where(function($q) {
+                                    return $q->status_tracking == 'Dibatalkan' || $q->status_pembayaran == 'Failed';
+                                })->count();
                             @endphp
                             <div class="flex justify-between px-2">
                                 <a href="/transaksi?status=menunggu_konfirmasi" class="flex flex-col items-center gap-1.5 group/item">
@@ -131,6 +134,15 @@
                                         @endif
                                     </div>
                                     <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Menunggu Konfirmasi</span>
+                                </a>
+                                <a href="/transaksi?status=dana_diterima" class="flex flex-col items-center gap-1.5 group/item">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">account_balance_wallet</span>
+                                        @if($countDana > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countDana }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Dana Diterima</span>
                                 </a>
                                 <a href="/transaksi?status=sedang_dikirim" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">

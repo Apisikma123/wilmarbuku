@@ -74,6 +74,17 @@ class CheckoutController extends Controller
                 'harga_satuan' => $details['harga_estimasi'],
                 'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
             ]);
+
+            // Soft Booking: Kurangi stok saat checkout
+            $buku = \App\Models\KatalogBuku::find($id);
+            if ($buku) {
+                $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
+                $updateData = ['stok_dibutuhkan' => $newStok];
+                if ($newStok == 0) {
+                    $updateData['status_buku'] = 'Tersedia';
+                }
+                $buku->update($updateData);
+            }
         }
 
         session()->forget('cart');
@@ -113,21 +124,30 @@ class CheckoutController extends Controller
 
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($file->getRealPath());
-            
-            // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
-            $image->scale(width: 800);
-            $filename = time() . '_' . uniqid() . '.webp';
-            $path = 'bukti_pembayaran/' . $filename;
-            
-            Storage::disk('public')->makeDirectory('bukti_pembayaran');
-            $image->toWebp(75)->save(storage_path('app/public/' . $path));
-            
-            $transaksi->update([
-                'bukti_pembayaran' => '/storage/' . $path,
-                'status_tracking' => 'Menunggu Konfirmasi'
-            ]);
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file->getRealPath());
+                
+                // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+                $image->scale(width: 800);
+                $filename = time() . '_' . uniqid() . '.webp';
+                $path = 'bukti_pembayaran/' . $filename;
+                
+                Storage::disk('public')->makeDirectory('bukti_pembayaran');
+                $image->toWebp(75)->save(storage_path('app/public/' . $path));
+                
+                $transaksi->update([
+                    'bukti_pembayaran' => '/storage/' . $path,
+                    'status_tracking' => 'Menunggu Konfirmasi'
+                ]);
+            } catch (\Exception $e) {
+                // Fallback jika ekstensi GD tidak aktif (termasuk MissingDependencyException)
+                $path = $file->store('bukti_pembayaran', 'public');
+                $transaksi->update([
+                    'bukti_pembayaran' => '/storage/' . $path,
+                    'status_tracking' => 'Menunggu Konfirmasi'
+                ]);
+            }
         }
 
         return redirect()->route('success')->with('kode_tracking', $kode_tracking);

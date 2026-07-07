@@ -312,6 +312,21 @@ class AdminController extends Controller
             'alasan_pembatalan' => 'required|string|max:500',
         ]);
 
+        // Kembalikan stok karena dibatalkan
+        if ($transaction->status_tracking !== 'Dibatalkan') {
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
+                        $updateDataBuku['status_buku'] = 'Dibutuhkan';
+                    }
+                    $detail->buku->update($updateDataBuku);
+                }
+            }
+        }
+
         $transaction->update([
             'status_tracking' => 'Dibatalkan',
             'alasan_pembatalan' => $request->alasan_pembatalan,
@@ -353,9 +368,23 @@ class AdminController extends Controller
             $updateData['status_pembayaran'] = 'Failed';
         }
 
-        $transaction->update($updateData);
+        // Cek jika status diubah menjadi Dibatalkan dari status lain, maka stok dikembalikan
+        if ($request->status_tracking === 'Dibatalkan' && $transaction->status_tracking !== 'Dibatalkan') {
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
+                        $updateDataBuku['status_buku'] = 'Dibutuhkan';
+                    }
+                    $detail->buku->update($updateDataBuku);
+                }
+            }
+        }
 
-        if ($request->status_tracking === 'Selesai') {
+        // Cek jika status dibatalkan (dihidupkan kembali)
+        if ($request->status_tracking !== 'Dibatalkan' && $transaction->status_tracking === 'Dibatalkan') {
             $transaction->load('details.buku');
             foreach ($transaction->details as $detail) {
                 if ($detail->buku) {
@@ -368,6 +397,8 @@ class AdminController extends Controller
                 }
             }
         }
+
+        $transaction->update($updateData);
         $pesanText = "Status pesanan buku Anda #{$transaction->kode_tracking} saat ini: **{$request->status_tracking}**.";
         
         if ($request->pesan_admin) {

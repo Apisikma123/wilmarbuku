@@ -77,7 +77,7 @@
                     <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
                         <span class="material-symbols-outlined text-secondary">star</span> Pilihan Prioritas Kampus
                     </h2>
-                    <a href="#" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
+                    <a href="{{ route('kategori', ['filter' => 'prioritas']) }}" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -120,7 +120,7 @@
                     <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
                         <span class="material-symbols-outlined text-secondary">category</span> Partner Penerbit
                     </h2>
-                    <a href="#" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
+                    <a href="{{ route('kategori') }}" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4">
@@ -149,7 +149,7 @@
                     </h2>
                     <p class="text-sm text-on-surface-variant mt-1">Daftar buku wajib untuk mahasiswa semester berjalan.</p>
                 </div>
-                <a href="#" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
+                <a href="{{ route('kategori') }}" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
             </div>
 
             <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30">
@@ -188,7 +188,7 @@
                 <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
                     <span class="material-symbols-outlined text-secondary">history</span> Donasi Lagi Yuk
                 </h2>
-                <a href="#" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Riwayat</a>
+                <a href="/transaksi?status=selesai" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Riwayat</a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -200,7 +200,7 @@
                     <div>
                         <h4 class="text-xs font-bold text-on-surface line-clamp-1">{{ $trx->buku->judul_buku }}</h4>
                         <p class="text-[10px] text-on-surface-variant">Donasi: {{ $trx->created_at->format('d M Y') }}</p>
-                        <a href="{{ route('buku.detail', $trx->buku->id) }}" class="inline-block mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</a>
+                        <a href="{{ route('kategori') }}" class="inline-block mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</a>
                     </div>
                 </div>
                 @empty
