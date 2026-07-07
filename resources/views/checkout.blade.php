@@ -66,8 +66,8 @@
                                 <label class="block text-sm font-medium text-on-surface mb-1">Nama Lengkap <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" name="nama_lengkap" value="{{ Auth::user()->nama_lengkap }}"
-                                    class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg focus:border-[#004225] focus:ring-1 focus:ring-[#004225] outline-none transition-colors text-sm"
-                                    placeholder="Nama sesuai identitas" required>
+                                    class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg outline-none transition-colors text-sm text-gray-500 cursor-not-allowed"
+                                    placeholder="Nama sesuai identitas" readonly>
                                 @error('nama_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div>

@@ -27,7 +27,10 @@ class CheckoutController extends Controller
             $total += $details['harga_estimasi'] * $details['qty'];
         }
 
-        return view('checkout', compact('cart', 'total'));
+        return response()->view('checkout', compact('cart', 'total'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     public function process(Request $request)
@@ -51,9 +54,8 @@ class CheckoutController extends Controller
         // Update user data if internal
         if ($request->tipe_donatur == 'internal' && empty($user->identitas_kampus)) {
             $user->identitas_kampus = $request->identitas_kampus;
+            $user->save();
         }
-        $user->nama_lengkap = $request->nama_lengkap;
-        $user->save();
 
         $total = 0;
         foreach ($cart as $details) {
@@ -135,7 +137,7 @@ class CheckoutController extends Controller
             $file = $request->file('bukti_pembayaran');
             try {
                 $manager = new ImageManager(new Driver());
-                $image = $manager->decodePath($file->getRealPath());
+                $image = $manager->decode($file->getRealPath());
                 
                 // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
                 $image->scale(width: 800);
@@ -157,6 +159,15 @@ class CheckoutController extends Controller
                     'status_tracking' => 'Menunggu Konfirmasi'
                 ]);
             }
+
+            // Create notification (which also triggers the email)
+            \App\Models\PesanMasuk::create([
+                'user_id' => $transaksi->user_id,
+                'judul' => "Bukti Pembayaran Terkirim - #{$transaksi->kode_tracking}",
+                'isi_pesan' => "Bukti Pembayaran anda terkirim, mohon tunggu konfirmasi admin.<br><br>Detail Transaksi:<br>Nomor Resi/Pesanan: {$transaksi->kode_tracking}<br>Total Tagihan: Rp " . number_format($transaksi->total_harga, 0, ',', '.') . "<br>Status: Menunggu Konfirmasi",
+                'jenis' => 'info',
+                'is_read' => false,
+            ]);
         }
 
         return redirect()->route('success')->with('kode_tracking', $kode_tracking);

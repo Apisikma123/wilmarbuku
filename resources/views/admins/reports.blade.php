@@ -121,7 +121,7 @@
 <script>
 function filterTable(input) {
     let filter = input.value.toLowerCase();
-    let table = input.closest('div.bg-white').querySelector('table');
+    let table = input.closest('.shadow-sm').querySelector('table');
     if(!table) return;
     let tr = table.getElementsByTagName("tr");
     for (let i = 1; i < tr.length; i++) { 

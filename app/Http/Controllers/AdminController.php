@@ -114,144 +114,155 @@ class AdminController extends Controller
 
     public function storeBook(Request $request)
     {
-        $validated = $request->validate([
-            'judul_buku' => 'required|string|max:255',
-            'pengarang' => 'required|string|max:255',
-            'penerbit' => 'nullable|string|max:255',
-            'kategori' => 'nullable|array',
-            'kategori.*' => 'string',
-            'kategori_baru' => 'nullable|string',
-            'deskripsi' => 'nullable|string',
-            'jumlah_halaman' => 'nullable|string',
-            'badge' => 'nullable|string',
-            'stok_dibutuhkan' => 'required|integer',
-            'harga_estimasi' => 'required|numeric',
-            'status_buku' => 'required|string',
-            'cover_image' => 'nullable|string',
-            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
-        ]);
-
-        if ($request->hasFile('cover_file')) {
-            $file = $request->file('cover_file');
-            try {
-                $manager = new ImageManager(new Driver());
-                $image = $manager->read($file->getRealPath());
-                
-                // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
-                $image->scale(width: 800);
-                $filename = time() . '_' . uniqid() . '.webp';
-                $path = 'covers/' . $filename;
-                
-                Storage::disk('public')->makeDirectory('covers');
-                $image->toWebp(75)->save(storage_path('app/public/' . $path));
-                
-                $validated['cover_image'] = '/storage/' . $path;
-            } catch (\Exception $e) {
-                // Fallback jika ekstensi GD tidak aktif
-                $path = $file->store('covers', 'public');
-                $validated['cover_image'] = '/storage/' . $path;
-            }
-        }
-
-        unset($validated['cover_file']);
-        unset($validated['kategori_baru']);
-        
-        $categories = $request->kategori ?? [];
-        $categories = array_unique(array_filter($categories));
-        
-        if (empty($categories)) {
-            if ($request->ajax()) {
-                return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
-            }
-            return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
-        }
-        
-        $validated['kategori'] = implode(', ', $categories);
-
-        KatalogBuku::create($validated);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Buku berhasil ditambahkan ke katalog!'
+        try {
+            $validated = $request->validate([
+                'judul_buku' => 'required|string|max:255',
+                'pengarang' => 'required|string|max:255',
+                'penerbit' => 'nullable|string|max:255',
+                'kategori' => 'nullable|array',
+                'kategori.*' => 'string',
+                'kategori_baru' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
+                'jumlah_halaman' => 'nullable|string',
+                'badge' => 'nullable|string',
+                'stok_dibutuhkan' => 'required|integer',
+                'harga_estimasi' => 'required|numeric',
+                'status_buku' => 'required|string',
+                'cover_image' => 'nullable|string',
+                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
             ]);
-        }
 
-        return back()->with('success', 'Buku berhasil ditambahkan ke katalog!');
+            if ($request->hasFile('cover_file')) {
+                $file = $request->file('cover_file');
+                try {
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->decode($file->getRealPath());
+                    
+                    // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+                    $image->scale(width: 800);
+                    $filename = time() . '_' . uniqid() . '.webp';
+                    $path = 'covers/' . $filename;
+                    
+                    Storage::disk('public')->makeDirectory('covers');
+                    $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
+                    
+                    $validated['cover_image'] = '/storage/' . $path;
+                } catch (\Exception $e) {
+                    // Fallback jika ekstensi GD tidak aktif
+                    $path = $file->store('covers', 'public');
+                    $validated['cover_image'] = '/storage/' . $path;
+                }
+            }
+
+            unset($validated['cover_file']);
+            unset($validated['kategori_baru']);
+            
+            $categories = $request->kategori ?? [];
+            $categories = array_unique(array_filter($categories));
+            
+            if (empty($categories)) {
+                if ($request->ajax()) {
+                    return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
+                }
+                return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+            }
+            
+            $validated['kategori'] = implode(', ', $categories);
+
+            KatalogBuku::create($validated);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Buku berhasil ditambahkan ke katalog!'
+                ]);
+            }
+
+            return back()->with('success', 'Buku berhasil ditambahkan ke katalog!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+        }
     }
 
     public function updateBook(Request $request, $id)
     {
-        $book = KatalogBuku::findOrFail($id);
-        
-        $validated = $request->validate([
-            'judul_buku' => 'required|string|max:255',
-            'pengarang' => 'required|string|max:255',
-            'penerbit' => 'nullable|string|max:255',
-            'kategori' => 'nullable|array',
-            'kategori.*' => 'string',
-            'kategori_baru' => 'nullable|string',
-            'deskripsi' => 'nullable|string',
-            'jumlah_halaman' => 'nullable|string',
-            'badge' => 'nullable|string',
-            'stok_dibutuhkan' => 'required|integer',
-            'harga_estimasi' => 'required|numeric',
-            'status_buku' => 'required|string',
-            'cover_image' => 'nullable|string',
-            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
-        ]);
+        try {
+            $book = KatalogBuku::findOrFail($id);
 
-        if ($request->hasFile('cover_file')) {
-            $file = $request->file('cover_file');
-            try {
-                $manager = new ImageManager(new Driver());
-                $image = $manager->read($file->getRealPath());
-                
-                // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
-                $image->scale(width: 800);
-                $filename = time() . '_' . uniqid() . '.webp';
-                $path = 'covers/' . $filename;
-                
-                Storage::disk('public')->makeDirectory('covers');
-                $image->toWebp(75)->save(storage_path('app/public/' . $path));
-                
-                $validated['cover_image'] = '/storage/' . $path;
-            } catch (\Exception $e) {
-                // Fallback jika ekstensi GD tidak aktif
-                $path = $file->store('covers', 'public');
-                $validated['cover_image'] = '/storage/' . $path;
-            }
-        } elseif (empty($validated['cover_image'])) {
-            // User did not upload a new file AND did not provide a new URL.
-            // Preserve the existing image by removing 'cover_image' from the update array.
-            unset($validated['cover_image']);
-        }
-
-        unset($validated['cover_file']);
-        unset($validated['kategori_baru']);
-
-        $categories = $request->kategori ?? [];
-        $categories = array_unique(array_filter($categories));
-        
-        if (empty($categories)) {
-            if ($request->ajax()) {
-                return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
-            }
-            return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
-        }
-        
-        $validated['kategori'] = implode(', ', $categories);
-
-        $book->update($validated);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data buku berhasil diperbarui!'
+            $validated = $request->validate([
+                'judul_buku' => 'required|string|max:255',
+                'pengarang' => 'required|string|max:255',
+                'penerbit' => 'nullable|string|max:255',
+                'kategori' => 'nullable|array',
+                'kategori.*' => 'string',
+                'kategori_baru' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
+                'jumlah_halaman' => 'nullable|string',
+                'badge' => 'nullable|string',
+                'stok_dibutuhkan' => 'required|integer',
+                'harga_estimasi' => 'required|numeric',
+                'status_buku' => 'required|string',
+                'cover_image' => 'nullable|string',
+                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
             ]);
-        }
 
-        return back()->with('success', 'Data buku berhasil diperbarui!');
+            if ($request->hasFile('cover_file')) {
+                $file = $request->file('cover_file');
+                
+                try {
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->decode($file->getRealPath());
+                    
+                    $image->scale(width: 800);
+                    $filename = time() . '_' . uniqid() . '.webp';
+                    $path = 'covers/' . $filename;
+                    
+                    Storage::disk('public')->makeDirectory('covers');
+                    $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
+                    
+                    $validated['cover_image'] = '/storage/' . $path;
+                } catch (\Exception $e) {
+                    $path = $file->store('covers', 'public');
+                    $validated['cover_image'] = '/storage/' . $path;
+                }
+            } elseif (empty($validated['cover_image'])) {
+                // If neither new file nor URL is provided, keep old image
+                // Assuming the form sends the old URL or empty if not changed
+                unset($validated['cover_image']);
+            }
+
+            unset($validated['cover_file']);
+            unset($validated['kategori_baru']);
+
+            $categories = $request->kategori ?? [];
+            $categories = array_unique(array_filter($categories));
+            
+            if (empty($categories)) {
+                if ($request->ajax()) {
+                    return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
+                }
+                return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+            }
+            
+            $validated['kategori'] = implode(', ', $categories);
+
+            $book->update($validated);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Perubahan buku berhasil disimpan!'
+                ]);
+            }
+
+            return back()->with('success', 'Perubahan buku berhasil disimpan!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+        }
     }
 
     public function destroyBook($id)

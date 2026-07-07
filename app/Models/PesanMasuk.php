@@ -23,4 +23,14 @@ class PesanMasuk extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function ($pesanMasuk) {
+            // Check if the user exists and has an email
+            if ($pesanMasuk->user && $pesanMasuk->user->email) {
+                \Illuminate\Support\Facades\Mail::to($pesanMasuk->user->email)->send(new \App\Mail\NotificationMail($pesanMasuk));
+            }
+        });
+    }
 }

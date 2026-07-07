@@ -234,19 +234,18 @@
 @endsection
 
 <script>
-    function filterTable(input) {
-        let filter = input.value.toLowerCase();
-        // find the closest table inside the parent card (div.bg-white)
-        let table = input.closest('div.bg-white').querySelector('table');
-        if (!table) return;
-        let tr = table.getElementsByTagName("tr");
-        for (let i = 1; i < tr.length; i++) { // start from 1 to skip thead
-            let txtValue = tr[i].textContent || tr[i].innerText;
-            if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
+function filterTable(input) {
+    let filter = input.value.toLowerCase();
+    // find the closest table inside the parent card (div.bg-white)
+    let table = input.closest('.shadow-sm').querySelector('table');
+    if(!table) return;
+    let tr = table.getElementsByTagName("tr");
+    for (let i = 1; i < tr.length; i++) { // start from 1 to skip thead
+        let txtValue = tr[i].textContent || tr[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
         }
     }
 </script>
