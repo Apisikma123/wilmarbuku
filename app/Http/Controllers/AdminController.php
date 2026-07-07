@@ -118,18 +118,18 @@ class AdminController extends Controller
             $validated = $request->validate([
                 'judul_buku' => 'required|string|max:255',
                 'pengarang' => 'required|string|max:255',
-                'penerbit' => 'nullable|string|max:255',
+                'penerbit' => 'required|string|max:255',
                 'kategori' => 'nullable|array',
                 'kategori.*' => 'string',
                 'kategori_baru' => 'nullable|string',
                 'deskripsi' => 'nullable|string',
                 'jumlah_halaman' => 'nullable|string',
-                'badge' => 'nullable|string',
+                'badge' => 'required|string',
                 'stok_dibutuhkan' => 'required|integer',
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
-                'cover_image' => 'nullable|string',
-                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
+                'cover_image' => 'required_without:cover_file|nullable|string',
+                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp',
             ]);
 
             if ($request->hasFile('cover_file')) {
@@ -161,10 +161,7 @@ class AdminController extends Controller
             $categories = array_unique(array_filter($categories));
             
             if (empty($categories)) {
-                if ($request->ajax()) {
-                    return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
-                }
-                return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+                return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
             }
             
             $validated['kategori'] = implode(', ', $categories);
@@ -180,7 +177,10 @@ class AdminController extends Controller
 
             return back()->with('success', 'Buku berhasil ditambahkan ke katalog!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e;
+            return response()->json([
+                'message' => $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
@@ -194,18 +194,18 @@ class AdminController extends Controller
             $validated = $request->validate([
                 'judul_buku' => 'required|string|max:255',
                 'pengarang' => 'required|string|max:255',
-                'penerbit' => 'nullable|string|max:255',
+                'penerbit' => 'required|string|max:255',
                 'kategori' => 'nullable|array',
                 'kategori.*' => 'string',
                 'kategori_baru' => 'nullable|string',
                 'deskripsi' => 'nullable|string',
                 'jumlah_halaman' => 'nullable|string',
-                'badge' => 'nullable|string',
+                'badge' => 'required|string',
                 'stok_dibutuhkan' => 'required|integer',
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
-                'cover_image' => 'nullable|string',
-                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
+                'cover_image' => 'required_without:cover_file|nullable|string',
+                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp',
             ]);
 
             if ($request->hasFile('cover_file')) {
@@ -240,10 +240,7 @@ class AdminController extends Controller
             $categories = array_unique(array_filter($categories));
             
             if (empty($categories)) {
-                if ($request->ajax()) {
-                    return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
-                }
-                return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+                return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
             }
             
             $validated['kategori'] = implode(', ', $categories);
@@ -259,7 +256,10 @@ class AdminController extends Controller
 
             return back()->with('success', 'Perubahan buku berhasil disimpan!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e;
+            return response()->json([
+                'message' => $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }

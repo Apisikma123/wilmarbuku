@@ -28,7 +28,7 @@
                 <form action="/track" method="GET" class="flex flex-col gap-3">
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[18px]">tag</span>
-                        <input type="text" name="kode" placeholder="Masukkan Kode (ex: WLH-...)" required class="w-full bg-white border border-outline-variant/50 rounded-lg py-3 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow">
+                        <input type="text" name="kode" placeholder="Masukkan Kode (ex: WB-...)" required class="w-full bg-white border border-outline-variant/50 rounded-lg py-3 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow">
                     </div>
                     <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">travel_explore</span> Lacak Sekarang

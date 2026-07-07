@@ -87,7 +87,7 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($books as $b)
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-5 font-bold text-slate-900">#WL-{{ str_pad($b->id, 3, '0', STR_PAD_LEFT) }}</td>
+                        <td class="px-6 py-5 font-bold text-slate-900">#{{ $b->id }}</td>
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
                                 @if($b->cover_image)
@@ -131,7 +131,7 @@
                                 <button onclick='openEditModal({{ json_encode($b) }})' class="p-1.5 hover:text-slate-900 hover:bg-slate-100 rounded transition-colors" title="Edit Buku">
                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                 </button>
-                                <form action="{{ route('admin.catalog.delete', $b->id) }}" method="POST" onsubmit="confirmDelete(event, this)" class="inline">
+                                <form action="{{ route('admin.catalog.delete', $b->id) }}" method="POST" onsubmit="confirmDelete(event, this)" class="m-0 flex items-center">
                                     @csrf
                                     <button type="submit" class="p-1.5 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus Buku">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -225,8 +225,8 @@
                     <input type="text" name="pengarang" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Nama pengarang">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penerbit</label>
-                    <select name="penerbit" id="add_penerbit" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penerbit *</label>
+                    <select name="penerbit" id="add_penerbit" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
                         <option value="">-- Pilih Penerbit --</option>
                         @foreach($penerbits as $p)
                         <option value="{{ $p->nama_penerbit }}">{{ $p->nama_penerbit }}</option>
@@ -254,9 +254,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Harga Estimasi *</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">Rp</span>
-                        <input type="text" inputmode="numeric" name="harga_estimasi" required class="w-full border border-slate-200 rounded-lg py-2.5 pl-10 pr-3 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="150000">
+                    <div class="flex items-center w-full border border-slate-200 rounded-lg bg-white overflow-hidden focus-within:border-green-600 focus-within:ring-1 focus-within:ring-green-600">
+                        <span class="pl-3.5 pr-1 text-sm font-bold text-slate-400 select-none">Rp</span>
+                        <input type="text" inputmode="numeric" name="harga_estimasi" required class="w-full py-2.5 px-2 text-sm outline-none border-none focus:ring-0 bg-transparent" placeholder="150.000" oninput="this.value = formatInputRupiah(this.value)">
                     </div>
                 </div>
                 <div>
@@ -272,13 +272,6 @@
                         <option value="Tersedia">Tersedia</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah Halaman</label>
-                    <input type="text" name="jumlah_halaman" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: 320 Halaman">
-                </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
                     <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
@@ -291,11 +284,18 @@
                 </div>
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah Halaman</label>
+                    <input type="text" name="jumlah_halaman" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="Contoh: 320 Halaman">
+                </div>
+            </div>
+
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                 <p class="text-xs font-bold uppercase text-slate-700">Gambar Sampul / Cover Buku</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload Berkas Gambar</label>
+                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload Berkas Gambar *</label>
                         <input type="file" id="cover_file_add" name="cover_file" accept="image/jpeg,image/png,image/webp" onchange="document.getElementById('cover_image_add').value = ''" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-900 file:text-white hover:file:bg-green-800 transition-colors">
                         <p class="text-[10px] text-slate-400 mt-1">Sistem akan otomatis mengecilkan gambar.</p>
                     </div>
@@ -343,8 +343,8 @@
                     <input type="text" id="edit_pengarang" name="pengarang" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penerbit</label>
-                    <select name="penerbit" id="edit_penerbit" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penerbit *</label>
+                    <select name="penerbit" id="edit_penerbit" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
                         <option value="">-- Pilih Penerbit --</option>
                         @foreach($penerbits as $p)
                         <option value="{{ $p->nama_penerbit }}">{{ $p->nama_penerbit }}</option>
@@ -372,9 +372,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Harga Estimasi *</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">Rp</span>
-                        <input type="text" inputmode="numeric" id="edit_harga_estimasi" name="harga_estimasi" required class="w-full border border-slate-200 rounded-lg py-2.5 pl-10 pr-3 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                    <div class="flex items-center w-full border border-slate-200 rounded-lg bg-white overflow-hidden focus-within:border-green-600 focus-within:ring-1 focus-within:ring-green-600">
+                        <span class="pl-3.5 pr-1 text-sm font-bold text-slate-400 select-none">Rp</span>
+                        <input type="text" inputmode="numeric" id="edit_harga_estimasi" name="harga_estimasi" required class="w-full py-2.5 px-2 text-sm outline-none border-none focus:ring-0 bg-transparent" oninput="this.value = formatInputRupiah(this.value)">
                     </div>
                 </div>
                 <div>
@@ -390,13 +390,6 @@
                         <option value="Tersedia">Tersedia</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah Halaman</label>
-                    <input type="text" id="edit_jumlah_halaman" name="jumlah_halaman" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
-                </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
                     <select id="edit_badge" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
@@ -409,11 +402,18 @@
                 </div>
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah Halaman</label>
+                    <input type="text" id="edit_jumlah_halaman" name="jumlah_halaman" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600">
+                </div>
+            </div>
+
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                 <p class="text-xs font-bold uppercase text-slate-700">Gambar Sampul / Cover Buku</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload File Gambar Baru</label>
+                        <label class="block text-[11px] font-medium text-slate-600 mb-1">Upload File Gambar Baru *</label>
                         <input type="file" id="cover_file_edit" name="cover_file" accept="image/jpeg,image/png,image/webp" onchange="document.getElementById('edit_cover_image').value = ''" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-900 file:text-white hover:file:bg-green-800 transition-colors">
                         <p class="text-[10px] text-slate-400 mt-1">Sistem akan otomatis mengecilkan gambar.</p>
                     </div>
@@ -587,7 +587,7 @@ function openEditModal(book) {
     document.querySelectorAll('.edit_kategori_checkbox').forEach(cb => {
         cb.checked = categories.includes(cb.value);
     });
-    document.getElementById('edit_harga_estimasi').value = book.harga_estimasi || '';
+    document.getElementById('edit_harga_estimasi').value = formatInputRupiah(book.harga_estimasi ? book.harga_estimasi.toString() : '');
     document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 1;
     document.getElementById('edit_status_buku').value = book.status_buku || 'Dibutuhkan';
     document.getElementById('edit_jumlah_halaman').value = book.jumlah_halaman || '';
@@ -683,6 +683,12 @@ async function submitAddBook(event) {
     let form = event.target;
     let formData = new FormData(form);
     
+    // Clean up currency format
+    let harga = formData.get('harga_estimasi');
+    if (harga) {
+        formData.set('harga_estimasi', harga.replace(/[^0-9]/g, ''));
+    }
+    
     // Client-side compression
     let fileInput = form.querySelector('input[type="file"]');
     if (fileInput && fileInput.files && fileInput.files[0]) {
@@ -751,6 +757,13 @@ async function submitAddBook(event) {
         } else {
             // Validation errors (422)
             if (response.status === 422) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Tidak Lengkap',
+                    text: 'Mohon lengkapi semua data buku yang wajib terisi (*).',
+                    confirmButtonColor: '#003215'
+                });
+
                 // Clear previous errors
                 form.querySelectorAll('.error-text').forEach(el => el.remove());
                 form.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
@@ -811,6 +824,12 @@ async function submitEditBook(event) {
     event.preventDefault();
     let form = event.target;
     let formData = new FormData(form);
+    
+    // Clean up currency format
+    let harga = formData.get('harga_estimasi');
+    if (harga) {
+        formData.set('harga_estimasi', harga.replace(/[^0-9]/g, ''));
+    }
     
     // Client-side compression
     let fileInput = form.querySelector('input[type="file"]');
@@ -882,6 +901,13 @@ async function submitEditBook(event) {
             });
         } else {
             if (response.status === 422 && result.errors) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Tidak Lengkap',
+                    text: 'Mohon lengkapi semua data buku yang wajib terisi (*).',
+                    confirmButtonColor: '#003215'
+                });
+
                 // Tampilkan error inline
                 for (let field in result.errors) {
                     let inputName = field;
@@ -891,11 +917,24 @@ async function submitEditBook(event) {
                     
                     let input = form.querySelector(`[name="${inputName}"]`);
                     if (input) {
-                        input.classList.add('border-red-500');
+                        let targetInput = input;
+                        if(input.type === 'checkbox') {
+                            targetInput = input.closest('.grid') || input.parentElement;
+                        }
+                        if (targetInput.parentNode.classList.contains('flex') && targetInput.parentNode.classList.contains('items-center')) {
+                             targetInput = targetInput.parentNode;
+                        }
+
+                        if (input.parentNode.classList.contains('flex')) {
+                            input.parentNode.classList.add('border-red-500');
+                        } else {
+                            input.classList.add('border-red-500');
+                        }
+
                         let errorText = document.createElement('p');
                         errorText.className = 'text-red-500 text-[10px] font-bold mt-1';
                         errorText.innerText = result.errors[field][0];
-                        input.parentElement.appendChild(errorText);
+                        targetInput.parentNode.insertBefore(errorText, targetInput.nextSibling);
                     }
                 }
             } else {
@@ -920,5 +959,19 @@ async function submitEditBook(event) {
         btn.querySelector('.btn-text').classList.remove('hidden');
         btn.querySelector('.spinner').classList.add('hidden');
     }
+}
+function formatInputRupiah(value) {
+    let number_string = value.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        
+    if(ribuan){
+        let separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+    }
+    
+    return split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
 }
 </script>

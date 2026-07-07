@@ -67,12 +67,14 @@
                 @endphp
 
                 <div class="flex md:hidden items-center gap-4">
+                    @if(!auth()->check() || auth()->user()->role !== 'admin')
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
                         @if($cartQty > 0)
                         <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $cartQty }}</span>
                         @endif
                     </a>
+                    @endif
                 </div>
             </div>
             
@@ -92,12 +94,14 @@
             
             <!-- User Actions Desktop -->
             <div class="hidden md:flex items-center gap-6 ml-auto">
+                @if(!auth()->check() || auth()->user()->role !== 'admin')
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     @if($cartQty > 0)
                     <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
                     @endif
                 </a>
+                @endif
                 <div class="relative group pt-4 pb-4">
                     <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
                         <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm uppercase">

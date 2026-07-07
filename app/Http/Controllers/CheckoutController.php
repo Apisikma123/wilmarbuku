@@ -62,7 +62,7 @@ class CheckoutController extends Controller
             $total += $details['harga_estimasi'] * $details['qty'];
         }
 
-        $kode_tracking = 'WLH-' . date('Ym') . '-' . strtoupper(Str::random(5));
+        $kode_tracking = 'WB-' . date('Ym') . '-' . strtoupper(Str::random(5));
 
         $transaksi = TransaksiCheckout::create([
             'kode_tracking' => $kode_tracking,

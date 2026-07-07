@@ -15,6 +15,7 @@
         Pilih buku dari katalog, bayar online, dan buku langsung dikirim ke perpustakaan kampus WBI. Donasi Anda jadi referensi belajar mahasiswa — bukan cuma angka di laporan.
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
+@if(!auth()->check() || auth()->user()->role !== 'admin')
 <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">volunteer_activism</span>
           Donasi Sekarang
@@ -23,6 +24,7 @@
           <span class="material-symbols-outlined">library_books</span>
           Pilih Buku Donasi
         </a>
+@endif
 </div>
 </div>
 <div class="hidden md:block"></div>
@@ -132,6 +134,9 @@
 @elseif(isset(session('cart')[$item->id]) && session('cart')[$item->id]['qty'] >= $item->stok_dibutuhkan)
 <button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Maksimal di Keranjang</button>
 @else
+@if(auth()->check() && auth()->user()->role === 'admin')
+<button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Admin Tidak Dapat Membeli</button>
+@else
 @if(Auth::check())
 <form class="ajax-cart-form" action="{{ route('cart.add', $item->id) }}" method="POST">
     @csrf
@@ -139,6 +144,7 @@
 </form>
 @else
 <a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
+@endif
 @endif
 @endif
 </div>
@@ -225,9 +231,11 @@
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Rak Perpustakaan Masih Kosong</h2>
 <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.</p>
+@if(!auth()->check() || auth()->user()->role !== 'admin')
 <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
                         Donasi Sekarang
                     </a>
+@endif
 </div>
 </div>
 </section>

@@ -113,6 +113,11 @@
                                 <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
                                 Maksimal di Keranjang
                             </button>
+                            @elseif(auth()->check() && auth()->user()->role === 'admin')
+                            <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                                <span class="material-symbols-outlined text-[20px]">block</span>
+                                Admin Tidak Dapat Membeli
+                            </button>
                             @else
                             <form id="add-to-cart-form" action="{{ route('cart.add', $buku->id) }}" method="POST" class="w-full sm:w-auto flex-grow flex gap-3">
                                 @csrf

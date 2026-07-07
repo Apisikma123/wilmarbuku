@@ -141,7 +141,11 @@
                                 <div>
                                     <p class="text-primary font-bold text-sm md:text-base">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
                                 </div>
-                                @if($item->stok_dibutuhkan > 0)
+                                @if(auth()->check() && auth()->user()->role === 'admin')
+                                <div class="bg-surface-variant text-on-surface-variant w-8 h-8 rounded-full flex items-center justify-center cursor-not-allowed" title="Admin Tidak Dapat Membeli">
+                                    <span class="material-symbols-outlined text-[18px]">block</span>
+                                </div>
+                                @elseif($item->stok_dibutuhkan > 0)
                                 <button class="bg-primary/10 text-primary hover:bg-primary hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition-colors">
                                     <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
                                 </button>

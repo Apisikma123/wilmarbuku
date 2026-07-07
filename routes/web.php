@@ -55,22 +55,33 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
+Route::post('/test-json', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'ajax' => $request->ajax(),
+        'expectsJson' => $request->expectsJson(),
+        'wantsJson' => $request->wantsJson(),
+        'headers' => $request->headers->all()
+    ]);
+});
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
     // Halaman khusus user yang sudah terautentikasi
     Route::get('/dashboard', [App\Http\Controllers\KatalogController::class, 'dashboard'])->name('dashboard');
 
-    Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
-    Route::post('/cart/add/{id}', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
-    Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
-    Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+    Route::middleware([\App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
+        Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
+        Route::post('/cart/add/{id}', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+        Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+        Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
-    Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+        Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
+        Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
-    Route::get('/payment', [App\Http\Controllers\CheckoutController::class, 'payment'])->name('payment');
-    Route::post('/payment/upload', [App\Http\Controllers\CheckoutController::class, 'uploadProof'])->name('payment.upload');
+        Route::get('/payment', [App\Http\Controllers\CheckoutController::class, 'payment'])->name('payment');
+        Route::post('/payment/upload', [App\Http\Controllers\CheckoutController::class, 'uploadProof'])->name('payment.upload');
+    });
 
     Route::get('/transaksi', [App\Http\Controllers\TransaksiController::class, 'index'])->name('transaksi');
     Route::get('/track', [App\Http\Controllers\TransaksiController::class, 'track'])->name('track');
@@ -85,7 +96,9 @@ Route::middleware('auth')->group(function () {
     })->name('support');
     Route::post('/akun/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('akun.updateProfile');
     Route::post('/akun/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('akun.updatePassword');
-    Route::get('/success', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
+    Route::middleware([\App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
+        Route::get('/success', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
+    });
 
     Route::get('/buku/{id}', [App\Http\Controllers\KatalogController::class, 'show'])->name('buku.detail');
 });

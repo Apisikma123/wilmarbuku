@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penerbits', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_penerbit')->unique();
-            $table->string('icon')->nullable()->default('import_contacts');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('penerbits')) {
+            Schema::create('penerbits', function (Blueprint $table) {
+                $table->id();
+                $table->string('nama_penerbit')->unique();
+                $table->string('icon')->nullable()->default('import_contacts');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
