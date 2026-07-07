@@ -27,6 +27,8 @@ Route::get('/donasi', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('donasi');
 
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+
 /*
 |--------------------------------------------------------------------------
 | Auth Routes (Login & Register)

@@ -57,12 +57,17 @@
             </div>
             
             <!-- Search Bar -->
-            <div class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
-                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none">
+            <div id="global-search-container" class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
+                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none relative z-10">
                     <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500">search</span>
-                    <input type="text" name="search" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
+                    <input type="text" name="search" id="global-search-input" autocomplete="off" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
                     <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
                 </form>
+                
+                <!-- Search Dropdown -->
+                <div id="global-search-dropdown" class="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible transition-all duration-200 transform translate-y-[-10px] z-[100] max-h-[500px] overflow-y-auto hidden">
+                    <div id="global-search-results" class="py-2"></div>
+                </div>
             </div>
             
             <!-- User Actions Desktop -->
@@ -324,6 +329,168 @@
                 }, 800);
             }
         });
+        // Global Search Logic (Steam Style)
+        const searchInput = document.getElementById('global-search-input');
+        const searchContainer = document.getElementById('global-search-container');
+        const searchDropdown = document.getElementById('global-search-dropdown');
+        const searchResults = document.getElementById('global-search-results');
+        
+        let searchTimeout;
+        let currentFocus = -1;
+
+        if(searchInput && searchDropdown) {
+            searchInput.addEventListener('input', function(e) {
+                const keyword = e.target.value.trim();
+                
+                clearTimeout(searchTimeout);
+                
+                if (keyword.length < 2) {
+                    closeSearchDropdown();
+                    return;
+                }
+                
+                searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 text-center"><span class="material-symbols-outlined animate-spin text-primary align-middle mr-2">sync</span>Mencari...</div>';
+                showSearchDropdown();
+
+                searchTimeout = setTimeout(() => {
+                    fetch(`/search?q=${encodeURIComponent(keyword)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            renderSearchResults(data, keyword);
+                        })
+                        .catch(err => {
+                            searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-error text-center">Terjadi kesalahan.</div>';
+                        });
+                }, 300);
+            });
+            
+            searchInput.addEventListener('keydown', function(e) {
+                const items = searchDropdown.querySelectorAll('.search-item');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentFocus++;
+                    addActive(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentFocus--;
+                    addActive(items);
+                } else if (e.key === 'Enter') {
+                    if (currentFocus > -1) {
+                        e.preventDefault();
+                        if (items[currentFocus]) {
+                            items[currentFocus].click();
+                        }
+                    }
+                } else if (e.key === 'Escape') {
+                    closeSearchDropdown();
+                }
+            });
+
+            function addActive(items) {
+                if (!items || items.length === 0) return false;
+                removeActive(items);
+                if (currentFocus >= items.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (items.length - 1);
+                
+                items[currentFocus].classList.add('bg-gray-100');
+                items[currentFocus].scrollIntoView({ block: "nearest" });
+            }
+
+            function removeActive(items) {
+                for (let i = 0; i < items.length; i++) {
+                    items[i].classList.remove('bg-gray-100');
+                }
+            }
+            
+            function showSearchDropdown() {
+                searchDropdown.classList.remove('hidden');
+                setTimeout(() => {
+                    searchDropdown.classList.remove('opacity-0', 'invisible', 'translate-y-[-10px]');
+                    searchDropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
+                }, 10);
+            }
+            
+            function closeSearchDropdown() {
+                searchDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                searchDropdown.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
+                setTimeout(() => {
+                    searchDropdown.classList.add('hidden');
+                }, 200);
+                currentFocus = -1;
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!searchContainer.contains(e.target)) {
+                    closeSearchDropdown();
+                }
+            });
+
+            function renderSearchResults(data, keyword) {
+                currentFocus = -1;
+                let html = '';
+                
+                const hasBooks = data.books && data.books.length > 0;
+                const hasCategories = data.categories && data.categories.length > 0;
+                const hasPublishers = data.publishers && data.publishers.length > 0;
+                
+                if (!hasBooks && !hasCategories && !hasPublishers) {
+                    searchResults.innerHTML = `
+                        <div class="px-6 py-8 text-center text-gray-500">
+                            <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">search_off</span>
+                            <p class="text-sm">Tidak ada hasil ditemukan</p>
+                            <p class="text-xs mt-1">Coba gunakan kata kunci lain.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+                const highlight = (text) => text ? text.replace(regex, '<span class="font-bold text-gray-900">$1</span>') : '';
+
+                if (hasBooks) {
+                    html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50">Buku</div>`;
+                    data.books.forEach(book => {
+                        html += `
+                            <a href="/buku/${book.id}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
+                                <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md">menu_book</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-gray-800 truncate">${highlight(book.judul_buku)}</div>
+                                    <div class="text-xs text-gray-500 truncate">${highlight(book.pengarang)}</div>
+                                </div>
+                            </a>
+                        `;
+                    });
+                }
+                
+                if (hasCategories) {
+                    html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50 mt-1">Kategori</div>`;
+                    data.categories.forEach(category => {
+                        html += `
+                            <a href="/kategori?kategori[]=${encodeURIComponent(category.nama_kategori)}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
+                                <span class="material-symbols-outlined text-secondary bg-secondary/10 p-1.5 rounded-md">folder</span>
+                                <div class="text-sm font-medium text-gray-800 truncate flex-1">${highlight(category.nama_kategori)}</div>
+                            </a>
+                        `;
+                    });
+                }
+                
+                if (hasPublishers) {
+                    html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50 mt-1">Penerbit</div>`;
+                    data.publishers.forEach(publisher => {
+                        html += `
+                            <a href="/kategori?penerbit[]=${encodeURIComponent(publisher.nama_penerbit)}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
+                                <span class="material-symbols-outlined text-tertiary bg-tertiary/10 p-1.5 rounded-md">business</span>
+                                <div class="text-sm font-medium text-gray-800 truncate flex-1">${highlight(publisher.nama_penerbit)}</div>
+                            </a>
+                        `;
+                    });
+                }
+                
+                searchResults.innerHTML = html;
+            }
+        }
     </script>
 </body>
 </html>
