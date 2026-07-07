@@ -47,6 +47,9 @@
                 <a class="font-medium hover:text-primary transition-colors text-sm uppercase tracking-wider {{ request()->is('track') ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant' }}" href="/track">Lacak Status</a>
             </nav>
             <div class="flex items-center gap-4">
+                @if(auth()->check() && auth()->user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="hidden md:block border border-primary text-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary/10 transition-colors shadow-sm">Admin Dashboard</a>
+                @endif
                 <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi Sekarang</a>
             </div>
         </div>

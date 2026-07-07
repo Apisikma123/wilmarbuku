@@ -25,6 +25,17 @@
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col overflow-x-hidden">
+    @if(auth()->check() && auth()->user()->role === 'admin')
+    <div class="bg-slate-900 text-white px-4 py-2 flex items-center justify-between z-[100] relative text-xs shrink-0">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-green-400">admin_panel_settings</span>
+            <span class="font-bold tracking-wide">Viewing as Admin</span>
+        </div>
+        <a href="{{ route('admin.dashboard') }}" class="font-bold text-green-400 hover:text-green-300 hover:bg-white/20 transition-colors flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
+            Back to Admin Dashboard <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </a>
+    </div>
+    @endif
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-background flex flex-col items-center justify-center transition-all duration-700 ease-in-out">
         <dotlottie-wc src="https://lottie.host/2d5c7c63-ff45-4c14-9996-735ccba19274/c09TN00OAQ.lottie" style="width: 120px; height: 120px;" autoplay loop></dotlottie-wc>
