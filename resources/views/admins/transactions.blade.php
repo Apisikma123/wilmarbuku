@@ -9,6 +9,10 @@
             <h2 class="text-2xl font-bold text-slate-900">Kelola Transaksi Donasi</h2>
             <p class="text-slate-500 text-sm mt-1">Konfirmasi pembayaran, update status pengiriman, dan kirim pemberitahuan ke donatur.</p>
         </div>
+        <button onclick="document.getElementById('modal-metode-pembayaran').classList.remove('hidden')" class="bg-[#003215] hover:bg-[#004b23] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm flex items-center justify-center gap-2 transition-colors">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            Tambah Metode Transaksi
+        </button>
     </div>
 
     @if(session('success'))
@@ -50,6 +54,42 @@
                 </div>
                 <p class="text-green-100/70 text-sm mt-3 max-w-md">Total nominal donasi dari transaksi terverifikasi dalam sistem.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="wallet" class="w-5 h-5 text-green-700"></i> Daftar Metode Pembayaran
+            </h3>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            @forelse($metodes as $metode)
+                <div class="border border-slate-200 rounded-xl p-4 flex items-center justify-between group hover:border-green-600/50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center font-bold text-sm uppercase">
+                            {{ substr($metode->nama_bank, 0, 3) }}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">{{ $metode->nama_bank }}</h4>
+                            <p class="text-xs font-mono text-slate-500">{{ $metode->nomor_rekening }}</p>
+                            <p class="text-[10px] text-slate-400">a/n {{ $metode->atas_nama }}</p>
+                        </div>
+                    </div>
+                    <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST" onsubmit="return confirm('Hapus metode pembayaran ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-8 h-8 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+            @empty
+                <div class="col-span-full py-6 text-center text-slate-400 text-sm italic border border-dashed border-slate-200 rounded-xl">
+                    Belum ada metode pembayaran. Silakan tambah metode transaksi.
+                </div>
+            @endforelse
         </div>
     </div>
 
@@ -241,6 +281,47 @@
         </form>
     </div>
 </div>
+
+    <!-- Modal Tambah Metode Pembayaran -->
+    <div id="modal-metode-pembayaran" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl relative">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <h3 class="text-lg font-bold text-slate-800">Tambah Metode Transaksi</h3>
+                <button onclick="document.getElementById('modal-metode-pembayaran').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            
+            <form action="{{ route('admin.metode.store') }}" method="POST" class="p-6">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Metode Apa yang Mau Ditambah?</label>
+                        <select name="tipe" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-green-600 focus:border-green-600">
+                            <option value="Bank Transfer">Transfer Bank</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Bank Apa?</label>
+                        <input type="text" name="nama_bank" placeholder="Contoh: BCA, Mandiri, BNI" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-green-600 focus:border-green-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor Rekening</label>
+                        <input type="text" name="nomor_rekening" placeholder="Masukkan nomor rekening..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-green-600 focus:border-green-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Atas Nama</label>
+                        <input type="text" name="atas_nama" placeholder="Contoh: Admin WilmarBOOKS" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-green-600 focus:border-green-600">
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex gap-3">
+                    <button type="button" onclick="document.getElementById('modal-metode-pembayaran').classList.add('hidden')" class="flex-1 bg-white border border-slate-200 text-slate-600 font-bold py-2.5 rounded-xl hover:bg-slate-50 transition-colors">Batal</button>
+                    <button type="submit" class="flex-1 bg-[#003215] text-white font-bold py-2.5 rounded-xl hover:bg-[#004b23] transition-colors shadow-sm">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 @endsection
 

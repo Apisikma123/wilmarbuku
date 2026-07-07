@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\KatalogBuku;
 use App\Models\PesanMasuk;
 use App\Models\TransaksiCheckout;
+use App\Models\MetodePembayaran;
 use App\Models\User;
 use App\Models\Kategori;
 use App\Models\Penerbit;
@@ -272,7 +273,9 @@ class AdminController extends Controller
         $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->orWhere('status_tracking', 'Dana Diterima')->count();
         $completed = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
 
-        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'inProcess', 'completed'));
+        $metodes = MetodePembayaran::all();
+
+        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'inProcess', 'completed', 'metodes'));
     }
 
     public function confirmTransaction(Request $request, $kode_tracking)
@@ -290,7 +293,7 @@ class AdminController extends Controller
         ]);
 
         $pesanContent = $request->pesan_admin 
-            ? $request->pesan_admin 
+            ? nl2br(htmlspecialchars($request->pesan_admin, ENT_QUOTES, 'UTF-8'))
             : "<b>Donasi anda dikonfirmasi, nomor pesanan/resi anda: {$transaction->kode_tracking}</b><br><br>Terima kasih atas donasi Anda. Pesanan Anda saat ini sedang dalam proses pengadaan/pengiriman oleh Admin.<br><br><a href='/track?kode={$transaction->kode_tracking}' class='inline-flex items-center gap-2 bg-[#004225] hover:bg-[#004225]/90 text-white font-semibold py-2 px-4 rounded-lg text-sm mt-2'><span class='material-symbols-outlined text-[18px]'>location_on</span>Lacak Sekarang</a>";
 
         PesanMasuk::create([
@@ -336,7 +339,7 @@ class AdminController extends Controller
         PesanMasuk::create([
             'user_id' => $transaction->user_id,
             'judul' => 'Pesanan #' . $transaction->kode_tracking . ' Dibatalkan',
-            'isi_pesan' => "Mohon maaf, pesanan Anda #{$transaction->kode_tracking} telah dibatalkan oleh Admin.\n\nAlasan Pembatalan: {$request->alasan_pembatalan}",
+            'isi_pesan' => "Mohon maaf, pesanan Anda <b>#{$transaction->kode_tracking}</b> telah dibatalkan oleh Admin.<br><br>Alasan Pembatalan:<br>" . nl2br(htmlspecialchars($request->alasan_pembatalan, ENT_QUOTES, 'UTF-8')),
             'jenis' => 'peringatan',
             'is_read' => false,
         ]);
@@ -353,7 +356,7 @@ class AdminController extends Controller
         }
         
         $request->validate([
-            'status_tracking' => 'required|string',
+            'status_tracking' => 'required|string|in:Menunggu Pembayaran,Menunggu Konfirmasi,Dana Diterima,Dalam Pengiriman,Selesai,Dibatalkan',
             'pesan_admin' => 'nullable|string',
         ]);
 
@@ -399,10 +402,10 @@ class AdminController extends Controller
         }
 
         $transaction->update($updateData);
-        $pesanText = "Status pesanan buku Anda #{$transaction->kode_tracking} saat ini: **{$request->status_tracking}**.";
+        $pesanText = "Status pesanan buku Anda <b>#{$transaction->kode_tracking}</b> saat ini: <b>{$request->status_tracking}</b>.";
         
         if ($request->pesan_admin) {
-            $pesanText .= "\n\nPesan dari Admin:\n" . $request->pesan_admin;
+            $pesanText .= "<br><br>Pesan dari Admin:<br>" . nl2br(htmlspecialchars($request->pesan_admin, ENT_QUOTES, 'UTF-8'));
         }
 
         // Kirim pesan ke inbox pengguna secara otomatis
@@ -434,6 +437,19 @@ class AdminController extends Controller
         $request->validate([
             'role' => 'required|in:admin,user_internal,user_external',
         ]);
+
+        if ($request->role == 'user_external' && !empty($user->identitas_kampus)) {
+            $user->identitas_kampus = null;
+            $user->save();
+            
+            PesanMasuk::create([
+                'user_id' => $user->id,
+                'judul' => 'Verifikasi Identitas Kampus Gagal',
+                'isi_pesan' => "NIM yang Anda masukkan tidak valid. Silakan perbarui NIM Anda di halaman Profil",
+                'jenis' => 'peringatan',
+                'is_read' => false,
+            ]);
+        }
 
         $user->update(['role' => $request->role]);
 
@@ -593,5 +609,32 @@ class AdminController extends Controller
     public function settings()
     {
         return view('admins.settings');
+    }
+
+    public function storeMetodePembayaran(Request $request)
+    {
+        $request->validate([
+            'tipe' => 'required|string',
+            'nama_bank' => 'required|string',
+            'nomor_rekening' => 'required|string',
+            'atas_nama' => 'required|string',
+        ]);
+
+        MetodePembayaran::create([
+            'tipe' => $request->tipe,
+            'nama_bank' => $request->nama_bank,
+            'nomor_rekening' => $request->nomor_rekening,
+            'atas_nama' => $request->atas_nama,
+            'is_active' => true
+        ]);
+
+        return back()->with('success', 'Metode pembayaran berhasil ditambahkan.');
+    }
+
+    public function destroyMetodePembayaran($id)
+    {
+        $metode = MetodePembayaran::findOrFail($id);
+        $metode->delete();
+        return back()->with('success', 'Metode pembayaran berhasil dihapus.');
     }
 }

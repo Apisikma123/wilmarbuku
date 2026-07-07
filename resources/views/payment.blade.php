@@ -12,13 +12,23 @@
         <p class="text-sm text-on-surface-variant mb-8">Silakan lakukan transfer ke rekening di bawah ini dan unggah bukti pembayarannya.</p>
 
         <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 mb-8 text-left">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 font-bold">
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-on-surface mb-2">Pilih Bank Tujuan Transfer</label>
+                <select id="metodePembayaranSelect" class="w-full bg-white border border-outline-variant/50 rounded-lg px-4 py-3 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm" onchange="updateBankInfo()">
+                    @forelse($metodes as $metode)
+                        <option value="{{ $metode->id }}" data-bank="{{ $metode->nama_bank }}" data-rek="{{ $metode->nomor_rekening }}" data-nama="{{ $metode->atas_nama }}">{{ $metode->nama_bank }}</option>
+                    @empty
+                        <option value="" data-bank="-" data-rek="Belum ada rekening" data-nama="-">Belum ada metode pembayaran</option>
+                    @endforelse
+                </select>
+            </div>
+            <div class="flex items-center gap-3 mb-4 bg-white border border-outline-variant/30 p-4 rounded-xl shadow-sm">
+                <div id="bankIcon" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 font-bold uppercase">
                     BCA
                 </div>
                 <div>
-                    <h3 class="font-bold text-on-surface text-lg">1234 5678 90</h3>
-                    <p class="text-xs text-on-surface-variant">a/n Admin WilmarBOOKS</p>
+                    <h3 id="nomorRekening" class="font-bold text-on-surface text-xl tracking-wider">1234 5678 90</h3>
+                    <p id="atasNama" class="text-xs font-medium text-on-surface-variant mt-0.5">a/n Admin WilmarBOOKS</p>
                 </div>
             </div>
             <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
@@ -55,6 +65,24 @@
 </div>
 
 <script>
+    function updateBankInfo() {
+        const select = document.getElementById('metodePembayaranSelect');
+        if (!select || select.options.length === 0) return;
+        
+        const selectedOption = select.options[select.selectedIndex];
+        const bankName = selectedOption.getAttribute('data-bank');
+        const bankRek = selectedOption.getAttribute('data-rek');
+        const bankNama = selectedOption.getAttribute('data-nama');
+
+        document.getElementById('bankIcon').innerText = bankName.substring(0, 3);
+        document.getElementById('nomorRekening').innerText = bankRek;
+        document.getElementById('atasNama').innerText = 'a/n ' + bankNama;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateBankInfo();
+    });
+
     function previewFile(input) {
         const fileInfo = document.getElementById('file-info');
         const dropZone = document.getElementById('drop-zone');
