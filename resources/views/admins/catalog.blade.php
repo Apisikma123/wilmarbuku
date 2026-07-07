@@ -732,7 +732,7 @@ async function submitAddBook(event) {
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal Menyimpan',
-                text: 'Terjadi kesalahan sistem atau ukuran file gambar melampaui batas wajar server (Maks. 8MB). Jika menggunakan Link URL, pastikan kolom file gambar dikosongkan.',
+                text: 'Terjadi kesalahan sistem atau ukuran file gambar melampaui batas wajar server (Maks. 1GB). Jika menggunakan Link URL, pastikan kolom file gambar dikosongkan.',
                 confirmButtonColor: '#003215'
             });
             return;

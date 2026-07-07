@@ -126,14 +126,14 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5 whitespace-normal max-w-xs">
-                            <div class="font-medium text-slate-900 text-sm leading-tight">
+                        <td class="px-6 py-5 whitespace-nowrap min-w-[200px]">
+                            <div class="font-bold text-slate-900 text-sm">
                                 {{ $trx->details->first()->buku->judul_buku ?? 'Buku Donasi' }}
                                 @if($trx->details->count() > 1)
-                                <span class="text-xs text-slate-400 font-normal">(+{{ $trx->details->count() - 1 }} item lainnya)</span>
+                                <span class="text-xs text-slate-400 font-normal ml-1">(+{{ $trx->details->count() - 1 }} item lainnya)</span>
                                 @endif
                             </div>
-                            <div class="text-xs font-bold text-slate-700 mt-1">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
+                            <div class="text-xs font-medium text-slate-500 mt-0.5">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
                         </td>
                         <td class="px-6 py-5 text-center">
                             @if($trx->status_pembayaran == 'Paid')

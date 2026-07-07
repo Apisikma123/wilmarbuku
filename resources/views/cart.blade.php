@@ -98,7 +98,7 @@
                         <span class="material-symbols-outlined text-outline-variant text-5xl mb-4">production_quantity_limits</span>
                         <h3 class="text-xl font-bold text-on-surface mb-2">Keranjang Kosong</h3>
                         <p class="text-on-surface-variant mb-6">Anda belum memilih buku untuk didonasikan.</p>
-                        <a href="/" class="inline-flex bg-primary text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-primary-container transition-colors">Pilih Buku</a>
+                        <a href="/kategori" class="inline-flex bg-primary text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-primary-container transition-colors">Pilih Buku</a>
                     </div>
                 @endif
             </div>

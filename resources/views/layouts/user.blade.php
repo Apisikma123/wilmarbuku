@@ -98,7 +98,7 @@
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <h4 class="font-bold text-base leading-tight">{{ Auth::user()->nama_lengkap }}</h4>
-                                            <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors">edit</span>
+                                            <a href="/akun" class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors" title="Edit Profil">edit</a>
                                         </div>
                                         <p class="text-xs text-white/80 mt-0.5">{{ Auth::user()->role == 'user_internal' ? 'Internal WBI' : 'Donatur Umum' }}</p>
                                     </div>
