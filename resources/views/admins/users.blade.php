@@ -106,14 +106,18 @@
                         </td>
                         <td class="px-6 py-4 text-slate-600">{{ $u->email }}</td>
                         <td class="px-6 py-4">
-                            <form action="{{ route('admin.users.role', $u->id) }}" method="POST" class="inline-flex items-center gap-2">
-                                @csrf
-                                <select name="role" onchange="this.form.submit()" class="text-xs border border-slate-200 rounded px-2.5 py-1 font-bold rounded-full {{ $u->role == 'admin' ? 'bg-amber-100 text-amber-800' : ($u->role == 'user_internal' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-700') }}">
-                                    <option value="user_external" {{ $u->role == 'user_external' ? 'selected' : '' }}>User External</option>
-                                    <option value="user_internal" {{ $u->role == 'user_internal' ? 'selected' : '' }}>User Internal</option>
-                                    <option value="admin" {{ $u->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                                </select>
-                            </form>
+                            @if($u->role == 'admin')
+                                <span class="text-xs bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 font-bold rounded-full">Admin</span>
+                            @else
+                                <form action="{{ route('admin.users.role', $u->id) }}" method="POST" class="inline-flex items-center gap-2" id="form-role-{{ $u->id }}">
+                                    @csrf
+                                    <select name="role" onchange="handleRoleChange(this, '{{ $u->role }}', 'form-role-{{ $u->id }}')" class="text-xs border border-slate-200 rounded px-2.5 py-1 font-bold rounded-full {{ $u->role == 'user_internal' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-700' }}">
+                                        <option value="user_external" {{ $u->role == 'user_external' ? 'selected' : '' }}>User External</option>
+                                        <option value="user_internal" {{ $u->role == 'user_internal' ? 'selected' : '' }}>User Internal</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </form>
+                            @endif
                         </td>
                         <td class="px-6 py-4 font-medium text-slate-700">
                             {{ $u->identitas_kampus ?? '-' }}
@@ -200,6 +204,25 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Admin -->
+    <div id="adminConfirmModal" class="fixed inset-0 z-[60] bg-[#121c29]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#f8f9ff] rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[#c0c9be]">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-16 h-16 rounded-full bg-[#ffdad6] text-[#ba1a1a] flex items-center justify-center mb-4">
+                    <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-[#121c29] mb-2" style="font-family: Poppins, sans-serif;">Jadikan Admin?</h3>
+                <p class="text-[16px] text-[#404941] mb-8" style="font-family: Poppins, sans-serif;">
+                    Peringatan: Sekali pengguna ini diangkat menjadi <strong>Admin</strong>, peran ini bersifat permanen dan tidak dapat dibatalkan kembali dari halaman ini. Lanjutkan?
+                </p>
+                <div class="flex items-center gap-3 w-full">
+                    <button type="button" onclick="cancelAdminConfirm()" class="flex-1 px-5 py-3 text-[#404941] hover:bg-[#d0dbed] border border-[#707970] rounded-xl text-sm font-bold transition-colors">Batal</button>
+                    <button type="button" onclick="proceedAdminConfirm()" class="flex-1 px-5 py-3 bg-[#ba1a1a] hover:bg-[#93000a] text-white rounded-xl text-sm font-bold transition-colors shadow-sm">Ya, Jadikan Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -253,5 +276,38 @@ function openDeleteModal(id, name) {
 
 function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
+}
+let pendingSelectElement = null;
+let pendingOriginalRole = null;
+let pendingFormId = null;
+
+function handleRoleChange(selectElement, originalRole, formId) {
+    if (selectElement.value === 'admin') {
+        pendingSelectElement = selectElement;
+        pendingOriginalRole = originalRole;
+        pendingFormId = formId;
+        
+        const modal = document.getElementById('adminConfirmModal');
+        modal.classList.remove('hidden');
+        if(window.lucide) lucide.createIcons();
+    } else {
+        document.getElementById(formId).submit();
+    }
+}
+
+function cancelAdminConfirm() {
+    if (pendingSelectElement && pendingOriginalRole) {
+        pendingSelectElement.value = pendingOriginalRole;
+    }
+    document.getElementById('adminConfirmModal').classList.add('hidden');
+    pendingSelectElement = null;
+    pendingOriginalRole = null;
+    pendingFormId = null;
+}
+
+function proceedAdminConfirm() {
+    if (pendingFormId) {
+        document.getElementById(pendingFormId).submit();
+    }
 }
 </script>

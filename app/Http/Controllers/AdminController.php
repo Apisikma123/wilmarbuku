@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\KatalogBuku;
 use App\Models\PesanMasuk;
 use App\Models\TransaksiCheckout;
+use App\Models\MetodePembayaran;
 use App\Models\User;
 use App\Models\Kategori;
 use App\Models\Penerbit;
@@ -272,7 +273,9 @@ class AdminController extends Controller
         $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->orWhere('status_tracking', 'Dana Diterima')->count();
         $completed = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
 
-        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'inProcess', 'completed'));
+        $metodes = MetodePembayaran::all();
+
+        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'inProcess', 'completed', 'metodes'));
     }
 
     public function confirmTransaction(Request $request, $kode_tracking)
@@ -435,6 +438,19 @@ class AdminController extends Controller
             'role' => 'required|in:admin,user_internal,user_external',
         ]);
 
+        if ($request->role == 'user_external' && !empty($user->identitas_kampus)) {
+            $user->identitas_kampus = null;
+            $user->save();
+            
+            PesanMasuk::create([
+                'user_id' => $user->id,
+                'judul' => 'Verifikasi Identitas Kampus Gagal',
+                'isi_pesan' => "NIM yang Anda masukkan tidak valid. Silakan perbarui NIM Anda di halaman Profil untuk mendapatkan harga internal.",
+                'jenis' => 'peringatan',
+                'is_read' => false,
+            ]);
+        }
+
         $user->update(['role' => $request->role]);
 
         return back()->with('success', 'Peran pengguna berhasil diperbarui!');
@@ -593,5 +609,32 @@ class AdminController extends Controller
     public function settings()
     {
         return view('admins.settings');
+    }
+
+    public function storeMetodePembayaran(Request $request)
+    {
+        $request->validate([
+            'tipe' => 'required|string',
+            'nama_bank' => 'required|string',
+            'nomor_rekening' => 'required|string',
+            'atas_nama' => 'required|string',
+        ]);
+
+        MetodePembayaran::create([
+            'tipe' => $request->tipe,
+            'nama_bank' => $request->nama_bank,
+            'nomor_rekening' => $request->nomor_rekening,
+            'atas_nama' => $request->atas_nama,
+            'is_active' => true
+        ]);
+
+        return back()->with('success', 'Metode pembayaran berhasil ditambahkan.');
+    }
+
+    public function destroyMetodePembayaran($id)
+    {
+        $metode = MetodePembayaran::findOrFail($id);
+        $metode->delete();
+        return back()->with('success', 'Metode pembayaran berhasil dihapus.');
     }
 }

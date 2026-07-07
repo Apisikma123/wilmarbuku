@@ -110,7 +110,8 @@ class CheckoutController extends Controller
             return redirect()->route('success')->with('kode_tracking', $kode_tracking);
         }
 
-        return view('payment', compact('transaksi'));
+        $metodes = \App\Models\MetodePembayaran::where('is_active', true)->get();
+        return view('payment', compact('transaksi', 'metodes'));
     }
 
     public function uploadProof(Request $request)
