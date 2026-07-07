@@ -13,24 +13,12 @@
         <div class="absolute top-16 left-1/2 -translate-x-1/2 z-10">
             <div class="w-24 h-24 bg-white rounded-full p-2.5 shadow-lg flex items-center justify-center border border-outline-variant/10 success-pulse">
                 <div class="w-full h-full bg-[#E5ECE7] rounded-full flex items-center justify-center text-primary">
-                    <svg class="checkmark w-14 h-14" xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 56 56">
-                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="166" stroke-dashoffset="166"/>
-                        <path class="checkmark__check" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="48" stroke-dashoffset="48" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-                    </svg>
+                    <span class="material-symbols-outlined text-[56px]">schedule</span>
                 </div>
             </div>
         </div>
 
         <style>
-            .checkmark__circle {
-                animation: checkmark-stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-            }
-            .checkmark__check {
-                animation: checkmark-stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
-            }
-            @keyframes checkmark-stroke {
-                100% { stroke-dashoffset: 0; }
-            }
             .success-pulse {
                 animation: success-pulse 2.5s infinite 1s;
             }

@@ -11,10 +11,10 @@
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <div class="relative">
-                <select class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 outline-none focus:border-green-500 shadow-sm cursor-pointer">
-                    <option>Last 12 Months</option>
-                    <option>This Year</option>
-                    <option>Last 30 Days</option>
+                <select onchange="window.location.href='?filter=' + this.value" class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 outline-none focus:border-green-500 shadow-sm cursor-pointer">
+                    <option value="12_months" {{ $filter == '12_months' ? 'selected' : '' }}>Last 12 Months</option>
+                    <option value="this_year" {{ $filter == 'this_year' ? 'selected' : '' }}>This Year</option>
+                    <option value="30_days" {{ $filter == '30_days' ? 'selected' : '' }}>Last 30 Days</option>
                 </select>
                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
             </div>
@@ -66,7 +66,13 @@
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col h-[400px]">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h3 class="text-lg font-bold text-slate-900">Overall Activity (12 Months)</h3>
+                <h3 class="text-lg font-bold text-slate-900">
+                    Overall Activity
+                    @if($filter == 'this_year') (This Year)
+                    @elseif($filter == '30_days') (Last 30 Days)
+                    @else (12 Months)
+                    @endif
+                </h3>
                 <p class="text-sm text-slate-500">Comparison of incoming funds vs distributed books.</p>
             </div>
             <div class="flex items-center gap-4">
@@ -115,7 +121,7 @@
 <script>
 function filterTable(input) {
     let filter = input.value.toLowerCase();
-    let table = input.closest('div.bg-white').querySelector('table');
+    let table = input.closest('.shadow-sm').querySelector('table');
     if(!table) return;
     let tr = table.getElementsByTagName("tr");
     for (let i = 1; i < tr.length; i++) { 

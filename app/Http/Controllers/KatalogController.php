@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\KatalogBuku;
+use App\Models\Kategori;
+use App\Models\Penerbit;
 use Illuminate\Http\Request;
 
 class KatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $buku = KatalogBuku::all();
+        $buku = KatalogBuku::where('status_buku', 'Dibutuhkan')
+            ->orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")
+            ->latest()
+            ->get();
         $mahasiswaCount = \App\Models\User::where('role', 'user')->count();
         if ($request->is('donasi')) {
             return view('donasi', compact('buku'));
@@ -20,7 +25,10 @@ class KatalogController extends Controller
     public function dashboard()
     {
         session(['is_user' => true]);
-        $buku = KatalogBuku::all();
+        $buku = KatalogBuku::where('status_buku', 'Dibutuhkan')
+            ->orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")
+            ->latest()
+            ->get();
         $riwayat = \App\Models\TransaksiDetail::with('buku')
             ->whereHas('transaksi', function($q) {
                 $q->where('user_id', auth()->id());
@@ -28,12 +36,16 @@ class KatalogController extends Controller
             ->latest()
             ->take(4)
             ->get();
-        return view('dashboard', compact('buku', 'riwayat'));
+        
+        $categories = Kategori::orderBy('nama_kategori')->get();
+        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
+        
+        return view('dashboard', compact('buku', 'riwayat', 'categories', 'penerbits'));
     }
     public function kategori(Request $request)
     {
         session(['is_user' => true]);
-        $query = KatalogBuku::query();
+        $query = KatalogBuku::where('status_buku', 'Dibutuhkan');
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
@@ -55,12 +67,17 @@ class KatalogController extends Controller
             } elseif ($request->filter == 'bestseller') {
                 // Dummy logic for bestseller: assume books with high stok_dibutuhkan or specific badge
                 $query->where('stok_dibutuhkan', '>', 10)->orWhere('badge', 'like', '%Bestseller%');
+            } elseif ($request->filter == 'prioritas') {
+                $query->where('badge', 'Prioritas');
             }
         }
 
         if ($request->has('penerbit') && is_array($request->penerbit)) {
-            // Kita filter berdasarkan pengarang karena tidak ada kolom penerbit
-            $query->whereIn('pengarang', $request->penerbit);
+            $query->whereIn('penerbit', $request->penerbit);
+        }
+
+        if ($request->has('pengarang') && is_array($request->pengarang)) {
+            $query->whereIn('pengarang', $request->pengarang);
         }
 
         if ($request->has('sort') && !empty($request->sort)) {
@@ -80,12 +97,30 @@ class KatalogController extends Controller
 
         $buku = $query->paginate(12);
         
-        return view('kategori', compact('buku'));
+        $categories = Kategori::orderBy('nama_kategori')->get();
+        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
+
+        return view('kategori', compact('buku', 'categories', 'penerbits'));
     }
 
     public function show($id)
     {
         $buku = KatalogBuku::findOrFail($id);
-        return view('buku', compact('buku'));
+        $buku_terkait = KatalogBuku::where('kategori', $buku->kategori)
+            ->where('id', '!=', $id)
+            ->where('status_buku', 'Dibutuhkan')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+            
+        if ($buku_terkait->isEmpty()) {
+            $buku_terkait = KatalogBuku::where('id', '!=', $id)
+                ->where('status_buku', 'Dibutuhkan')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        }
+
+        return view('buku', compact('buku', 'buku_terkait'));
     }
 }

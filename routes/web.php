@@ -16,16 +16,11 @@ Route::get('/', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('home');
 
-Route::get('/debug-cookies', function (\Illuminate\Http\Request $request) {
-    return response()->json([
-        'cookies' => $request->cookies->all(),
-        'session' => $request->session()->all()
-    ]);
-});
 
-Route::get('/donasi', function () {
-    return app(App\Http\Controllers\KatalogController::class)->index(request());
-})->name('donasi');
+
+
+
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +40,7 @@ Route::middleware('guest')->group(function () {
     
     // OTP Routes (Login)
     Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp.show');
-    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->middleware('throttle:5,1')->name('otp.verify');
     Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
     // Forgot Password Routes
@@ -53,7 +48,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
     
     Route::get('/forgot-password/otp', [AuthController::class, 'showForgotOtpForm'])->name('password.otp.show');
-    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->name('password.otp.verify');
+    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->middleware('throttle:5,1')->name('password.otp.verify');
     Route::post('/forgot-password/otp/resend', [AuthController::class, 'resendForgotOtp'])->name('password.otp.resend');
     
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
@@ -84,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/pesan-masuk/read', [App\Http\Controllers\PesanController::class, 'markAsRead'])->name('pesan.read');
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'index'])->name('akun');
+    Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('user.password.update');
     Route::get('/support', function () {
         return view('support');
     })->name('support');
@@ -120,11 +116,12 @@ foreach ($staticPages as $uri => $view) {
 
 use App\Http\Controllers\AdminController;
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard/export', [AdminController::class, 'exportDashboardPdf'])->name('admin.dashboard.export');
     Route::get('/catalog', [AdminController::class, 'catalog'])->name('admin.catalog');
     Route::post('/catalog/kategori', [AdminController::class, 'storeKategori'])->name('admin.kategori.store');
+    Route::post('/catalog/penerbit', [AdminController::class, 'storePenerbit'])->name('admin.penerbit.store');
     Route::post('/catalog/store', [AdminController::class, 'storeBook'])->name('admin.catalog.store');
     Route::post('/catalog/update/{id}', [AdminController::class, 'updateBook'])->name('admin.catalog.update');
     Route::post('/catalog/delete/{id}', [AdminController::class, 'destroyBook'])->name('admin.catalog.delete');
@@ -134,6 +131,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('/transactions/confirm/{kode_tracking}', [AdminController::class, 'confirmTransaction'])->name('admin.transactions.confirm');
     Route::post('/transactions/cancel/{kode_tracking}', [AdminController::class, 'cancelTransaction'])->name('admin.transactions.cancel');
 
+    Route::post('/metode-pembayaran', [AdminController::class, 'storeMetodePembayaran'])->name('admin.metode.store');
+    Route::delete('/metode-pembayaran/{id}', [AdminController::class, 'destroyMetodePembayaran'])->name('admin.metode.destroy');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::post('/users/role/{id}', [AdminController::class, 'updateUserRole'])->name('admin.users.role');
     Route::post('/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');

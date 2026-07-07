@@ -14,6 +14,7 @@ class KatalogBuku extends Model
     protected $fillable = [
         'judul_buku',
         'pengarang',
+        'penerbit',
         'kategori',
         'deskripsi',
         'jumlah_halaman',

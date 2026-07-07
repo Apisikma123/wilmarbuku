@@ -46,31 +46,45 @@
                     </a>
                 </div>
                 
+                @php
+                    $cartQty = 0;
+                    if(session('cart')) {
+                        foreach(session('cart') as $c) {
+                            $cartQty += $c['qty'];
+                        }
+                    }
+                @endphp
+
                 <div class="flex md:hidden items-center gap-4">
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
-                        @if(session('cart') && count(session('cart')) > 0)
-                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ count(session('cart')) }}</span>
+                        @if($cartQty > 0)
+                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $cartQty }}</span>
                         @endif
                     </a>
                 </div>
             </div>
             
             <!-- Search Bar -->
-            <div class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
-                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none">
+            <div id="global-search-container" class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
+                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none relative z-10">
                     <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500">search</span>
-                    <input type="text" name="search" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
+                    <input type="text" name="search" id="global-search-input" autocomplete="off" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
                     <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
                 </form>
+                
+                <!-- Search Dropdown -->
+                <div id="global-search-dropdown" class="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible transition-all duration-200 transform translate-y-[-10px] z-[100] max-h-[500px] overflow-y-auto hidden">
+                    <div id="global-search-results" class="py-2"></div>
+                </div>
             </div>
             
             <!-- User Actions Desktop -->
             <div class="hidden md:flex items-center gap-6 ml-auto">
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    @if(session('cart') && count(session('cart')) > 0)
-                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ count(session('cart')) }}</span>
+                    @if($cartQty > 0)
+                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
                     @endif
                 </a>
                 <div class="relative group pt-4 pb-4">
@@ -85,7 +99,7 @@
                     </a>
 
                     <!-- Hover Dropdown Menu -->
-                    <div class="absolute right-0 top-full w-80 bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
+                    <div class="absolute right-0 top-full w-[400px] bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
                         
                         <!-- User Info Header -->
                         <div class="bg-primary text-white p-4 rounded-t-2xl relative overflow-hidden">
@@ -98,7 +112,7 @@
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <h4 class="font-bold text-base leading-tight">{{ Auth::user()->nama_lengkap }}</h4>
-                                            <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors">edit</span>
+                                            <a href="/akun" class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors" title="Edit Profil">edit</a>
                                         </div>
                                         <p class="text-xs text-white/80 mt-0.5">{{ Auth::user()->role == 'user_internal' ? 'Internal WBI' : 'Donatur Umum' }}</p>
                                     </div>
@@ -117,10 +131,13 @@
                                     ->where('is_read_by_user', false)
                                     ->get();
                                     
-                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Dana Diterima', 'Dipesan Admin'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
-                                $countDikirim = $unreadTrx->where('status_tracking', 'Dikirim ke Perpus')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
-                                $countSelesai = $unreadTrx->where('status_tracking', 'Masuk Katalog')->count();
-                                $countBatal = $unreadTrx->whereIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDana = $unreadTrx->where('status_tracking', 'Dana Diterima')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDikirim = $unreadTrx->where('status_tracking', 'Dalam Pengiriman')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countSelesai = $unreadTrx->where('status_tracking', 'Selesai')->count();
+                                $countBatal = $unreadTrx->where(function($q) {
+                                    return $q->status_tracking == 'Dibatalkan' || $q->status_pembayaran == 'Failed';
+                                })->count();
                             @endphp
                             <div class="flex justify-between px-2">
                                 <a href="/transaksi?status=menunggu_konfirmasi" class="flex flex-col items-center gap-1.5 group/item">
@@ -131,6 +148,15 @@
                                         @endif
                                     </div>
                                     <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Menunggu Konfirmasi</span>
+                                </a>
+                                <a href="/transaksi?status=dana_diterima" class="flex flex-col items-center gap-1.5 group/item">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">account_balance_wallet</span>
+                                        @if($countDana > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countDana }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Dana Diterima</span>
                                 </a>
                                 <a href="/transaksi?status=sedang_dikirim" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
@@ -209,8 +235,10 @@
                 <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors">
                     <span class="material-symbols-outlined text-lg">grid_view</span> Kategori
                 </a>
+                <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
+                <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
                 @foreach($global_kategoris->take(6) as $kategori)
-                <a href="/kategori?kategori[]={{ urlencode($kategori->nama_kategori) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
+                <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
                 @endforeach
             </div>
         </div>
@@ -257,7 +285,7 @@
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/donasi">Buku Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/">Buku Donasi</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Informasi -->
@@ -310,6 +338,199 @@
                 }, 800);
             }
         });
+        // Global Search Logic (Steam Style)
+        const searchInput = document.getElementById('global-search-input');
+        const searchContainer = document.getElementById('global-search-container');
+        const searchDropdown = document.getElementById('global-search-dropdown');
+        const searchResults = document.getElementById('global-search-results');
+        
+        let searchTimeout;
+        let currentFocus = -1;
+
+        if(searchInput && searchDropdown) {
+            searchInput.addEventListener('input', function(e) {
+                const keyword = e.target.value.trim();
+                
+                clearTimeout(searchTimeout);
+                
+                if (keyword.length < 2) {
+                    closeSearchDropdown();
+                    return;
+                }
+                
+                searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 text-center"><span class="material-symbols-outlined animate-spin text-primary align-middle mr-2">sync</span>Mencari...</div>';
+                showSearchDropdown();
+
+                searchTimeout = setTimeout(() => {
+                    fetch(`/search?q=${encodeURIComponent(keyword)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            renderSearchResults(data, keyword);
+                        })
+                        .catch(err => {
+                            searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-error text-center">Terjadi kesalahan.</div>';
+                        });
+                }, 300);
+            });
+            
+            searchInput.addEventListener('keydown', function(e) {
+                const items = searchDropdown.querySelectorAll('.search-item');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentFocus++;
+                    addActive(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentFocus--;
+                    addActive(items);
+                } else if (e.key === 'Enter') {
+                    if (currentFocus > -1) {
+                        e.preventDefault();
+                        if (items[currentFocus]) {
+                            items[currentFocus].click();
+                        }
+                    }
+                } else if (e.key === 'Escape') {
+                    closeSearchDropdown();
+                }
+            });
+
+            function addActive(items) {
+                if (!items || items.length === 0) return false;
+                removeActive(items);
+                if (currentFocus >= items.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (items.length - 1);
+                
+                items[currentFocus].classList.add('bg-gray-100');
+                items[currentFocus].scrollIntoView({ block: "nearest" });
+            }
+
+            function removeActive(items) {
+                for (let i = 0; i < items.length; i++) {
+                    items[i].classList.remove('bg-gray-100');
+                }
+            }
+            
+            function showSearchDropdown() {
+                searchDropdown.classList.remove('hidden');
+                setTimeout(() => {
+                    searchDropdown.classList.remove('opacity-0', 'invisible', 'translate-y-[-10px]');
+                    searchDropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
+                }, 10);
+            }
+            
+            function closeSearchDropdown() {
+                searchDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                searchDropdown.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
+                setTimeout(() => {
+                    searchDropdown.classList.add('hidden');
+                }, 200);
+                currentFocus = -1;
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!searchContainer.contains(e.target)) {
+                    closeSearchDropdown();
+                }
+            });
+
+            function renderSearchResults(data, keyword) {
+                currentFocus = -1;
+                let html = '';
+                
+                const hasBooks = data.books && data.books.length > 0;
+                const hasCategories = data.categories && data.categories.length > 0;
+                const hasPublishers = data.publishers && data.publishers.length > 0;
+                
+                if (!hasBooks && !hasCategories && !hasPublishers) {
+                    searchResults.innerHTML = `
+                        <div class="px-6 py-8 text-center text-gray-500">
+                            <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">search_off</span>
+                            <p class="text-sm">Tidak ada hasil ditemukan</p>
+                            <p class="text-xs mt-1">Coba gunakan kata kunci lain.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+                const highlight = (text) => text ? text.replace(regex, '<span class="font-bold text-gray-900">$1</span>') : '';
+
+                if (hasBooks) {
+                    html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50">Buku</div>`;
+                    data.books.forEach(book => {
+                        html += `
+                            <a href="/buku/${book.id}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
+                                <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md">menu_book</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-gray-800 truncate">${highlight(book.judul_buku)}</div>
+                                    <div class="text-xs text-gray-500 truncate">${highlight(book.pengarang)}</div>
+                                </div>
+                            </a>
+                        `;
+                    });
+                }
+                
+                if (hasCategories) {
+                    html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50 mt-1">Kategori</div>`;
+                    data.categories.forEach(category => {
+                        html += `
+                            <a href="/kategori?kategori[]=${encodeURIComponent(category.nama_kategori)}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
+                                <span class="material-symbols-outlined text-secondary bg-secondary/10 p-1.5 rounded-md">folder</span>
+                                <div class="text-sm font-medium text-gray-800 truncate flex-1">${highlight(category.nama_kategori)}</div>
+                            </a>
+                        `;
+                    });
+                }
+                
+                if (hasPublishers) {
+                    html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50 mt-1">Penerbit</div>`;
+                    data.publishers.forEach(publisher => {
+                        html += `
+                            <a href="/kategori?penerbit[]=${encodeURIComponent(publisher.nama_penerbit)}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
+                                <span class="material-symbols-outlined text-tertiary bg-tertiary/10 p-1.5 rounded-md">business</span>
+                                <div class="text-sm font-medium text-gray-800 truncate flex-1">${highlight(publisher.nama_penerbit)}</div>
+                            </a>
+                        `;
+                    });
+                }
+                
+                searchResults.innerHTML = html;
+            }
+        }
     </script>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        });
+    </script>
+    @endif
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>

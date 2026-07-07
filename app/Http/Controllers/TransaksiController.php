@@ -22,12 +22,16 @@ class TransaksiController extends Controller
 
         if ($filter == 'menunggu_konfirmasi') {
             $query->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi']);
+        } elseif ($filter == 'dana_diterima') {
+            $query->where('status_tracking', 'Dana Diterima');
         } elseif ($filter == 'sedang_dikirim') {
-            $query->whereIn('status_tracking', ['Dana Diterima', 'Dalam Pengiriman', 'Dipesan Admin', 'Dikirim ke Perpus']);
+            $query->where('status_tracking', 'Dalam Pengiriman');
         } elseif ($filter == 'selesai') {
-            $query->whereIn('status_tracking', ['Masuk Katalog', 'Selesai']);
+            $query->where('status_tracking', 'Selesai');
         } elseif ($filter == 'dibatalkan') {
-            $query->whereIn('status_tracking', ['Dibatalkan'])->orWhere('status_pembayaran', 'Failed');
+            $query->where(function($q) {
+                $q->where('status_tracking', 'Dibatalkan')->orWhere('status_pembayaran', 'Failed');
+            });
         }
 
         $transaksi = $query->latest()->get();
