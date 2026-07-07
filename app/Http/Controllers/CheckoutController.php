@@ -6,13 +6,18 @@ use Illuminate\Http\Request;
 use App\Models\TransaksiCheckout;
 use App\Models\TransaksiDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $type = $request->query('type');
+        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : session()->get('cart', []);
+        
         if (empty($cart)) {
             return redirect()->route('cart')->with('error', 'Keranjang Anda kosong.');
         }
@@ -22,12 +27,17 @@ class CheckoutController extends Controller
             $total += $details['harga_estimasi'] * $details['qty'];
         }
 
-        return view('checkout', compact('cart', 'total'));
+        return response()->view('checkout', compact('cart', 'total'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     public function process(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $type = $request->input('type');
+        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : session()->get('cart', []);
+        
         if (empty($cart)) {
             return redirect()->route('cart');
         }
@@ -44,9 +54,8 @@ class CheckoutController extends Controller
         // Update user data if internal
         if ($request->tipe_donatur == 'internal' && empty($user->identitas_kampus)) {
             $user->identitas_kampus = $request->identitas_kampus;
+            $user->save();
         }
-        $user->nama_lengkap = $request->nama_lengkap;
-        $user->save();
 
         $total = 0;
         foreach ($cart as $details) {
@@ -71,9 +80,24 @@ class CheckoutController extends Controller
                 'harga_satuan' => $details['harga_estimasi'],
                 'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
             ]);
+
+            // Soft Booking: Kurangi stok saat checkout
+            $buku = \App\Models\KatalogBuku::find($id);
+            if ($buku) {
+                $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
+                $updateData = ['stok_dibutuhkan' => $newStok];
+                if ($newStok == 0) {
+                    $updateData['status_buku'] = 'Tersedia';
+                }
+                $buku->update($updateData);
+            }
         }
 
-        session()->forget('cart');
+        if ($type === 'buy_now') {
+            session()->forget('buy_now_cart');
+        } else {
+            session()->forget('cart');
+        }
 
         return redirect()->route('payment')->with('kode_tracking', $kode_tracking);
     }
@@ -96,7 +120,8 @@ class CheckoutController extends Controller
             return redirect()->route('success')->with('kode_tracking', $kode_tracking);
         }
 
-        return view('payment', compact('transaksi'));
+        $metodes = \App\Models\MetodePembayaran::where('is_active', true)->get();
+        return view('payment', compact('transaksi', 'metodes'));
     }
 
     public function uploadProof(Request $request)
@@ -105,14 +130,43 @@ class CheckoutController extends Controller
         $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
 
         $request->validate([
-            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {
-            $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
-            $transaksi->update([
-                'bukti_pembayaran' => '/storage/' . $path,
-                'status_tracking' => 'Menunggu Konfirmasi'
+            $file = $request->file('bukti_pembayaran');
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->decode($file->getRealPath());
+                
+                // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+                $image->scale(width: 800);
+                $filename = time() . '_' . uniqid() . '.webp';
+                $path = 'bukti_pembayaran/' . $filename;
+                
+                Storage::disk('public')->makeDirectory('bukti_pembayaran');
+                $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
+                
+                $transaksi->update([
+                    'bukti_pembayaran' => '/storage/' . $path,
+                    'status_tracking' => 'Menunggu Konfirmasi'
+                ]);
+            } catch (\Exception $e) {
+                // Fallback jika ekstensi GD tidak aktif (termasuk MissingDependencyException)
+                $path = $file->store('bukti_pembayaran', 'public');
+                $transaksi->update([
+                    'bukti_pembayaran' => '/storage/' . $path,
+                    'status_tracking' => 'Menunggu Konfirmasi'
+                ]);
+            }
+
+            // Create notification (which also triggers the email)
+            \App\Models\PesanMasuk::create([
+                'user_id' => $transaksi->user_id,
+                'judul' => "Bukti Pembayaran Terkirim - #{$transaksi->kode_tracking}",
+                'isi_pesan' => "Bukti Pembayaran anda terkirim, mohon tunggu konfirmasi admin.<br><br>Detail Transaksi:<br>Nomor Resi/Pesanan: {$transaksi->kode_tracking}<br>Total Tagihan: Rp " . number_format($transaksi->total_harga, 0, ',', '.') . "<br>Status: Menunggu Konfirmasi",
+                'jenis' => 'info',
+                'is_read' => false,
             ]);
         }
 

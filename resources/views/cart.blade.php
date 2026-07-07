@@ -36,8 +36,8 @@
                                     <!-- Header Info -->
                                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
                                         <div class="flex gap-5">
-                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow @if(!str_starts_with($item['cover_image'] ?? '', '/storage/')) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center p-2 text-center text-white">
-                                                @if(str_starts_with($item['cover_image'] ?? '', '/storage/'))
+                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http'))) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center p-2 text-center text-white">
+                                                @if((str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')))
                                                     <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
                                                 @else
                                                     <h4 class="font-bold text-xs leading-tight tracking-tight relative z-20">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>
@@ -60,7 +60,7 @@
                                         <h4 class="text-sm font-bold text-on-surface flex items-center gap-2 mb-4">
                                             <span class="material-symbols-outlined text-primary text-[18px]">edit_note</span> Detail Penyaluran
                                         </h4>
-                                        <form action="{{ route('cart.update') }}" method="POST">
+                                        <form id="update-form-{{ $id }}" action="{{ route('cart.update') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $id }}">
                                             <div class="space-y-5">
@@ -68,7 +68,7 @@
                                                     <label class="block text-xs font-semibold text-on-surface-variant mb-1.5">Pesan Dukungan (Opsional)</label>
                                                     <div class="relative">
                                                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[18px]">chat</span>
-                                                        <input type="text" name="pesan_dukungan" value="{{ $item['pesan_dukungan'] ?? '' }}" placeholder="Tulis semangat untuk penerima..." class="w-full bg-white border border-outline-variant/50 rounded-lg py-2.5 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow focus:shadow-md" onchange="this.form.submit()">
+                                                        <input type="text" name="pesan_dukungan" value="{{ $item['pesan_dukungan'] ?? '' }}" placeholder="Tulis semangat untuk penerima..." class="w-full bg-white border border-outline-variant/50 rounded-lg py-2.5 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow focus:shadow-md" onchange="submitUpdate(this.form)">
                                                     </div>
                                                 </div>
                                                 <div class="flex justify-end items-center gap-5 pt-2 border-t border-outline-variant/30">
@@ -78,7 +78,7 @@
                                                     <div class="h-6 w-px bg-outline-variant/40"></div>
                                                     <div class="flex items-center gap-1 bg-white border border-outline-variant/50 rounded-lg p-1 shadow-sm">
                                                         <button type="button" onclick="updateQty(this, -1)" class="w-7 h-7 rounded-md bg-surface-bright text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
-                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" class="font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" onchange="this.form.submit()">
+                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" class="font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="submitUpdate(this.form)">
                                                         <button type="button" onclick="updateQty(this, 1)" class="w-7 h-7 rounded-md bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
                                                     </div>
                                                 </div>
@@ -98,7 +98,7 @@
                         <span class="material-symbols-outlined text-outline-variant text-5xl mb-4">production_quantity_limits</span>
                         <h3 class="text-xl font-bold text-on-surface mb-2">Keranjang Kosong</h3>
                         <p class="text-on-surface-variant mb-6">Anda belum memilih buku untuk didonasikan.</p>
-                        <a href="/" class="inline-flex bg-primary text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-primary-container transition-colors">Pilih Buku</a>
+                        <a href="/kategori" class="inline-flex bg-primary text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-primary-container transition-colors">Pilih Buku</a>
                     </div>
                 @endif
             </div>
@@ -113,8 +113,8 @@
                     
                     <div class="space-y-4 mb-6">
                         <div class="flex justify-between items-center text-sm">
-                            <span class="text-on-surface-variant font-medium">Total Harga ({{ $count }} Buku)</span>
-                            <span class="font-bold text-on-surface">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                            <span id="summary-count" class="text-on-surface-variant font-medium">Total Harga ({{ $count }} Buku)</span>
+                            <span id="summary-subtotal" class="font-bold text-on-surface">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-on-surface-variant font-medium">Biaya Penyaluran</span>
@@ -127,7 +127,7 @@
                             <p class="text-sm text-on-surface-variant font-medium mb-1">Total Pembayaran</p>
                             <p class="text-[10px] text-on-surface-variant/80">Termasuk pajak & biaya admin</p>
                         </div>
-                        <p class="text-2xl font-black text-primary tracking-tight">Rp {{ number_format($total, 0, ',', '.') }}</p>
+                        <p id="summary-total" class="text-2xl font-black text-primary tracking-tight">Rp {{ number_format($total, 0, ',', '.') }}</p>
                     </div>
                     
                     <a href="{{ route('checkout') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-container transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
@@ -144,12 +144,55 @@
     </div>
 
 <script>
+function formatRupiah(num) {
+    return 'Rp ' + num.toLocaleString('id-ID').replace(/,/g, '.');
+}
+
 function updateQty(btn, delta) {
     const input = btn.parentNode.querySelector('input[name="qty"]');
     let val = parseInt(input.value) + delta;
+    let max = parseInt(input.getAttribute('max')) || 999;
     if (val < 1) val = 1;
+    if (val > max) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Stok Maksimal',
+            text: 'Anda tidak dapat mendonasikan lebih dari jumlah buku yang dibutuhkan saat ini.',
+            confirmButtonColor: '#003215'
+        });
+        return;
+    }
     input.value = val;
-    input.form.submit();
+    submitUpdate(input.form);
+}
+
+function submitUpdate(form) {
+    let formData = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            if(document.getElementById('summary-count')) {
+                document.getElementById('summary-count').innerText = `Total Harga (${data.cart_count} Buku)`;
+                document.getElementById('summary-subtotal').innerText = formatRupiah(data.cart_total);
+                document.getElementById('summary-total').innerText = formatRupiah(data.cart_total);
+            }
+            
+            const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+            badges.forEach(badge => {
+                badge.innerText = data.cart_count;
+            });
+        }
+    }).catch(err => {
+        console.error(err);
+        form.submit(); // fallback
+    });
 }
 </script>
 @endsection

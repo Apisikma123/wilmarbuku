@@ -17,6 +17,7 @@ class KatalogBukuSeeder extends Seeder
             [
                 'judul_buku' => 'Manajemen Strategis',
                 'pengarang' => 'Prof. Dr. Budi Santoso',
+                'penerbit' => 'Erlangga',
                 'kategori' => 'Bisnis & Manajemen',
                 'deskripsi' => 'Buku ini membahas strategi manajemen untuk inovasi bisnis modern.',
                 'jumlah_halaman' => '342 Hal',
@@ -31,6 +32,7 @@ class KatalogBukuSeeder extends Seeder
             [
                 'judul_buku' => 'Dasar Pemrograman',
                 'pengarang' => 'Andreas Setiawan',
+                'penerbit' => 'Andi Publisher',
                 'kategori' => 'Teknologi',
                 'deskripsi' => 'Konsep dasar pemrograman untuk mahasiswa jurusan TI.',
                 'jumlah_halaman' => '410 Hal',
@@ -45,6 +47,7 @@ class KatalogBukuSeeder extends Seeder
             [
                 'judul_buku' => 'Senja di Jakarta',
                 'pengarang' => 'Mochtar Lubis',
+                'penerbit' => 'Yayasan Obor Indonesia',
                 'kategori' => 'Sastra',
                 'deskripsi' => 'Novel klasik Indonesia yang mengangkat isu sosial di Jakarta.',
                 'jumlah_halaman' => '250 Hal',
@@ -59,6 +62,7 @@ class KatalogBukuSeeder extends Seeder
             [
                 'judul_buku' => 'Kisah Sukses Pengusaha Muda',
                 'pengarang' => 'Ahmad Setiawan & Tim',
+                'penerbit' => 'Gramedia Pustaka Utama',
                 'kategori' => 'Motivasi',
                 'deskripsi' => 'Inspirasi bisnis dan kisah perjalanan pengusaha sukses Indonesia.',
                 'jumlah_halaman' => '180 Hal',

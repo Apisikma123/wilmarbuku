@@ -12,17 +12,27 @@
         <p class="text-sm text-on-surface-variant mb-8">Silakan lakukan transfer ke rekening di bawah ini dan unggah bukti pembayarannya.</p>
 
         <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 mb-8 text-left">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 font-bold">
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-on-surface mb-2">Pilih Bank Tujuan Transfer</label>
+                <select id="metodePembayaranSelect" class="w-full bg-white border border-outline-variant/50 rounded-lg px-4 py-3 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm" onchange="updateBankInfo()">
+                    @forelse($metodes as $metode)
+                        <option value="{{ $metode->id }}" data-bank="{{ $metode->nama_bank }}" data-rek="{{ $metode->nomor_rekening }}" data-nama="{{ $metode->atas_nama }}">{{ $metode->nama_bank }}</option>
+                    @empty
+                        <option value="" data-bank="-" data-rek="Belum ada rekening" data-nama="-">Belum ada metode pembayaran</option>
+                    @endforelse
+                </select>
+            </div>
+            <div class="flex items-center gap-3 mb-4 bg-white border border-outline-variant/30 p-4 rounded-xl shadow-sm">
+                <div id="bankIcon" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 font-bold uppercase">
                     BCA
                 </div>
                 <div>
-                    <h3 class="font-bold text-on-surface text-lg">1234 5678 90</h3>
-                    <p class="text-xs text-on-surface-variant">a/n Admin WilmarBOOKS</p>
+                    <h3 id="nomorRekening" class="font-bold text-on-surface text-xl tracking-wider">1234 5678 90</h3>
+                    <p id="atasNama" class="text-xs font-medium text-on-surface-variant mt-0.5">a/n Admin WilmarBOOKS</p>
                 </div>
             </div>
             <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
-                <span class="text-sm font-medium text-on-surface-variant">Total Tagihan</span>
+                <span class="text-sm font-medium text-on-surface-variant">Total Tagihan ({{ $transaksi->details->sum('qty') }} Buku)</span>
                 <span class="text-lg font-bold text-primary">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</span>
             </div>
         </div>
@@ -37,7 +47,7 @@
                     <div class="flex flex-col items-center gap-2 pointer-events-none" id="file-info">
                         <span class="material-symbols-outlined text-outline-variant text-3xl">upload_file</span>
                         <span class="text-sm text-on-surface-variant font-medium">Pilih gambar (JPG, PNG)</span>
-                        <span class="text-xs text-outline-variant">Maksimal 5MB</span>
+                        <span class="text-xs text-outline-variant">Auto Compress</span>
                     </div>
                 </div>
                 @error('bukti_pembayaran')
@@ -55,6 +65,24 @@
 </div>
 
 <script>
+    function updateBankInfo() {
+        const select = document.getElementById('metodePembayaranSelect');
+        if (!select || select.options.length === 0) return;
+        
+        const selectedOption = select.options[select.selectedIndex];
+        const bankName = selectedOption.getAttribute('data-bank');
+        const bankRek = selectedOption.getAttribute('data-rek');
+        const bankNama = selectedOption.getAttribute('data-nama');
+
+        document.getElementById('bankIcon').innerText = bankName.substring(0, 3);
+        document.getElementById('nomorRekening').innerText = bankRek;
+        document.getElementById('atasNama').innerText = 'a/n ' + bankNama;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateBankInfo();
+    });
+
     function previewFile(input) {
         const fileInfo = document.getElementById('file-info');
         const dropZone = document.getElementById('drop-zone');
@@ -72,9 +100,72 @@
             fileInfo.innerHTML = `
                 <span class="material-symbols-outlined text-outline-variant text-3xl">upload_file</span>
                 <span class="text-sm text-on-surface-variant font-medium">Pilih gambar (JPG, PNG)</span>
-                <span class="text-xs text-outline-variant">Maksimal 5MB</span>
+                <span class="text-xs text-outline-variant">Auto Compress</span>
             `;
         }
     }
+    async function compressImage(file, maxWidth, maxHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height *= maxWidth / width));
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width *= maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob((blob) => {
+                        resolve(new File([blob], file.name.replace(/\.[^/.]+$/, ".webp"), {
+                            type: 'image/webp',
+                            lastModified: Date.now()
+                        }));
+                    }, 'image/webp', quality);
+                };
+                img.onerror = (error) => reject(error);
+            };
+            reader.onerror = (error) => reject(error);
+        });
+    }
+
+    document.querySelector('form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let form = this;
+        let btn = form.querySelector('button[type="submit"]');
+        let fileInput = form.querySelector('input[type="file"]');
+        
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">sync</span> Mengompres...';
+            
+            let originalFile = fileInput.files[0];
+            if (originalFile.type.startsWith('image/')) {
+                let compressedFile = await compressImage(originalFile, 1200, 1200, 0.8);
+                let dt = new DataTransfer();
+                dt.items.add(compressedFile);
+                fileInput.files = dt.files;
+            }
+        }
+        
+        form.submit();
+    });
 </script>
 @endsection
