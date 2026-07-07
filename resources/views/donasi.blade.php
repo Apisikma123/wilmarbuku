@@ -66,15 +66,15 @@
             @foreach($buku as $item)
             <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-md transition-shadow flex flex-col p-4 group">
                 <a href="{{ route('buku.detail', $item->id) }}" class="block w-full">
-                    <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-lg @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
-                        @if(str_starts_with($item->cover_image, '/storage/'))
+                    <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-lg @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
+                        @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
                             <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
                         @endif
                         <div class="absolute top-4 left-4 z-20">
                             <span class="bg-white text-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shadow-sm">{{ $item->kategori }}</span>
                         </div>
-                        @if(!str_starts_with($item->cover_image, '/storage/'))
+                        @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http')))
                             <div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20">
                                 <span class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
                                 <h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>

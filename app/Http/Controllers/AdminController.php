@@ -7,8 +7,12 @@ use App\Models\PesanMasuk;
 use App\Models\TransaksiCheckout;
 use App\Models\User;
 use App\Models\Kategori;
+use App\Models\Penerbit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -18,7 +22,7 @@ class AdminController extends Controller
     {
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $booksNeeded = KatalogBuku::where('status_buku', 'Dibutuhkan')->sum('stok_dibutuhkan');
-        $booksInProcess = TransaksiCheckout::where('status_tracking', '!=', 'Selesai')->count();
+        $booksInProcess = TransaksiCheckout::whereNotIn('status_tracking', ['Selesai', 'Dibatalkan'])->count();
         $totalUsers = User::where('role', '!=', 'admin')->count();
 
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])
@@ -74,8 +78,9 @@ class AdminController extends Controller
         $dibutuhkanSegera = KatalogBuku::where('status_buku', 'Dibutuhkan')->count();
         $berhasilTersedia = KatalogBuku::where('status_buku', 'Tersedia')->count();
         $categories = Kategori::orderBy('nama_kategori')->get();
+        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
 
-        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories'));
+        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories', 'penerbits'));
     }
 
     public function storeKategori(Request $request)
@@ -92,84 +97,171 @@ class AdminController extends Controller
         ]);
     }
 
-    public function storeBook(Request $request)
+    public function storePenerbit(Request $request)
     {
-        $validated = $request->validate([
-            'judul_buku' => 'required|string|max:255',
-            'pengarang' => 'required|string|max:255',
-            'kategori' => 'nullable|array',
-            'kategori.*' => 'string',
-            'kategori_baru' => 'nullable|string',
-            'deskripsi' => 'nullable|string',
-            'jumlah_halaman' => 'nullable|string',
-            'badge' => 'nullable|string',
-            'stok_dibutuhkan' => 'required|integer',
-            'harga_estimasi' => 'required|numeric',
-            'status_buku' => 'required|string',
-            'cover_image' => 'nullable|string',
-            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048', // Maksimal 2MB
+        $request->validate([
+            'nama_penerbit' => 'required|string|max:255|unique:penerbits,nama_penerbit'
         ]);
 
-        if ($request->hasFile('cover_file')) {
-            $path = $request->file('cover_file')->store('covers', 'public');
-            $validated['cover_image'] = '/storage/' . $path;
+        $penerbit = Penerbit::create(['nama_penerbit' => trim($request->nama_penerbit)]);
+
+        return response()->json([
+            'success' => true,
+            'penerbit' => $penerbit
+        ]);
+    }
+
+    public function storeBook(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'judul_buku' => 'required|string|max:255',
+                'pengarang' => 'required|string|max:255',
+                'penerbit' => 'nullable|string|max:255',
+                'kategori' => 'nullable|array',
+                'kategori.*' => 'string',
+                'kategori_baru' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
+                'jumlah_halaman' => 'nullable|string',
+                'badge' => 'nullable|string',
+                'stok_dibutuhkan' => 'required|integer',
+                'harga_estimasi' => 'required|numeric',
+                'status_buku' => 'required|string',
+                'cover_image' => 'nullable|string',
+                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
+            ]);
+
+            if ($request->hasFile('cover_file')) {
+                $file = $request->file('cover_file');
+                try {
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->decode($file->getRealPath());
+                    
+                    // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
+                    $image->scale(width: 800);
+                    $filename = time() . '_' . uniqid() . '.webp';
+                    $path = 'covers/' . $filename;
+                    
+                    Storage::disk('public')->makeDirectory('covers');
+                    $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
+                    
+                    $validated['cover_image'] = '/storage/' . $path;
+                } catch (\Exception $e) {
+                    // Fallback jika ekstensi GD tidak aktif
+                    $path = $file->store('covers', 'public');
+                    $validated['cover_image'] = '/storage/' . $path;
+                }
+            }
+
+            unset($validated['cover_file']);
+            unset($validated['kategori_baru']);
+            
+            $categories = $request->kategori ?? [];
+            $categories = array_unique(array_filter($categories));
+            
+            if (empty($categories)) {
+                if ($request->ajax()) {
+                    return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
+                }
+                return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+            }
+            
+            $validated['kategori'] = implode(', ', $categories);
+
+            KatalogBuku::create($validated);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Buku berhasil ditambahkan ke katalog!'
+                ]);
+            }
+
+            return back()->with('success', 'Buku berhasil ditambahkan ke katalog!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
-
-        unset($validated['cover_file']);
-        
-        $categories = $request->kategori ?? [];
-        $categories = array_unique(array_filter($categories));
-        
-        if (empty($categories)) {
-            return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
-        }
-        
-        $validated['kategori'] = implode(', ', $categories);
-
-        KatalogBuku::create($validated);
-
-        return back()->with('success', 'Buku berhasil ditambahkan ke katalog!');
     }
 
     public function updateBook(Request $request, $id)
     {
-        $book = KatalogBuku::findOrFail($id);
-        
-        $validated = $request->validate([
-            'judul_buku' => 'required|string|max:255',
-            'pengarang' => 'required|string|max:255',
-            'kategori' => 'nullable|array',
-            'kategori.*' => 'string',
-            'kategori_baru' => 'nullable|string',
-            'deskripsi' => 'nullable|string',
-            'jumlah_halaman' => 'nullable|string',
-            'badge' => 'nullable|string',
-            'stok_dibutuhkan' => 'required|integer',
-            'harga_estimasi' => 'required|numeric',
-            'status_buku' => 'required|string',
-            'cover_image' => 'nullable|string',
-            'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048', // Maksimal 2MB
-        ]);
+        try {
+            $book = KatalogBuku::findOrFail($id);
 
-        if ($request->hasFile('cover_file')) {
-            $path = $request->file('cover_file')->store('covers', 'public');
-            $validated['cover_image'] = '/storage/' . $path;
+            $validated = $request->validate([
+                'judul_buku' => 'required|string|max:255',
+                'pengarang' => 'required|string|max:255',
+                'penerbit' => 'nullable|string|max:255',
+                'kategori' => 'nullable|array',
+                'kategori.*' => 'string',
+                'kategori_baru' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
+                'jumlah_halaman' => 'nullable|string',
+                'badge' => 'nullable|string',
+                'stok_dibutuhkan' => 'required|integer',
+                'harga_estimasi' => 'required|numeric',
+                'status_buku' => 'required|string',
+                'cover_image' => 'nullable|string',
+                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp',
+            ]);
+
+            if ($request->hasFile('cover_file')) {
+                $file = $request->file('cover_file');
+                
+                try {
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->decode($file->getRealPath());
+                    
+                    $image->scale(width: 800);
+                    $filename = time() . '_' . uniqid() . '.webp';
+                    $path = 'covers/' . $filename;
+                    
+                    Storage::disk('public')->makeDirectory('covers');
+                    $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
+                    
+                    $validated['cover_image'] = '/storage/' . $path;
+                } catch (\Exception $e) {
+                    $path = $file->store('covers', 'public');
+                    $validated['cover_image'] = '/storage/' . $path;
+                }
+            } elseif (empty($validated['cover_image'])) {
+                // If neither new file nor URL is provided, keep old image
+                // Assuming the form sends the old URL or empty if not changed
+                unset($validated['cover_image']);
+            }
+
+            unset($validated['cover_file']);
+            unset($validated['kategori_baru']);
+
+            $categories = $request->kategori ?? [];
+            $categories = array_unique(array_filter($categories));
+            
+            if (empty($categories)) {
+                if ($request->ajax()) {
+                    return response()->json(['errors' => ['kategori' => ['Kategori buku wajib diisi atau dipilih minimal satu.']]], 422);
+                }
+                return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
+            }
+            
+            $validated['kategori'] = implode(', ', $categories);
+
+            $book->update($validated);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Perubahan buku berhasil disimpan!'
+                ]);
+            }
+
+            return back()->with('success', 'Perubahan buku berhasil disimpan!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
-
-        unset($validated['cover_file']);
-
-        $categories = $request->kategori ?? [];
-        $categories = array_unique(array_filter($categories));
-        
-        if (empty($categories)) {
-            return back()->withErrors(['kategori' => 'Kategori buku wajib diisi atau dipilih minimal satu.'])->withInput();
-        }
-        
-        $validated['kategori'] = implode(', ', $categories);
-
-        $book->update($validated);
-
-        return back()->with('success', 'Data buku berhasil diperbarui!');
     }
 
     public function destroyBook($id)
@@ -231,6 +323,21 @@ class AdminController extends Controller
             'alasan_pembatalan' => 'required|string|max:500',
         ]);
 
+        // Kembalikan stok karena dibatalkan
+        if ($transaction->status_tracking !== 'Dibatalkan') {
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
+                        $updateDataBuku['status_buku'] = 'Dibutuhkan';
+                    }
+                    $detail->buku->update($updateDataBuku);
+                }
+            }
+        }
+
         $transaction->update([
             'status_tracking' => 'Dibatalkan',
             'alasan_pembatalan' => $request->alasan_pembatalan,
@@ -272,17 +379,37 @@ class AdminController extends Controller
             $updateData['status_pembayaran'] = 'Failed';
         }
 
-        $transaction->update($updateData);
+        // Cek jika status diubah menjadi Dibatalkan dari status lain, maka stok dikembalikan
+        if ($request->status_tracking === 'Dibatalkan' && $transaction->status_tracking !== 'Dibatalkan') {
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
+                        $updateDataBuku['status_buku'] = 'Dibutuhkan';
+                    }
+                    $detail->buku->update($updateDataBuku);
+                }
+            }
+        }
 
-        if ($request->status_tracking === 'Selesai') {
+        // Cek jika status dibatalkan (dihidupkan kembali)
+        if ($request->status_tracking !== 'Dibatalkan' && $transaction->status_tracking === 'Dibatalkan') {
             $transaction->load('details.buku');
             foreach ($transaction->details as $detail) {
                 if ($detail->buku) {
                     $newStok = max(0, $detail->buku->stok_dibutuhkan - $detail->qty);
-                    $detail->buku->update(['stok_dibutuhkan' => $newStok]);
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok == 0) {
+                        $updateDataBuku['status_buku'] = 'Tersedia';
+                    }
+                    $detail->buku->update($updateDataBuku);
                 }
             }
         }
+
+        $transaction->update($updateData);
         $pesanText = "Status pesanan buku Anda #{$transaction->kode_tracking} saat ini: **{$request->status_tracking}**.";
         
         if ($request->pesan_admin) {
@@ -354,45 +481,79 @@ class AdminController extends Controller
         return back()->with('success', 'Pengguna berhasil dihapus!');
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
-        $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
-        $totalTransactions = TransaksiCheckout::count();
-        $completedTransactions = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
-        $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])->latest()->take(10)->get();
+        $filter = $request->input('filter', '12_months');
 
-        $months = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
-            $months[$month->format('Y-m')] = [
-                'name' => $month->format('M'),
-                'funds' => 0,
-                'books' => 0,
-            ];
-        }
+        $query = TransaksiCheckout::query();
+        
+        $chartDataRaw = [];
+        $startDate = null;
 
-        $transactions = TransaksiCheckout::with('details')
-            ->where('status_pembayaran', 'Paid')
-            ->where('created_at', '>=', Carbon::now()->subMonths(11)->startOfMonth())
-            ->get();
-
-        foreach ($transactions as $trx) {
-            $key = $trx->created_at->format('Y-m');
-            if (isset($months[$key])) {
-                $months[$key]['funds'] += $trx->total_harga;
-                $months[$key]['books'] += $trx->details->sum('qty');
+        if ($filter == 'this_year') {
+            $startDate = Carbon::now()->startOfYear();
+            $diff = $startDate->diffInMonths(Carbon::now());
+            for ($i = $diff; $i >= 0; $i--) {
+                $month = Carbon::now()->subMonths($i);
+                $chartDataRaw[$month->format('Y-m')] = [
+                    'name' => $month->format('M'),
+                    'funds' => 0,
+                    'books' => 0,
+                ];
+            }
+        } elseif ($filter == '30_days') {
+            $startDate = Carbon::now()->subDays(29)->startOfDay();
+            for ($i = 29; $i >= 0; $i--) {
+                $day = Carbon::now()->subDays($i);
+                $chartDataRaw[$day->format('Y-m-d')] = [
+                    'name' => $day->format('d M'),
+                    'funds' => 0,
+                    'books' => 0,
+                ];
+            }
+        } else { // 12_months
+            $startDate = Carbon::now()->subMonths(11)->startOfMonth();
+            for ($i = 11; $i >= 0; $i--) {
+                $month = Carbon::now()->subMonths($i);
+                $chartDataRaw[$month->format('Y-m')] = [
+                    'name' => $month->format('M'),
+                    'funds' => 0,
+                    'books' => 0,
+                ];
             }
         }
 
-        $maxFunds = max(array_column($months, 'funds'));
-        $maxBooks = max(array_column($months, 'books'));
+        // Apply date filter to top metrics
+        $metricsQuery = TransaksiCheckout::where('created_at', '>=', $startDate);
+        
+        $totalDonations = (clone $metricsQuery)->where('status_pembayaran', 'Paid')->sum('total_harga');
+        $totalTransactions = (clone $metricsQuery)->count();
+        $completedTransactions = (clone $metricsQuery)->where('status_tracking', 'Selesai')->count();
+        
+        $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])->latest()->take(10)->get();
+
+        $transactions = TransaksiCheckout::with('details')
+            ->where('status_pembayaran', 'Paid')
+            ->where('created_at', '>=', $startDate)
+            ->get();
+
+        foreach ($transactions as $trx) {
+            $key = $filter == '30_days' ? $trx->created_at->format('Y-m-d') : $trx->created_at->format('Y-m');
+            if (isset($chartDataRaw[$key])) {
+                $chartDataRaw[$key]['funds'] += $trx->total_harga;
+                $chartDataRaw[$key]['books'] += $trx->details->sum('qty');
+            }
+        }
+
+        $maxFunds = max(array_column($chartDataRaw, 'funds') ?: [0]);
+        $maxBooks = max(array_column($chartDataRaw, 'books') ?: [0]);
         
         $maxFunds = $maxFunds > 0 ? $maxFunds : 1;
         $maxBooks = $maxBooks > 0 ? $maxBooks : 1;
 
-        $chartData = array_values($months);
+        $chartData = array_values($chartDataRaw);
 
-        return view('admins.reports', compact('totalDonations', 'totalTransactions', 'completedTransactions', 'recentTransactions', 'chartData', 'maxFunds', 'maxBooks'));
+        return view('admins.reports', compact('totalDonations', 'totalTransactions', 'completedTransactions', 'recentTransactions', 'chartData', 'maxFunds', 'maxBooks', 'filter'));
     }
 
     public function exportPdf()

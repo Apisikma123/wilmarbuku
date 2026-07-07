@@ -65,8 +65,8 @@
                                 <label class="block text-sm font-medium text-on-surface mb-1">Nama Lengkap <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" name="nama_lengkap" value="{{ Auth::user()->nama_lengkap }}"
-                                    class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg focus:border-[#004225] focus:ring-1 focus:ring-[#004225] outline-none transition-colors text-sm"
-                                    placeholder="Nama sesuai identitas" required>
+                                    class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg outline-none transition-colors text-sm text-gray-500 cursor-not-allowed"
+                                    placeholder="Nama sesuai identitas" readonly>
                                 @error('nama_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div>
@@ -91,8 +91,8 @@
                         <div class="flex flex-col sm:flex-row gap-6 mb-6">
                             <!-- Book Cover -->
                             <div
-                                class="w-24 aspect-[2/3] rounded-lg @if(!str_starts_with($item['cover_image'] ?? '', '/storage/')) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden">
-                                @if(str_starts_with($item['cover_image'] ?? '', '/storage/'))
+                                class="w-24 aspect-[2/3] rounded-lg @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http'))) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden">
+                                @if((str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')))
                                     <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0"
                                         alt="">
                                 @else

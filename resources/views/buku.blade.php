@@ -16,8 +16,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-6">
             <div class="rounded-lg p-4 md:p-8 flex items-center justify-center">
-                <div class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden @if(!str_starts_with($buku->cover_image, '/storage/')) bg-gradient-to-br {{ $buku->cover_image }} @endif">
-                    @if(str_starts_with($buku->cover_image, '/storage/'))
+                <div class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden @if((!str_starts_with($buku->cover_image, '/storage/') && !str_starts_with($buku->cover_image, 'http'))) bg-gradient-to-br {{ $buku->cover_image }} @endif">
+                    @if((str_starts_with($buku->cover_image, '/storage/') || str_starts_with($buku->cover_image, 'http')))
                         <img src="{{ $buku->cover_image }}" alt="{{ $buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
                     @else
@@ -119,7 +119,6 @@
             <div class="border-t border-outline-variant/30 flex-grow pt-8">
                 <div class="flex items-center gap-8 border-b border-outline-variant/30 mb-8">
                     <button class="pb-3 text-primary font-bold border-b-[3px] border-primary text-base">Deskripsi Buku</button>
-                    <button class="pb-3 text-on-surface-variant hover:text-on-surface font-semibold text-base transition-colors">Detail Distribusi</button>
                 </div>
                 <div class="text-on-surface-variant text-base leading-relaxed space-y-5 prose prose-slate max-w-[75ch]">
                     {!! $buku->deskripsi !!}
@@ -131,6 +130,7 @@
 
 <script>
     const price = {{ $buku->harga_estimasi }};
+    const maxQty = {{ $buku->stok_dibutuhkan }};
     let qty = 1;
 
     function formatRupiah(num) {
@@ -144,8 +144,17 @@
     }
 
     document.getElementById('btn-plus').addEventListener('click', () => {
-        qty++;
-        render();
+        if (qty < maxQty) {
+            qty++;
+            render();
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'Stok Maksimal',
+                text: 'Anda tidak dapat mendonasikan lebih dari jumlah buku yang dibutuhkan saat ini.',
+                confirmButtonColor: '#003215'
+            });
+        }
     });
     document.getElementById('btn-minus').addEventListener('click', () => {
         if (qty > 1) qty--;

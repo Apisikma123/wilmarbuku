@@ -35,7 +35,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Telepon</p>
-                        <p class="text-slate-900 font-medium">+62 812 3456 7890</p>
+                        <p class="text-slate-900 font-medium">(061) 42074111</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-colors">
@@ -45,7 +45,7 @@
                     <div>
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Alamat</p>
                         <p class="text-slate-900 text-sm leading-relaxed">
-                            Gedung Wilmar Lt. 5, Jl. Jend. Sudirman Kav. 1,<br>Jakarta Pusat, DKI Jakarta 10220
+                            Laut Dendang, Jl. Warakauri, Kenangan, Kec. Percut Sei Tuan,<br>Kabupaten Deli Serdang, Sumatera Utara 20371
                         </p>
                     </div>
                 </div>

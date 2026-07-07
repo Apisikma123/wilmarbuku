@@ -16,68 +16,48 @@ class ProfileController extends Controller
         return view('akun');
     }
 
-
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
+    public function updateProfile(Request $request)
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
+        $user = Auth::user();
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+        $rules = [
+            'nama_lengkap' => 'required|string|max:255',
+        ];
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // If not logged in via google, they can update their email
+        if (!$user->google_id) {
+            $rules['email'] = 'required|email|max:255|unique:users,email,' . $user->id;
         }
 
-        $request->user()->save();
+        $request->validate($rules);
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->nama_lengkap = $request->nama_lengkap;
+        if (!$user->google_id) {
+            $user->email = $request->email;
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
     }
 
-    /**
-     * Update the user's password.
-     */
-    public function updatePassword(Request $request): RedirectResponse
+    public function updatePassword(Request $request)
     {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+        $user = Auth::user();
+
+        if ($user->google_id && !$user->password) {
+            // Cannot update password if it's a google account without one setup yet
+            // Though we could allow setting a new password. Let's allow setting it if old password is not provided.
+        }
+
+        $request->validate([
+            'current_password' => 'required|current_password',
+            'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        $request->user()->update([
-            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
-        ]);
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->new_password);
+        $user->save();
 
-        return back()->with('status', 'password-updated')->with('success', 'Password successfully updated.');
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return redirect()->back()->with('success', 'Kata sandi berhasil diperbarui.');
     }
 }

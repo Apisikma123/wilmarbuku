@@ -36,26 +36,34 @@
                     <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">KATEGORI</h3>
                     <div class="space-y-3">
                         @php
-                            $dbCategoriesStr = \App\Models\KatalogBuku::pluck('kategori')->toArray();
-                            $allCategories = [];
-                            foreach($dbCategoriesStr as $catStr) {
-                                if($catStr) {
-                                    $parts = array_map('trim', explode(',', $catStr));
-                                    $allCategories = array_merge($allCategories, $parts);
-                                }
-                            }
-                            $baseCats = ['Teknologi & Informasi', 'Ekonomi & Bisnis', 'Sains & Matematika', 'Sosial & Budaya', 'Pengembangan Diri', 'Fiksi & Sastra', 'Umum'];
-                            $dbCategories = array_unique(array_merge($baseCats, $allCategories));
-                            sort($dbCategories);
-                            
                             $selectedCategories = request('kategori', []);
                         @endphp
-                        @foreach($dbCategories as $cat)
+                        @forelse($categories as $cat)
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="kategori[]" value="{{ $cat }}" @if(in_array($cat, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
-                            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">{{ $cat }}</span>
+                            <input type="checkbox" name="kategori[]" value="{{ $cat->nama_kategori }}" @if(in_array($cat->nama_kategori, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">{{ $cat->nama_kategori }}</span>
                         </label>
-                        @endforeach
+                        @empty
+                        <span class="text-xs text-slate-400 italic">Belum ada kategori</span>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- Penerbit -->
+                <div class="mb-8">
+                    <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">PENERBIT</h3>
+                    <div class="space-y-3">
+                        @php
+                            $selectedPenerbit = request('penerbit', []);
+                        @endphp
+                        @forelse($penerbits as $pub)
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="penerbit[]" value="{{ $pub->nama_penerbit }}" @if(in_array($pub->nama_penerbit, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors line-clamp-1" title="{{ $pub->nama_penerbit }}">{{ $pub->nama_penerbit }}</span>
+                        </label>
+                        @empty
+                        <span class="text-xs text-slate-400 italic">Belum ada penerbit</span>
+                        @endforelse
                     </div>
                 </div>
 
@@ -64,16 +72,16 @@
                     <h3 class="text-xs font-bold text-primary mb-4 uppercase tracking-widest">PENGARANG</h3>
                     <div class="space-y-3">
                         @php
-                            $dbPenerbit = \App\Models\KatalogBuku::select('pengarang')->whereNotNull('pengarang')->where('pengarang', '!=', '')->distinct()->pluck('pengarang');
-                            $selectedPenerbit = request('penerbit', []);
+                            $dbPengarang = \App\Models\KatalogBuku::select('pengarang')->whereNotNull('pengarang')->where('pengarang', '!=', '')->distinct()->pluck('pengarang');
+                            $selectedPengarang = request('pengarang', []);
                         @endphp
-                        @foreach($dbPenerbit as $pen)
+                        @foreach($dbPengarang as $pen)
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="penerbit[]" value="{{ $pen }}" @if(in_array($pen, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
+                            <input type="checkbox" name="pengarang[]" value="{{ $pen }}" @if(in_array($pen, $selectedPengarang)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
                             <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors line-clamp-1" title="{{ $pen }}">{{ $pen }}</span>
                         </label>
                         @endforeach
-                        @if($dbPenerbit->isEmpty())
+                        @if($dbPengarang->isEmpty())
                             <span class="text-xs text-slate-400 italic">Belum ada data</span>
                         @endif
                     </div>
@@ -108,8 +116,8 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 @forelse($buku as $item)
                 <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 p-3 hover:-translate-y-1 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block group">
-                    <div class="w-full aspect-[3/4] @if(!str_starts_with($item->cover_image, '/storage/')) bg-gradient-to-br {{ $item->cover_image }} @endif rounded-lg mb-3 flex items-center justify-center p-2 text-center text-white relative overflow-hidden">
-                        @if(str_starts_with($item->cover_image, '/storage/'))
+                    <div class="w-full aspect-[3/4] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif rounded-lg mb-3 flex items-center justify-center p-2 text-center text-white relative overflow-hidden">
+                        @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
                             <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover">
                         @else
                             <h4 class="text-[10px] md:text-xs font-bold uppercase leading-tight relative z-10">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>

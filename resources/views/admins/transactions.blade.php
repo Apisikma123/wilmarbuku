@@ -126,14 +126,14 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5 whitespace-normal max-w-xs">
-                            <div class="font-medium text-slate-900 text-sm leading-tight">
+                        <td class="px-6 py-5 whitespace-nowrap min-w-[200px]">
+                            <div class="font-bold text-slate-900 text-sm">
                                 {{ $trx->details->first()->buku->judul_buku ?? 'Buku Donasi' }}
                                 @if($trx->details->count() > 1)
-                                <span class="text-xs text-slate-400 font-normal">(+{{ $trx->details->count() - 1 }} item lainnya)</span>
+                                <span class="text-xs text-slate-400 font-normal ml-1">(+{{ $trx->details->count() - 1 }} item lainnya)</span>
                                 @endif
                             </div>
-                            <div class="text-xs font-bold text-slate-700 mt-1">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
+                            <div class="text-xs font-medium text-slate-500 mt-0.5">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
                         </td>
                         <td class="px-6 py-5 text-center">
                             @if($trx->status_pembayaran == 'Paid')
@@ -162,14 +162,20 @@
                         <td class="px-6 py-5 text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <!-- Ubah Status Manual & Kirim Pesan -->
-                                @if($trx->status_tracking != 'Selesai')
+                                @if(in_array($trx->status_tracking, ['Selesai', 'Dibatalkan']) || in_array($trx->status_pembayaran, ['Failed', 'Expired']))
+                                    @if($trx->status_tracking == 'Selesai')
+                                    <span class="px-3 py-1.5 bg-slate-100 text-slate-400 rounded-lg text-xs font-bold flex items-center gap-1">
+                                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Telah Selesai
+                                    </span>
+                                    @else
+                                    <span class="px-3 py-1.5 bg-red-50 text-red-400 rounded-lg text-xs font-bold flex items-center gap-1 border border-red-100">
+                                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Dibatalkan
+                                    </span>
+                                    @endif
+                                @else
                                 <button onclick='openStatusModal({{ json_encode($trx) }})' class="px-3 py-1.5 border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1" title="Update Pesanan">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Update Pesanan
                                 </button>
-                                @else
-                                <span class="px-3 py-1.5 bg-slate-100 text-slate-400 rounded-lg text-xs font-bold flex items-center gap-1">
-                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Telah Selesai
-                                </span>
                                 @endif
                             </div>
                         </td>
@@ -260,7 +266,7 @@ function closeStatusModal() {
 
 function filterTable(input) {
     let filter = input.value.toLowerCase();
-    let table = input.closest('.shadow-sm').querySelector('table');
+    let table = input.closest('.rounded-xl').querySelector('table');
     if(!table) return;
     let tr = table.getElementsByTagName("tr");
     for (let i = 1; i < tr.length; i++) { 

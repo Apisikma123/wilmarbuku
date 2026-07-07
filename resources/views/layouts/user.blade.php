@@ -49,7 +49,9 @@
                 <div class="flex md:hidden items-center gap-4">
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
-                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                        @if(session('cart') && count(session('cart')) > 0)
+                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ count(session('cart')) }}</span>
+                        @endif
                     </a>
                 </div>
             </div>
@@ -58,7 +60,7 @@
             <div class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
                 <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none">
                     <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500">search</span>
-                    <input type="text" name="search" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
+                    <input type="text" name="search" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
                     <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
                 </form>
             </div>
@@ -67,7 +69,9 @@
             <div class="hidden md:flex items-center gap-6 ml-auto">
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                    @if(session('cart') && count(session('cart')) > 0)
+                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ count(session('cart')) }}</span>
+                    @endif
                 </a>
                 <div class="relative group pt-4 pb-4">
                     <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
@@ -81,7 +85,7 @@
                     </a>
 
                     <!-- Hover Dropdown Menu -->
-                    <div class="absolute right-0 top-full w-80 bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
+                    <div class="absolute right-0 top-full w-[400px] bg-surface rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto">
                         
                         <!-- User Info Header -->
                         <div class="bg-primary text-white p-4 rounded-t-2xl relative overflow-hidden">
@@ -94,7 +98,7 @@
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <h4 class="font-bold text-base leading-tight">{{ Auth::user()->nama_lengkap }}</h4>
-                                            <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors">edit</span>
+                                            <a href="/akun" class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors" title="Edit Profil">edit</a>
                                         </div>
                                         <p class="text-xs text-white/80 mt-0.5">{{ Auth::user()->role == 'user_internal' ? 'Internal WBI' : 'Donatur Umum' }}</p>
                                     </div>
@@ -113,10 +117,13 @@
                                     ->where('is_read_by_user', false)
                                     ->get();
                                     
-                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Dana Diterima', 'Dipesan Admin'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
-                                $countDikirim = $unreadTrx->where('status_tracking', 'Dikirim ke Perpus')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
-                                $countSelesai = $unreadTrx->where('status_tracking', 'Masuk Katalog')->count();
-                                $countBatal = $unreadTrx->whereIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countMenunggu = $unreadTrx->whereIn('status_tracking', ['Menunggu Pembayaran', 'Menunggu Konfirmasi'])->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDana = $unreadTrx->where('status_tracking', 'Dana Diterima')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countDikirim = $unreadTrx->where('status_tracking', 'Dalam Pengiriman')->whereNotIn('status_pembayaran', ['Failed', 'Expired'])->count();
+                                $countSelesai = $unreadTrx->where('status_tracking', 'Selesai')->count();
+                                $countBatal = $unreadTrx->where(function($q) {
+                                    return $q->status_tracking == 'Dibatalkan' || $q->status_pembayaran == 'Failed';
+                                })->count();
                             @endphp
                             <div class="flex justify-between px-2">
                                 <a href="/transaksi?status=menunggu_konfirmasi" class="flex flex-col items-center gap-1.5 group/item">
@@ -127,6 +134,15 @@
                                         @endif
                                     </div>
                                     <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Menunggu Konfirmasi</span>
+                                </a>
+                                <a href="/transaksi?status=dana_diterima" class="flex flex-col items-center gap-1.5 group/item">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-outline group-hover/item:text-primary transition-colors text-2xl">account_balance_wallet</span>
+                                        @if($countDana > 0)
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">{{ $countDana }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] text-on-surface-variant font-medium leading-tight w-16 text-center">Dana Diterima</span>
                                 </a>
                                 <a href="/transaksi?status=sedang_dikirim" class="flex flex-col items-center gap-1.5 group/item">
                                     <div class="relative">
@@ -207,10 +223,9 @@
                 </a>
                 <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
                 <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                <a href="/kategori?kategori[]=Sosial+%26+Budaya" class="hover:text-primary transition-colors whitespace-nowrap">Sosial & Budaya</a>
-                <a href="/kategori?kategori[]=Fiksi+%26+Sastra" class="hover:text-primary transition-colors whitespace-nowrap">Fiksi & Sastra</a>
-                <a href="/kategori?kategori[]=Ekonomi+%26+Bisnis" class="hover:text-primary transition-colors whitespace-nowrap">Startup & Bisnis</a>
-                <a href="/kategori?kategori[]=Sains+%26+Matematika" class="hover:text-primary transition-colors whitespace-nowrap">Sains & Matematika</a>
+                @foreach($global_kategoris->take(6) as $kategori)
+                <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
+                @endforeach
             </div>
         </div>
     </header>
