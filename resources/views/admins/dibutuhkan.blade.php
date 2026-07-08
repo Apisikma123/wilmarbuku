@@ -46,6 +46,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="px-6 py-4 border-t border-slate-200">
+            {{ $books->links('pagination::tailwind') }}
+        </div>
     </div>
 </div>
 @endsection

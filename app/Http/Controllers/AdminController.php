@@ -28,7 +28,7 @@ class AdminController extends Controller
 
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])
             ->latest('tanggal_checkout')
-            ->take(5)
+            ->take(3)
             ->get();
 
         $months = [];
@@ -74,7 +74,7 @@ class AdminController extends Controller
 
     public function catalog()
     {
-        $books = KatalogBuku::latest()->get();
+        $books = KatalogBuku::latest()->paginate(10);
         $totalPengajuan = KatalogBuku::count();
         $dibutuhkanSegera = KatalogBuku::where('status_buku', 'Dibutuhkan')->count();
         $berhasilTersedia = KatalogBuku::where('status_buku', 'Tersedia')->count();
@@ -277,7 +277,7 @@ class AdminController extends Controller
     {
         $transactions = TransaksiCheckout::with(['user', 'details.buku'])
             ->latest('tanggal_checkout')
-            ->get();
+            ->paginate(10);
 
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $pendingPayments = TransaksiCheckout::where('status_pembayaran', 'Unpaid')->count();
@@ -433,7 +433,7 @@ class AdminController extends Controller
 
     public function users()
     {
-        $users = User::latest()->get();
+        $users = User::latest()->paginate(10);
         $totalUsers = User::count();
         $internalUsers = User::where('role', 'user_internal')->count();
         $externalUsers = User::where('role', 'user_external')->count();
@@ -608,7 +608,7 @@ class AdminController extends Controller
 
     public function dibutuhkan()
     {
-        $books = KatalogBuku::where('status_buku', 'Dibutuhkan')->latest()->get();
+        $books = KatalogBuku::where('status_buku', 'Dibutuhkan')->latest()->paginate(10);
         return view('admins.dibutuhkan', compact('books'));
     }
 
