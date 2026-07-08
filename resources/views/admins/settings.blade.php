@@ -14,7 +14,15 @@
             <h3 class="text-lg font-bold text-slate-900">My Profile</h3>
             <p class="text-sm text-slate-500">Update your personal information and photo.</p>
         </div>
-        <div class="p-6">
+        <form method="POST" action="{{ route('akun.updateProfile') }}" class="p-6">
+            @csrf
+            
+            @if(session('success') && str_contains(session('success'), 'Profil'))
+                <div class="mb-4 text-sm font-medium text-green-600 bg-green-100 border border-green-200 rounded-lg p-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="flex flex-col sm:flex-row gap-8 mb-6">
                 <!-- Avatar -->
                 <div class="flex flex-col items-center gap-3">
@@ -30,18 +38,20 @@
                 <div class="flex-1 space-y-5">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name</label>
-                        <input type="text" value="{{ Auth::user()->nama_lengkap }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
+                        <input type="text" name="nama_lengkap" value="{{ Auth::user()->nama_lengkap }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
+                        @error('nama_lengkap') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Email Address</label>
-                        <input type="email" value="{{ Auth::user()->email }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
+                        <input type="email" name="email" value="{{ Auth::user()->email }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
+                        @error('email') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </div>
             <div class="flex justify-end pt-2 border-t border-slate-100 mt-4">
-                <button class="px-6 py-2.5 bg-green-900 text-white font-bold rounded-lg hover:bg-green-800 transition-colors shadow-sm text-sm mt-3">Save Changes</button>
+                <button type="submit" class="px-6 py-2.5 bg-green-900 text-white font-bold rounded-lg hover:bg-green-800 transition-colors shadow-sm text-sm mt-3">Save Changes</button>
             </div>
-        </div>
+        </form>
     </section>
 
     <!-- Change Password -->
@@ -54,9 +64,9 @@
             @csrf
             @method('put')
 
-            @if(session('status') === 'password-updated')
+            @if(session('success') && str_contains(session('success'), 'sandi'))
                 <div class="mb-4 text-sm font-medium text-green-600 bg-green-100 border border-green-200 rounded-lg p-3">
-                    Password successfully updated!
+                    {{ session('success') }}
                 </div>
             @endif
 
@@ -70,14 +80,14 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">New Password</label>
-                    <input type="password" name="password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
-                    @error('password')
+                    <input type="password" name="new_password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
+                    @error('new_password')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Confirm Password</label>
-                    <input type="password" name="password_confirmation" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
+                    <input type="password" name="new_password_confirmation" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
                 </div>
             </div>
             <div class="flex justify-end pt-2 border-t border-slate-100 mt-6">
