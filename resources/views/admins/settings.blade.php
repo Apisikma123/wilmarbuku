@@ -112,11 +112,11 @@
                     </div>
                     View Support Page
                 </a>
-                <a href="{{ route('login') }}" class="flex-1 flex items-center justify-center gap-3 px-6 py-3.5 bg-red-50 text-red-700 border border-red-100 rounded-xl font-bold hover:bg-red-100 transition-all cursor-pointer group">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-600 shadow-sm group-hover:bg-red-50 transition-colors">
-                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                <a href="{{ route('login') }}" class="flex-1 flex items-center justify-center gap-3 px-6 py-3.5 bg-green-50 text-green-700 border border-green-100 rounded-xl font-bold hover:bg-green-100 transition-all cursor-pointer group">
+                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-green-600 shadow-sm group-hover:bg-green-50 transition-colors">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
                     </div>
-                    Logout Account
+                    View User Dashboard
                 </a>
             </div>
         </div>
