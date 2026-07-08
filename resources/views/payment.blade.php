@@ -48,6 +48,7 @@
         <form action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
+            <input type="hidden" name="metode_pembayaran_id" id="hiddenMetodePembayaran" value="">
             <div class="mb-6 text-left">
                 <label class="block text-sm font-bold text-on-surface mb-2">Unggah Bukti Pembayaran *</label>
                 <div class="border-2 border-dashed border-outline-variant rounded-xl p-4 text-center hover:border-primary transition-colors cursor-pointer relative" id="drop-zone">
@@ -84,7 +85,10 @@
 
         document.getElementById('bankIcon').innerText = bankName.substring(0, 3);
         document.getElementById('nomorRekening').innerText = bankRek;
-        document.getElementById('atasNama').innerText = 'a/n ' + bankNama;
+        document.getElementById('atasNama').innerText = "a/n " + bankNama;
+        
+        const hiddenInput = document.getElementById('hiddenMetodePembayaran');
+        if(hiddenInput) hiddenInput.value = selectedOption.value;
     }
 
     document.addEventListener("DOMContentLoaded", function() {
