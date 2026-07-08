@@ -143,7 +143,7 @@
                         <th class="px-6 py-4">Kode Tracking</th>
                         <th class="px-6 py-4">Donatur / User</th>
                         <th class="px-6 py-4">Buku</th>
-                        <th class="px-6 py-4 text-center">Pembayaran</th>
+                        <th class="px-6 py-4 text-center">Status Pembayaran</th>
                         <th class="px-6 py-4">Status Tracking</th>
                         <th class="px-6 py-4 text-center">Tindakan Admin</th>
                     </tr>
