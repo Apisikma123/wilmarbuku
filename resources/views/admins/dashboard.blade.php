@@ -64,7 +64,7 @@
             </a>
 
             <!-- Card 3 -->
-            <a href="{{ route('admin.catalog') }}"
+            <a href="{{ route('admin.transactions') }}"
                 class="block bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div
@@ -159,12 +159,8 @@
                 class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 flex-wrap gap-4">
                 <h3 class="text-lg font-bold text-slate-900">Recent Transactions</h3>
                 <div class="flex items-center gap-4">
-                    <div class="relative w-64 shrink-0">
-                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" onkeyup="filterTable(this)" placeholder="Search table..."
-                            class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
-                    </div>
-                    <a href="#" class="text-sm font-semibold text-slate-500 hover:text-green-700 transition-colors">View
+                    <a href="transactions"
+                        class="text-sm font-semibold text-slate-500 hover:text-green-700 transition-colors">View
                         All</a>
                 </div>
             </div>
@@ -210,20 +206,21 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($trx->status_tracking == 'Selesai')
-                                        <span
-                                            class="inline-flex px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide">Selesai</span>
+                                        <span class="inline-flex px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold
+                                                            uppercase tracking-wide">Selesai</span>
                                     @elseif($trx->status_tracking == 'Dalam Pengiriman')
-                                        <span
-                                            class="inline-flex px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wide">Pengiriman</span>
+                                        <span class="inline-flex px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold
+                                                            uppercase tracking-wide">Pengiriman</span>
                                     @else
-                                        <span
-                                            class="inline-flex px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wide">{{ $trx->status_tracking }}</span>
+                                        <span class="inline-flex px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold
+                                                            uppercase tracking-wide">{{ $trx->status_tracking }}</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-slate-400">Belum ada transaksi terkini.</td>
+                                <td colspan="6" class="px-6 py-8 text-center text-slate-400">Belum ada transaksi terkini.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -234,18 +231,18 @@
 @endsection
 
 <script>
-function filterTable(input) {
-    let filter = input.value.toLowerCase();
-    // find the closest table inside the parent card (div.bg-white)
-    let table = input.closest('.shadow-sm').querySelector('table');
-    if(!table) return;
-    let tr = table.getElementsByTagName("tr");
-    for (let i = 1; i < tr.length; i++) { // start from 1 to skip thead
-        let txtValue = tr[i].textContent || tr[i].innerText;
-        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
-        } else {
-            tr[i].style.display = "none";
+    function filterTable(input) {
+        let filter = input.value.toLowerCase();
+        // find the closest table inside the parent card (div.bg-white)
+        let table = input.closest('.shadow-sm').querySelector('table');
+        if (!table) return;
+        let tr = table.getElementsByTagName("tr");
+        for (let i = 1; i < tr.length; i++) { // start from 1 to skip thead
+            let txtValue = tr[i].textContent || tr[i].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
         }
-    }
 </script>

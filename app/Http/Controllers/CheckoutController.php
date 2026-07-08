@@ -84,50 +84,41 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Tidak ada buku yang valid untuk diproses.');
         }
 
+        $total = 0;
+        foreach ($checkoutCart as $details) {
+            $total += $details['harga_estimasi'] * $details['qty'];
+        }
+
         $kode_tracking = 'WLH-' . date('Ym') . '-' . strtoupper(Str::random(5));
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($checkoutCart, $user, $kode_tracking) {
-            $total = 0;
+        $transaksi = TransaksiCheckout::create([
+            'kode_tracking' => $kode_tracking,
+            'user_id' => $user->id,
+            'total_harga' => $total,
+            'status_pembayaran' => 'Unpaid',
+            'status_tracking' => 'Menunggu Pembayaran',
+        ]);
 
-            // Re-fetch harga dari database untuk mencegah price tampering dari session
-            foreach ($checkoutCart as $id => $details) {
-                $buku = \App\Models\KatalogBuku::where('id', $id)->lockForUpdate()->first();
-                if ($buku) {
-                    $total += $buku->harga_estimasi * $details['qty'];
-                }
-            }
-
-            $transaksi = TransaksiCheckout::create([
+        foreach ($checkoutCart as $id => $details) {
+            TransaksiDetail::create([
                 'kode_tracking' => $kode_tracking,
-                'user_id' => $user->id,
-                'total_harga' => $total,
-                'status_pembayaran' => 'Unpaid',
-                'status_tracking' => 'Menunggu Pembayaran',
+                'buku_id' => $id,
+                'qty' => $details['qty'],
+                'harga_satuan' => $details['harga_estimasi'],
+                'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
             ]);
 
-            foreach ($checkoutCart as $id => $details) {
-                $buku = \App\Models\KatalogBuku::where('id', $id)->lockForUpdate()->first();
-                $hargaSatuan = $buku ? $buku->harga_estimasi : $details['harga_estimasi'];
-
-                TransaksiDetail::create([
-                    'kode_tracking' => $kode_tracking,
-                    'buku_id' => $id,
-                    'qty' => $details['qty'],
-                    'harga_satuan' => $hargaSatuan,
-                    'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
-                ]);
-
-                // Soft Booking: Kurangi stok saat checkout (dengan lock untuk mencegah race condition)
-                if ($buku) {
-                    $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
-                    $updateData = ['stok_dibutuhkan' => $newStok];
-                    if ($newStok == 0) {
-                        $updateData['status_buku'] = 'Tersedia';
-                    }
-                    $buku->update($updateData);
+            // Soft Booking: Kurangi stok saat checkout
+            $buku = \App\Models\KatalogBuku::find($id);
+            if ($buku) {
+                $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
+                $updateData = ['stok_dibutuhkan' => $newStok];
+                if ($newStok == 0) {
+                    $updateData['status_buku'] = 'Tersedia';
                 }
+                $buku->update($updateData);
             }
-        });
+        }
 
         if ($type === 'buy_now') {
             session()->forget('buy_now_cart');
@@ -175,7 +166,8 @@ class CheckoutController extends Controller
         $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
 
         $request->validate([
-            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'metode_pembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {
@@ -194,14 +186,16 @@ class CheckoutController extends Controller
                 
                 $transaksi->update([
                     'bukti_pembayaran' => '/storage/' . $path,
-                    'status_tracking' => 'Menunggu Konfirmasi'
+                    'status_tracking' => 'Menunggu Konfirmasi',
+                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id')
                 ]);
             } catch (\Exception $e) {
                 // Fallback jika ekstensi GD tidak aktif (termasuk MissingDependencyException)
                 $path = $file->store('bukti_pembayaran', 'public');
                 $transaksi->update([
                     'bukti_pembayaran' => '/storage/' . $path,
-                    'status_tracking' => 'Menunggu Konfirmasi'
+                    'status_tracking' => 'Menunggu Konfirmasi',
+                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id')
                 ]);
             }
 

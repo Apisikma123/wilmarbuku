@@ -144,6 +144,7 @@
                         <th class="px-6 py-4">Donatur / User</th>
                         <th class="px-6 py-4">Buku</th>
                         <th class="px-6 py-4 text-center">Pembayaran</th>
+                        <th class="px-6 py-4 text-center">Metode</th>
                         <th class="px-6 py-4">Status Tracking</th>
                         <th class="px-6 py-4 text-center">Tindakan Admin</th>
                     </tr>
@@ -195,6 +196,15 @@
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Belum Dibayar</span>
                             @endif
                         </td>
+                        <td class="px-6 py-5 text-center">
+                            @if($trx->metodePembayaran)
+                            <div class="inline-flex px-2 py-1 bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-bold">
+                                {{ $trx->metodePembayaran->nama_bank }}
+                            </div>
+                            @else
+                            <span class="text-xs text-slate-400">-</span>
+                            @endif
+                        </td>
                         <td class="px-6 py-5">
                             <div class="flex flex-col gap-1">
                                 <div class="flex items-center gap-2">
@@ -231,7 +241,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                             <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3 text-slate-300"></i>
                             <p class="text-base font-bold text-slate-600">Belum ada transaksi donasi.</p>
                             <p class="text-sm text-slate-400 mt-1">Transaksi pengguna yang telah menyelesaikan donasi akan muncul di sini.</p>
@@ -297,7 +307,7 @@
             <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <h3 class="text-lg font-bold text-slate-800">Tambah Metode Transaksi</h3>
                 <button onclick="document.getElementById('modal-metode-pembayaran').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    <span class="material-symbols-outlined text-[20px]">X</span>
                 </button>
             </div>
             

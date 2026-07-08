@@ -150,7 +150,7 @@ class AdminController extends Controller
                     $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
                     
                     $validated['cover_image'] = '/storage/' . $path;
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     // Fallback jika ekstensi GD tidak aktif
                     $path = $file->store('covers', 'public');
                     $validated['cover_image'] = '/storage/' . $path;
@@ -227,7 +227,7 @@ class AdminController extends Controller
                     $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
                     
                     $validated['cover_image'] = '/storage/' . $path;
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $path = $file->store('covers', 'public');
                     $validated['cover_image'] = '/storage/' . $path;
                 }
@@ -280,7 +280,7 @@ class AdminController extends Controller
 
     public function transactions()
     {
-        $transactions = TransaksiCheckout::with(['user', 'details.buku'])
+        $transactions = TransaksiCheckout::with(['user', 'details.buku', 'metodePembayaran'])
             ->latest('tanggal_checkout')
             ->get();
 
