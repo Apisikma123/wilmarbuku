@@ -68,14 +68,17 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
-                        <input type="password" name="password" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan kata sandi" required>
+                        <input type="password" name="password" id="password" class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Masukkan kata sandi" required>
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl" id="toggleIcon">visibility</span>
+                        </button>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between text-sm">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="remember" class="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4">
-                        <span class="text-gray-600">Ingat saya</span>
+                        <span class="text-gray-600">Ingat saya selama 30 hari</span>
                     </label>
                     <a href="{{ route('password.request') }}" class="text-primary font-semibold hover:underline">Lupa Kata Sandi?</a>
                 </div>
@@ -116,5 +119,17 @@
             <a href="#" class="hover:text-gray-900">Contact Support</a>
         </div>
     </footer>
+
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        togglePassword.addEventListener('click', function () {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            toggleIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+    </script>
 </body>
 </html>
