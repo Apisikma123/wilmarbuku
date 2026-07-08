@@ -4,7 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WilmarBOOKS - Admin Dashboard</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -27,11 +40,7 @@
     </style>
 </head>
 <body class="bg-slate-50 font-sans antialiased text-slate-900">
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col items-center justify-center transition-all duration-700 ease-in-out">
-        <dotlottie-wc src="https://lottie.host/2d5c7c63-ff45-4c14-9996-735ccba19274/c09TN00OAQ.lottie" style="width: 120px; height: 120px;" autoplay loop></dotlottie-wc>
-        <p class="text-green-900 font-semibold text-xs tracking-[0.2em] mt-2 animate-pulse">MEMUAT</p>
-    </div>
+
 
     <div class="flex h-screen overflow-hidden relative">
 
@@ -147,17 +156,7 @@
     <script>
         lucide.createIcons();
 
-        // Loading Overlay Logic
-        window.addEventListener('load', function() {
-            const loader = document.getElementById('loading-overlay');
-            // Give a slight delay so the user can see the animation briefly even on fast connections
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 500); // Wait for transition duration
-            }, 800);
-        });
+
 
         // Mobile Sidebar Toggle Logic
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');

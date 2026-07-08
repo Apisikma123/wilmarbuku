@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 imgClone.style.width = rect.width + 'px';
                 imgClone.style.height = rect.height + 'px';
                 imgClone.style.zIndex = '9999';
-                imgClone.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                imgClone.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 imgClone.style.borderRadius = '4px';
                 imgClone.style.opacity = '0.9';
                 imgClone.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
@@ -283,21 +283,39 @@ document.addEventListener('DOMContentLoaded', function() {
                     imgClone.style.height = '20px';
                     imgClone.style.opacity = '0.1';
                     imgClone.style.transform = 'scale(0.1)';
-                }, 50);
+                }, 20);
                 
                 setTimeout(() => {
                     imgClone.remove();
-                    cartBtn.style.transition = 'transform 0.3s ease';
+                    cartBtn.style.transition = 'transform 0.2s ease';
                     cartBtn.style.transform = 'scale(1.3)';
-                    setTimeout(() => cartBtn.style.transform = 'scale(1)', 300);
-                }, 800);
+                    setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
+                }, 400);
             }
+            
+            // Save original content and show loading state
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> <span class="tracking-wider">Memproses...</span>';
+            btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
             
             // Submit form via AJAX
             const formData = new FormData(form);
             formData.append('qty', 1);
             formData.append('action', 'cart');
             
+            // OPTIMISTIC UI UPDATE
+            let originalBadgeCounts = [];
+            const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+            badges.forEach((badge, i) => {
+                originalBadgeCounts[i] = parseInt(badge.innerText) || 0;
+                badge.innerText = originalBadgeCounts[i] + 1;
+                badge.classList.remove('animate-bounce');
+                void badge.offsetWidth; // trigger reflow
+                badge.classList.add('animate-bounce');
+                setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+            });
+
             fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -307,19 +325,13 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(res => res.json())
             .then(data => {
+                // Restore button state
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+
                 if(data.success) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: data.message,
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true,
-                    });
-                    
-                    // Update badges
-                    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+                    // Update to server's true count
                     if(badges.length > 0) {
                         badges.forEach(badge => {
                             badge.innerText = data.cart_count;
@@ -329,7 +341,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         const badgeHtml = `<span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm md:top-[-6px] md:right-[-6px]">${data.cart_count}</span>`;
                         cartBtn.insertAdjacentHTML('beforeend', badgeHtml);
                     }
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
                 } else {
+                    // Revert Optimistic UI on failure
+                    badges.forEach((badge, i) => {
+                        badge.innerText = originalBadgeCounts[i] > 0 ? originalBadgeCounts[i] : '';
+                    });
+
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
@@ -341,7 +368,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
             }).catch(err => {
-                console.error(err);
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
                 form.submit();
             });
         });

@@ -28,11 +28,7 @@
 </head>
 <body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex flex-col font-sans selection:bg-primary selection:text-white">
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-[#F8FAFC] flex flex-col items-center justify-center transition-all duration-700 ease-in-out">
-        <dotlottie-wc src="https://lottie.host/2d5c7c63-ff45-4c14-9996-735ccba19274/c09TN00OAQ.lottie" style="width: 120px; height: 120px;" autoplay loop></dotlottie-wc>
-        <p class="text-primary font-semibold text-xs tracking-[0.2em] mt-2 animate-pulse">MEMUAT</p>
-    </div>
+
 
     <!-- Navigation -->
     <header class="bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 fixed top-0 left-0 w-full z-50">
@@ -118,18 +114,7 @@
             });
         }
 
-        // Loading Overlay Logic
-        window.addEventListener('load', function() {
-            const loader = document.getElementById('loading-overlay');
-            if (loader) {
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                    }, 500); 
-                }, 800);
-            }
-        });
+
     </script>
 </body>
 </html>

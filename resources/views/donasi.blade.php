@@ -147,10 +147,27 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> <span class="tracking-wider">Memproses...</span>';
+            btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
+            
             const formData = new FormData(form);
             formData.append('qty', 1);
             formData.append('action', 'cart');
             
+            // OPTIMISTIC UI UPDATE
+            let originalBadgeCounts = [];
+            const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+            badges.forEach((badge, i) => {
+                originalBadgeCounts[i] = parseInt(badge.innerText) || 0;
+                badge.innerText = originalBadgeCounts[i] + 1;
+                badge.classList.remove('animate-bounce');
+                void badge.offsetWidth; // trigger reflow
+                badge.classList.add('animate-bounce');
+                setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+            });
+
             fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -160,7 +177,17 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(res => res.json())
             .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+
                 if(data.success) {
+                    if(badges.length > 0) {
+                        badges.forEach(badge => {
+                            badge.innerText = data.cart_count;
+                        });
+                    }
+
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
@@ -170,17 +197,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         timer: 2000,
                         timerProgressBar: true,
                     });
-                    
-                    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
-                    if(badges.length > 0) {
-                        badges.forEach(badge => {
-                            badge.innerText = data.cart_count;
-                        });
-                    }
-
-                    // To dynamically disable the button if it reaches max:
-                    // In a real app we'd reload, but to be fast, we just wait for next page visit
                 } else {
+                    // Revert Optimistic UI on failure
+                    badges.forEach((badge, i) => {
+                        badge.innerText = originalBadgeCounts[i] > 0 ? originalBadgeCounts[i] : '';
+                    });
+
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
@@ -192,6 +214,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
             }).catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
                 form.submit(); // fallback
             });
         });

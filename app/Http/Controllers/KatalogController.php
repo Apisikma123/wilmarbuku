@@ -36,11 +36,7 @@ class KatalogController extends Controller
             ->latest()
             ->take(4)
             ->get();
-        
-        $categories = Kategori::orderBy('nama_kategori')->get();
-        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
-        
-        return view('dashboard', compact('buku', 'riwayat', 'categories', 'penerbits'));
+        return view('dashboard', compact('buku', 'riwayat'));
     }
     public function kategori(Request $request)
     {
@@ -97,10 +93,7 @@ class KatalogController extends Controller
 
         $buku = $query->paginate(12);
         
-        $categories = Kategori::orderBy('nama_kategori')->get();
-        $penerbits = Penerbit::orderBy('nama_penerbit')->get();
-
-        return view('kategori', compact('buku', 'categories', 'penerbits'));
+        return view('kategori', compact('buku'));
     }
 
     public function show($id)
@@ -110,14 +103,14 @@ class KatalogController extends Controller
             ->where('id', '!=', $id)
             ->where('status_buku', 'Dibutuhkan')
             ->inRandomOrder()
-            ->take(4)
+            ->take(10)
             ->get();
             
         if ($buku_terkait->isEmpty()) {
             $buku_terkait = KatalogBuku::where('id', '!=', $id)
                 ->where('status_buku', 'Dibutuhkan')
                 ->inRandomOrder()
-                ->take(4)
+                ->take(10)
                 ->get();
         }
 

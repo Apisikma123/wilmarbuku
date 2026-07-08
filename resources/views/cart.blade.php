@@ -43,7 +43,7 @@
                             $count += $item['qty'];
                         @endphp
                         <!-- Cart Item -->
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 grayscale bg-surface-container-low' : '' }}">
+                        <div id="cart-item-{{ $id }}" class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 grayscale bg-surface-container-low' : '' }}">
                             <div class="flex gap-5">
                                 <div class="flex items-start justify-center pt-2">
                                     @if($item['stok_dibutuhkan'] > 0)
@@ -96,12 +96,12 @@
                                                 </div>
                                                 <div class="flex justify-end items-center gap-5 pt-2 border-t border-outline-variant/30">
                                                     <div class="flex gap-2">
-                                                        <button type="button" onclick="event.preventDefault(); document.getElementById('remove-form-{{ $id }}').submit();" class="w-9 h-9 rounded-full text-outline-variant hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors" title="Hapus"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                                                        <button type="button" onclick="removeItem('{{ $id }}')" class="w-9 h-9 rounded-full text-outline-variant hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors" title="Hapus"><span class="material-symbols-outlined text-[20px]">delete</span></button>
                                                     </div>
                                                     <div class="h-6 w-px bg-outline-variant/40"></div>
                                                     <div class="flex items-center gap-1 bg-white border border-outline-variant/50 rounded-lg p-1 shadow-sm {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 pointer-events-none' : '' }}">
                                                         <button type="button" onclick="updateQty(this, -1)" class="w-7 h-7 rounded-md bg-surface-bright text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">remove</span></button>
-                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" class="font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="submitUpdate(this.form)" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
+                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" data-price="{{ $item['harga_estimasi'] }}" class="qty-input font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="clearTimeout(updateTimeout); updateTimeout = setTimeout(() => submitUpdate(this.form), 400); recalculateLocalCart();" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
                                                         <button type="button" onclick="updateQty(this, 1)" class="w-7 h-7 rounded-md bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">add</span></button>
                                                     </div>
                                                 </div>
@@ -177,8 +177,11 @@ function formatRupiah(num) {
     return 'Rp ' + num.toLocaleString('id-ID').replace(/,/g, '.');
 }
 
+let updateTimeout;
+
 function updateQty(btn, delta) {
-    const input = btn.parentNode.querySelector('input[name="qty"]');
+    const form = btn.closest('form');
+    const input = form.querySelector('input[name="qty"]');
     let val = parseInt(input.value) + delta;
     let max = parseInt(input.getAttribute('max')) || 999;
     if (val < 1) val = 1;
@@ -192,7 +195,71 @@ function updateQty(btn, delta) {
         return;
     }
     input.value = val;
-    submitUpdate(input.form);
+    
+    recalculateLocalCart();
+    clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(() => {
+        submitUpdate(form);
+    }, 400);
+}
+
+function recalculateLocalCart() {
+    let totalCount = 0;
+    let totalPrice = 0;
+    const inputs = document.querySelectorAll('input.qty-input');
+    inputs.forEach(input => {
+        if(!input.disabled) {
+            let qty = parseInt(input.value) || 0;
+            let price = parseInt(input.getAttribute('data-price')) || 0;
+            totalCount += qty;
+            totalPrice += (qty * price);
+        }
+    });
+
+    if(document.getElementById('summary-count')) {
+        document.getElementById('summary-count').innerText = `Total Harga (${totalCount} Buku)`;
+        document.getElementById('summary-subtotal').innerText = formatRupiah(totalPrice);
+        document.getElementById('summary-total').innerText = formatRupiah(totalPrice);
+    }
+    
+    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+    badges.forEach(badge => {
+        badge.innerText = totalCount;
+    });
+}
+
+function removeItem(id) {
+    const itemDiv = document.getElementById('cart-item-' + id);
+    if(itemDiv) {
+        // Optimistic UI: hide and disable immediately
+        itemDiv.style.opacity = '0';
+        itemDiv.style.transform = 'scale(0.95)';
+        itemDiv.style.pointerEvents = 'none';
+        
+        // Disable its input so it's not counted in local calculation
+        const input = itemDiv.querySelector('input.qty-input');
+        if(input) input.disabled = true;
+        recalculateLocalCart();
+
+        setTimeout(() => {
+            itemDiv.remove();
+            // Check if cart is empty after removal
+            if(document.querySelectorAll('.qty-input').length === 0) {
+                window.location.reload(); // Reload to show empty state if all removed
+            }
+        }, 300);
+    }
+    
+    // Send background fetch request
+    const form = document.getElementById('remove-form-' + id);
+    if(form) {
+        let formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).catch(err => console.error(err));
+    }
 }
 
 function submitUpdate(form) {
@@ -204,21 +271,7 @@ function submitUpdate(form) {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            if(document.getElementById('summary-count')) {
-                document.getElementById('summary-count').innerText = `Total Harga (${data.cart_count} Buku)`;
-                document.getElementById('summary-subtotal').innerText = formatRupiah(data.cart_total);
-                document.getElementById('summary-total').innerText = formatRupiah(data.cart_total);
-            }
-            
-            const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
-            badges.forEach(badge => {
-                badge.innerText = data.cart_count;
-            });
-        }
-    }).catch(err => {
+    .catch(err => {
         console.error(err);
         form.submit(); // fallback
     });

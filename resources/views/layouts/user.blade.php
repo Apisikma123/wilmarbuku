@@ -36,11 +36,7 @@
         </a>
     </div>
     @endif
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-background flex flex-col items-center justify-center transition-all duration-700 ease-in-out">
-        <dotlottie-wc src="https://lottie.host/2d5c7c63-ff45-4c14-9996-735ccba19274/c09TN00OAQ.lottie" style="width: 120px; height: 120px;" autoplay loop></dotlottie-wc>
-        <p class="text-primary font-semibold text-xs tracking-[0.2em] mt-2 animate-pulse">MEMUAT</p>
-    </div>
+
 
     <!-- Main Header -->
     <header class="bg-primary md:bg-white text-white md:text-on-surface shadow-sm relative z-50">
@@ -59,15 +55,28 @@
                 
                 @php
                     $cartQty = 0;
+                    $unreadPesan = 0;
                     $currentCart = Auth::check() ? (Auth::user()->cart_data ?? []) : [];
                     if($currentCart) {
                         foreach($currentCart as $c) {
                             $cartQty += $c['qty'];
                         }
                     }
+                    if(Auth::check()) {
+                        $unreadPesan = \App\Models\PesanMasuk::where('user_id', Auth::id())->where('is_read', false)->count();
+                    }
                 @endphp
 
                 <div class="flex md:hidden items-center gap-4">
+                    @if(auth()->check())
+                    <a href="/pesan-masuk" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
+                        <span class="material-symbols-outlined text-xl">mail</span>
+                        @if($unreadPesan > 0)
+                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $unreadPesan }}</span>
+                        @endif
+                    </a>
+                    @endif
+                    
                     @if(!auth()->check() || auth()->user()->role !== 'admin')
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
@@ -95,6 +104,15 @@
             
             <!-- User Actions Desktop -->
             <div class="hidden md:flex items-center gap-6 ml-auto">
+                @if(auth()->check())
+                <a href="/pesan-masuk" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined">mail</span>
+                    @if($unreadPesan > 0)
+                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $unreadPesan }}</span>
+                    @endif
+                </a>
+                @endif
+
                 @if(!auth()->check() || auth()->user()->role !== 'admin')
                 <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
                     <span class="material-symbols-outlined">shopping_cart</span>
@@ -243,19 +261,39 @@
         </div>
         
         <!-- Sub Navigation Desktop -->
-        <div class="hidden md:block bg-surface-container-low border-b border-outline-variant/30">
-            <div class="max-w-[1280px] mx-auto px-6 py-3 flex items-center gap-8 text-sm overflow-x-auto hide-scroll text-on-surface-variant font-medium">
-                <a href="/dashboard" class="flex items-center gap-2 font-bold text-on-surface hover:text-primary transition-colors">
+        <div class="hidden md:block bg-surface-container-low border-b border-outline-variant/30 relative">
+            <div class="max-w-[1280px] mx-auto px-6 flex items-center gap-8 text-sm text-on-surface-variant font-medium">
+                <a href="/dashboard" class="flex items-center gap-2 font-bold text-on-surface hover:text-primary transition-colors py-3">
                     <span class="material-symbols-outlined text-lg">home</span> Beranda
                 </a>
-                <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors">
-                    <span class="material-symbols-outlined text-lg">grid_view</span> Kategori
-                </a>
-                <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
-                <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
-                @foreach($global_kategoris->take(6) as $kategori)
-                <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
-                @endforeach
+                
+                <div class="relative group h-full flex items-center">
+                    <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors py-3 cursor-pointer">
+                        <span class="material-symbols-outlined text-lg">grid_view</span> Kategori
+                        <span class="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:rotate-180">expand_more</span>
+                    </a>
+                    
+                    <div class="absolute top-full left-0 w-[560px] bg-white border border-outline-variant/30 shadow-[0_10px_40px_rgba(0,0,0,0.08)] opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-[200] p-0 overflow-hidden">
+                        <div class="grid grid-cols-2">
+                            @foreach($global_kategoris as $cat)
+                            <a href="{{ route('kategori', ['kategori' => [$cat->nama_kategori]]) }}" class="flex items-center justify-between px-5 py-3.5 border-b border-r border-outline-variant/10 hover:bg-[#F0F5FA] transition-colors group/item relative">
+                                <span class="text-[14px] font-medium text-on-surface group-hover/item:text-primary transition-colors">{{ $cat->nama_kategori }}</span>
+                                <span class="material-symbols-outlined text-[18px] text-outline-variant group-hover/item:text-primary transition-colors">chevron_right</span>
+                                <!-- Hover indicator line like Itemku -->
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover/item:opacity-100 transition-opacity"></div>
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-8 overflow-x-auto hide-scroll flex-grow py-3">
+                    <a href="/kategori?filter=bulan_ini" class="hover:text-primary transition-colors whitespace-nowrap">Buku Terbaru</a>
+                    <a href="/kategori?filter=bestseller" class="hover:text-primary transition-colors whitespace-nowrap">Bestseller Donasi</a>
+                    @foreach($global_kategoris->take(6) as $kategori)
+                    <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="hover:text-primary transition-colors whitespace-nowrap">{{ $kategori->nama_kategori }}</a>
+                    @endforeach
+                </div>
             </div>
         </div>
     </header>
@@ -342,18 +380,7 @@
             }
         });
 
-        // Loading Overlay Logic
-        window.addEventListener('load', function() {
-            const loader = document.getElementById('loading-overlay');
-            if (loader) {
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                    }, 500); 
-                }, 800);
-            }
-        });
+
         // Global Search Logic (Steam Style)
         const searchInput = document.getElementById('global-search-input');
         const searchContainer = document.getElementById('global-search-container');

@@ -1,9 +1,9 @@
 @extends('layouts.user')
 
 @section('content')
-<div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10 font-poppins">
+<div class="md:px-12 xl:px-24 max-w-[1280px] mx-auto md:py-10 pb-32 md:pb-10 font-poppins">
     
-    <nav class="flex items-center gap-2 text-sm font-medium text-on-surface-variant mb-10 overflow-x-auto whitespace-nowrap hide-scroll">
+    <nav class="flex items-center gap-2 text-sm font-medium text-on-surface-variant mb-4 md:mb-10 px-4 md:px-0 overflow-x-auto whitespace-nowrap hide-scroll pt-4 md:pt-0">
         <a href="/dashboard" class="hover:text-primary transition-colors">Beranda</a>
         <span class="material-symbols-outlined text-[16px]">chevron_right</span>
         <a href="#" class="hover:text-primary transition-colors">Katalog Buku</a>
@@ -14,9 +14,9 @@
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-6">
-            <div class="rounded-lg p-4 md:p-8 flex items-center justify-center">
-                <div id="product-cover-image" class="w-full max-w-[260px] aspect-[3/4] rounded-lg shadow-lg flex items-center justify-center p-6 text-center text-white border border-black/5 relative overflow-hidden @if((!str_starts_with($buku->cover_image, '/storage/') && !str_starts_with($buku->cover_image, 'http'))) bg-gradient-to-br {{ $buku->cover_image }} @endif">
+        <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-4 md:gap-6">
+            <div class="md:rounded-lg md:p-8 flex items-center justify-center w-full">
+                <div id="product-cover-image" class="w-full md:max-w-[260px] aspect-[4/3] md:aspect-[3/4] md:rounded-lg md:shadow-lg flex items-center justify-center p-6 text-center text-white md:border border-black/5 relative overflow-hidden @if((!str_starts_with($buku->cover_image, '/storage/') && !str_starts_with($buku->cover_image, 'http'))) bg-gradient-to-br {{ $buku->cover_image }} @endif">
                     @if((str_starts_with($buku->cover_image, '/storage/') || str_starts_with($buku->cover_image, 'http')))
                         <img src="{{ $buku->cover_image }}" alt="{{ $buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
@@ -29,7 +29,7 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 px-4 md:px-0 mt-4 md:mt-0">
                 <div class="bg-white rounded-lg p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
                     <span class="material-symbols-outlined text-primary text-[28px]">import_contacts</span>
                     <div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="bg-[#EDF6EE] rounded-lg p-5 border border-primary/20 flex items-start gap-4">
+            <div class="bg-[#EDF6EE] rounded-lg p-5 border border-primary/20 flex items-start gap-4 mx-4 md:mx-0">
                 <div class="bg-primary text-white p-2 rounded-full flex-shrink-0 mt-0.5">
                     <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
                 </div>
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div class="lg:col-span-8 flex flex-col">
+        <div class="lg:col-span-8 flex flex-col px-4 md:px-0">
             <div class="mb-8">
                 <div class="flex items-center gap-3 mb-5 flex-wrap">
                     <span class="bg-[#EDF6EE] text-primary text-[12px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-primary/20">{{ $buku->kategori }}</span>
@@ -102,7 +102,7 @@
                             <span class="font-bold text-on-surface text-xl" id="subtotal-amount">Rp {{ number_format($buku->harga_estimasi, 0, ',', '.') }}</span>
                         </div>
                         
-                        <div class="flex flex-col sm:flex-row gap-3 w-full justify-end mt-2">
+                        <div class="hidden md:flex flex-col sm:flex-row gap-3 w-full justify-end mt-2">
                             @if($buku->stok_dibutuhkan <= 0)
                             <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
                                 <span class="material-symbols-outlined text-[20px]">check_circle</span>
@@ -220,6 +220,30 @@
     @endif
 </div>
 
+<!-- Mobile Sticky Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-3 flex gap-3 z-[100] md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    @if($buku->stok_dibutuhkan <= 0)
+    <button type="button" disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span> Terpenuhi
+    </button>
+    @elseif(Auth::check() && isset(Auth::user()->cart_data[$buku->id]) && Auth::user()->cart_data[$buku->id]['qty'] >= $buku->stok_dibutuhkan)
+    <button type="button" disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+        <span class="material-symbols-outlined text-[18px]">shopping_cart</span> Maksimal
+    </button>
+    @elseif(auth()->check() && auth()->user()->role === 'admin')
+    <button type="button" disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+        <span class="material-symbols-outlined text-[18px]">block</span> Admin
+    </button>
+    @else
+    <button type="button" onclick="submitForm('cart')" class="w-[56px] bg-white text-primary border border-primary font-semibold text-sm h-[48px] rounded-lg flex flex-shrink-0 items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+    </button>
+    <button type="button" onclick="submitForm('checkout')" class="flex-grow bg-primary text-white font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2">
+        Beli Langsung
+    </button>
+    @endif
+</div>
+
 <script>
     const price = {{ $buku->harga_estimasi }};
     const maxQty = {{ $buku->stok_dibutuhkan }};
@@ -284,7 +308,7 @@
         imgClone.style.width = rect.width + 'px';
         imgClone.style.height = rect.height + 'px';
         imgClone.style.zIndex = '9999';
-        imgClone.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        imgClone.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         imgClone.style.borderRadius = '8px';
         imgClone.style.opacity = '0.9';
         imgClone.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
@@ -301,16 +325,16 @@
             imgClone.style.height = '20px';
             imgClone.style.opacity = '0.1';
             imgClone.style.transform = 'scale(0.1)';
-        }, 50);
+        }, 20);
         
         setTimeout(() => {
             imgClone.remove();
-            cartBtn.style.transition = 'transform 0.3s ease';
+            cartBtn.style.transition = 'transform 0.2s ease';
             cartBtn.style.transform = 'scale(1.3)';
             setTimeout(() => {
                 cartBtn.style.transform = 'scale(1)';
-            }, 300);
-        }, 800);
+            }, 200);
+        }, 400);
     }
 
     function submitForm(action) {
@@ -322,7 +346,30 @@
             flyToCart();
             
             let form = document.getElementById('add-to-cart-form');
+            let btn = form.querySelector('button[onclick="submitForm(\'cart\')"]');
+            let originalContent = '';
+            if (btn) {
+                originalContent = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> Memproses...';
+                btn.classList.add('opacity-80', 'cursor-not-allowed');
+            }
+
             let formData = new FormData(form);
+            let addedQty = parseInt(formData.get('qty')) || 1;
+            
+            // OPTIMISTIC UI UPDATE
+            let originalBadgeCounts = [];
+            const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+            badges.forEach((badge, i) => {
+                originalBadgeCounts[i] = parseInt(badge.innerText) || 0;
+                badge.innerText = originalBadgeCounts[i] + addedQty;
+                badge.classList.remove('animate-bounce');
+                void badge.offsetWidth; // trigger reflow
+                badge.classList.add('animate-bounce');
+                setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+            });
+
             fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -332,7 +379,20 @@
             })
             .then(res => res.json())
             .then(data => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                }
+
                 if(data.success) {
+                    // Update to server's true count
+                    if(badges.length > 0) {
+                        badges.forEach(badge => {
+                            badge.innerText = data.cart_count;
+                        });
+                    }
+
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
@@ -341,16 +401,13 @@
                         showConfirmButton: false,
                         timer: 1500,
                         timerProgressBar: true,
-                    }).then(() => {
-                        // Update cart badges
-                        const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
-                        if(badges.length > 0) {
-                            badges.forEach(badge => {
-                                badge.innerText = data.cart_count;
-                            });
-                        }
                     });
                 } else {
+                    // Revert Optimistic UI on failure
+                    badges.forEach((badge, i) => {
+                        badge.innerText = originalBadgeCounts[i] > 0 ? originalBadgeCounts[i] : '';
+                    });
+
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
@@ -362,6 +419,11 @@
                     });
                 }
             }).catch(err => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                }
                 console.error(err);
                 document.getElementById('add-to-cart-form').submit();
             });

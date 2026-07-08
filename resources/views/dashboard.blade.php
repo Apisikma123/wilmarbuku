@@ -167,8 +167,8 @@
                             <h3 class="text-xs font-bold text-on-surface line-clamp-2 leading-tight mb-1">{{ $item->judul_buku }}</h3>
                             <div class="mt-auto">
                                 <p class="text-primary font-bold text-sm">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
-                                <div class="flex items-center gap-1 text-[9px] text-on-surface-variant mt-1">
-                                    <span class="material-symbols-outlined text-[12px] text-secondary">star</span> {{ number_format(rand(40,50)/10, 1) }} ({{ rand(10,200) }} Donasi)
+                                <div class="flex items-center gap-1 mt-1">
+                                    <span class="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded">Dibutuhkan: {{ $item->stok_dibutuhkan }}</span>
                                 </div>
                             </div>
                         </div>

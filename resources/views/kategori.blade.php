@@ -38,7 +38,7 @@
                         @php
                             $selectedCategories = request('kategori', []);
                         @endphp
-                        @forelse($categories as $cat)
+                        @forelse($global_kategoris as $cat)
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <input type="checkbox" name="kategori[]" value="{{ $cat->nama_kategori }}" @if(in_array($cat->nama_kategori, $selectedCategories)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
                             <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">{{ $cat->nama_kategori }}</span>
@@ -56,7 +56,7 @@
                         @php
                             $selectedPenerbit = request('penerbit', []);
                         @endphp
-                        @forelse($penerbits as $pub)
+                        @forelse($global_penerbits as $pub)
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <input type="checkbox" name="penerbit[]" value="{{ $pub->nama_penerbit }}" @if(in_array($pub->nama_penerbit, $selectedPenerbit)) checked @endif class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary">
                             <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors line-clamp-1" title="{{ $pub->nama_penerbit }}">{{ $pub->nama_penerbit }}</span>
@@ -95,7 +95,7 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-grow">
+        <div class="flex-grow" id="main-content-area">
             <div class="flex justify-between items-end mb-8">
                 <div>
                     <h2 class="text-2xl font-bold text-primary mb-1">Hasil Pencarian</h2>
@@ -103,7 +103,7 @@
                 </div>
                 <div class="hidden md:flex items-center gap-3">
                     <label class="text-sm text-on-surface-variant">Urutkan:</label>
-                    <select name="sort" onchange="document.getElementById('filterForm').submit()" class="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary">
+                    <select name="sort" class="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary sort-select">
                         <option value="Terbaru" @if(request('sort') == 'Terbaru') selected @endif>Terbaru</option>
                         <option value="Terpopuler" @if(request('sort') == 'Terpopuler') selected @endif>Terpopuler</option>
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative" id="buku-grid">
                 @forelse($buku as $item)
                 <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 p-3 hover:-translate-y-1 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block group">
                     <div class="w-full aspect-[3/4] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif rounded-lg mb-3 flex items-center justify-center p-2 text-center text-white relative overflow-hidden">
@@ -137,9 +137,9 @@
                             <h3 class="text-xs md:text-sm font-bold text-on-surface line-clamp-2 leading-tight mb-1 group-hover:text-primary transition-colors">{{ $item->judul_buku }}</h3>
                             <p class="text-[10px] text-on-surface-variant mb-2">{{ $item->pengarang }}</p>
                         </div>
-                            <div class="flex items-end justify-between mt-auto pt-3 border-t border-outline-variant/20">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mt-auto pt-3 border-t border-outline-variant/20">
                                 <div>
-                                    <p class="text-primary font-bold text-sm md:text-base">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+                                    <p class="text-primary font-bold text-sm md:text-base whitespace-nowrap">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
                                 </div>
                                 @if(auth()->check() && auth()->user()->role === 'admin')
                                 <div class="bg-surface-variant text-on-surface-variant w-8 h-8 rounded-full flex items-center justify-center cursor-not-allowed" title="Admin Tidak Dapat Membeli">
@@ -163,10 +163,67 @@
             </div>
 
             <!-- Pagination -->
-            <div class="mt-12">
+            <div class="mt-12" id="pagination-container">
                 {{ $buku->withQueryString()->links('pagination::tailwind') }}
             </div>
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filterForm');
+    
+    // Gunakan event delegation agar tidak hilang saat main-content-area diganti
+    form.addEventListener('change', function(e) {
+        if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+            fetchResults(new URLSearchParams(new FormData(form)).toString());
+        }
+        if(e.target.classList.contains('sort-select')) {
+            fetchResults(new URLSearchParams(new FormData(form)).toString());
+        }
+    });
+
+    // Handle pagination links
+    document.addEventListener('click', function(e) {
+        let link = e.target.closest('#pagination-container a');
+        if(link) {
+            e.preventDefault();
+            fetchResults(link.href.split('?')[1] || '');
+        }
+    });
+
+    function fetchResults(queryString) {
+        const url = '{{ route("kategori") }}?' + queryString;
+        window.history.pushState({}, '', url);
+
+        const mainContent = document.getElementById('main-content-area');
+        if(mainContent) {
+            mainContent.style.transition = 'opacity 0.2s ease-in-out';
+            mainContent.style.opacity = '0.8'; // Sangat tipis agar tidak terasa seperti loading lama
+        }
+
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(res => res.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContent = doc.getElementById('main-content-area');
+            if(newContent) {
+                const currentContent = document.getElementById('main-content-area');
+                currentContent.innerHTML = newContent.innerHTML;
+                currentContent.style.opacity = '1';
+            }
+        }).catch(err => {
+            console.error(err);
+            window.location.href = url;
+        });
+    }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function() {
+        window.location.reload();
+    });
+});
+</script>
 @endsection
