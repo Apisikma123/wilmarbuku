@@ -57,41 +57,50 @@ class CheckoutController extends Controller
             $user->save();
         }
 
-        $total = 0;
-        foreach ($cart as $details) {
-            $total += $details['harga_estimasi'] * $details['qty'];
-        }
-
         $kode_tracking = 'WB-' . date('Ym') . '-' . strtoupper(Str::random(5));
 
-        $transaksi = TransaksiCheckout::create([
-            'kode_tracking' => $kode_tracking,
-            'user_id' => $user->id,
-            'total_harga' => $total,
-            'status_pembayaran' => 'Unpaid',
-            'status_tracking' => 'Menunggu Pembayaran',
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($cart, $user, $kode_tracking) {
+            $total = 0;
 
-        foreach ($cart as $id => $details) {
-            TransaksiDetail::create([
+            // Re-fetch harga dari database untuk mencegah price tampering dari session
+            foreach ($cart as $id => $details) {
+                $buku = \App\Models\KatalogBuku::where('id', $id)->lockForUpdate()->first();
+                if ($buku) {
+                    $total += $buku->harga_estimasi * $details['qty'];
+                }
+            }
+
+            $transaksi = TransaksiCheckout::create([
                 'kode_tracking' => $kode_tracking,
-                'buku_id' => $id,
-                'qty' => $details['qty'],
-                'harga_satuan' => $details['harga_estimasi'],
-                'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
+                'user_id' => $user->id,
+                'total_harga' => $total,
+                'status_pembayaran' => 'Unpaid',
+                'status_tracking' => 'Menunggu Pembayaran',
             ]);
 
-            // Soft Booking: Kurangi stok saat checkout
-            $buku = \App\Models\KatalogBuku::find($id);
-            if ($buku) {
-                $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
-                $updateData = ['stok_dibutuhkan' => $newStok];
-                if ($newStok == 0) {
-                    $updateData['status_buku'] = 'Tersedia';
+            foreach ($cart as $id => $details) {
+                $buku = \App\Models\KatalogBuku::where('id', $id)->lockForUpdate()->first();
+                $hargaSatuan = $buku ? $buku->harga_estimasi : $details['harga_estimasi'];
+
+                TransaksiDetail::create([
+                    'kode_tracking' => $kode_tracking,
+                    'buku_id' => $id,
+                    'qty' => $details['qty'],
+                    'harga_satuan' => $hargaSatuan,
+                    'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
+                ]);
+
+                // Soft Booking: Kurangi stok saat checkout (dengan lock untuk mencegah race condition)
+                if ($buku) {
+                    $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
+                    $updateData = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok == 0) {
+                        $updateData['status_buku'] = 'Tersedia';
+                    }
+                    $buku->update($updateData);
                 }
-                $buku->update($updateData);
             }
-        }
+        });
 
         if ($type === 'buy_now') {
             session()->forget('buy_now_cart');
@@ -130,7 +139,7 @@ class CheckoutController extends Controller
         $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
 
         $request->validate([
-            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {

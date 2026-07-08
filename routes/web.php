@@ -115,14 +115,7 @@ $staticPages = [
 
 foreach ($staticPages as $uri => $view) {
     Route::get('/' . $uri, function () use ($view) {
-        $referer = request()->headers->get('referer');
-        if ($referer) {
-            if (str_ends_with($referer, '8000/') || str_contains($referer, '/login') || str_contains($referer, '/register')) {
-                session(['is_user' => false]);
-            } else {
-                session(['is_user' => true]);
-            }
-        }
+        session(['is_user' => auth()->check()]);
         return view($view);
     })->name(str_replace('static.', '', $view));
 }

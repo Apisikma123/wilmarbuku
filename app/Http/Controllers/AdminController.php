@@ -17,6 +17,8 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+// TODO: Split controller in future major refactor (652+ LOC, 18+ methods — God Controller pattern)
+// TODO: Convert status magic strings ('Paid', 'Selesai', 'Dibatalkan', etc.) to PHP Enum in future refactor
 class AdminController extends Controller
 {
     public function dashboard()
@@ -129,12 +131,13 @@ class AdminController extends Controller
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
                 'cover_image' => 'required_without:cover_file|nullable|string',
-                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp',
+                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             ]);
 
             if ($request->hasFile('cover_file')) {
                 $file = $request->file('cover_file');
                 try {
+                    // TODO: Extract image processing to shared helper/trait (duplicated in storeBook, updateBook, uploadProof)
                     $manager = new ImageManager(new Driver());
                     $image = $manager->decode($file->getRealPath());
                     
@@ -182,7 +185,8 @@ class AdminController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+            \Illuminate\Support\Facades\Log::error('storeBook error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json(['error' => 'Terjadi kesalahan saat menyimpan buku. Silakan coba lagi.'], 500);
         }
     }
 
@@ -205,7 +209,7 @@ class AdminController extends Controller
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
                 'cover_image' => 'required_without:cover_file|nullable|string',
-                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp',
+                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             ]);
 
             if ($request->hasFile('cover_file')) {
@@ -261,7 +265,8 @@ class AdminController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+            \Illuminate\Support\Facades\Log::error('updateBook error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json(['error' => 'Terjadi kesalahan saat memperbarui buku. Silakan coba lagi.'], 500);
         }
     }
 
@@ -327,6 +332,7 @@ class AdminController extends Controller
         ]);
 
         // Kembalikan stok karena dibatalkan
+        // TODO: Consolidate stock management logic to single helper (duplicated in 4 locations)
         if ($transaction->status_tracking !== 'Dibatalkan') {
             $transaction->load('details.buku');
             foreach ($transaction->details as $detail) {

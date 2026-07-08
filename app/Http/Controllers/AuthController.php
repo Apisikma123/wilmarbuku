@@ -52,7 +52,7 @@ class AuthController extends Controller
             $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             
             $user->update([
-                'otp_code' => $otpCode,
+                'otp_code' => Hash::make($otpCode),
                 'otp_expires_at' => Carbon::now()->addMinutes(5),
             ]);
 
@@ -103,7 +103,7 @@ class AuthController extends Controller
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
-            'otp_code' => $otpCode,
+            'otp_code' => Hash::make($otpCode),
             'otp_expires_at' => Carbon::now()->addMinutes(5),
         ]);
 
@@ -129,7 +129,7 @@ class AuthController extends Controller
 
         $user = User::find($userId);
 
-        if (!$user || $user->otp_code !== $request->otp_code || Carbon::now()->greaterThan($user->otp_expires_at)) {
+        if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
             return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
         }
 
@@ -180,7 +180,7 @@ class AuthController extends Controller
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
-            'otp_code' => $otpCode,
+            'otp_code' => Hash::make($otpCode),
             'otp_expires_at' => Carbon::now()->addMinutes(5),
         ]);
 
@@ -275,7 +275,7 @@ class AuthController extends Controller
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
-            'otp_code' => $otpCode,
+            'otp_code' => Hash::make($otpCode),
             'otp_expires_at' => Carbon::now()->addMinutes(5),
         ]);
 
@@ -317,7 +317,7 @@ class AuthController extends Controller
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
-            'otp_code' => $otpCode,
+            'otp_code' => Hash::make($otpCode),
             'otp_expires_at' => Carbon::now()->addMinutes(5),
         ]);
 
@@ -341,7 +341,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        if (!$user || $user->otp_code !== $request->otp_code || Carbon::now()->greaterThan($user->otp_expires_at)) {
+        if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
             return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
         }
 

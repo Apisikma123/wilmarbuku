@@ -29,7 +29,7 @@ class PesanMasuk extends Model
         static::created(function ($pesanMasuk) {
             // Check if the user exists and has an email
             if ($pesanMasuk->user && $pesanMasuk->user->email) {
-                \Illuminate\Support\Facades\Mail::to($pesanMasuk->user->email)->send(new \App\Mail\NotificationMail($pesanMasuk));
+                \Illuminate\Support\Facades\Mail::to($pesanMasuk->user->email)->queue(new \App\Mail\NotificationMail($pesanMasuk));
             }
         });
     }
