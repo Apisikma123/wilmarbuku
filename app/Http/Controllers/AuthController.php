@@ -133,10 +133,11 @@ class AuthController extends Controller
             return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
         }
 
-        // Clear OTP and log in
+        // Clear OTP and log in, also set email_verified_at
         $user->update([
             'otp_code' => null,
             'otp_expires_at' => null,
+            'email_verified_at' => $user->email_verified_at ?? now(),
         ]);
 
         $remember = $request->session()->get('remember_me', false);
@@ -165,16 +166,33 @@ class AuthController extends Controller
     {
         $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'nama_lengkap' => $request->nama_lengkap,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user_external',
-        ]);
+        $existingUser = User::where('email', $request->email)->first();
+
+        if ($existingUser) {
+            if ($existingUser->email_verified_at !== null) {
+                return back()->withErrors(['email' => 'Email ini sudah terdaftar dan terverifikasi. Silakan login.'])->withInput();
+            }
+            
+            // Email ada tapi belum diverifikasi (OTP ditinggalkan)
+            // Timpa data lama dengan data baru
+            $existingUser->update([
+                'nama_lengkap' => $request->nama_lengkap,
+                'password' => Hash::make($request->password),
+                'role' => 'user_external',
+            ]);
+            $user = $existingUser;
+        } else {
+            $user = User::create([
+                'nama_lengkap' => $request->nama_lengkap,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'user_external',
+            ]);
+        }
 
         // Generate 6-digit OTP
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
