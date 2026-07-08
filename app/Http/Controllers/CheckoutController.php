@@ -84,24 +84,20 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Tidak ada buku yang valid untuk diproses.');
         }
 
-        $total = 0;
-        foreach ($checkoutCart as $details) {
-            $total += $details['harga_estimasi'] * $details['qty'];
-        }
+        $kode_tracking = 'WLH-' . date('Ym') . '-' . strtoupper(Str::random(5));
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($cart, $user, $kode_tracking) {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($checkoutCart, $user, $kode_tracking) {
             $total = 0;
 
             // Re-fetch harga dari database untuk mencegah price tampering dari session
-            foreach ($cart as $id => $details) {
+            foreach ($checkoutCart as $id => $details) {
                 $buku = \App\Models\KatalogBuku::where('id', $id)->lockForUpdate()->first();
                 if ($buku) {
                     $total += $buku->harga_estimasi * $details['qty'];
                 }
             }
 
-        foreach ($checkoutCart as $id => $details) {
-            TransaksiDetail::create([
+            $transaksi = TransaksiCheckout::create([
                 'kode_tracking' => $kode_tracking,
                 'user_id' => $user->id,
                 'total_harga' => $total,
@@ -109,7 +105,7 @@ class CheckoutController extends Controller
                 'status_tracking' => 'Menunggu Pembayaran',
             ]);
 
-            foreach ($cart as $id => $details) {
+            foreach ($checkoutCart as $id => $details) {
                 $buku = \App\Models\KatalogBuku::where('id', $id)->lockForUpdate()->first();
                 $hargaSatuan = $buku ? $buku->harga_estimasi : $details['harga_estimasi'];
 
