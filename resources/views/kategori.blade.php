@@ -87,10 +87,6 @@
                     </div>
                 </div>
 
-                <!-- Action Button -->
-                <button type="submit" class="w-full bg-primary text-white font-bold py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-8">
-                    Terapkan Filter
-                </button>
             </div>
         </aside>
 
