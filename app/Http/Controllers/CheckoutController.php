@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\KatalogBuku;
+use App\Models\MetodePembayaran;
+use App\Models\PesanMasuk;
 use App\Models\TransaksiCheckout;
 use App\Models\TransaksiDetail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 
 class CheckoutController extends Controller
 {
@@ -17,11 +21,11 @@ class CheckoutController extends Controller
     {
         $type = $request->query('type');
         $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : (Auth::user()->cart_data ?? []);
-        
+
         // Filter out items that have no stock
         $filteredCart = [];
         foreach ($cart as $id => $details) {
-            $buku = \App\Models\KatalogBuku::find($id);
+            $buku = KatalogBuku::find($id);
             if ($buku && $buku->stok_dibutuhkan > 0) {
                 $filteredCart[$id] = $details;
                 $filteredCart[$id]['qty'] = min($details['qty'], $buku->stok_dibutuhkan);
@@ -45,7 +49,7 @@ class CheckoutController extends Controller
     {
         $type = $request->input('type');
         $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : (Auth::user()->cart_data ?? []);
-        
+
         if (empty($cart)) {
             return redirect()->route('cart');
         }
@@ -58,7 +62,7 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
         // Update user data if internal
         if ($request->tipe_donatur == 'internal' && empty($user->identitas_kampus)) {
             $user->identitas_kampus = $request->identitas_kampus;
@@ -68,12 +72,13 @@ class CheckoutController extends Controller
         // Filter keranjang: abaikan buku yang stoknya sudah habis (disabled)
         $checkoutCart = [];
         foreach ($cart as $id => $details) {
-            $buku = \App\Models\KatalogBuku::find($id);
+            $buku = KatalogBuku::find($id);
             if ($buku && $buku->stok_dibutuhkan > 0) {
                 // Validasi Race Condition: jika stok sisa lebih kecil dari qty yang diminta
                 if ($buku->stok_dibutuhkan < $details['qty']) {
                     $judul = $buku->judul_buku;
                     $pesan = "Yah! Keduluan. 🏃‍♂️ Stok buku '$judul' baru saja berkurang atau habis didonasikan oleh pengguna lain. Silakan periksa kembali keranjang Anda.";
+
                     return redirect()->route('cart')->with('error', $pesan);
                 }
                 $checkoutCart[$id] = $details;
@@ -89,7 +94,7 @@ class CheckoutController extends Controller
             $total += $details['harga_estimasi'] * $details['qty'];
         }
 
-        $kode_tracking = 'WLH-' . date('Ym') . '-' . strtoupper(Str::random(5));
+        $kode_tracking = 'WB-'.date('Ym').'-'.strtoupper(Str::random(5));
 
         $transaksi = TransaksiCheckout::create([
             'kode_tracking' => $kode_tracking,
@@ -109,7 +114,7 @@ class CheckoutController extends Controller
             ]);
 
             // Soft Booking: Kurangi stok saat checkout
-            $buku = \App\Models\KatalogBuku::find($id);
+            $buku = KatalogBuku::find($id);
             if ($buku) {
                 $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
                 $updateData = ['stok_dibutuhkan' => $newStok];
@@ -127,7 +132,7 @@ class CheckoutController extends Controller
             foreach ($checkoutCart as $id => $details) {
                 unset($cart[$id]);
             }
-            
+
             if (empty($cart)) {
                 $user->update(['cart_data' => null]);
             } else {
@@ -141,22 +146,23 @@ class CheckoutController extends Controller
     public function payment(Request $request)
     {
         $kode_tracking = session('kode_tracking') ?? $request->input('kode');
-        
-        if (!$kode_tracking) {
+
+        if (! $kode_tracking) {
             $transaksi = TransaksiCheckout::where('user_id', auth()->id())->where('status_pembayaran', 'Unpaid')->latest()->first();
         } else {
             $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->first();
         }
 
-        if (!$transaksi) {
+        if (! $transaksi) {
             return redirect()->route('dashboard');
         }
-        
+
         if ($transaksi->bukti_pembayaran) {
             return redirect()->route('success')->with('kode_tracking', $kode_tracking);
         }
 
-        $metodes = \App\Models\MetodePembayaran::where('is_active', true)->get();
+        $metodes = MetodePembayaran::where('is_active', true)->get();
+
         return view('payment', compact('transaksi', 'metodes'));
     }
 
@@ -173,37 +179,37 @@ class CheckoutController extends Controller
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
             try {
-                $manager = new ImageManager(new Driver());
+                $manager = new ImageManager(new Driver);
                 $image = $manager->decode($file->getRealPath());
-                
+
                 // Kompresi: scale proportional max lebar 800px & konversi ke WebP kualitas 75%
                 $image->scale(width: 800);
-                $filename = time() . '_' . uniqid() . '.webp';
-                $path = 'bukti_pembayaran/' . $filename;
-                
+                $filename = time().'_'.uniqid().'.webp';
+                $path = 'bukti_pembayaran/'.$filename;
+
                 Storage::disk('public')->makeDirectory('bukti_pembayaran');
-                $image->encode(new \Intervention\Image\Encoders\WebpEncoder(75))->save(storage_path('app/public/' . $path));
-                
+                $image->encode(new WebpEncoder(75))->save(storage_path('app/public/'.$path));
+
                 $transaksi->update([
-                    'bukti_pembayaran' => '/storage/' . $path,
+                    'bukti_pembayaran' => '/storage/'.$path,
                     'status_tracking' => 'Menunggu Konfirmasi',
-                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id')
+                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
                 ]);
             } catch (\Exception $e) {
                 // Fallback jika ekstensi GD tidak aktif (termasuk MissingDependencyException)
                 $path = $file->store('bukti_pembayaran', 'public');
                 $transaksi->update([
-                    'bukti_pembayaran' => '/storage/' . $path,
+                    'bukti_pembayaran' => '/storage/'.$path,
                     'status_tracking' => 'Menunggu Konfirmasi',
-                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id')
+                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
                 ]);
             }
 
             // Create notification (which also triggers the email)
-            \App\Models\PesanMasuk::create([
+            PesanMasuk::create([
                 'user_id' => $transaksi->user_id,
-                'judul' => "Bukti Pembayaran Terkirim",
-                'isi_pesan' => "Bukti Pembayaran anda terkirim, mohon tunggu konfirmasi admin.<br><br>Detail Transaksi:<br>Total Tagihan: Rp " . number_format($transaksi->total_harga, 0, ',', '.') . "<br>Status: Menunggu Konfirmasi",
+                'judul' => 'Bukti Pembayaran Terkirim',
+                'isi_pesan' => 'Bukti Pembayaran anda terkirim, mohon tunggu konfirmasi admin.<br><br>Detail Transaksi:<br>Total Tagihan: Rp '.number_format($transaksi->total_harga, 0, ',', '.').'<br>Status: Menunggu Konfirmasi',
                 'jenis' => 'info',
                 'is_read' => false,
             ]);
@@ -212,20 +218,19 @@ class CheckoutController extends Controller
         return redirect()->route('success')->with('kode_tracking', $kode_tracking);
     }
 
-    public function success(\Illuminate\Http\Request $request)
+    public function success(Request $request)
     {
         $kode_tracking = $request->input('kode') ?? session('kode_tracking');
-        
-        if (!$kode_tracking) {
+
+        if (! $kode_tracking) {
             $transaksi = TransaksiCheckout::where('user_id', auth()->id())->latest()->first();
         } else {
             $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->first();
         }
 
-        if (!$transaksi) {
+        if (! $transaksi) {
             return redirect()->route('dashboard');
         }
-
 
         $detail = TransaksiDetail::with('buku')->where('kode_tracking', $transaksi->kode_tracking)->first();
 
