@@ -4,16 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\KatalogBuku;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
-        return response()->view('cart', compact('cart'))
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
+        $cart = Auth::user()->cart_data ?? [];
+        \Illuminate\Support\Facades\Log::info('Cart Check: ', ['db_cart' => $cart, 'count' => count($cart)]);
+        
+        // Cek stok real-time
+        foreach ($cart as $id => &$item) {
+            $buku = KatalogBuku::find($id);
+            if ($buku) {
+                $item['stok_dibutuhkan'] = $buku->stok_dibutuhkan;
+                // Pastikan qty tidak melebihi stok yang ada
+                $item['qty'] = min($item['qty'], $buku->stok_dibutuhkan);
+            } else {
+                $item['stok_dibutuhkan'] = 0;
+                $item['qty'] = 0;
+            }
+        }
+        unset($item); // Mencegah bug referensi PHP di perulangan selanjutnya
+        
+        return view('cart', compact('cart'));
     }
 
     public function add(Request $request, $id)
@@ -38,7 +52,7 @@ class CartController extends Controller
             return redirect()->route('checkout', ['type' => 'buy_now']);
         }
 
-        $cart = session()->get('cart', []);
+        $cart = Auth::user()->cart_data ?? [];
         
         if (isset($cart[$id])) {
             if ($cart[$id]['qty'] >= $buku->stok_dibutuhkan) {
@@ -55,7 +69,7 @@ class CartController extends Controller
             $cart[$id] = $item;
         }
 
-        session()->put('cart', $cart);
+        Auth::user()->update(['cart_data' => $cart]);
         
         if ($request->ajax() || $request->wantsJson()) {
             $cartQty = 0;
@@ -75,7 +89,7 @@ class CartController extends Controller
     public function update(Request $request)
     {
         if ($request->id && $request->qty) {
-            $cart = session()->get('cart');
+            $cart = Auth::user()->cart_data ?? [];
             $buku = KatalogBuku::find($request->id);
             if ($buku) {
                 $qty = min($request->qty, $buku->stok_dibutuhkan);
@@ -87,7 +101,7 @@ class CartController extends Controller
             if ($request->has('pesan_dukungan')) {
                 $cart[$request->id]["pesan_dukungan"] = $request->pesan_dukungan;
             }
-            session()->put('cart', $cart);
+            Auth::user()->update(['cart_data' => $cart]);
 
             if ($request->ajax() || $request->wantsJson()) {
                 $total = 0;
@@ -110,10 +124,10 @@ class CartController extends Controller
     public function remove(Request $request)
     {
         if ($request->id) {
-            $cart = session()->get('cart');
+            $cart = Auth::user()->cart_data ?? [];
             if (isset($cart[$request->id])) {
                 unset($cart[$request->id]);
-                session()->put('cart', $cart);
+                Auth::user()->update(['cart_data' => $cart]);
             }
         }
         return redirect()->back();

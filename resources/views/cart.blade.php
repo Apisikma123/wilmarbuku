@@ -14,23 +14,43 @@
             <span class="material-symbols-outlined text-primary text-3xl">shopping_bag</span>
             <h1 class="text-3xl font-bold font-display text-on-surface tracking-tight">Keranjang Donasi</h1>
         </div>
+
+        @if(session('error'))
+        <div class="bg-error-container/20 border border-error/30 text-error px-4 py-4 rounded-xl flex items-start gap-3 shadow-sm mb-8">
+            <span class="material-symbols-outlined shrink-0 mt-0.5 text-error">error</span>
+            <div class="font-medium text-sm leading-relaxed">{!! session('error') !!}</div>
+            <button onclick="this.parentElement.remove()" class="text-error/70 hover:text-error ml-auto shrink-0"><span class="material-symbols-outlined text-[20px]">close</span></button>
+        </div>
+        @endif
+
+        @if(session('success'))
+        <div class="bg-primary/10 border border-primary/20 text-primary px-4 py-4 rounded-xl flex items-start gap-3 shadow-sm mb-8">
+            <span class="material-symbols-outlined shrink-0 mt-0.5 text-primary">check_circle</span>
+            <div class="font-medium text-sm leading-relaxed">{!! session('success') !!}</div>
+            <button onclick="this.parentElement.remove()" class="text-primary/70 hover:text-primary ml-auto shrink-0"><span class="material-symbols-outlined text-[20px]">close</span></button>
+        </div>
+        @endif
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Left Column: Cart Items -->
             <div class="lg:col-span-8 space-y-6">
-                @if(session('cart') && count(session('cart')) > 0)
+                @if(isset($cart) && count($cart) > 0)
                     @php $total = 0; $count = 0; @endphp
-                    @foreach(session('cart') as $id => $item)
+                    @foreach($cart as $id => $item)
                         @php 
                             $subtotal = $item['harga_estimasi'] * $item['qty'];
                             $total += $subtotal;
                             $count += $item['qty'];
                         @endphp
                         <!-- Cart Item -->
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 grayscale bg-surface-container-low' : '' }}">
                             <div class="flex gap-5">
                                 <div class="flex items-start justify-center pt-2">
+                                    @if($item['stok_dibutuhkan'] > 0)
                                     <input type="checkbox" checked class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
+                                    @else
+                                    <span class="material-symbols-outlined text-outline">block</span>
+                                    @endif
                                 </div>
                                 <div class="flex-grow">
                                     <!-- Header Info -->
@@ -47,6 +67,9 @@
                                             <div class="flex flex-col justify-between py-1">
                                                 <div>
                                                     <span class="inline-block px-2.5 py-1 bg-surface-container-low text-primary text-[10px] font-bold rounded-md mb-2 uppercase tracking-wider">{{ $item['kategori'] }}</span>
+                                                    @if($item['stok_dibutuhkan'] <= 0)
+                                                    <span class="inline-block px-2.5 py-1 bg-error-container text-error text-[10px] font-bold rounded-md mb-2 uppercase tracking-wider">Stok Terpenuhi</span>
+                                                    @endif
                                                     <h3 class="font-bold text-on-surface leading-tight text-xl mb-1 group-hover:text-primary transition-colors line-clamp-2">{{ $item['judul_buku'] }}</h3>
                                                     <p class="text-sm text-on-surface-variant font-medium">Oleh: {{ $item['pengarang'] }}</p>
                                                 </div>
@@ -68,7 +91,7 @@
                                                     <label class="block text-xs font-semibold text-on-surface-variant mb-1.5">Pesan Dukungan (Opsional)</label>
                                                     <div class="relative">
                                                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[18px]">chat</span>
-                                                        <input type="text" name="pesan_dukungan" value="{{ $item['pesan_dukungan'] ?? '' }}" placeholder="Tulis semangat untuk penerima..." class="w-full bg-white border border-outline-variant/50 rounded-lg py-2.5 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow focus:shadow-md" onchange="submitUpdate(this.form)">
+                                                        <input type="text" name="pesan_dukungan" value="{{ $item['pesan_dukungan'] ?? '' }}" placeholder="Tulis semangat untuk penerima..." class="w-full bg-white border border-outline-variant/50 rounded-lg py-2.5 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow focus:shadow-md" onchange="submitUpdate(this.form)" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
                                                     </div>
                                                 </div>
                                                 <div class="flex justify-end items-center gap-5 pt-2 border-t border-outline-variant/30">
@@ -76,10 +99,10 @@
                                                         <button type="button" onclick="event.preventDefault(); document.getElementById('remove-form-{{ $id }}').submit();" class="w-9 h-9 rounded-full text-outline-variant hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors" title="Hapus"><span class="material-symbols-outlined text-[20px]">delete</span></button>
                                                     </div>
                                                     <div class="h-6 w-px bg-outline-variant/40"></div>
-                                                    <div class="flex items-center gap-1 bg-white border border-outline-variant/50 rounded-lg p-1 shadow-sm">
-                                                        <button type="button" onclick="updateQty(this, -1)" class="w-7 h-7 rounded-md bg-surface-bright text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
-                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" class="font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="submitUpdate(this.form)">
-                                                        <button type="button" onclick="updateQty(this, 1)" class="w-7 h-7 rounded-md bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
+                                                    <div class="flex items-center gap-1 bg-white border border-outline-variant/50 rounded-lg p-1 shadow-sm {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 pointer-events-none' : '' }}">
+                                                        <button type="button" onclick="updateQty(this, -1)" class="w-7 h-7 rounded-md bg-surface-bright text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">remove</span></button>
+                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" class="font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="submitUpdate(this.form)" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
+                                                        <button type="button" onclick="updateQty(this, 1)" class="w-7 h-7 rounded-md bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">add</span></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -104,7 +127,7 @@
             </div>
             
             <!-- Right Column: Summary -->
-            @if(session('cart') && count(session('cart')) > 0)
+            @if(isset($cart) && count($cart) > 0)
             <div class="lg:col-span-4 relative">
                 <div class="bg-white rounded-2xl shadow-lg border border-outline-variant/20 p-7 sticky top-28">
                     <h3 class="font-bold text-on-surface text-xl mb-6 pb-4 border-b border-outline-variant/40 flex items-center gap-2">
@@ -130,9 +153,15 @@
                         <p id="summary-total" class="text-2xl font-black text-primary tracking-tight">Rp {{ number_format($total, 0, ',', '.') }}</p>
                     </div>
                     
+                    @if($count > 0)
                     <a href="{{ route('checkout') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-container transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                         <span class="material-symbols-outlined">payments</span> Donasikan Sekarang
                     </a>
+                    @else
+                    <button disabled class="flex items-center justify-center gap-2 w-full bg-outline-variant/30 text-on-surface-variant font-bold py-4 rounded-xl cursor-not-allowed">
+                        <span class="material-symbols-outlined">payments</span> Tidak Ada Buku
+                    </button>
+                    @endif
                     
                     <div class="mt-5 flex items-center justify-center gap-2 text-xs text-on-surface-variant font-medium bg-surface-container-low py-2 rounded-lg">
                         <span class="material-symbols-outlined text-[14px] text-secondary">verified_user</span> Transaksi Aman & Transparan

@@ -59,8 +59,9 @@
                 
                 @php
                     $cartQty = 0;
-                    if(session('cart')) {
-                        foreach(session('cart') as $c) {
+                    $currentCart = Auth::check() ? (Auth::user()->cart_data ?? []) : [];
+                    if($currentCart) {
+                        foreach($currentCart as $c) {
                             $cartQty += $c['qty'];
                         }
                     }
