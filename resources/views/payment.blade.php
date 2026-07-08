@@ -9,7 +9,15 @@
         </div>
 
         <h1 class="text-2xl font-bold font-display text-on-surface mb-2">Pembayaran Donasi</h1>
-        <p class="text-sm text-on-surface-variant mb-8">Silakan lakukan transfer ke rekening di bawah ini dan unggah bukti pembayarannya.</p>
+        <p class="text-sm text-on-surface-variant mb-4">Silakan lakukan transfer ke rekening di bawah ini dan unggah bukti pembayarannya.</p>
+
+        <div class="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 mb-8 flex items-start gap-2 text-left">
+            <span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5">timer</span>
+            <div class="text-xs">
+                <strong class="block mb-0.5">Batas Waktu Pembayaran (1 Jam)</strong>
+                Segera selesaikan pembayaran sebelum <span class="font-bold">{{ $transaksi->created_at->addHour()->format('d M Y H:i') }}</span> WIB atau transaksi Anda akan otomatis dibatalkan.
+            </div>
+        </div>
 
         <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 mb-8 text-left">
             <div class="mb-4">

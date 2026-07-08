@@ -29,8 +29,8 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        $this->call([
-            KatalogBukuSeeder::class,
-        ]);
+        // $this->call([
+        //     KatalogBukuSeeder::class,
+        // ]);
     }
 }

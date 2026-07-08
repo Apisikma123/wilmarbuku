@@ -42,14 +42,14 @@ class TransaksiController extends Controller
     public function track(Request $request)
     {
         $kode = $request->query('kode');
-        $transaksiDetail = null;
+        $transaksi = null;
 
         if ($kode) {
-            $transaksiDetail = TransaksiDetail::with(['buku', 'transaksi'])
+            $transaksi = TransaksiCheckout::with(['details.buku'])
                 ->where('kode_tracking', $kode)
                 ->first();
         }
 
-        return view('track', compact('transaksiDetail', 'kode'));
+        return view('track', compact('transaksi', 'kode'));
     }
 }

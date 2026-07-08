@@ -21,13 +21,13 @@
             </form>
         </div>
 
-        @if($kode && !$transaksiDetail)
+        @if($kode && !$transaksi)
             <div class="bg-error-container text-error rounded-2xl p-6 text-center shadow-sm">
                 <span class="material-symbols-outlined text-4xl mb-2">error</span>
                 <p class="font-bold">Kode Tracking tidak ditemukan.</p>
                 <p class="text-sm">Pastikan Anda memasukkan kode yang benar (ex: WLH-xxxxxx).</p>
             </div>
-        @elseif($transaksiDetail)
+        @elseif($transaksi)
         <!-- Tracking Result -->
         <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
             <!-- Header -->
@@ -35,9 +35,9 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <p class="text-white/70 text-xs uppercase tracking-wider font-bold mb-1">Kode Tracking</p>
-                        <h2 class="text-2xl font-bold tracking-tight">{{ $transaksiDetail->kode_tracking }}</h2>
+                        <h2 class="text-2xl font-bold tracking-tight">{{ $transaksi->kode_tracking }}</h2>
                     </div>
-                    @if($transaksiDetail->transaksi->status_pembayaran == 'Paid')
+                    @if($transaksi->status_pembayaran == 'Paid')
                     <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#005143] bg-[#87f6dc] px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
                         <span class="material-symbols-outlined text-[14px]">check_circle</span> Lunas
                     </span>
@@ -50,22 +50,24 @@
             </div>
 
             <!-- Book Info -->
-            <div class="p-6 border-b border-outline-variant/30">
-                <div class="flex gap-5">
-                    <div class="w-16 h-24 rounded-lg @if((!str_starts_with($transaksiDetail->buku->cover_image ?? '', '/storage/') && !str_starts_with($transaksiDetail->buku->cover_image ?? '', 'http'))) bg-gradient-to-br {{ $transaksiDetail->buku->cover_image }} @endif flex items-center justify-center shrink-0 shadow-sm text-center overflow-hidden relative bg-slate-100">
-                        @if((str_starts_with($transaksiDetail->buku->cover_image ?? '', '/storage/') || str_starts_with($transaksiDetail->buku->cover_image ?? '', 'http')))
-                            <img src="{{ $transaksiDetail->buku->cover_image }}" alt="{{ $transaksiDetail->buku->judul_buku }}" class="w-full h-full object-cover">
+            <div class="p-6 border-b border-outline-variant/30 divide-y divide-outline-variant/30">
+                @foreach($transaksi->details as $detail)
+                <div class="flex gap-5 py-4 first:pt-0 last:pb-0">
+                    <div class="w-16 h-24 rounded-lg @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http'))) bg-gradient-to-br {{ $detail->buku->cover_image }} @endif flex items-center justify-center shrink-0 shadow-sm text-center overflow-hidden relative bg-slate-100">
+                        @if((str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')))
+                            <img src="{{ $detail->buku->cover_image }}" alt="{{ $detail->buku->judul_buku }}" class="w-full h-full object-cover">
                         @else
                             <div class="absolute inset-0 bg-black/30"></div>
-                            <span class="text-[6px] font-bold uppercase leading-tight relative z-10 text-white p-2">{!! str_replace(' ', '<br>', $transaksiDetail->buku->judul_buku) !!}</span>
+                            <span class="text-[6px] font-bold uppercase leading-tight relative z-10 text-white p-2">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
                         @endif
                     </div>
                     <div>
-                        <h3 class="font-bold text-on-surface text-lg mb-1">{{ $transaksiDetail->buku->judul_buku }} (x{{ $transaksiDetail->qty }})</h3>
-                        <p class="text-sm text-on-surface-variant mb-1">Oleh: {{ $transaksiDetail->buku->pengarang }}</p>
-                        <p class="text-sm font-bold text-primary">Rp {{ number_format($transaksiDetail->harga_satuan, 0, ',', '.') }}</p>
+                        <h3 class="font-bold text-on-surface text-lg mb-1">{{ $detail->buku->judul_buku }} (x{{ $detail->qty }})</h3>
+                        <p class="text-sm text-on-surface-variant mb-1">Oleh: {{ $detail->buku->pengarang }}</p>
+                        <p class="text-sm font-bold text-primary">Rp {{ number_format($detail->harga_satuan, 0, ',', '.') }}</p>
                     </div>
                 </div>
+                @endforeach
             </div>
 
             <!-- Tracking Steps -->
@@ -80,18 +82,18 @@
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
                                 <span class="material-symbols-outlined text-[16px]">check</span>
                             </div>
-                            <div class="w-0.5 h-8 {{ $transaksiDetail->transaksi->status_pembayaran == 'Paid' ? 'bg-primary' : 'bg-outline-variant/30' }}"></div>
+                            <div class="w-0.5 h-8 {{ $transaksi->status_pembayaran == 'Paid' ? 'bg-primary' : 'bg-outline-variant/30' }}"></div>
                         </div>
                         <div class="pb-6">
                             <p class="font-bold text-on-surface text-sm">Pesanan Dibuat</p>
-                            <p class="text-xs text-on-surface-variant">{{ $transaksiDetail->created_at->format('d M Y, H:i') }} WIB</p>
+                            <p class="text-xs text-on-surface-variant">{{ $transaksi->created_at->format('d M Y, H:i') }} WIB</p>
                         </div>
                     </div>
 
                     <!-- Step 2: Pembayaran Diterima -->
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
-                            @if($transaksiDetail->transaksi->status_pembayaran == 'Paid')
+                            @if($transaksi->status_pembayaran == 'Paid')
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
                                 <span class="material-symbols-outlined text-[16px]">check</span>
                             </div>
@@ -100,12 +102,12 @@
                                 <span class="material-symbols-outlined text-[16px]">payments</span>
                             </div>
                             @endif
-                            <div class="w-0.5 h-8 {{ in_array($transaksiDetail->transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']) ? 'bg-primary' : 'bg-outline-variant/30' }}"></div>
+                            <div class="w-0.5 h-8 {{ in_array($transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']) ? 'bg-primary' : 'bg-outline-variant/30' }}"></div>
                         </div>
                         <div class="pb-6">
-                            <p class="font-bold {{ $transaksiDetail->transaksi->status_pembayaran == 'Paid' ? 'text-on-surface' : 'text-on-surface-variant' }} text-sm">Pembayaran Diterima</p>
-                            @if($transaksiDetail->transaksi->status_pembayaran == 'Paid')
-                            <p class="text-xs text-on-surface-variant">{{ $transaksiDetail->transaksi->updated_at->format('d M Y, H:i') }} WIB</p>
+                            <p class="font-bold {{ $transaksi->status_pembayaran == 'Paid' ? 'text-on-surface' : 'text-on-surface-variant' }} text-sm">Pembayaran Diterima</p>
+                            @if($transaksi->status_pembayaran == 'Paid')
+                            <p class="text-xs text-on-surface-variant">{{ $transaksi->updated_at->format('d M Y, H:i') }} WIB</p>
                             @endif
                         </div>
                     </div>
@@ -113,7 +115,7 @@
                     <!-- Step 3: Dalam Perjalanan -->
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
-                            @if(in_array($transaksiDetail->transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']))
+                            @if(in_array($transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']))
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
                                 <span class="material-symbols-outlined text-[16px]">local_shipping</span>
                             </div>
@@ -122,12 +124,12 @@
                                 <span class="material-symbols-outlined text-[16px]">local_shipping</span>
                             </div>
                             @endif
-                            <div class="w-0.5 h-8 {{ $transaksiDetail->transaksi->status_tracking == 'Selesai' ? 'bg-primary' : 'bg-outline-variant/30' }}"></div>
+                            <div class="w-0.5 h-8 {{ $transaksi->status_tracking == 'Selesai' ? 'bg-primary' : 'bg-outline-variant/30' }}"></div>
                         </div>
                         <div class="pb-6">
-                            <p class="font-bold {{ in_array($transaksiDetail->transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']) ? 'text-on-surface' : 'text-on-surface-variant' }} text-sm">Dalam Perjalanan</p>
-                            @if(in_array($transaksiDetail->transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']))
-                            <p class="text-xs text-on-surface-variant">{{ $transaksiDetail->transaksi->updated_at->format('d M Y, H:i') }} WIB</p>
+                            <p class="font-bold {{ in_array($transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']) ? 'text-on-surface' : 'text-on-surface-variant' }} text-sm">Dalam Perjalanan</p>
+                            @if(in_array($transaksi->status_tracking, ['Dalam Pengiriman', 'Selesai']))
+                            <p class="text-xs text-on-surface-variant">{{ $transaksi->updated_at->format('d M Y, H:i') }} WIB</p>
                             @endif
                         </div>
                     </div>
@@ -135,7 +137,7 @@
                     <!-- Step 4: Sampai Ke Perpus -->
                     <div class="flex gap-4">
                         <div class="flex flex-col items-center">
-                            @if($transaksiDetail->transaksi->status_tracking == 'Selesai')
+                            @if($transaksi->status_tracking == 'Selesai')
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
                                 <span class="material-symbols-outlined text-[16px]">check_circle</span>
                             </div>
@@ -146,9 +148,9 @@
                             @endif
                         </div>
                         <div>
-                            <p class="font-bold {{ $transaksiDetail->transaksi->status_tracking == 'Selesai' ? 'text-on-surface' : 'text-on-surface-variant' }} text-sm">Sampai Ke Perpus</p>
-                            @if($transaksiDetail->transaksi->status_tracking == 'Selesai')
-                            <p class="text-xs text-on-surface-variant">{{ $transaksiDetail->transaksi->updated_at->format('d M Y, H:i') }} WIB</p>
+                            <p class="font-bold {{ $transaksi->status_tracking == 'Selesai' ? 'text-on-surface' : 'text-on-surface-variant' }} text-sm">Sampai Ke Perpus</p>
+                            @if($transaksi->status_tracking == 'Selesai')
+                            <p class="text-xs text-on-surface-variant">{{ $transaksi->updated_at->format('d M Y, H:i') }} WIB</p>
                             @endif
                         </div>
                     </div>
@@ -157,11 +159,11 @@
 
             <!-- Action -->
             <div class="p-6 bg-surface-bright border-t border-outline-variant/30 flex flex-col sm:flex-row justify-between items-center gap-4">
-                @if($transaksiDetail->transaksi->status_pembayaran == 'Paid')
+                @if($transaksi->status_pembayaran == 'Paid')
                 <p class="text-xs text-on-surface-variant">Buku Anda sedang diproses untuk masuk ke rak perpustakaan kampus.</p>
                 @else
                 <p class="text-xs text-on-surface-variant">Silakan selesaikan pembayaran agar buku Anda dapat segera diproses.</p>
-                <a href="{{ route('success', ['kode' => $transaksiDetail->kode_tracking]) }}" class="px-5 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary-container rounded-lg transition-colors flex items-center gap-2 shadow-sm shrink-0">
+                <a href="{{ route('success', ['kode' => $transaksi->kode_tracking]) }}" class="px-5 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary-container rounded-lg transition-colors flex items-center gap-2 shadow-sm shrink-0">
                     <span class="material-symbols-outlined text-[18px]">payments</span> Bayar Sekarang
                 </a>
                 @endif

@@ -16,10 +16,21 @@ class CheckoutController extends Controller
     public function index(Request $request)
     {
         $type = $request->query('type');
-        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : session()->get('cart', []);
+        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : (Auth::user()->cart_data ?? []);
         
+        // Filter out items that have no stock
+        $filteredCart = [];
+        foreach ($cart as $id => $details) {
+            $buku = \App\Models\KatalogBuku::find($id);
+            if ($buku && $buku->stok_dibutuhkan > 0) {
+                $filteredCart[$id] = $details;
+                $filteredCart[$id]['qty'] = min($details['qty'], $buku->stok_dibutuhkan);
+            }
+        }
+        $cart = $filteredCart;
+
         if (empty($cart)) {
-            return redirect()->route('cart')->with('error', 'Keranjang Anda kosong.');
+            return redirect()->route('cart')->with('error', 'Tidak ada buku yang dapat didonasikan saat ini.');
         }
 
         $total = 0;
@@ -27,16 +38,13 @@ class CheckoutController extends Controller
             $total += $details['harga_estimasi'] * $details['qty'];
         }
 
-        return response()->view('checkout', compact('cart', 'total'))
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
+        return view('checkout', compact('cart', 'total'));
     }
 
     public function process(Request $request)
     {
         $type = $request->input('type');
-        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : session()->get('cart', []);
+        $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : (Auth::user()->cart_data ?? []);
         
         if (empty($cart)) {
             return redirect()->route('cart');
@@ -57,8 +65,27 @@ class CheckoutController extends Controller
             $user->save();
         }
 
+        // Filter keranjang: abaikan buku yang stoknya sudah habis (disabled)
+        $checkoutCart = [];
+        foreach ($cart as $id => $details) {
+            $buku = \App\Models\KatalogBuku::find($id);
+            if ($buku && $buku->stok_dibutuhkan > 0) {
+                // Validasi Race Condition: jika stok sisa lebih kecil dari qty yang diminta
+                if ($buku->stok_dibutuhkan < $details['qty']) {
+                    $judul = $buku->judul_buku;
+                    $pesan = "Yah! Keduluan. 🏃‍♂️ Stok buku '$judul' baru saja berkurang atau habis didonasikan oleh pengguna lain. Silakan periksa kembali keranjang Anda.";
+                    return redirect()->route('cart')->with('error', $pesan);
+                }
+                $checkoutCart[$id] = $details;
+            }
+        }
+
+        if (empty($checkoutCart)) {
+            return redirect()->route('cart')->with('error', 'Tidak ada buku yang valid untuk diproses.');
+        }
+
         $total = 0;
-        foreach ($cart as $details) {
+        foreach ($checkoutCart as $details) {
             $total += $details['harga_estimasi'] * $details['qty'];
         }
 
@@ -72,7 +99,7 @@ class CheckoutController extends Controller
             'status_tracking' => 'Menunggu Pembayaran',
         ]);
 
-        foreach ($cart as $id => $details) {
+        foreach ($checkoutCart as $id => $details) {
             TransaksiDetail::create([
                 'kode_tracking' => $kode_tracking,
                 'buku_id' => $id,
@@ -96,7 +123,16 @@ class CheckoutController extends Controller
         if ($type === 'buy_now') {
             session()->forget('buy_now_cart');
         } else {
-            session()->forget('cart');
+            // Hanya hapus buku yang berhasil di-checkout dari database keranjang
+            foreach ($checkoutCart as $id => $details) {
+                unset($cart[$id]);
+            }
+            
+            if (empty($cart)) {
+                $user->update(['cart_data' => null]);
+            } else {
+                $user->update(['cart_data' => $cart]);
+            }
         }
 
         return redirect()->route('payment')->with('kode_tracking', $kode_tracking);
@@ -163,8 +199,8 @@ class CheckoutController extends Controller
             // Create notification (which also triggers the email)
             \App\Models\PesanMasuk::create([
                 'user_id' => $transaksi->user_id,
-                'judul' => "Bukti Pembayaran Terkirim - #{$transaksi->kode_tracking}",
-                'isi_pesan' => "Bukti Pembayaran anda terkirim, mohon tunggu konfirmasi admin.<br><br>Detail Transaksi:<br>Nomor Resi/Pesanan: {$transaksi->kode_tracking}<br>Total Tagihan: Rp " . number_format($transaksi->total_harga, 0, ',', '.') . "<br>Status: Menunggu Konfirmasi",
+                'judul' => "Bukti Pembayaran Terkirim",
+                'isi_pesan' => "Bukti Pembayaran anda terkirim, mohon tunggu konfirmasi admin.<br><br>Detail Transaksi:<br>Total Tagihan: Rp " . number_format($transaksi->total_harga, 0, ',', '.') . "<br>Status: Menunggu Konfirmasi",
                 'jenis' => 'info',
                 'is_read' => false,
             ]);
