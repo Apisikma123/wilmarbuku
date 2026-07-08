@@ -20,8 +20,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
-            $view->with('global_kategoris', \App\Models\Kategori::all());
-            $view->with('global_penerbits', \App\Models\Penerbit::all());
+            static $kategoris = null;
+            static $penerbits = null;
+
+            if ($kategoris === null) {
+                $kategoris = \App\Models\Kategori::all();
+            }
+            if ($penerbits === null) {
+                $penerbits = \App\Models\Penerbit::all();
+            }
+
+            $view->with('global_kategoris', $kategoris);
+            $view->with('global_penerbits', $penerbits);
             // Buku Terkumpul: jumlah qty buku dari transaksi yang sudah Selesai (atau Paid)
             $totalBukuTerkumpul = \Illuminate\Support\Facades\Cache::remember('global_total_buku', 300, function () {
                 return \App\Models\TransaksiDetail::whereHas('transaksi', function($q) {

@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->validateCsrfTokens(except: ['*']);
+        // CSRF diaktifkan untuk semua route (except dihapus)
+        $middleware->validateCsrfTokens(except: [
+            // Jika ada route third party webhook (misal Midtrans nanti), taruh di sini
+        ]);
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureIsAdmin::class,

@@ -9,6 +9,7 @@ use App\Models\TransaksiCheckout;
 use App\Models\TransaksiDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -69,75 +70,94 @@ class CheckoutController extends Controller
             $user->save();
         }
 
-        // Filter keranjang: abaikan buku yang stoknya sudah habis (disabled)
-        $checkoutCart = [];
-        foreach ($cart as $id => $details) {
-            $buku = KatalogBuku::find($id);
-            if ($buku && $buku->stok_dibutuhkan > 0) {
-                // Validasi Race Condition: jika stok sisa lebih kecil dari qty yang diminta
-                if ($buku->stok_dibutuhkan < $details['qty']) {
-                    $judul = $buku->judul_buku;
-                    $pesan = "Yah! Keduluan. 🏃‍♂️ Stok buku '$judul' baru saja berkurang atau habis didonasikan oleh pengguna lain. Silakan periksa kembali keranjang Anda.";
+        try {
+            DB::beginTransaction();
 
-                    return redirect()->route('cart')->with('error', $pesan);
+            // Filter keranjang: abaikan buku yang stoknya sudah habis (disabled)
+            $checkoutCart = [];
+            foreach ($cart as $id => $details) {
+                // Lock row untuk mencegah race condition (User lain tidak bisa checkout buku ini di milidetik yang sama)
+                $buku = KatalogBuku::where('id', $id)->lockForUpdate()->first();
+                if ($buku && $buku->stok_dibutuhkan > 0) {
+                    // Validasi Race Condition: jika stok sisa lebih kecil dari qty yang diminta
+                    if ($buku->stok_dibutuhkan < $details['qty']) {
+                        throw new \Exception("STOK_HABIS:{$buku->judul_buku}");
+                    }
+                    $checkoutCart[$id] = $details;
                 }
-                $checkoutCart[$id] = $details;
             }
-        }
 
-        if (empty($checkoutCart)) {
-            return redirect()->route('cart')->with('error', 'Tidak ada buku yang valid untuk diproses.');
-        }
+            if (empty($checkoutCart)) {
+                throw new \Exception("EMPTY_CART");
+            }
 
-        $total = 0;
-        foreach ($checkoutCart as $details) {
-            $total += $details['harga_estimasi'] * $details['qty'];
-        }
+            $total = 0;
+            foreach ($checkoutCart as $details) {
+                $total += $details['harga_estimasi'] * $details['qty'];
+            }
 
-        $kode_tracking = 'WB' . date('Ym') . strtoupper(Str::random(5));
+            $kode_tracking = 'WB' . date('Ym') . strtoupper(Str::random(5));
 
-        $transaksi = TransaksiCheckout::create([
-            'kode_tracking' => $kode_tracking,
-            'user_id' => $user->id,
-            'total_harga' => $total,
-            'status_pembayaran' => 'Unpaid',
-            'status_tracking' => 'Menunggu Pembayaran',
-        ]);
-
-        foreach ($checkoutCart as $id => $details) {
-            TransaksiDetail::create([
+            $transaksi = TransaksiCheckout::create([
                 'kode_tracking' => $kode_tracking,
-                'buku_id' => $id,
-                'qty' => $details['qty'],
-                'harga_satuan' => $details['harga_estimasi'],
-                'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
+                'user_id' => $user->id,
+                'total_harga' => $total,
+                'status_pembayaran' => 'Unpaid',
+                'status_tracking' => 'Menunggu Pembayaran',
             ]);
 
-            // Soft Booking: Kurangi stok saat checkout
-            $buku = KatalogBuku::find($id);
-            if ($buku) {
-                $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
-                $updateData = ['stok_dibutuhkan' => $newStok];
-                if ($newStok == 0) {
-                    $updateData['status_buku'] = 'Tersedia';
-                }
-                $buku->update($updateData);
-            }
-        }
-
-        if ($type === 'buy_now') {
-            session()->forget('buy_now_cart');
-        } else {
-            // Hanya hapus buku yang berhasil di-checkout dari database keranjang
             foreach ($checkoutCart as $id => $details) {
-                unset($cart[$id]);
+                TransaksiDetail::create([
+                    'kode_tracking' => $kode_tracking,
+                    'buku_id' => $id,
+                    'qty' => $details['qty'],
+                    'harga_satuan' => $details['harga_estimasi'],
+                    'pesan_dukungan' => $details['pesan_dukungan'] ?? null,
+                ]);
+
+                // Soft Booking: Kurangi stok saat checkout
+                $buku = KatalogBuku::find($id);
+                if ($buku) {
+                    $newStok = max(0, $buku->stok_dibutuhkan - $details['qty']);
+                    $updateData = ['stok_dibutuhkan' => $newStok];
+                    if ($newStok == 0) {
+                        $updateData['status_buku'] = 'Tersedia';
+                    }
+                    $buku->update($updateData);
+                }
             }
 
-            if (empty($cart)) {
-                $user->update(['cart_data' => null]);
+            DB::commit();
+
+            if ($type === 'buy_now') {
+                session()->forget('buy_now_cart');
             } else {
-                $user->update(['cart_data' => $cart]);
+                // Hanya hapus buku yang berhasil di-checkout dari database keranjang
+                foreach ($checkoutCart as $id => $details) {
+                    unset($cart[$id]);
+                }
+
+                if (empty($cart)) {
+                    $user->update(['cart_data' => null]);
+                } else {
+                    $user->update(['cart_data' => $cart]);
+                }
             }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            if (strpos($e->getMessage(), 'STOK_HABIS:') === 0) {
+                $judul = explode(':', $e->getMessage())[1];
+                $pesan = "Yah! Keduluan. 🏃‍♂️ Stok buku '$judul' baru saja berkurang atau habis didonasikan oleh pengguna lain. Silakan periksa kembali keranjang Anda.";
+                return redirect()->route('cart')->with('error', $pesan);
+            }
+            
+            if ($e->getMessage() === 'EMPTY_CART') {
+                return redirect()->route('cart')->with('error', 'Tidak ada buku yang valid untuk diproses.');
+            }
+            
+            throw $e;
         }
 
         return redirect()->route('payment')->with('kode_tracking', $kode_tracking);

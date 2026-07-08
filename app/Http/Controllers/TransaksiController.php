@@ -47,7 +47,7 @@ class TransaksiController extends Controller
         if ($kode) {
             $transaksi = TransaksiCheckout::with(['details.buku'])
                 ->where('kode_tracking', $kode)
-                ->whereHas('transaksi', fn($q) => $q->where('user_id', auth()->id()))
+                ->where('user_id', auth()->id())
                 ->first();
         }
 
