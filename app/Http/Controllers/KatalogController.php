@@ -12,8 +12,8 @@ class KatalogController extends Controller
     public function index(Request $request)
     {
         $buku = KatalogBuku::where('status_buku', 'Dibutuhkan')
-            ->orderByRaw("CASE WHEN badge = 'Prioritas' THEN 1 ELSE 2 END")
-            ->latest()
+            ->inRandomOrder()
+            ->take(4)
             ->get();
         $mahasiswaCount = \App\Models\User::where('role', 'user')->count();
         if ($request->is('donasi')) {

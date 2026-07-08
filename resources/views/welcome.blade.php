@@ -151,6 +151,12 @@
 </div>
 @endforeach
 </div>
+<div class="mt-12 flex justify-center">
+    <a href="{{ route('kategori') }}" class="inline-flex items-center gap-2 bg-white border-2 border-primary text-primary font-bold px-8 py-3.5 rounded-lg hover:bg-primary hover:text-white transition-all shadow-sm hover:shadow-md group">
+        <span>Lihat Lebih Banyak</span>
+        <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+    </a>
+</div>
 </div>
 </section>
 <!-- How It Works & Tools -->

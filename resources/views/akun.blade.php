@@ -149,7 +149,10 @@
                     <form method="POST" action="{{ route('akun.updatePassword') }}" class="space-y-5">
                         @csrf
                         <div>
-                            <label class="block text-xs font-bold text-on-surface-variant mb-2">Kata Sandi Saat Ini</label>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-xs font-bold text-on-surface-variant">Kata Sandi Saat Ini</label>
+                                <a href="{{ route('password.request') }}" class="text-[10px] text-primary font-bold hover:underline">Lupa Sandi?</a>
+                            </div>
                             <input type="password" name="current_password" placeholder="Masukkan kata sandi saat ini" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
                             @error('current_password') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
                         </div>
