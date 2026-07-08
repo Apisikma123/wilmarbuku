@@ -55,17 +55,26 @@ class CartController extends Controller
         $cart = Auth::user()->cart_data ?? [];
         
         if (isset($cart[$id])) {
-            if ($cart[$id]['qty'] >= $buku->stok_dibutuhkan) {
+            if ($cart[$id]['qty'] + $qty > $buku->stok_dibutuhkan) {
                 if ($request->ajax() || $request->wantsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Anda sudah memasukkan jumlah maksimal buku ini di keranjang.',
+                        'message' => 'Stok buku ini tidak mencukupi untuk jumlah yang Anda minta (Maks: '.$buku->stok_dibutuhkan.').',
                     ]);
                 }
-                return redirect()->back()->with('error', 'Anda sudah memasukkan jumlah maksimal buku ini di keranjang.');
+                return redirect()->back()->with('error', 'Stok buku ini tidak mencukupi untuk jumlah yang Anda minta (Maks: '.$buku->stok_dibutuhkan.').');
             }
-            $cart[$id]['qty'] = min($cart[$id]['qty'] + $qty, $buku->stok_dibutuhkan);
+            $cart[$id]['qty'] = $cart[$id]['qty'] + $qty;
         } else {
+            if ($qty > $buku->stok_dibutuhkan) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stok buku ini tidak mencukupi untuk jumlah yang Anda minta (Maks: '.$buku->stok_dibutuhkan.').',
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Stok buku ini tidak mencukupi untuk jumlah yang Anda minta (Maks: '.$buku->stok_dibutuhkan.').');
+            }
             $cart[$id] = $item;
         }
 
