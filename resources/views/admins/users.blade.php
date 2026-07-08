@@ -111,7 +111,7 @@
                             @else
                                 <form action="{{ route('admin.users.role', $u->id) }}" method="POST" class="inline-flex items-center gap-2" id="form-role-{{ $u->id }}">
                                     @csrf
-                                    <select name="role" onchange="handleRoleChange(this, '{{ $u->role }}', 'form-role-{{ $u->id }}')" class="text-xs border border-slate-200 rounded px-2.5 py-1 font-bold rounded-full {{ $u->role == 'user_internal' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-700' }}">
+                                    <select name="role" onchange="handleRoleChange(this, '{{ $u->role }}', 'form-role-{{ $u->id }}')" class="text-xs border border-slate-200 rounded-full pl-3 pr-8 py-1 font-bold {{ $u->role == 'user_internal' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-700' }}">
                                         <option value="user_external" {{ $u->role == 'user_external' ? 'selected' : '' }}>User External</option>
                                         <option value="user_internal" {{ $u->role == 'user_internal' ? 'selected' : '' }}>User Internal</option>
                                         <option value="admin">Admin</option>
@@ -144,6 +144,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-200">
+            {{ $users->links('pagination::tailwind') }}
         </div>
     </div>
 

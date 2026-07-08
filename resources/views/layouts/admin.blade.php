@@ -107,10 +107,10 @@
 
 
                 <!-- Right items -->
-                <div class="flex items-center gap-5 ml-auto">
+                <div class="flex items-center gap-5 ml-auto h-full">
                     
                     <!-- Logout Button Form -->
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" class="flex items-center m-0">
                         @csrf
                         <button type="submit" class="w-10 h-10 shrink-0 rounded-full border border-slate-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-100 hover:text-red-700 flex items-center justify-center transition-colors shadow-sm" title="Logout">
                             <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -118,7 +118,7 @@
                     </form>
 
                     <!-- Profile Pill & Dropdown -->
-                    <a href="{{ route('admin.settings') }}" class="group relative block">
+                    <a href="{{ route('admin.settings') }}" class="group relative flex items-center h-full">
                         <!-- Pill -->
                         <div class="flex items-center gap-3 cursor-pointer bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full p-1.5 pr-5 transition-colors">
                             <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden shrink-0">
