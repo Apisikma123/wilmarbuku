@@ -342,7 +342,13 @@
                         timer: 1500,
                         timerProgressBar: true,
                     }).then(() => {
-                        window.location.reload();
+                        // Update cart badges
+                        const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+                        if(badges.length > 0) {
+                            badges.forEach(badge => {
+                                badge.innerText = data.cart_count;
+                            });
+                        }
                     });
                 } else {
                     Swal.fire({

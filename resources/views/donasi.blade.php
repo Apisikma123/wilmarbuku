@@ -98,10 +98,24 @@
                         <span class="material-symbols-outlined text-[18px]">check_circle</span>
                         <span class="text-xs font-bold">Tersedia</span>
                     </div>
-                    <form action="{{ route('cart.add', $item->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="bg-primary text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi</button>
-                    </form>
+                    @if($item->stok_dibutuhkan <= 0)
+                        <button disabled class="bg-surface-variant text-on-surface-variant text-sm font-semibold px-4 py-2 rounded-md cursor-not-allowed">Terpenuhi</button>
+                    @elseif(Auth::check() && isset(Auth::user()->cart_data[$item->id]) && Auth::user()->cart_data[$item->id]['qty'] >= $item->stok_dibutuhkan)
+                        <button disabled class="bg-surface-variant text-on-surface-variant text-sm font-semibold px-4 py-2 rounded-md cursor-not-allowed">Maksimal</button>
+                    @else
+                        @if(auth()->check() && auth()->user()->role === 'admin')
+                            <button disabled class="bg-surface-variant text-on-surface-variant text-sm font-semibold px-4 py-2 rounded-md cursor-not-allowed">Admin</button>
+                        @else
+                            @if(Auth::check())
+                            <form class="ajax-cart-form-donasi" action="{{ route('cart.add', $item->id) }}" method="POST">
+                                @csrf
+                                <button type="button" class="add-cart-btn bg-primary text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi</button>
+                            </form>
+                            @else
+                            <a href="{{ route('login') }}" class="bg-primary text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi</a>
+                            @endif
+                        @endif
+                    @endif
                 </div>
             </div>
             @endforeach
@@ -126,4 +140,63 @@
 
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cartForms = document.querySelectorAll('.ajax-cart-form-donasi');
+    cartForms.forEach(form => {
+        const btn = form.querySelector('.add-cart-btn');
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            formData.append('qty', 1);
+            formData.append('action', 'cart');
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                    
+                    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+                    if(badges.length > 0) {
+                        badges.forEach(badge => {
+                            badge.innerText = data.cart_count;
+                        });
+                    }
+
+                    // To dynamically disable the button if it reaches max:
+                    // In a real app we'd reload, but to be fast, we just wait for next page visit
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+                }
+            }).catch(err => {
+                form.submit(); // fallback
+            });
+        });
+    });
+});
+</script>
 @endsection
