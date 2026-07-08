@@ -147,8 +147,8 @@
                                 </div>
                                 <!-- Cart button removed as requested -->
                                 @else
-                                <div class="bg-surface-variant text-on-surface-variant w-8 h-8 rounded-full flex items-center justify-center cursor-not-allowed">
-                                    <span class="material-symbols-outlined text-[18px]">check</span>
+                                <div class="text-[10px] md:text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full whitespace-nowrap">
+                                    Dibutuhkan: {{ $item->stok_dibutuhkan }}
                                 </div>
                                 @endif
                             </div>

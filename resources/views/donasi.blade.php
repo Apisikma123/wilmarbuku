@@ -95,8 +95,7 @@
                 
                 <div class="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant/20">
                     <div class="flex items-center gap-1 text-primary">
-                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                        <span class="text-xs font-bold">Tersedia</span>
+                        <span class="text-xs font-bold bg-primary/10 px-2 py-1 rounded">Dibutuhkan: {{ $item->stok_dibutuhkan }}</span>
                     </div>
                     @if($item->stok_dibutuhkan <= 0)
                         <button disabled class="bg-surface-variant text-on-surface-variant text-sm font-semibold px-4 py-2 rounded-md cursor-not-allowed">Terpenuhi</button>
