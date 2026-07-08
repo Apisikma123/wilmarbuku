@@ -275,7 +275,7 @@ class AdminController extends Controller
 
     public function transactions()
     {
-        $transactions = TransaksiCheckout::with(['user', 'details.buku'])
+        $transactions = TransaksiCheckout::with(['user', 'details.buku', 'metodePembayaran'])
             ->latest('tanggal_checkout')
             ->get();
 

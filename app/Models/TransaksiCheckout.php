@@ -29,6 +29,7 @@ class TransaksiCheckout extends Model
         'validasi_lulus',
         'tanggal_checkout',
         'is_read_by_user',
+        'metode_pembayaran_id',
     ];
 
     public function user()
@@ -39,5 +40,10 @@ class TransaksiCheckout extends Model
     public function details()
     {
         return $this->hasMany(TransaksiDetail::class, 'kode_tracking', 'kode_tracking');
+    }
+
+    public function metodePembayaran()
+    {
+        return $this->belongsTo(MetodePembayaran::class, 'metode_pembayaran_id');
     }
 }

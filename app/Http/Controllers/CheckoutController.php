@@ -167,6 +167,7 @@ class CheckoutController extends Controller
 
         $request->validate([
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'metode_pembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {
@@ -185,14 +186,16 @@ class CheckoutController extends Controller
                 
                 $transaksi->update([
                     'bukti_pembayaran' => '/storage/' . $path,
-                    'status_tracking' => 'Menunggu Konfirmasi'
+                    'status_tracking' => 'Menunggu Konfirmasi',
+                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id')
                 ]);
             } catch (\Exception $e) {
                 // Fallback jika ekstensi GD tidak aktif (termasuk MissingDependencyException)
                 $path = $file->store('bukti_pembayaran', 'public');
                 $transaksi->update([
                     'bukti_pembayaran' => '/storage/' . $path,
-                    'status_tracking' => 'Menunggu Konfirmasi'
+                    'status_tracking' => 'Menunggu Konfirmasi',
+                    'metode_pembayaran_id' => $request->input('metode_pembayaran_id')
                 ]);
             }
 

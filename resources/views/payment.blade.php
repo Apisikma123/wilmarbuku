@@ -19,10 +19,14 @@
             </div>
         </div>
 
+        <form action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
+            
         <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 mb-8 text-left">
             <div class="mb-4">
                 <label class="block text-sm font-bold text-on-surface mb-2">Pilih Bank Tujuan Transfer</label>
-                <select id="metodePembayaranSelect" class="w-full bg-white border border-outline-variant/50 rounded-lg px-4 py-3 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm" onchange="updateBankInfo()">
+                <select name="metode_pembayaran_id" id="metodePembayaranSelect" class="w-full bg-white border border-outline-variant/50 rounded-lg px-4 py-3 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm" onchange="updateBankInfo()">
                     @forelse($metodes as $metode)
                         <option value="{{ $metode->id }}" data-bank="{{ $metode->nama_bank }}" data-rek="{{ $metode->nomor_rekening }}" data-nama="{{ $metode->atas_nama }}">{{ $metode->nama_bank }}</option>
                     @empty
@@ -45,9 +49,7 @@
             </div>
         </div>
 
-        <form action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
+
             <div class="mb-6 text-left">
                 <label class="block text-sm font-bold text-on-surface mb-2">Unggah Bukti Pembayaran *</label>
                 <div class="border-2 border-dashed border-outline-variant rounded-xl p-4 text-center hover:border-primary transition-colors cursor-pointer relative" id="drop-zone">
