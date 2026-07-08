@@ -108,7 +108,7 @@
                                 <span class="material-symbols-outlined text-[20px]">check_circle</span>
                                 Target Buku Terpenuhi
                             </button>
-                            @elseif(isset(session('cart')[$buku->id]) && session('cart')[$buku->id]['qty'] >= $buku->stok_dibutuhkan)
+                            @elseif(Auth::check() && isset(Auth::user()->cart_data[$buku->id]) && Auth::user()->cart_data[$buku->id]['qty'] >= $buku->stok_dibutuhkan)
                             <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
                                 <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
                                 Maksimal di Keranjang

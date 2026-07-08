@@ -131,7 +131,7 @@
 <div class="mt-auto pt-4">
 @if($item->stok_dibutuhkan <= 0)
 <button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Target Terpenuhi</button>
-@elseif(isset(session('cart')[$item->id]) && session('cart')[$item->id]['qty'] >= $item->stok_dibutuhkan)
+@elseif(Auth::check() && isset(Auth::user()->cart_data[$item->id]) && Auth::user()->cart_data[$item->id]['qty'] >= $item->stok_dibutuhkan)
 <button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Maksimal di Keranjang</button>
 @else
 @if(auth()->check() && auth()->user()->role === 'admin')
