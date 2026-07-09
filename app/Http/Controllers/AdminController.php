@@ -688,7 +688,7 @@ class AdminController extends Controller
     {
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $booksNeeded = KatalogBuku::where('status_buku', 'Dibutuhkan')->sum('stok_dibutuhkan');
-        $booksInProcess = TransaksiCheckout::where('status_tracking', '!=', 'Selesai')->count();
+        $totalBooks = KatalogBuku::count();
         $totalUsers = User::where('role', '!=', 'admin')->count();
 
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])
@@ -699,7 +699,7 @@ class AdminController extends Controller
         $pdf = Pdf::loadView('admins.pdf_dashboard', compact(
             'totalDonations',
             'booksNeeded',
-            'booksInProcess',
+            'totalBooks',
             'totalUsers',
             'recentTransactions'
         ));

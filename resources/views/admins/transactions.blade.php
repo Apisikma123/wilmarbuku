@@ -171,22 +171,31 @@
                             </div>
                         </td>
                         <td class="px-6 py-5 whitespace-nowrap min-w-[200px]">
-                            <div class="font-bold text-slate-900 text-sm cursor-pointer hover:text-green-700 transition-colors" onclick="document.getElementById('buku-expand-{{ $trx->id }}').classList.toggle('hidden')">
+                            <div class="font-bold text-slate-900 text-sm cursor-pointer hover:text-green-700 transition-colors" onclick="document.getElementById('buku-expand-{{ $trx->kode_tracking }}').classList.toggle('hidden')">
                                 {{ $trx->details->first()->buku->judul_buku ?? 'Buku Donasi' }}
                                 @if($trx->details->count() > 1)
                                 <span class="text-xs text-slate-400 font-normal ml-1">(+{{ $trx->details->count() - 1 }} item lainnya) <i data-lucide="chevron-down" class="w-3 h-3 inline"></i></span>
+                                @else
+                                <span class="text-xs text-slate-400 font-normal ml-1"><i data-lucide="chevron-down" class="w-3 h-3 inline"></i></span>
                                 @endif
                             </div>
-                            @if($trx->details->count() > 1)
-                            <div id="buku-expand-{{ $trx->id }}" class="hidden mt-2 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-normal text-slate-600 whitespace-normal min-w-[200px]">
-                                <ul class="list-disc list-inside space-y-1">
+                            
+                            <div id="buku-expand-{{ $trx->kode_tracking }}" class="hidden mt-2 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-normal text-slate-600 whitespace-normal min-w-[200px]">
+                                <ul class="space-y-3">
                                     @foreach($trx->details as $detail)
-                                    <li>{{ $detail->buku->judul_buku ?? 'Buku Donasi' }} <span class="text-slate-400">(x{{ $detail->qty }})</span></li>
+                                    <li class="border-b border-slate-100 pb-2 last:border-0 last:pb-0">
+                                        <div class="font-medium text-slate-700">&bull; {{ $detail->buku->judul_buku ?? 'Buku Donasi' }} <span class="text-slate-400">(x{{ $detail->qty }})</span></div>
+                                        @if($detail->pesan_dukungan && !in_array($trx->status_tracking, ['Menunggu Pembayaran']))
+                                            <div class="mt-1.5 ml-2 p-2 bg-blue-50 border-l-2 border-blue-400 rounded-r text-[10px] text-slate-600 italic">
+                                                <i data-lucide="message-square" class="w-3 h-3 inline mr-1 text-blue-500"></i> "{{ $detail->pesan_dukungan }}"
+                                            </div>
+                                        @endif
+                                    </li>
                                     @endforeach
                                 </ul>
                             </div>
-                            @endif
-                            <div class="text-xs font-medium text-slate-500 mt-1">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
+                            
+                            <div class="text-xs font-medium text-slate-500 mt-2">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
                         </td>
                         <td class="px-6 py-5 text-center">
                             @if($trx->status_pembayaran == 'Paid')

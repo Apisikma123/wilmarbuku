@@ -44,8 +44,8 @@
                 <div class="metric-value">{{ number_format($booksNeeded) }}</div>
             </td>
             <td>
-                <div class="metric-title">Buku Diproses</div>
-                <div class="metric-value">{{ number_format($booksInProcess) }}</div>
+                <div class="metric-title">Total Buku</div>
+                <div class="metric-value">{{ number_format($totalBooks) }}</div>
             </td>
             <td>
                 <div class="metric-title">Total User Aktif</div>
