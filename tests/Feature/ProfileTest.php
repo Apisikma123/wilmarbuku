@@ -88,7 +88,7 @@ class ProfileTest extends TestCase
         $time = (microtime(true) - $start) * 1000;
         $GLOBALS['deep_profile_data'][] = ['type' => 'Total', 'name' => 'Remove Cart', 'time' => $time];
 
-        var_dump(array_keys($GLOBALS['deep_profile_starts'] ?? []));
+        // debug removed
         file_put_contents(base_path('profile_output.json'), json_encode($GLOBALS['deep_profile_data'], JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE));
         
         $this->assertTrue(true);

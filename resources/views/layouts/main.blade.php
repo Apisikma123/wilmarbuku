@@ -30,6 +30,8 @@
 
 
 
+
+
     <!-- Navigation -->
     <header class="bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 fixed top-0 left-0 w-full z-50">
         <div class="flex justify-between items-center px-6 md:px-12 xl:px-24 h-20 w-full">
@@ -51,8 +53,42 @@
         </div>
     </header>
 
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-drawer-backdrop" class="fixed inset-0 bg-black/50 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+    <aside id="mobile-drawer" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[110] transform -translate-x-full transition-transform duration-300 shadow-2xl md:hidden overflow-y-auto flex flex-col">
+        <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between sticky top-0 bg-white z-10">
+            <img src="/images/wil.png" alt="WilmarBOOKS" class="h-8 object-contain">
+            <button id="close-drawer" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+        
+        <div class="p-4 border-b border-outline-variant/20">
+            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Menu Utama</p>
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('/') ? 'bg-primary/10 text-primary font-bold' : '' }}">
+                    <span class="material-symbols-outlined text-[20px]">volunteer_activism</span> Donasi
+                </a>
+                <a href="/track" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('track') ? 'bg-primary/10 text-primary font-bold' : '' }}">
+                    <span class="material-symbols-outlined text-[20px]">location_on</span> Lacak Status
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-4 mt-auto">
+            @if(auth()->check() && auth()->user()->role === 'admin')
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-center gap-2 w-full bg-surface-container-low text-primary font-bold py-3 rounded-xl hover:bg-surface-container-high transition-colors mb-3 border border-outline-variant/30">
+                <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Admin Dashboard
+            </a>
+            @endif
+            <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary-container transition-colors">
+                <span class="material-symbols-outlined text-[18px]">volunteer_activism</span> Donasi Sekarang
+            </a>
+        </div>
+    </aside>
+
     <!-- Main Content -->
-    <main class="flex-grow pt-20">
+    <main class="flex-grow pt-20 w-full">
         @yield('content')
     </main>
 
@@ -101,19 +137,62 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log('SW registered!', reg);
-          }).catch(err => console.log('SW registration failed', err));
+            // SW registered
+          }).catch(err => {
+            // SW failed
+          });
         });
       }
 
-        // Mobile menu toggle
-        const btn = document.querySelector('button.md\\:hidden');
-        if (btn) {
-            btn.addEventListener('click', () => {
-                alert('Menu navigasi diklik (Mockup)');
-            });
-        }
+        // Smart Button Loading
+        document.addEventListener('submit', function(e) {
+            if (e.defaultPrevented) return;
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            
+            if(btn && !btn.classList.contains('no-loading')) {
+                if(btn.disabled) return;
+                
+                const originalText = btn.innerHTML;
+                btn.dataset.originalText = originalText;
+                
+                setTimeout(() => {
+                    if (!e.defaultPrevented) {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-75', 'cursor-not-allowed');
+                        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px] align-middle mr-1">sync</span> Memproses...';
+                    }
+                }, 300);
+            }
+        });
 
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.querySelector('button.md\\:hidden');
+            const drawer = document.getElementById('mobile-drawer');
+            const backdrop = document.getElementById('mobile-drawer-backdrop');
+            const closeBtn = document.getElementById('close-drawer');
+            
+            function toggleDrawer() {
+                if(!drawer || !backdrop) return;
+                const isOpen = drawer.classList.contains('translate-x-0');
+                if (isOpen) {
+                    drawer.classList.remove('translate-x-0');
+                    drawer.classList.add('-translate-x-full');
+                    backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+                    backdrop.classList.add('opacity-0', 'pointer-events-none');
+                } else {
+                    drawer.classList.remove('-translate-x-full');
+                    drawer.classList.add('translate-x-0');
+                    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                    backdrop.classList.add('opacity-100', 'pointer-events-auto');
+                }
+            }
+
+            if(btn) btn.addEventListener('click', toggleDrawer);
+            if(closeBtn) closeBtn.addEventListener('click', toggleDrawer);
+            if(backdrop) backdrop.addEventListener('click', toggleDrawer);
+        });
 
     </script>
 </body>

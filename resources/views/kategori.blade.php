@@ -1,7 +1,13 @@
 @extends('layouts.user')
 
+<style>
+@media (max-width: 767px) {
+    header { display: none !important; }
+}
+</style>
+
 @section('content')
-<div class="bg-gradient-to-b from-primary to-[#004b23] relative text-white py-12 md:py-20">
+<div class="bg-gradient-to-b from-primary to-[#004b23] relative text-white py-12 md:py-20 hidden md:block">
     <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
     <div class="relative z-10 max-w-[1280px] mx-auto px-4 md:px-6 text-center">
         <h1 class="text-3xl md:text-5xl font-bold font-display uppercase tracking-tight mb-4">Jelajahi Kategori</h1>
@@ -11,12 +17,91 @@
 
 
 
-<div class="max-w-[1280px] mx-auto px-4 md:px-6 py-12">
+<div class="max-w-[1280px] mx-auto px-0 md:px-6 py-0 md:py-12">
     <!-- Filters & Results -->
-    <form id="filterForm" action="{{ route('kategori') }}" method="GET" class="flex flex-col md:flex-row gap-10">
+    <form id="filterForm" action="{{ route('kategori') }}" method="GET" class="flex flex-col md:flex-row gap-0 md:gap-10">
+        
+        <!-- Mobile Header (Only visible on mobile) -->
+        <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 pb-2 shadow-sm w-full">
+            <!-- Top Row: Back, Search, Home, Cart -->
+            <div class="flex items-center gap-2 px-3 py-2">
+                <a href="javascript:history.back()" class="text-gray-600 p-1"><span class="material-symbols-outlined">arrow_back</span></a>
+                
+                <div class="flex-grow relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-2 text-gray-400 text-[18px]">search</span>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari..." class="w-full pl-8 pr-8 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    @if(request('search'))
+                    <a href="{{ route('kategori') }}" class="absolute right-2 text-gray-400"><span class="material-symbols-outlined text-[16px]">close</span></a>
+                    @endif
+                </div>
+
+                <a href="/dashboard" class="text-gray-600 p-1"><span class="material-symbols-outlined">home</span></a>
+                <a href="/cart" class="text-gray-600 p-1 relative">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    @php
+                        $cartQty = 0;
+                        if(Auth::check() && Auth::user()->cart_data) {
+                            $cartData = is_string(Auth::user()->cart_data) ? json_decode(Auth::user()->cart_data, true) : Auth::user()->cart_data;
+                            $cartQty = is_array($cartData) ? count($cartData) : 0;
+                        }
+                    @endphp
+                    @if($cartQty > 0)
+                        <span class="absolute -top-0 -right-0 bg-red-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">{{ $cartQty }}</span>
+                    @endif
+                </a>
+            </div>
+
+            @if(request('search'))
+            <div class="px-4 py-1">
+                <h2 class="text-[13px] font-bold text-gray-800">Hasil Pencarian "{{ request('search') }}"</h2>
+            </div>
+            @endif
+
+            <!-- Category Chips -->
+            <div class="flex overflow-x-auto gap-3 px-4 py-3 scrollbar-hide hide-scroll items-center border-b border-gray-50">
+                <label class="shrink-0">
+                    <input type="radio" name="kategori[]" value="" class="hidden mobile-cat-radio" @if(empty(request('kategori'))) checked @endif>
+                    <div class="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip @if(empty(request('kategori'))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        Semua Kategori
+                    </div>
+                </label>
+                @foreach($global_kategoris as $cat)
+                <label class="shrink-0">
+                    <input type="radio" name="kategori[]" value="{{ $cat->nama_kategori }}" class="hidden mobile-cat-radio" @if(in_array($cat->nama_kategori, request('kategori', []))) checked @endif>
+                    <div class="flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip @if(in_array($cat->nama_kategori, request('kategori', []))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        @if($cat->icon)<span class="material-symbols-outlined text-[16px]">{{ $cat->icon }}</span>@endif
+                        {{ $cat->nama_kategori }}
+                    </div>
+                </label>
+                @endforeach
+            </div>
+
+            <!-- Sorting & Filters -->
+            <div class="flex items-center gap-2 px-4 py-2 justify-between">
+                <div class="flex gap-2 flex-grow overflow-x-auto hide-scroll">
+                    <select name="sort" class="bg-white border border-gray-200 rounded text-xs px-2 py-1.5 text-gray-600 focus:outline-none shrink-0 sort-select">
+                        <option value="Terbaru" @if(request('sort') == 'Terbaru') selected @endif>Sortir: Terbaru</option>
+                        <option value="Terpopuler" @if(request('sort') == 'Terpopuler') selected @endif>Sortir: Terpopuler</option>
+                        <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
+                        <option value="Harga: Tinggi ke Rendah" @if(request('sort') == 'Harga: Tinggi ke Rendah') selected @endif>Harga: Tinggi ke Rendah</option>
+                    </select>
+                    <select class="bg-white border border-gray-200 rounded text-xs px-2 py-1.5 text-gray-600 focus:outline-none shrink-0">
+                        <option>Garansi Pengiriman</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white"><span class="material-symbols-outlined text-[16px]">swap_vert</span></button>
+                    <button type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white"><span class="material-symbols-outlined text-[16px]">filter_alt</span></button>
+                </div>
+            </div>
+            
+            <div class="px-4 py-2 bg-slate-50 border-t border-gray-100 text-[10px] text-gray-500 flex justify-between items-center">
+                <span>Hasil pencarian ditemukan: <strong>{{ $buku->total() }} produk</strong></span>
+            </div>
+        </div>
         
         <!-- Sidebar -->
-        <aside class="w-full md:w-64 flex-shrink-0">
+        <aside class="hidden md:block w-full md:w-64 flex-shrink-0">
             <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-5 sticky top-24">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
@@ -91,8 +176,8 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-grow" id="main-content-area">
-            <div class="flex justify-between items-end mb-8">
+        <div class="flex-grow px-4 md:px-0 py-4 md:py-0 bg-slate-50 md:bg-transparent min-h-screen" id="main-content-area">
+            <div class="hidden md:flex justify-between items-end mb-8">
                 <div>
                     <h2 class="text-2xl font-bold text-primary mb-1">Hasil Pencarian</h2>
                     <p class="text-sm text-on-surface-variant">Menampilkan {{ $buku->firstItem() ?? 0 }}-{{ $buku->lastItem() ?? 0 }} dari {{ $buku->total() }} buku.</p>
@@ -109,7 +194,7 @@
             </div>
 
             <!-- Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative" id="buku-grid">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 relative" id="buku-grid">
                 @forelse($buku as $item)
                 <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 p-3 hover:-translate-y-1 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block group">
                     <div class="w-full aspect-[3/4] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif rounded-lg mb-3 flex items-center justify-center p-2 text-center text-white relative overflow-hidden">
@@ -129,22 +214,21 @@
                     </div>
                     <div class="flex-grow flex flex-col justify-between">
                         <div>
-                            <span class="bg-secondary/10 text-secondary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase mb-1.5 inline-block">{{ $item->kategori }}</span>
-                            <h3 class="text-xs md:text-sm font-bold text-on-surface line-clamp-2 leading-tight mb-1 group-hover:text-primary transition-colors">{{ $item->judul_buku }}</h3>
-                            <p class="text-[10px] text-on-surface-variant mb-2">{{ $item->pengarang }}</p>
+                            <span class="text-gray-400 text-[9px] md:text-xs font-medium mb-1 inline-block">{{ $item->kategori }}</span>
+                            <h3 class="text-xs md:text-sm font-semibold text-on-surface line-clamp-2 leading-tight mb-2 group-hover:text-primary transition-colors">{{ $item->judul_buku }}</h3>
+                            <p class="hidden md:block text-[10px] text-on-surface-variant mb-2">{{ $item->pengarang }}</p>
                         </div>
-                            <div class="flex flex-wrap items-center justify-between gap-2 mt-auto pt-3 border-t border-outline-variant/20">
+                            <div class="flex flex-col gap-1 mt-auto pt-2">
                                 <div>
-                                    <p class="text-primary font-bold text-sm md:text-base whitespace-nowrap">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+                                    <p class="text-primary font-bold text-[13px] md:text-base whitespace-nowrap">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
                                 </div>
                                 @if(auth()->check() && auth()->user()->role === 'admin')
-                                <div class="bg-surface-variant text-on-surface-variant w-8 h-8 rounded-full flex items-center justify-center cursor-not-allowed" title="Admin Tidak Dapat Membeli">
-                                    <span class="material-symbols-outlined text-[18px]">block</span>
+                                <div class="bg-surface-variant text-on-surface-variant w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center cursor-not-allowed self-end mt-1" title="Admin Tidak Dapat Membeli">
+                                    <span class="material-symbols-outlined text-[14px] md:text-[18px]">block</span>
                                 </div>
-                                <!-- Cart button removed as requested -->
                                 @else
-                                <div class="text-[10px] md:text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full whitespace-nowrap">
-                                    Dibutuhkan: {{ $item->stok_dibutuhkan }}
+                                <div class="flex items-center gap-1.5 text-[10px] text-gray-500 mt-1">
+                                    <span>{{ $item->stok_dibutuhkan }} dibutuhkan</span>
                                 </div>
                                 @endif
                             </div>
@@ -173,6 +257,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gunakan event delegation agar tidak hilang saat main-content-area diganti
     form.addEventListener('change', function(e) {
         if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+            fetchResults(new URLSearchParams(new FormData(form)).toString());
+        }
+        if(e.target.classList.contains('mobile-cat-radio')) {
+            // Update active state for mobile chips
+            document.querySelectorAll('.mobile-chip').forEach(chip => {
+                chip.classList.remove('border-blue-500', 'text-blue-500', 'bg-blue-50');
+                chip.classList.add('border-gray-200', 'text-gray-600');
+            });
+            const activeChip = e.target.nextElementSibling;
+            activeChip.classList.remove('border-gray-200', 'text-gray-600');
+            activeChip.classList.add('border-blue-500', 'text-blue-500', 'bg-blue-50');
+            
             fetchResults(new URLSearchParams(new FormData(form)).toString());
         }
         if(e.target.classList.contains('sort-select')) {

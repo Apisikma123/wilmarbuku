@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-8 py-6">
+<div class="max-w-5xl mx-auto space-y-8 py-6 p-4 md:p-0">
     <!-- Header -->
     <div class="mb-8">
         <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Bantuan</h2>

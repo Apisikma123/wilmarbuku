@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6 p-4 md:p-0">
     
     <!-- Top Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">

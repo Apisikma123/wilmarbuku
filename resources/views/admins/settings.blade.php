@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-8 py-6">
+<div class="max-w-4xl mx-auto space-y-8 py-6 p-4 md:p-0">
     <!-- Header -->
     <div class="mb-8">
         <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Pengaturan</h2>
@@ -28,7 +28,7 @@
                     <div class="w-24 h-24 rounded-full bg-slate-200 overflow-hidden border-4 border-white shadow-md flex items-center justify-center">
                         <i data-lucide="user" class="w-12 h-12 text-slate-400"></i>
                     </div>
-                    <button class="text-xs font-bold text-green-700 hover:text-green-800 transition-colors uppercase tracking-wider">Ubah Foto</button>
+                    <button class="text-xs font-bold text-green-700 hover:text-green-800 transition-colors uppercase tracking-wider"></button>
                 </div>
                 <!-- Form Fields -->
                 <div class="w-full space-y-5">

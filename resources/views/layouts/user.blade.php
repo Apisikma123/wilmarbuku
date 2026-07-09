@@ -25,6 +25,7 @@
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col overflow-x-hidden">
+
     @if(auth()->check() && auth()->user()->role === 'admin')
     <div class="bg-slate-900 text-white px-4 py-2 flex items-center justify-between z-[100] relative text-xs shrink-0">
         <div class="flex items-center gap-2">
@@ -298,25 +299,90 @@
         </div>
     </header>
 
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-drawer-backdrop" class="fixed inset-0 bg-black/50 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+    <aside id="mobile-drawer" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-[110] transform -translate-x-full transition-transform duration-300 shadow-2xl md:hidden overflow-y-auto flex flex-col">
+        <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between sticky top-0 bg-white z-10">
+            <img src="/images/wil.png" alt="WilmarBOOKS" class="h-8 object-contain">
+            <button id="close-drawer" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+        
+        <div class="p-4 border-b border-outline-variant/20">
+            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Menu Utama</p>
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('/') ? 'bg-primary/10 text-primary font-bold' : '' }}">
+                    <span class="material-symbols-outlined text-[20px]">volunteer_activism</span> Donasi
+                </a>
+                <a href="/track" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('track') ? 'bg-primary/10 text-primary font-bold' : '' }}">
+                    <span class="material-symbols-outlined text-[20px]">location_on</span> Lacak Status
+                </a>
+                <a href="/kategori" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('kategori') ? 'bg-primary/10 text-primary font-bold' : '' }}">
+                    <span class="material-symbols-outlined text-[20px]">grid_view</span> Kategori Buku
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-4 border-b border-outline-variant/20 flex-grow">
+            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Kategori Populer</p>
+            <div class="space-y-1">
+                @foreach($global_kategoris->take(5) as $cat)
+                <a href="{{ route('kategori', ['kategori' => [$cat->nama_kategori]]) }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-on-surface hover:bg-surface-container-low group">
+                    <span>{{ $cat->nama_kategori }}</span>
+                    <span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+                </a>
+                @endforeach
+            </div>
+            <a href="/kategori" class="inline-block mt-3 text-xs font-bold text-primary hover:text-primary-container px-3">Lihat Semua Kategori &rarr;</a>
+        </div>
+
+        <div class="p-4 mt-auto">
+            @if(auth()->check())
+            <div class="bg-surface-container-low rounded-xl p-4 mb-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-base uppercase shrink-0">
+                        {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-surface leading-tight">{{ Auth::user()->nama_lengkap }}</p>
+                        <p class="text-xs text-on-surface-variant">{{ Auth::user()->email }}</p>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-error/10 text-error rounded-lg text-sm font-bold hover:bg-error/20 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
+                    </button>
+                </form>
+            </div>
+            @else
+            <a href="{{ route('login') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary-container transition-colors">
+                <span class="material-symbols-outlined text-[18px]">login</span> Masuk / Daftar
+            </a>
+            @endif
+        </div>
+    </aside>
+
     <!-- Bottom Navigation Mobile -->
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-outline-variant/30 z-[100] flex justify-between items-center px-6 py-2 pb-safe text-[10px] font-medium text-on-surface-variant shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-        <a href="/dashboard" class="flex flex-col items-center gap-1 text-primary">
-            <span class="material-symbols-outlined text-xl">home</span>
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-outline-variant/30 z-[90] flex justify-between items-center px-6 py-2 pb-safe text-[10px] font-medium text-on-surface-variant shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <a href="/dashboard" class="flex flex-col items-center gap-1 {{ request()->is('dashboard') ? 'text-primary' : 'hover:text-primary' }}">
+            <span class="material-symbols-outlined text-xl {{ request()->is('dashboard') ? 'fill-1' : '' }}">home</span>
             <span>Beranda</span>
         </a>
 
-        <a href="/transaksi" class="flex flex-col items-center gap-1 hover:text-primary">
-            <span class="material-symbols-outlined text-xl">receipt_long</span>
+        <a href="/transaksi" class="flex flex-col items-center gap-1 {{ request()->is('transaksi*') ? 'text-primary' : 'hover:text-primary' }}">
+            <span class="material-symbols-outlined text-xl {{ request()->is('transaksi*') ? 'fill-1' : '' }}">receipt_long</span>
             <span>Transaksi</span>
         </a>
-        <a href="/akun" class="flex flex-col items-center gap-1 hover:text-primary">
-            <span class="material-symbols-outlined text-xl">person</span>
+        <a href="/akun" class="flex flex-col items-center gap-1 {{ request()->is('akun*') ? 'text-primary' : 'hover:text-primary' }}">
+            <span class="material-symbols-outlined text-xl {{ request()->is('akun*') ? 'fill-1' : '' }}">person</span>
             <span>Akun</span>
         </a>
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow w-full">
+    <main class="flex-grow w-full md:pb-0 pb-16">
         @yield('content')
     </main>
 
@@ -366,18 +432,59 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log('SW registered!', reg);
-          }).catch(err => console.log('SW registration failed', err));
+            // SW registered
+          }).catch(err => {
+            // SW failed
+          });
         });
       }
 
+        // Smart Button Loading
+        document.addEventListener('submit', function(e) {
+            if (e.defaultPrevented) return;
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            
+            if(btn && !btn.classList.contains('no-loading')) {
+                if(btn.disabled) return;
+                
+                const originalText = btn.innerHTML;
+                btn.dataset.originalText = originalText;
+                
+                setTimeout(() => {
+                    if (!e.defaultPrevented) {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-75', 'cursor-not-allowed');
+                        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px] align-middle mr-1">sync</span> Memproses...';
+                    }
+                }, 300);
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.querySelector('button.md\\:hidden');
-            if(btn) {
-                btn.addEventListener('click', () => {
-                    alert('Mobile menu clicked! (Mockup only)');
-                });
+            const drawer = document.getElementById('mobile-drawer');
+            const backdrop = document.getElementById('mobile-drawer-backdrop');
+            const closeBtn = document.getElementById('close-drawer');
+            
+            function toggleDrawer() {
+                const isOpen = drawer.classList.contains('translate-x-0');
+                if (isOpen) {
+                    drawer.classList.remove('translate-x-0');
+                    drawer.classList.add('-translate-x-full');
+                    backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+                    backdrop.classList.add('opacity-0', 'pointer-events-none');
+                } else {
+                    drawer.classList.remove('-translate-x-full');
+                    drawer.classList.add('translate-x-0');
+                    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                    backdrop.classList.add('opacity-100', 'pointer-events-auto');
+                }
             }
+
+            if(btn) btn.addEventListener('click', toggleDrawer);
+            if(closeBtn) closeBtn.addEventListener('click', toggleDrawer);
+            if(backdrop) backdrop.addEventListener('click', toggleDrawer);
         });
 
 

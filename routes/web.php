@@ -45,7 +45,7 @@ Route::middleware('guest')->group(function () {
 
     // Forgot Password Routes
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
-    Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->middleware('throttle:3,1')->name('password.email');
     
     Route::get('/forgot-password/otp', [AuthController::class, 'showForgotOtpForm'])->name('password.otp.show');
     Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->middleware('throttle:10,1')->name('password.otp.verify');
