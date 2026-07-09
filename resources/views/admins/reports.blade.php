@@ -6,22 +6,22 @@
     <!-- Top Header & Actions -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900">Analytics & Reports</h2>
-            <p class="text-slate-500 text-sm mt-1">Overview of system performance, transactions, and user engagement.</p>
+            <h2 class="text-2xl font-bold text-slate-900">Analitik & Laporan</h2>
+            <p class="text-slate-500 text-sm mt-1">Ringkasan performa sistem, transaksi, dan keterlibatan pengguna.</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <div class="relative">
                 <select onchange="window.location.href='?filter=' + this.value" class="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 outline-none focus:border-green-500 shadow-sm cursor-pointer">
-                    <option value="12_months" {{ $filter == '12_months' ? 'selected' : '' }}>Last 12 Months</option>
-                    <option value="this_year" {{ $filter == 'this_year' ? 'selected' : '' }}>This Year</option>
-                    <option value="30_days" {{ $filter == '30_days' ? 'selected' : '' }}>Last 30 Days</option>
+                    <option value="6_months" {{ $filter == '6_months' ? 'selected' : '' }}>6 Bulan Terakhir</option>
+                    <option value="this_year" {{ $filter == 'this_year' ? 'selected' : '' }}>Tahun Ini</option>
+                    <option value="30_days" {{ $filter == '30_days' ? 'selected' : '' }}>30 Hari Terakhir</option>
                 </select>
                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
             </div>
             
             <a href="{{ route('admin.reports.export') }}" class="flex items-center gap-2 px-5 py-2 bg-green-900 hover:bg-green-800 text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
                 <i data-lucide="download" class="w-4 h-4"></i>
-                Export Report
+                Ekspor Laporan
             </a>
         </div>
     </div>
@@ -35,7 +35,7 @@
                 </div>
                 <span class="inline-flex px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-md">Realtime</span>
             </div>
-            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Transactions (IDR)</p>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Donasi (Rp)</p>
             <h3 class="text-3xl font-bold text-slate-900">Rp {{ number_format($totalDonations, 0, ',', '.') }}</h3>
         </div>
         
@@ -67,20 +67,20 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
                 <h3 class="text-lg font-bold text-slate-900">
-                    Overall Activity
-                    @if($filter == 'this_year') (This Year)
-                    @elseif($filter == '30_days') (Last 30 Days)
-                    @else (12 Months)
+                    Aktivitas Keseluruhan
+                    @if($filter == 'this_year') (Tahun Ini)
+                    @elseif($filter == '30_days') (30 Hari Terakhir)
+                    @else (6 Bulan Terakhir)
                     @endif
                 </h3>
-                <p class="text-sm text-slate-500">Comparison of incoming funds vs distributed books.</p>
+                <p class="text-sm text-slate-500">Perbandingan dana masuk dan distribusi buku.</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 text-sm font-semibold text-slate-600">
-                    <span class="w-3 h-3 rounded bg-green-900"></span> Funds (IDR)
+                    <span class="w-3 h-3 rounded bg-green-900"></span> Dana (Rp)
                 </div>
                 <div class="flex items-center gap-2 text-sm font-semibold text-slate-600">
-                    <span class="w-3 h-3 rounded bg-amber-500"></span> Books
+                    <span class="w-3 h-3 rounded bg-amber-500"></span> Buku
                 </div>
             </div>
         </div>
@@ -101,12 +101,12 @@
                 <!-- Funds Bar -->
                 <div class="w-full max-w-[20px] bg-green-900 rounded-t transition-opacity hover:opacity-80 cursor-pointer" 
                      style="height: {{ $data['funds'] > 0 ? max(10, ($data['funds'] / $maxFunds) * 100) : 10 }}%" 
-                     title="Funds: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
+                     title="Dana: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
                 
                 <!-- Books Bar -->
                 <div class="w-full max-w-[20px] bg-amber-500 rounded-t transition-opacity hover:opacity-80 cursor-pointer" 
                      style="height: {{ $data['books'] > 0 ? max(10, ($data['books'] / $maxBooks) * 100) : 10 }}%" 
-                     title="Books: {{ $data['books'] }}"></div>
+                     title="Buku: {{ $data['books'] }}"></div>
                 
                 <span class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">{{ $data['name'] }}</span>
             </div>

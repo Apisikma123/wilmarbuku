@@ -63,19 +63,19 @@
                 </a>
                 <a href="{{ route('admin.catalog') }}" class="flex items-center gap-3 px-6 py-2.5 border-l-4 font-medium transition-colors {{ request()->routeIs('admin.catalog') ? 'bg-green-50 text-green-800 border-green-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent' }}">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
-                    Catalog
+                    Katalog
                 </a>
                 <a href="{{ route('admin.transactions') }}" class="flex items-center gap-3 px-6 py-2.5 border-l-4 font-medium transition-colors {{ request()->routeIs('admin.transactions') ? 'bg-green-50 text-green-800 border-green-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent' }}">
                     <i data-lucide="receipt" class="w-5 h-5"></i>
-                    Transactions
+                    Transaksi
                 </a>
                 <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-6 py-2.5 border-l-4 font-medium transition-colors {{ request()->routeIs('admin.users') ? 'bg-green-50 text-green-800 border-green-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent' }}">
                     <i data-lucide="users" class="w-5 h-5"></i>
-                    Users
+                    Pengguna
                 </a>
                 <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 px-6 py-2.5 border-l-4 font-medium transition-colors {{ request()->routeIs('admin.reports') ? 'bg-green-50 text-green-800 border-green-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent' }}">
                     <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                    Reports
+                    Laporan
                 </a>
                 
 
@@ -85,11 +85,11 @@
             <div class="p-6 pb-8 flex flex-col gap-1">
                 <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-4 py-2 {{ request()->routeIs('admin.settings') ? 'text-slate-900 bg-slate-50' : 'text-slate-600 hover:text-slate-900' }} font-medium transition-colors">
                     <i data-lucide="settings" class="w-5 h-5"></i>
-                    Settings
+                    Pengaturan
                 </a>
                 <a href="{{ route('admin.support') }}" class="flex items-center gap-3 px-4 py-2 {{ request()->routeIs('admin.support') ? 'text-slate-900 bg-slate-50' : 'text-slate-600 hover:text-slate-900' }} font-medium transition-colors">
                     <i data-lucide="life-buoy" class="w-5 h-5"></i>
-                    Support
+                    Bantuan
                 </a>
             </div>
         </aside>
