@@ -177,6 +177,26 @@ class CheckoutController extends Controller
             return redirect()->route('dashboard');
         }
 
+        if ($transaksi->status_tracking == 'Dibatalkan' || $transaksi->status_pembayaran == 'Expired') {
+            return redirect()->route('dashboard')->with('error', 'Transaksi ini telah dibatalkan atau kedaluwarsa.');
+        }
+
+        // Check expiration here to prevent infinite loop on auto-reload
+        if (\Carbon\Carbon::parse($transaksi->created_at)->addHour()->isPast()) {
+            if ($transaksi->status_pembayaran == 'Unpaid') {
+                $transaksi->update(['status_tracking' => 'Dibatalkan']);
+                
+                // Return stock
+                foreach ($transaksi->details as $detail) {
+                    if ($detail->buku) {
+                        $detail->buku->increment('stok_dibutuhkan', $detail->qty);
+                    }
+                }
+                
+                return redirect()->route('dashboard')->with('error', 'Waktu pembayaran untuk donasi ini telah habis.');
+            }
+        }
+
         if ($transaksi->bukti_pembayaran) {
             return redirect()->route('success')->with('kode_tracking', $kode_tracking);
         }

@@ -42,10 +42,12 @@ class AuthController extends Controller
                 Auth::login($user, $request->has('remember'));
                 $request->session()->regenerate();
                 
-                if ($user->role === 'admin') {
-                    return redirect()->intended(route('admin.dashboard', absolute: false));
+                $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
+                $intendedUrl = session()->pull('url.intended', $redirectUrl);
+                if ($user->role !== 'admin' && str_contains($intendedUrl, '/admin')) {
+                    $intendedUrl = $redirectUrl;
                 }
-                return redirect()->intended('dashboard');
+                return redirect()->to($intendedUrl);
             }
 
             // Generate 6-digit OTP
@@ -147,7 +149,14 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
-        $response = redirect()->intended($redirectUrl);
+        
+        $intendedUrl = session()->pull('url.intended', $redirectUrl);
+        // Jika user bukan admin tapi intended url nya ada /admin, paksa ke dashboard biasa
+        if ($user->role !== 'admin' && str_contains($intendedUrl, '/admin')) {
+            $intendedUrl = $redirectUrl;
+        }
+
+        $response = redirect()->to($intendedUrl);
 
         // Jika user memilih Ingat Saya, simpan cookie trusted device selama 30 hari
         if ($remember) {
@@ -259,11 +268,12 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard', absolute: false));
+            $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
+            $intendedUrl = session()->pull('url.intended', $redirectUrl);
+            if ($user->role !== 'admin' && str_contains($intendedUrl, '/admin')) {
+                $intendedUrl = $redirectUrl;
             }
-
-            return redirect()->intended('dashboard');
+            return redirect()->to($intendedUrl);
 
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Google Login Error: ' . $e->getMessage());

@@ -74,9 +74,18 @@ class AdminController extends Controller
         ));
     }
 
-    public function catalog()
+    public function catalog(Request $request)
     {
-        $books = KatalogBuku::latest()->paginate(10);
+        $query = KatalogBuku::latest();
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('judul_buku', 'like', "%{$search}%")
+                  ->orWhere('pengarang', 'like', "%{$search}%")
+                  ->orWhere('kategori', 'like', "%{$search}%");
+        }
+        
+        $books = $query->paginate(10)->withQueryString();
         $totalPengajuan = KatalogBuku::count();
         $dibutuhkanSegera = KatalogBuku::where('status_buku', 'Dibutuhkan')->count();
         $berhasilTersedia = KatalogBuku::where('status_buku', 'Tersedia')->count();
@@ -278,11 +287,19 @@ class AdminController extends Controller
         return back()->with('success', 'Buku berhasil dihapus!');
     }
 
-    public function transactions()
+    public function transactions(Request $request)
     {
-        $transactions = TransaksiCheckout::with(['user', 'details.buku', 'metodePembayaran'])
-            ->latest('tanggal_checkout')
-            ->paginate(10);
+        $query = TransaksiCheckout::with(['user', 'details.buku', 'metodePembayaran'])->latest('tanggal_checkout');
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('kode_tracking', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('nama_lengkap', 'like', "%{$search}%");
+                  });
+        }
+        
+        $transactions = $query->paginate(10)->withQueryString();
 
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $pendingPayments = TransaksiCheckout::where('status_pembayaran', 'Unpaid')->count();
@@ -466,9 +483,15 @@ class AdminController extends Controller
         return back()->with('success', 'Status transaksi berhasil diperbarui dan pesan dikirim ke pengguna!');
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::latest()->paginate(10);
+        $query = User::latest();
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        }
+        $users = $query->paginate(10)->withQueryString();
         $totalUsers = User::count();
         $internalUsers = User::where('role', 'user_internal')->count();
         $externalUsers = User::where('role', 'user_external')->count();
@@ -486,20 +509,61 @@ class AdminController extends Controller
 
         if ($request->role == 'user_external' && !empty($user->identitas_kampus)) {
             $user->identitas_kampus = null;
+            $user->nim_status = 'unverified';
             $user->save();
             
             PesanMasuk::create([
                 'user_id' => $user->id,
-                'judul' => 'Verifikasi Identitas Kampus Gagal',
-                'isi_pesan' => "NIM yang Anda masukkan tidak valid. Silakan perbarui NIM Anda di halaman Profil",
+                'judul' => 'Perubahan Peran Pengguna',
+                'isi_pesan' => "Peran akun Anda telah diubah menjadi Donatur Eksternal. Jika ini sebuah kesalahan, silakan perbarui NIM Anda di halaman Profil.",
                 'jenis' => 'peringatan',
                 'is_read' => false,
             ]);
+        } elseif ($request->role == 'user_internal') {
+            $user->nim_status = 'verified';
+            $user->save();
         }
 
         $user->update(['role' => $request->role]);
 
         return back()->with('success', 'Peran pengguna berhasil diperbarui!');
+    }
+
+    public function validateNIM(Request $request, $id, $action)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($action == 'accept') {
+            $user->nim_status = 'verified';
+            $user->role = 'user_internal';
+            $user->save();
+            
+            PesanMasuk::create([
+                'user_id' => $user->id,
+                'judul' => 'Validasi NIM Berhasil',
+                'isi_pesan' => "NIM Anda ({$user->identitas_kampus}) telah disetujui. Sekarang Anda memiliki akses sebagai Internal Kampus.",
+                'jenis' => 'info',
+                'is_read' => false,
+            ]);
+            
+            return back()->with('success', 'NIM berhasil disetujui. Pengguna kini menjadi User Internal.');
+        } elseif ($action == 'reject') {
+            $user->nim_status = 'rejected';
+            $user->role = 'user_external';
+            $user->save();
+            
+            PesanMasuk::create([
+                'user_id' => $user->id,
+                'judul' => 'Validasi NIM Ditolak',
+                'isi_pesan' => "Validasi untuk NIM yang Anda masukkan ({$user->identitas_kampus}) ditolak oleh Admin. Silakan periksa kembali dan perbarui di halaman Profil Anda.",
+                'jenis' => 'peringatan',
+                'is_read' => false,
+            ]);
+            
+            return back()->with('error', 'NIM ditolak. Status dikembalikan ke User External.');
+        }
+        
+        return back();
     }
 
     public function updateUser(Request $request, $id)
@@ -534,7 +598,7 @@ class AdminController extends Controller
 
     public function reports(Request $request)
     {
-        $filter = $request->input('filter', '12_months');
+        $filter = $request->input('filter', '6_months');
 
         $query = TransaksiCheckout::query();
         
@@ -562,9 +626,9 @@ class AdminController extends Controller
                     'books' => 0,
                 ];
             }
-        } else { // 12_months
-            $startDate = Carbon::now()->subMonths(11)->startOfMonth();
-            for ($i = 11; $i >= 0; $i--) {
+        } else { // 6_months
+            $startDate = Carbon::now()->subMonths(5)->startOfMonth();
+            for ($i = 5; $i >= 0; $i--) {
                 $month = Carbon::now()->subMonths($i);
                 $chartDataRaw[$month->format('Y-m')] = [
                     'name' => $month->format('M'),

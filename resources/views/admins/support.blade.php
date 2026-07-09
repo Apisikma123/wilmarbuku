@@ -4,8 +4,8 @@
 <div class="max-w-5xl mx-auto space-y-8 py-6">
     <!-- Header -->
     <div class="mb-8">
-        <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Support</h2>
-        <p class="text-slate-500 mt-2 text-base">Get help, contact our team, and find useful resources.</p>
+        <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Bantuan</h2>
+        <p class="text-slate-500 mt-2 text-base">Dapatkan bantuan, hubungi tim kami, dan temukan sumber daya yang berguna.</p>
     </div>
 
     <div class="w-full">
@@ -15,8 +15,8 @@
                     <i data-lucide="contact" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-slate-900">Contact Information</h3>
-                    <p class="text-slate-500 text-sm mt-0.5">Get in touch with our team</p>
+                    <h3 class="text-xl font-bold text-slate-900">Informasi Kontak</h3>
+                    <p class="text-slate-500 text-sm mt-0.5">Hubungi tim kami</p>
                 </div>
             </div>
             <div class="space-y-4">
@@ -93,11 +93,11 @@
         <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex flex-col items-center md:items-start gap-1">
                 <p class="text-[10px] md:text-xs text-white/50">&copy; {{ date('Y') }} Wilmar Business Indonesia Polytechnic.</p>
-                <span class="text-[10px] font-bold text-white/30 tracking-widest uppercase">Version v1.0.0 (Release)</span>
+                <span class="text-[10px] font-bold text-white/30 tracking-widest uppercase">Versi v1.0.0 (Rilis)</span>
             </div>
             <div class="flex gap-6 text-[10px] md:text-xs text-white/50">
-                <a class="hover:text-white transition-colors" href="/terms">Terms of Service</a>
-                <a class="hover:text-white transition-colors" href="/cookie-policy">Cookie Policy</a>
+                <a class="hover:text-white transition-colors" href="/terms">Syarat dan Ketentuan</a>
+                <a class="hover:text-white transition-colors" href="/cookie-policy">Kebijakan Cookie</a>
             </div>
         </div>
     </div>

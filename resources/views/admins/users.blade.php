@@ -6,7 +6,7 @@
     <!-- Top Header & Actions -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900">User Management</h2>
+            <h2 class="text-2xl font-bold text-slate-900">Manajemen Pengguna</h2>
             <p class="text-slate-500 text-sm mt-1">Kelola hak akses pengguna dan peran internal/eksternal.</p>
         </div>
     </div>
@@ -39,7 +39,7 @@
                 <i data-lucide="users" class="w-6 h-6"></i>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Users</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Pengguna</p>
                 <h3 class="text-2xl font-bold text-slate-900">{{ number_format($totalUsers) }}</h3>
             </div>
         </div>
@@ -70,32 +70,27 @@
     <!-- Users Table Area -->
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-6">
         <!-- Table Toolbar -->
-        <div class="px-6 py-4 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white">
-            <h3 class="text-lg font-bold text-slate-900 shrink-0">Daftar Pengguna Terdaftar</h3>
-            <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-                <select id="roleFilter" onchange="filterTable()" class="w-full sm:w-auto bg-white border border-slate-200 rounded-lg py-2 pl-3 pr-10 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all cursor-pointer font-medium text-slate-700 shrink-0">
-                    <option value="all">Semua Role</option>
-                    <option value="user_internal">User Internal</option>
-                    <option value="user_external">User External</option>
-                    <option value="admin">Admin</option>
-                </select>
-                <div class="relative w-full sm:w-64 shrink-0">
+        <form method="GET" action="{{ route('admin.users') }}" class="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+            <h3 class="text-lg font-bold text-slate-900">Daftar Pengguna Terdaftar</h3>
+            <div class="relative w-48 md:w-64 shrink-0 flex items-center gap-2">
+                <div class="relative w-full">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search users..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
                 </div>
+                <button type="submit" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">Cari</button>
             </div>
-        </div>
+        </form>
 
         <!-- Table -->
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm whitespace-nowrap">
-                <thead class="text-[10px] text-slate-500 font-black uppercase tracking-widest bg-slate-50/50 border-b border-slate-200">
-                    <tr>
-                        <th class="px-6 py-4">Nama Lengkap</th>
-                        <th class="px-6 py-4">Email</th>
-                        <th class="px-6 py-4">Peran (Role)</th>
-                        <th class="px-6 py-4">Identitas Kampus</th>
-                        <th class="px-6 py-4 text-center">Aksi</th>
+                <thead>
+                    <tr class="text-left text-xs uppercase tracking-wider text-slate-500 bg-slate-50 border-y border-slate-100">
+                        <th class="px-6 py-4 font-semibold rounded-tl-xl">Donatur</th>
+                        <th class="px-6 py-4 font-semibold">Email</th>
+                        <th class="px-6 py-4 font-semibold">Peran</th>
+                        <th class="px-6 py-4 font-semibold w-48">NIM / NIDN</th>
+                        <th class="px-6 py-4 font-semibold text-center rounded-tr-xl">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -127,8 +122,33 @@
                                 </form>
                             @endif
                         </td>
-                        <td class="px-6 py-4 font-medium text-slate-700">
-                            {{ $u->identitas_kampus ?? '-' }}
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-slate-700">{{ $u->identitas_kampus ?? '-' }}</div>
+                            @if($u->identitas_kampus)
+                                @if($u->nim_status == 'pending')
+                                    <div class="mt-2 flex flex-col gap-1">
+                                        <span class="inline-block text-[9px] uppercase tracking-wider font-bold bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full w-max mb-1">Perlu Validasi</span>
+                                        <div class="flex items-center gap-1">
+                                            <form action="{{ route('admin.users.nim', [$u->id, 'accept']) }}" method="POST">
+                                                @csrf
+                                                <button class="bg-green-500 text-white p-1 rounded hover:bg-green-600 transition" title="Terima Validasi">
+                                                    <i data-lucide="check" class="w-3 h-3"></i>
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.users.nim', [$u->id, 'reject']) }}" method="POST">
+                                                @csrf
+                                                <button class="bg-red-500 text-white p-1 rounded hover:bg-red-600 transition" title="Tolak Validasi">
+                                                    <i data-lucide="x" class="w-3 h-3"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @elseif($u->nim_status == 'verified')
+                                    <span class="inline-block mt-1 text-[9px] uppercase tracking-wider font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Terverifikasi</span>
+                                @elseif($u->nim_status == 'rejected')
+                                    <span class="inline-block mt-1 text-[9px] uppercase tracking-wider font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">Ditolak</span>
+                                @endif
+                            @endif
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($u->id !== auth()->id())

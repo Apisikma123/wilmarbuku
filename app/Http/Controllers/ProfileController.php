@@ -32,6 +32,20 @@ class ProfileController extends Controller
 
         $request->validate($rules);
 
+        $isNimUpdated = false;
+        
+        // If identitas_kampus is provided and different from before
+        if ($request->identitas_kampus && $request->identitas_kampus !== $user->identitas_kampus) {
+            $user->nim_status = 'pending';
+            $isNimUpdated = true;
+        } elseif (empty($request->identitas_kampus)) {
+            $user->nim_status = 'unverified';
+            // If they clear the NIM, they should be downgraded to external if they were internal
+            if ($user->role == 'user_internal') {
+                $user->role = 'user_external';
+            }
+        }
+
         $user->nama_lengkap = $request->nama_lengkap;
         $user->identitas_kampus = $request->identitas_kampus;
         
@@ -40,6 +54,10 @@ class ProfileController extends Controller
         }
 
         $user->save();
+
+        if ($isNimUpdated) {
+            return redirect()->back()->with('success', 'Profil berhasil diperbarui. NIM Anda akan divalidasi admin terlebih dahulu untuk akses akun internal.');
+        }
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
     }

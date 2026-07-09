@@ -14,7 +14,7 @@
                 <a href="{{ route('admin.dashboard.export') }}"
                     class="flex items-center gap-2 px-4 py-2 bg-green-900 hover:bg-green-800 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">
                     <i data-lucide="download" class="w-4 h-4"></i>
-                    Export Data
+                    Ekspor Data
                 </a>
             </div>
         </div>
@@ -37,7 +37,7 @@
                 <div>
                     <p
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-slate-700 transition-colors">
-                        Total Donations</p>
+                        Total Donasi</p>
                     <h3 class="text-3xl font-bold text-slate-900">Rp {{ number_format($totalDonations, 0, ',', '.') }}</h3>
                 </div>
             </a>
@@ -58,7 +58,7 @@
                 <div>
                     <p
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-amber-700 transition-colors">
-                        Books Needed</p>
+                        Buku Dibutuhkan</p>
                     <h3 class="text-3xl font-bold text-slate-900">{{ number_format($booksNeeded) }}</h3>
                 </div>
             </a>
@@ -73,13 +73,13 @@
                     </div>
                     <span
                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-teal-50 text-teal-700 text-xs font-semibold">
-                        Processing
+                        Diproses
                     </span>
                 </div>
                 <div>
                     <p
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-blue-700 transition-colors">
-                        Books In Process</p>
+                        Buku Diproses</p>
                     <h3 class="text-3xl font-bold text-slate-900">{{ number_format($booksInProcess) }}</h3>
                 </div>
             </a>
@@ -94,13 +94,13 @@
                     </div>
                     <span
                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 text-green-700 text-xs font-semibold">
-                        Active Users
+                        Pengguna Terdaftar
                     </span>
                 </div>
                 <div>
                     <p
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-emerald-700 transition-colors">
-                        Total Users</p>
+                        Total Pengguna</p>
                     <h3 class="text-3xl font-bold text-slate-900">{{ number_format($totalUsers) }}</h3>
                 </div>
             </a>
@@ -111,13 +111,13 @@
             <!-- Donation Trends Chart -->
             <div class="w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col h-[350px]">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-slate-900">Donation Trends</h3>
+                    <h3 class="text-lg font-bold text-slate-900">Tren Donasi</h3>
                     <div class="flex items-center gap-4">
                         <div class="flex items-center gap-2 text-sm text-slate-500">
-                            <span class="w-3 h-3 rounded-full bg-green-900"></span> Total Funds
+                            <span class="w-3 h-3 rounded-full bg-green-900"></span> Total Dana
                         </div>
                         <div class="flex items-center gap-2 text-sm text-slate-500">
-                            <span class="w-3 h-3 rounded-full bg-amber-500"></span> Books
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span> Buku
                         </div>
                     </div>
                 </div>
@@ -138,12 +138,12 @@
                             <!-- Funds Bar -->
                             <div class="w-full max-w-[20px] sm:max-w-[30px] bg-green-900 rounded-t transition-opacity hover:opacity-80 cursor-pointer"
                                 style="height: {{ $data['funds'] > 0 ? max(10, ($data['funds'] / $maxFunds) * 100) : 10 }}%"
-                                title="Funds: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
+                                title="Dana: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
 
                             <!-- Books Bar -->
                             <div class="w-full max-w-[20px] sm:max-w-[30px] bg-amber-500 rounded-t transition-opacity hover:opacity-80 cursor-pointer"
                                 style="height: {{ $data['books'] > 0 ? max(10, ($data['books'] / $maxBooks) * 100) : 10 }}%"
-                                title="Books: {{ $data['books'] }}"></div>
+                                title="Buku: {{ $data['books'] }}"></div>
 
                             <span
                                 class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">{{ $data['name'] }}</span>
@@ -157,18 +157,17 @@
         <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-8">
             <div
                 class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 flex-wrap gap-4">
-                <h3 class="text-lg font-bold text-slate-900">Recent Transactions</h3>
+                <h3 class="text-lg font-bold text-slate-900">Transaksi Terkini</h3>
                 <div class="flex items-center gap-4">
                     <a href="transactions"
-                        class="text-sm font-semibold text-slate-500 hover:text-green-700 transition-colors">View
-                        All</a>
+                        class="text-sm font-semibold text-slate-500 hover:text-green-700 transition-colors">Lihat Semua</a>
                 </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm whitespace-nowrap">
                     <thead class="text-xs text-slate-500 uppercase bg-white border-b border-slate-200">
                         <tr>
-                            <th class="px-6 py-4 font-bold tracking-wider">Transaction ID</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">ID Transaksi</th>
                             <th class="px-6 py-4 font-bold tracking-wider">Donatur / User</th>
                             <th class="px-6 py-4 font-bold tracking-wider">Judul Buku</th>
                             <th class="px-6 py-4 font-bold tracking-wider">Tanggal</th>

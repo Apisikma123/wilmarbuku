@@ -30,7 +30,7 @@ Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.post');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
     
@@ -40,7 +40,7 @@ Route::middleware('guest')->group(function () {
     
     // OTP Routes (Login)
     Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp.show');
-    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->middleware('throttle:5,1')->name('otp.verify');
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->middleware('throttle:10,1')->name('otp.verify');
     Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
     // Forgot Password Routes
@@ -48,7 +48,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
     
     Route::get('/forgot-password/otp', [AuthController::class, 'showForgotOtpForm'])->name('password.otp.show');
-    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->middleware('throttle:5,1')->name('password.otp.verify');
+    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->middleware('throttle:10,1')->name('password.otp.verify');
     Route::post('/forgot-password/otp/resend', [AuthController::class, 'resendForgotOtp'])->name('password.otp.resend');
     
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
@@ -141,6 +141,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/metode-pembayaran/{id}', [AdminController::class, 'destroyMetodePembayaran'])->name('admin.metode.destroy');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::post('/users/role/{id}', [AdminController::class, 'updateUserRole'])->name('admin.users.role');
+    Route::post('/users/nim/{id}/{action}', [AdminController::class, 'validateNIM'])->name('admin.users.nim');
     Route::post('/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::post('/users/delete/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.delete');
 

@@ -4,15 +4,15 @@
 <div class="max-w-4xl mx-auto space-y-8 py-6">
     <!-- Header -->
     <div class="mb-8">
-        <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Settings</h2>
-        <p class="text-slate-500 mt-2">Manage your account settings and preferences.</p>
+        <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Pengaturan</h2>
+        <p class="text-slate-500 mt-2">Kelola pengaturan akun dan preferensi Anda.</p>
     </div>
 
     <!-- My Profile -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="px-6 py-5 border-b border-slate-200">
-            <h3 class="text-lg font-bold text-slate-900">My Profile</h3>
-            <p class="text-sm text-slate-500">Update your personal information and photo.</p>
+            <h3 class="text-lg font-bold text-slate-900">Profil Saya</h3>
+            <p class="text-sm text-slate-500">Perbarui informasi pribadi dan foto Anda.</p>
         </div>
         <form method="POST" action="{{ route('akun.updateProfile') }}" class="p-6">
             @csrf
@@ -28,23 +28,24 @@
                     <div class="w-24 h-24 rounded-full bg-slate-200 overflow-hidden border-4 border-white shadow-md flex items-center justify-center">
                         <i data-lucide="user" class="w-12 h-12 text-slate-400"></i>
                     </div>
+                    <button class="text-xs font-bold text-green-700 hover:text-green-800 transition-colors uppercase tracking-wider">Ubah Foto</button>
                 </div>
                 <!-- Form Fields -->
                 <div class="w-full space-y-5">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name</label>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Nama Lengkap</label>
                         <input type="text" name="nama_lengkap" value="{{ Auth::user()->nama_lengkap }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
                         @error('nama_lengkap') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Email Address</label>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Alamat Email</label>
                         <input type="email" name="email" value="{{ Auth::user()->email }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
                         @error('email') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </div>
             <div class="flex justify-end pt-2 border-t border-slate-100 mt-4">
-                <button type="submit" class="px-6 py-2.5 bg-green-900 text-white font-bold rounded-lg hover:bg-green-800 transition-colors shadow-sm text-sm mt-3">Save Changes</button>
+                <button type="submit" class="px-6 py-2.5 bg-green-900 text-white font-bold rounded-lg hover:bg-green-800 transition-colors shadow-sm text-sm mt-3">Simpan Perubahan</button>
             </div>
         </form>
     </section>
@@ -52,8 +53,8 @@
     <!-- Change Password -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="px-6 py-5 border-b border-slate-200">
-            <h3 class="text-lg font-bold text-slate-900">Change Password</h3>
-            <p class="text-sm text-slate-500">Ensure your account is using a long, random password to stay secure.</p>
+            <h3 class="text-lg font-bold text-slate-900">Ubah Kata Sandi</h3>
+            <p class="text-sm text-slate-500">Pastikan akun Anda menggunakan kata sandi acak dan panjang agar tetap aman.</p>
         </div>
         <form method="POST" action="{{ route('user.password.update') }}" class="p-6">
             @csrf
@@ -67,26 +68,26 @@
 
             <div class="space-y-5 max-w-xl">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Current Password</label>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Kata Sandi Saat Ini</label>
                     <input type="password" name="current_password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
                     @error('current_password')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">New Password</label>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Kata Sandi Baru</label>
                     <input type="password" name="new_password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
                     @error('new_password')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Confirm Password</label>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Konfirmasi Kata Sandi</label>
                     <input type="password" name="new_password_confirmation" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all">
                 </div>
             </div>
             <div class="flex justify-end pt-2 border-t border-slate-100 mt-6">
-                <button type="submit" class="px-6 py-2.5 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors shadow-sm text-sm mt-3">Update Password</button>
+                <button type="submit" class="px-6 py-2.5 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors shadow-sm text-sm mt-3">Perbarui Kata Sandi</button>
             </div>
         </form>
     </section>

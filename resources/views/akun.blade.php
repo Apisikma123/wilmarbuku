@@ -30,9 +30,20 @@
                                 <div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary shrink-0">
                                     <span class="material-symbols-outlined text-[16px]">badge</span>
                                 </div>
-                                <div class="text-left">
-                                    <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">NIM / NIDN</p>
-                                    <p class="text-sm font-semibold text-on-surface">{{ Auth::user()->identitas_kampus ?? '-' }}</p>
+                                <div class="text-left w-full flex justify-between items-center pr-2">
+                                    <div>
+                                        <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">NIM / NIDN</p>
+                                        <p class="text-sm font-semibold text-on-surface">{{ Auth::user()->identitas_kampus ?? '-' }}</p>
+                                    </div>
+                                    @if(Auth::user()->identitas_kampus)
+                                        @if(Auth::user()->nim_status == 'pending')
+                                            <span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Menunggu Validasi</span>
+                                        @elseif(Auth::user()->nim_status == 'verified')
+                                            <span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">check_circle</span> Terverifikasi</span>
+                                        @elseif(Auth::user()->nim_status == 'rejected')
+                                            <span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Ditolak</span>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">

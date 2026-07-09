@@ -52,11 +52,11 @@
                             <label class="block text-sm font-medium text-on-surface mb-1">Nomor Induk Mahasiswa / NIDN <span
                                     class="text-red-500">*</span></label>
                             <input type="text" name="identitas_kampus" value="{{ Auth::user()->identitas_kampus }}"
-                                class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg focus:border-[#004225] focus:ring-1 focus:ring-[#004225] outline-none transition-colors text-sm"
-                                placeholder="Masukkan NIM/NIDN Anda">
+                                class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg outline-none transition-colors text-sm text-gray-500 cursor-not-allowed"
+                                placeholder="Masukkan NIM/NIDN Anda" readonly>
                             <div class="flex items-center gap-1 mt-1.5 text-on-surface-variant text-[11px]">
                                 <span class="material-symbols-outlined text-[14px]">info</span>
-                                <span>Diperlukan untuk validasi internal / syarat kelulusan.</span>
+                                <span>Perubahan NIM hanya dapat dilakukan melalui Pengaturan Profil.</span>
                             </div>
                             @error('identitas_kampus') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
@@ -179,7 +179,30 @@
     </div>
 
     <script>
+        const userNimStatus = '{{ Auth::user()->nim_status }}';
+
         function toggleIdentitas() {
+            const internalRadio = document.querySelector('input[name="tipe_donatur"][value="internal"]');
+            const eksternalRadio = document.querySelector('input[name="tipe_donatur"][value="eksternal"]');
+            
+            if (internalRadio.checked && userNimStatus !== 'verified') {
+                eksternalRadio.checked = true;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Akses Ditolak',
+                    text: 'Anda tidak dapat menggunakan role Internal. NIM belum diisi atau sedang menunggu validasi Admin.',
+                    confirmButtonText: 'Buka Profil Akun',
+                    confirmButtonColor: '#004b23',
+                    showCancelButton: true,
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '{{ route("akun") }}';
+                    }
+                });
+                return;
+            }
+
             const type = document.querySelector('input[name="tipe_donatur"]:checked').value;
             const container = document.getElementById('identitas-kampus-container');
             const internalLabel = document.getElementById('label-internal');
