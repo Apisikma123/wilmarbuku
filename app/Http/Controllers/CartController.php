@@ -13,9 +13,12 @@ class CartController extends Controller
         $cart = Auth::user()->cart_data ?? [];
         \Illuminate\Support\Facades\Log::info('Cart Check: ', ['db_cart' => $cart, 'count' => count($cart)]);
         
-        // Cek stok real-time
+        // Cek stok real-time (Optimasi N+1 Query)
+        $bukuIds = array_keys($cart);
+        $bukus = KatalogBuku::whereIn('id', $bukuIds)->get()->keyBy('id');
+        
         foreach ($cart as $id => &$item) {
-            $buku = KatalogBuku::find($id);
+            $buku = $bukus->get($id);
             if ($buku) {
                 $item['stok_dibutuhkan'] = $buku->stok_dibutuhkan;
                 // Pastikan qty tidak melebihi stok yang ada
