@@ -64,23 +64,23 @@
             </a>
 
             <!-- Card 3 -->
-            <a href="{{ route('admin.transactions') }}"
+            <a href="{{ route('admin.catalog') }}"
                 class="block bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div
                         class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
-                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        <i data-lucide="book" class="w-5 h-5"></i>
                     </div>
                     <span
-                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-teal-50 text-teal-700 text-xs font-semibold">
-                        Diproses
+                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold">
+                        Katalog
                     </span>
                 </div>
                 <div>
                     <p
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-blue-700 transition-colors">
-                        Buku Diproses</p>
-                    <h3 class="text-3xl font-bold text-slate-900">{{ number_format($booksInProcess) }}</h3>
+                        Total Buku</p>
+                    <h3 class="text-3xl font-bold text-slate-900">{{ number_format($totalBooks) }}</h3>
                 </div>
             </a>
 

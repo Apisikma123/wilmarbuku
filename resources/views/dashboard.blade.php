@@ -3,9 +3,9 @@
 @section('content')
 
     <!-- Banner Section -->
-    <div class="bg-gradient-to-b from-primary to-[#004b23] md:bg-[#004b23] relative">
-        <!-- Subtle Pattern Background -->
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    <div class="relative bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/dashboard banner.png') }}')">
+        <!-- Dark overlay to ensure content remains readable against the background image -->
+        <div class="absolute inset-0 bg-black/20"></div>
         
         <div class="max-w-[1280px] mx-auto px-0 md:px-6 py-6 md:py-8 relative z-10">
 
@@ -17,16 +17,15 @@
                     @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
                         <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                     @endif
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10"></div>
+
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
-                        <span class="inline-block bg-secondary text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">{{ $item->kategori }}</span>
                         @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http')))
                             <h3 class="text-xl md:text-2xl font-bold font-display uppercase tracking-tight leading-tight">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
                         @endif
-                        <p class="text-[10px] md:text-xs text-white/90 drop-shadow-md font-medium">Oleh: {{ $item->pengarang }}</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
-                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-slate-900 transition-colors">Lihat Detail</span>
+                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-slate-900 transition-colors shadow-[0_4px_15px_rgba(255,255,255,0.15)]">Lihat Detail</span>
                     </div>
                 </a>
                 @endforeach
