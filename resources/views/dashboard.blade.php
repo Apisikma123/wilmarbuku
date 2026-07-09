@@ -194,8 +194,12 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 @forelse($riwayat as $trx)
                 <div class="bg-white rounded-xl p-4 shadow-sm border border-outline-variant/30 flex gap-4 items-center">
-                    <div class="w-12 aspect-[3/4] bg-gradient-to-br {{ $trx->buku->cover_image }} rounded flex-shrink-0 flex items-center justify-center text-center text-white">
-                        <span class="text-[6px] font-bold uppercase leading-tight">{!! str_replace(' ', '<br>', $trx->buku->judul_buku) !!}</span>
+                    <div class="w-12 aspect-[3/4] @if((!str_starts_with($trx->buku->cover_image, '/storage/') && !str_starts_with($trx->buku->cover_image, 'http'))) bg-gradient-to-br {{ $trx->buku->cover_image }} @endif rounded flex-shrink-0 flex items-center justify-center text-center text-white relative overflow-hidden">
+                        @if((str_starts_with($trx->buku->cover_image, '/storage/') || str_starts_with($trx->buku->cover_image, 'http')))
+                            <img src="{{ $trx->buku->cover_image }}" alt="{{ $trx->buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover">
+                        @else
+                            <span class="text-[6px] font-bold uppercase leading-tight">{!! str_replace(' ', '<br>', $trx->buku->judul_buku) !!}</span>
+                        @endif
                     </div>
                     <div>
                         <h4 class="text-xs font-bold text-on-surface line-clamp-1">{{ $trx->buku->judul_buku }}</h4>
