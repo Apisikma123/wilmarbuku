@@ -70,11 +70,19 @@
     <!-- Users Table Area -->
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-6">
         <!-- Table Toolbar -->
-        <div class="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
-            <h3 class="text-lg font-bold text-slate-900">Daftar Pengguna Terdaftar</h3>
-            <div class="relative w-48 md:w-64 shrink-0">
-                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" onkeyup="filterTable(this)" placeholder="Search users..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+        <div class="px-6 py-4 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white">
+            <h3 class="text-lg font-bold text-slate-900 shrink-0">Daftar Pengguna Terdaftar</h3>
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                <select id="roleFilter" onchange="filterTable()" class="w-full sm:w-auto bg-white border border-slate-200 rounded-lg py-2 pl-3 pr-10 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all cursor-pointer font-medium text-slate-700 shrink-0">
+                    <option value="all">Semua Role</option>
+                    <option value="user_internal">User Internal</option>
+                    <option value="user_external">User External</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <div class="relative w-full sm:w-64 shrink-0">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search users..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                </div>
             </div>
         </div>
 
@@ -92,7 +100,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($users as $u)
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors user-row" data-role="{{ $u->role }}">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-sm shrink-0">
@@ -230,19 +238,24 @@
 @endsection
 
 <script>
-function filterTable(input) {
-    let filter = input.value.toLowerCase();
-    let table = input.closest('.rounded-xl').querySelector('table');
-    if(!table) return;
-    let tr = table.getElementsByTagName("tr");
-    for (let i = 1; i < tr.length; i++) { 
-        let txtValue = tr[i].textContent || tr[i].innerText;
-        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
+function filterTable() {
+    let searchInput = document.getElementById('searchInput').value.toLowerCase();
+    let roleFilter = document.getElementById('roleFilter').value;
+    let rows = document.querySelectorAll('.user-row');
+    
+    rows.forEach(row => {
+        let textContent = row.textContent || row.innerText;
+        let rowRole = row.getAttribute('data-role');
+        
+        let matchesSearch = textContent.toLowerCase().indexOf(searchInput) > -1;
+        let matchesRole = roleFilter === 'all' || rowRole === roleFilter;
+        
+        if (matchesSearch && matchesRole) {
+            row.style.display = "";
         } else {
-            tr[i].style.display = "none";
+            row.style.display = "none";
         }
-    }
+    });
 }
 
 // Edit Modal Functions

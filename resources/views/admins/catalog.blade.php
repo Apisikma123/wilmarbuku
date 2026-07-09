@@ -79,6 +79,7 @@
                         <th class="px-6 py-4 font-bold tracking-wider">Judul Buku</th>
                         <th class="px-6 py-4 font-bold tracking-wider">Pengarang</th>
                         <th class="px-6 py-4 font-bold tracking-wider text-center">Stok</th>
+                        <th class="px-6 py-4 font-bold tracking-wider text-center">Terdonasi</th>
                         <th class="px-6 py-4 font-bold tracking-wider text-right">Harga Est.</th>
                         <th class="px-6 py-4 font-bold tracking-wider text-center">Status</th>
                         <th class="px-6 py-4 font-bold tracking-wider text-center">Aksi</th>
@@ -118,6 +119,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-5 text-center font-bold text-slate-700">{{ number_format($b->stok_dibutuhkan) }}</td>
+                        <td class="px-6 py-5 text-center font-bold text-slate-700">{{ number_format($b->terdonasi) }}</td>
                         <td class="px-6 py-5 font-bold text-slate-900 text-right">Rp {{ number_format($b->harga_estimasi, 0, ',', '.') }}</td>
                         <td class="px-6 py-5 text-center">
                             @if($b->status_buku == 'Dibutuhkan')
@@ -142,7 +144,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="8" class="px-6 py-12 text-center text-slate-400">
                             <i data-lucide="book-open" class="w-12 h-12 mx-auto mb-3 text-slate-300"></i>
                             <p class="text-base font-bold text-slate-600">Belum ada buku di dalam katalog.</p>
                             <p class="text-sm text-slate-400 mt-1">Klik tombol "Tambah Buku Baru" di atas untuk menambahkan buku pertama Anda.</p>

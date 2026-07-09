@@ -23,19 +23,14 @@
                 </div>
             @endif
 
-            <div class="flex flex-col sm:flex-row gap-8 mb-6">
-                <!-- Avatar -->
-                <div class="flex flex-col items-center gap-3">
-                    <div class="w-24 h-24 rounded-full bg-slate-200 overflow-hidden border-4 border-white shadow-md relative group cursor-pointer">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->nama_lengkap) }}&background=0D8ABC&color=fff" alt="{{ Auth::user()->nama_lengkap }}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i data-lucide="camera" class="w-6 h-6 text-white"></i>
-                        </div>
+            <div class="flex flex-col items-center gap-6 mb-6">
+                <div class="flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-full bg-slate-200 overflow-hidden border-4 border-white shadow-md flex items-center justify-center">
+                        <i data-lucide="user" class="w-12 h-12 text-slate-400"></i>
                     </div>
-                    <button class="text-xs font-bold text-green-700 hover:text-green-800 transition-colors uppercase tracking-wider">Change Photo</button>
                 </div>
                 <!-- Form Fields -->
-                <div class="flex-1 space-y-5">
+                <div class="w-full space-y-5">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name</label>
                         <input type="text" name="nama_lengkap" value="{{ Auth::user()->nama_lengkap }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">

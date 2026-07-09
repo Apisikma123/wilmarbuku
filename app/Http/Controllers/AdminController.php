@@ -302,6 +302,15 @@ class AdminController extends Controller
             'pesan_admin' => 'nullable|string',
         ]);
 
+        if ($transaction->status_pembayaran !== 'Paid') {
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $detail->buku->increment('terdonasi', $detail->qty);
+                }
+            }
+        }
+
         $transaction->update([
             'status_tracking' => 'Dalam Pengiriman',
             'status_pembayaran' => 'Paid',
@@ -335,10 +344,14 @@ class AdminController extends Controller
         // TODO: Consolidate stock management logic to single helper (duplicated in 4 locations)
         if ($transaction->status_tracking !== 'Dibatalkan') {
             $transaction->load('details.buku');
+            $isPaid = $transaction->status_pembayaran === 'Paid';
             foreach ($transaction->details as $detail) {
                 if ($detail->buku) {
                     $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
                     $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($isPaid) {
+                        $updateDataBuku['terdonasi'] = max(0, $detail->buku->terdonasi - $detail->qty);
+                    }
                     if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
                         $updateDataBuku['status_buku'] = 'Dibutuhkan';
                     }
@@ -391,10 +404,14 @@ class AdminController extends Controller
         // Cek jika status diubah menjadi Dibatalkan dari status lain, maka stok dikembalikan
         if ($request->status_tracking === 'Dibatalkan' && $transaction->status_tracking !== 'Dibatalkan') {
             $transaction->load('details.buku');
+            $isPaid = $transaction->status_pembayaran === 'Paid';
             foreach ($transaction->details as $detail) {
                 if ($detail->buku) {
                     $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
                     $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($isPaid) {
+                        $updateDataBuku['terdonasi'] = max(0, $detail->buku->terdonasi - $detail->qty);
+                    }
                     if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
                         $updateDataBuku['status_buku'] = 'Dibutuhkan';
                     }
@@ -406,14 +423,26 @@ class AdminController extends Controller
         // Cek jika status dibatalkan (dihidupkan kembali)
         if ($request->status_tracking !== 'Dibatalkan' && $transaction->status_tracking === 'Dibatalkan') {
             $transaction->load('details.buku');
+            $willBePaid = isset($updateData['status_pembayaran']) && $updateData['status_pembayaran'] === 'Paid';
             foreach ($transaction->details as $detail) {
                 if ($detail->buku) {
                     $newStok = max(0, $detail->buku->stok_dibutuhkan - $detail->qty);
                     $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($willBePaid) {
+                        $updateDataBuku['terdonasi'] = $detail->buku->terdonasi + $detail->qty;
+                    }
                     if ($newStok == 0) {
                         $updateDataBuku['status_buku'] = 'Tersedia';
                     }
                     $detail->buku->update($updateDataBuku);
+                }
+            }
+        } elseif ($transaction->status_pembayaran !== 'Paid' && isset($updateData['status_pembayaran']) && $updateData['status_pembayaran'] === 'Paid') {
+            // Jika berubah menjadi paid tanpa dibatalkan
+            $transaction->load('details.buku');
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $detail->buku->increment('terdonasi', $detail->qty);
                 }
             }
         }

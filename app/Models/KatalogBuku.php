@@ -23,5 +23,6 @@ class KatalogBuku extends Model
         'cover_image',
         'harga_estimasi',
         'status_buku',
+        'terdonasi',
     ];
 }
