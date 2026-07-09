@@ -211,6 +211,22 @@ class CheckoutController extends Controller
         $kode_tracking = $request->input('kode_tracking');
         $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
 
+        if (\Carbon\Carbon::parse($transaksi->created_at)->addHour()->isPast()) {
+            if ($transaksi->status_pembayaran == 'Unpaid') {
+                $transaksi->update(['status_tracking' => 'Dibatalkan']);
+                
+                // Return stock
+                foreach ($transaksi->details as $detail) {
+                    if ($detail->buku) {
+                        $detail->buku->increment('stok_dibutuhkan', $detail->qty);
+                    }
+                }
+                
+                return redirect()->route('dashboard')->with('error', 'Waktu pembayaran untuk donasi ini telah habis. Transaksi dibatalkan.');
+            }
+            return redirect()->route('dashboard')->with('error', 'Transaksi sudah tidak valid.');
+        }
+
         $request->validate([
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp',
             'metode_pembayaran_id' => 'required|exists:metode_pembayarans,id',

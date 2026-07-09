@@ -147,7 +147,7 @@
             </header>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-8 w-full overflow-x-hidden">
+            <main class="flex-1 overflow-y-auto w-full overflow-x-hidden md:p-8">
                 @yield('content')
             </main>
         </div>
@@ -156,7 +156,32 @@
     <script>
         lucide.createIcons();
 
-
+        // Smart Button Loading
+        document.addEventListener('submit', function(e) {
+            if (e.defaultPrevented) return;
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            
+            if(btn && !btn.classList.contains('no-loading')) {
+                if(btn.disabled) return;
+                
+                const originalText = btn.innerHTML;
+                btn.dataset.originalText = originalText;
+                
+                setTimeout(() => {
+                    if (!e.defaultPrevented) {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-75', 'cursor-not-allowed');
+                        
+                        // For Lucide icons in admin
+                        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-1 inline-block align-middle"></i> Memproses...';
+                        if(window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    }
+                }, 300);
+            }
+        });
 
         // Mobile Sidebar Toggle Logic
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');

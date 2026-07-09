@@ -1,4 +1,4 @@
-tru@extends('layouts.user')
+@extends('layouts.user')
 
 @section('content')
     <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10 min-h-[60vh] flex items-center justify-center">
@@ -130,7 +130,7 @@ tru@extends('layouts.user')
                     clearInterval(timerInterval);
     countdownElement.innerHTML = "00:00";
 
-                    co nst submitBtn = document.querySelector('button[type="submit"]');
+                    const submitBtn = document.querySelector('button[type="submit"]');
                     if(submitBtn) {
                         submitBtn.disabled = true;
                         submitBtn.innerHTML = '<span class="material-symbols-outlined">timer_off</span> Waktu Habis';

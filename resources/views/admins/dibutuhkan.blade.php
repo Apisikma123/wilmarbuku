@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6 p-4 md:p-0">
     <!-- Header -->
     <div class="flex items-center gap-4">
         <a href="{{ route('admin.catalog') }}" class="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors">

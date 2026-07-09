@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('SIGINT')) define('SIGINT', 2);
+if (!defined('SIGTERM')) define('SIGTERM', 15);
+if (!defined('SIGHUP')) define('SIGHUP', 1);
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,12 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*'),
         );
 
-        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, Request $request) {
+        $exceptions->render(function (\Throwable $e, Request $request) {
             if ($request->is('api/*') || $request->wantsJson()) {
                 return false; 
             }
 
-            $code = $e->getStatusCode();
+            $code = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface ? $e->getStatusCode() : 500;
             
             $errors = [
                 400 => ['title' => 'Permintaan Tidak Valid', 'desc' => 'Maaf, sistem tidak dapat memproses permintaan yang Anda kirim. Mungkin ada kesalahan pada URL atau data.'],
