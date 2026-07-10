@@ -11,10 +11,15 @@ class KatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $buku = KatalogBuku::where('status_buku', 'Dibutuhkan')
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
+        $bukuIds = \Illuminate\Support\Facades\Cache::remember('random_buku_ids', 60, function () {
+            return KatalogBuku::where('status_buku', 'Dibutuhkan')->pluck('id')->toArray();
+        });
+        
+        $buku = collect();
+        if (!empty($bukuIds)) {
+            $randomIds = \Illuminate\Support\Arr::random($bukuIds, min(4, count($bukuIds)));
+            $buku = KatalogBuku::whereIn('id', $randomIds)->get();
+        }
         $mahasiswaCount = \App\Models\User::where('role', 'user')->count();
         if ($request->is('donasi')) {
             return view('donasi', compact('buku'));
@@ -99,19 +104,30 @@ class KatalogController extends Controller
     public function show($id)
     {
         $buku = KatalogBuku::findOrFail($id);
-        $buku_terkait = KatalogBuku::where('kategori', $buku->kategori)
-            ->where('id', '!=', $id)
-            ->where('status_buku', 'Dibutuhkan')
-            ->inRandomOrder()
-            ->take(10)
-            ->get();
+        $bukuIdsTerkait = \Illuminate\Support\Facades\Cache::remember('buku_terkait_ids_' . $buku->kategori, 60, function () use ($buku, $id) {
+            return KatalogBuku::where('kategori', $buku->kategori)
+                ->where('id', '!=', $id)
+                ->where('status_buku', 'Dibutuhkan')
+                ->pluck('id')->toArray();
+        });
+        
+        $buku_terkait = collect();
+        if (!empty($bukuIdsTerkait)) {
+            $randomIds = \Illuminate\Support\Arr::random($bukuIdsTerkait, min(10, count($bukuIdsTerkait)));
+            $buku_terkait = KatalogBuku::whereIn('id', $randomIds)->get();
+        }
             
         if ($buku_terkait->isEmpty()) {
-            $buku_terkait = KatalogBuku::where('id', '!=', $id)
-                ->where('status_buku', 'Dibutuhkan')
-                ->inRandomOrder()
-                ->take(10)
-                ->get();
+            $semuaBukuIds = \Illuminate\Support\Facades\Cache::remember('semua_buku_ids_kecuali_' . $id, 60, function () use ($id) {
+                return KatalogBuku::where('id', '!=', $id)
+                    ->where('status_buku', 'Dibutuhkan')
+                    ->pluck('id')->toArray();
+            });
+            
+            if (!empty($semuaBukuIds)) {
+                $randomIds = \Illuminate\Support\Arr::random($semuaBukuIds, min(10, count($semuaBukuIds)));
+                $buku_terkait = KatalogBuku::whereIn('id', $randomIds)->get();
+            }
         }
 
         return view('buku', compact('buku', 'buku_terkait'));

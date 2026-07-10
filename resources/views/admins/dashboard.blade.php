@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6 p-4 md:p-0">
 
         <!-- Top Header & Actions -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -69,10 +69,10 @@
                 <div class="flex justify-between items-start mb-4">
                     <div
                         class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
-                        <i data-lucide="book" class="w-5 h-5"></i>
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
                     </div>
                     <span
-                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold">
+                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-teal-50 text-teal-700 text-xs font-semibold">
                         Katalog
                     </span>
                 </div>

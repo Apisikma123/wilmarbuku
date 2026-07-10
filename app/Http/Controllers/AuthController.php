@@ -61,9 +61,9 @@ class AuthController extends Controller
             // Send OTP email
             Mail::to($user->email)->send(new OtpMail($otpCode));
 
-            // Store user id and timestamp in session temporarily
+            // Store user id and timestamp temporarily
             $request->session()->put('otp_user_id', $user->id);
-            $request->session()->put('last_otp_sent_at', now()->timestamp);
+            \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $user->id, now()->timestamp, 60);
             $request->session()->put('remember_me', $request->has('remember'));
 
             return redirect()->route('otp.show');
@@ -80,7 +80,7 @@ class AuthController extends Controller
             return redirect()->route('login');
         }
 
-        $lastSent = $request->session()->get('last_otp_sent_at', 0);
+        $lastSent = \Illuminate\Support\Facades\Cache::get('last_otp_sent_at_' . $request->session()->get('otp_user_id'), 0);
         $cooldown = max(0, 60 - (now()->timestamp - $lastSent));
 
         return view('auth.otp', compact('cooldown'));
@@ -93,7 +93,7 @@ class AuthController extends Controller
             return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
         }
 
-        $lastSent = $request->session()->get('last_otp_sent_at', 0);
+        $lastSent = \Illuminate\Support\Facades\Cache::get('last_otp_sent_at_' . $userId, 0);
         if (now()->timestamp - $lastSent < 60) {
             return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
         }
@@ -113,7 +113,7 @@ class AuthController extends Controller
         Mail::to($user->email)->send(new OtpMail($otpCode));
 
         // Update timestamp
-        $request->session()->put('last_otp_sent_at', now()->timestamp);
+        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $userId, now()->timestamp, 60);
 
         return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
     }
@@ -145,7 +145,7 @@ class AuthController extends Controller
         $remember = $request->session()->get('remember_me', false);
         Auth::login($user, $remember);
         
-        $request->session()->forget(['otp_user_id', 'last_otp_sent_at', 'remember_me']);
+        $request->session()->forget(['otp_user_id', 'remember_me']);
         $request->session()->regenerate();
 
         $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
@@ -214,9 +214,9 @@ class AuthController extends Controller
         // Send OTP email
         Mail::to($user->email)->send(new OtpMail($otpCode));
 
-        // Store user id and timestamp in session temporarily
+        // Store user id and timestamp temporarily
         $request->session()->put('otp_user_id', $user->id);
-        $request->session()->put('last_otp_sent_at', now()->timestamp);
+        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $user->id, now()->timestamp, 60);
         $request->session()->put('remember_me', false); // No remember me on register by default
 
         return redirect()->route('otp.show');
@@ -310,7 +310,7 @@ class AuthController extends Controller
         Mail::to($user->email)->send(new OtpMail($otpCode));
 
         $request->session()->put('reset_user_email', $user->email);
-        $request->session()->put('last_reset_otp_sent_at', now()->timestamp);
+        \Illuminate\Support\Facades\Cache::put('last_reset_otp_sent_at_' . $user->email, now()->timestamp, 60);
 
         return redirect()->route('password.otp.show');
     }
@@ -321,7 +321,7 @@ class AuthController extends Controller
             return redirect()->route('password.request');
         }
 
-        $lastSent = $request->session()->get('last_reset_otp_sent_at', 0);
+        $lastSent = \Illuminate\Support\Facades\Cache::get('last_reset_otp_sent_at_' . $request->session()->get('reset_user_email'), 0);
         $cooldown = max(0, 60 - (now()->timestamp - $lastSent));
 
         return view('auth.forgot-otp', compact('cooldown'));
@@ -334,7 +334,7 @@ class AuthController extends Controller
             return redirect()->route('password.request')->withErrors(['email' => 'Sesi telah habis.']);
         }
 
-        $lastSent = $request->session()->get('last_reset_otp_sent_at', 0);
+        $lastSent = \Illuminate\Support\Facades\Cache::get('last_reset_otp_sent_at_' . $email, 0);
         if (now()->timestamp - $lastSent < 60) {
             return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
         }
@@ -351,7 +351,7 @@ class AuthController extends Controller
 
         Mail::to($user->email)->send(new OtpMail($otpCode));
 
-        $request->session()->put('last_reset_otp_sent_at', now()->timestamp);
+        \Illuminate\Support\Facades\Cache::put('last_reset_otp_sent_at_' . $email, now()->timestamp, 60);
 
         return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
     }
@@ -380,7 +380,7 @@ class AuthController extends Controller
         ]);
 
         $request->session()->put('reset_authorized_email', $user->email);
-        $request->session()->forget(['reset_user_email', 'last_reset_otp_sent_at']);
+        $request->session()->forget(['reset_user_email']);
 
         return redirect()->route('password.reset');
     }

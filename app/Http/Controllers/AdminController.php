@@ -25,7 +25,6 @@ class AdminController extends Controller
     {
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $booksNeeded = KatalogBuku::where('status_buku', 'Dibutuhkan')->sum('stok_dibutuhkan');
-        $booksInProcess = TransaksiCheckout::whereNotIn('status_tracking', ['Selesai', 'Dibatalkan'])->count();
         $totalBooks = KatalogBuku::count();
         $totalUsers = User::where('role', '!=', 'admin')->count();
 
@@ -34,39 +33,14 @@ class AdminController extends Controller
             ->take(3)
             ->get();
 
-        $months = [];
-        for ($i = 7; $i >= 0; $i--) {
-            $month = \Carbon\Carbon::now()->subMonths($i);
-            $months[$month->format('Y-m')] = [
-                'name' => $month->format('M'),
-                'funds' => 0,
-                'books' => 0,
-            ];
-        }
-
-        $transactions = TransaksiCheckout::with('details')
-            ->where('status_pembayaran', 'Paid')
-            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(7)->startOfMonth())
-            ->get();
-
-        foreach ($transactions as $trx) {
-            $key = $trx->created_at->format('Y-m');
-            if (isset($months[$key])) {
-                $months[$key]['funds'] += $trx->total_harga;
-                $months[$key]['books'] += $trx->details->sum('qty');
-            }
-        }
-
-        $maxFunds = max(array_column($months, 'funds'));
-        $maxBooks = max(array_column($months, 'books'));
-        $maxFunds = $maxFunds > 0 ? $maxFunds : 1;
-        $maxBooks = $maxBooks > 0 ? $maxBooks : 1;
-        $chartData = array_values($months);
+        $chart = $this->getDashboardChartData();
+        $chartData = $chart['chartData'];
+        $maxFunds = $chart['maxFunds'];
+        $maxBooks = $chart['maxBooks'];
 
         return view('admins.dashboard', compact(
             'totalDonations',
             'booksNeeded',
-            'booksInProcess',
             'totalBooks',
             'totalUsers',
             'recentTransactions',
@@ -649,16 +623,27 @@ class AdminController extends Controller
         
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])->latest()->take(10)->get();
 
-        $transactions = TransaksiCheckout::with('details')
-            ->where('status_pembayaran', 'Paid')
+        $dateFormat = $filter == '30_days' ? '%Y-%m-%d' : '%Y-%m';
+        
+        $agregatFunds = TransaksiCheckout::where('status_pembayaran', 'Paid')
             ->where('created_at', '>=', $startDate)
-            ->get();
+            ->selectRaw("DATE_FORMAT(created_at, '{$dateFormat}') as date_key, SUM(total_harga) as total_funds")
+            ->groupBy('date_key')
+            ->pluck('total_funds', 'date_key');
+            
+        $agregatBooks = \App\Models\TransaksiDetail::join('transaksi_checkout', 'transaksi_detail.kode_tracking', '=', 'transaksi_checkout.kode_tracking')
+            ->where('transaksi_checkout.status_pembayaran', 'Paid')
+            ->where('transaksi_checkout.created_at', '>=', $startDate)
+            ->selectRaw("DATE_FORMAT(transaksi_checkout.created_at, '{$dateFormat}') as date_key, SUM(transaksi_detail.qty) as total_books")
+            ->groupBy('date_key')
+            ->pluck('total_books', 'date_key');
 
-        foreach ($transactions as $trx) {
-            $key = $filter == '30_days' ? $trx->created_at->format('Y-m-d') : $trx->created_at->format('Y-m');
-            if (isset($chartDataRaw[$key])) {
-                $chartDataRaw[$key]['funds'] += $trx->total_harga;
-                $chartDataRaw[$key]['books'] += $trx->details->sum('qty');
+        foreach ($chartDataRaw as $key => $data) {
+            if (isset($agregatFunds[$key])) {
+                $chartDataRaw[$key]['funds'] = (float) $agregatFunds[$key];
+            }
+            if (isset($agregatBooks[$key])) {
+                $chartDataRaw[$key]['books'] = (int) $agregatBooks[$key];
             }
         }
 
@@ -748,5 +733,50 @@ class AdminController extends Controller
         $metode = MetodePembayaran::findOrFail($id);
         $metode->delete();
         return back()->with('success', 'Metode pembayaran berhasil dihapus.');
+    }
+    private function getDashboardChartData()
+    {
+        $months = [];
+        for ($i = 7; $i >= 0; $i--) {
+            $month = \Carbon\Carbon::now()->subMonths($i);
+            $months[$month->format('Y-m')] = [
+                'name' => $month->format('M'),
+                'funds' => 0,
+                'books' => 0,
+            ];
+        }
+
+        $agregatFunds = TransaksiCheckout::where('status_pembayaran', 'Paid')
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(7)->startOfMonth())
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, SUM(total_harga) as total_funds')
+            ->groupBy('month')
+            ->pluck('total_funds', 'month');
+
+        $agregatBooks = \App\Models\TransaksiDetail::join('transaksi_checkout', 'transaksi_detail.kode_tracking', '=', 'transaksi_checkout.kode_tracking')
+            ->where('transaksi_checkout.status_pembayaran', 'Paid')
+            ->where('transaksi_checkout.created_at', '>=', \Carbon\Carbon::now()->subMonths(7)->startOfMonth())
+            ->selectRaw('DATE_FORMAT(transaksi_checkout.created_at, "%Y-%m") as month, SUM(transaksi_detail.qty) as total_books')
+            ->groupBy('month')
+            ->pluck('total_books', 'month');
+
+        foreach ($months as $key => $data) {
+            if (isset($agregatFunds[$key])) {
+                $months[$key]['funds'] = (float) $agregatFunds[$key];
+            }
+            if (isset($agregatBooks[$key])) {
+                $months[$key]['books'] = (int) $agregatBooks[$key];
+            }
+        }
+
+        $maxFunds = max(array_column($months, 'funds'));
+        $maxBooks = max(array_column($months, 'books'));
+        $maxFunds = $maxFunds > 0 ? $maxFunds : 1;
+        $maxBooks = $maxBooks > 0 ? $maxBooks : 1;
+
+        return [
+            'chartData' => array_values($months),
+            'maxFunds' => $maxFunds,
+            'maxBooks' => $maxBooks
+        ];
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6 p-4 md:p-0">
     
     <!-- Top Header & Actions -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -72,12 +72,18 @@
         <!-- Table Toolbar -->
         <form method="GET" action="{{ route('admin.users') }}" class="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
             <h3 class="text-lg font-bold text-slate-900">Daftar Pengguna Terdaftar</h3>
-            <div class="relative w-48 md:w-64 shrink-0 flex items-center gap-2">
-                <div class="relative w-full">
+            <div class="relative w-full sm:w-auto shrink-0 flex flex-col sm:flex-row items-center gap-2">
+                <select id="roleFilter" name="role" onchange="filterTable()" class="bg-white border border-slate-200 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                    <option value="all">Semua Peran</option>
+                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="user_internal" {{ request('role') == 'user_internal' ? 'selected' : '' }}>User Internal</option>
+                    <option value="user_external" {{ request('role') == 'user_external' ? 'selected' : '' }}>User Eksternal</option>
+                </select>
+                <div class="relative w-full sm:w-64">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                    <input type="text" id="searchInput" name="search" value="{{ request('search') }}" onkeyup="filterTable()" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
                 </div>
-                <button type="submit" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">Cari</button>
+                <button type="submit" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0">Cari</button>
             </div>
         </form>
 
