@@ -25,7 +25,7 @@ class AdminController extends Controller
     {
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $booksNeeded = KatalogBuku::where('status_buku', 'Dibutuhkan')->sum('stok_dibutuhkan');
-        $booksInProcess = TransaksiCheckout::whereNotIn('status_tracking', ['Selesai', 'Dibatalkan'])->count();
+        $totalBooks = KatalogBuku::count();
         $totalUsers = User::where('role', '!=', 'admin')->count();
 
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])
@@ -41,7 +41,7 @@ class AdminController extends Controller
         return view('admins.dashboard', compact(
             'totalDonations',
             'booksNeeded',
-            'booksInProcess',
+            'totalBooks',
             'totalUsers',
             'recentTransactions',
             'chartData',
