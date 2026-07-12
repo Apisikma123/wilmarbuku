@@ -150,4 +150,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
     Route::get('/dibutuhkan', [AdminController::class, 'dibutuhkan'])->name('admin.dibutuhkan');
+    Route::post('/notifications/mark-as-read/{id?}', [AdminController::class, 'markNotificationAsRead'])->name('admin.notifications.read');
 });

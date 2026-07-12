@@ -122,6 +122,13 @@ class CheckoutController extends Controller
                     $updateData = ['stok_dibutuhkan' => $newStok];
                     if ($newStok == 0) {
                         $updateData['status_buku'] = 'Tersedia';
+                        
+                        $admins = \App\Models\User::where('role', 'admin')->get();
+                        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AdminNotification(
+                            "Stok buku <b>{$buku->judul_buku}</b> telah terpenuhi (0).",
+                            'info',
+                            "/admin/catalog?search=" . urlencode($buku->judul_buku)
+                        ));
                     }
                     $buku->update($updateData);
                 }
@@ -261,7 +268,6 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // Create notification (which also triggers the email)
             PesanMasuk::create([
                 'user_id' => $transaksi->user_id,
                 'judul' => 'Bukti Pembayaran Terkirim',
@@ -269,6 +275,14 @@ class CheckoutController extends Controller
                 'jenis' => 'info',
                 'is_read' => false,
             ]);
+
+            // Notify all admins via Real-time WebSockets
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AdminNotification(
+                "Donatur telah mengunggah bukti pembayaran untuk pesanan #{$transaksi->kode_tracking}. Butuh konfirmasi Anda.",
+                'info',
+                "/admin/transactions?search={$transaksi->kode_tracking}"
+            ));
         }
 
         return redirect()->route('success')->with('kode_tracking', $kode_tracking);

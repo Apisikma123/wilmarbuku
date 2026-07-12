@@ -38,7 +38,7 @@
         </div>
 
         <!-- Riwayat Transaksi -->
-        <div class="lg:col-span-2 space-y-6">
+        <div id="user-transactions-container" class="lg:col-span-2 space-y-6">
             @forelse($transaksi as $trx)
             <!-- Loop Transaksi -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all">
@@ -130,4 +130,29 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const setupUserEcho = () => {
+        if(window.Echo) {
+            window.Echo.private('App.Models.User.' + {{ auth()->id() }})
+                .listen('.pesan.baru', (e) => {
+                    fetch(window.location.href)
+                        .then(res => res.text())
+                        .then(html => {
+                            const doc = new DOMParser().parseFromString(html, 'text/html');
+                            const newContainer = doc.getElementById('user-transactions-container');
+                            const currentContainer = document.getElementById('user-transactions-container');
+                            if(newContainer && currentContainer) {
+                                currentContainer.innerHTML = newContainer.innerHTML;
+                            }
+                        });
+                });
+        } else {
+            setTimeout(setupUserEcho, 500);
+        }
+    };
+    setupUserEcho();
+});
+</script>
 @endsection

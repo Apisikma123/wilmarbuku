@@ -139,7 +139,7 @@
             </div>
         </form>
 
-        <div class="overflow-x-auto">
+        <div id="transactions-table-container" class="overflow-x-auto">
             <table class="w-full text-left text-sm whitespace-nowrap">
                 <thead class="text-[10px] text-slate-500 font-black uppercase tracking-widest bg-slate-50/50 border-b border-slate-200">
                     <tr>
@@ -393,4 +393,31 @@ function filterTable(input) {
         }
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const setupTableEcho = () => {
+        if(window.Echo) {
+            window.Echo.private('App.Models.User.' + {{ auth()->id() }})
+                .notification((notification) => {
+                    fetch(window.location.href)
+                        .then(res => res.text())
+                        .then(html => {
+                            const doc = new DOMParser().parseFromString(html, 'text/html');
+                            const newTable = doc.getElementById('transactions-table-container');
+                            const currentTable = document.getElementById('transactions-table-container');
+                            if(newTable && currentTable) {
+                                currentTable.innerHTML = newTable.innerHTML;
+                                // Re-initialize lucide icons for the new table rows
+                                if(window.lucide) {
+                                    window.lucide.createIcons();
+                                }
+                            }
+                        });
+                });
+        } else {
+            setTimeout(setupTableEcho, 500);
+        }
+    };
+    setupTableEcho();
+});
 </script>

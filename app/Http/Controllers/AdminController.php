@@ -781,4 +781,15 @@ class AdminController extends Controller
             'maxBooks' => $maxBooks
         ];
     }
+
+    public function markNotificationAsRead($id = null)
+    {
+        if ($id) {
+            auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+        } else {
+            auth()->user()->unreadNotifications->markAsRead();
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

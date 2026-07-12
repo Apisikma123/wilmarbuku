@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksi_checkout', function (Blueprint $table) {
-            $table->index(['status_pembayaran', 'created_at'], 'idx_status_created');
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksi_checkout', function (Blueprint $table) {
-            $table->dropIndex('idx_status_created');
-        });
+        Schema::dropIfExists('notifications');
     }
 };

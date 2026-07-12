@@ -56,6 +56,13 @@ class ProfileController extends Controller
         $user->save();
 
         if ($isNimUpdated) {
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AdminNotification(
+                'Permintaan Validasi NIM',
+                "Pengguna {$user->nama_lengkap} meminta validasi NIM ({$user->identitas_kampus}).",
+                "/admin/users?search=" . urlencode($user->nama_lengkap)
+            ));
+            
             return redirect()->back()->with('success', 'Profil berhasil diperbarui. NIM Anda akan divalidasi admin terlebih dahulu untuk akses akun internal.');
         }
 
