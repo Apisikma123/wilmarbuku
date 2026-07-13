@@ -42,11 +42,15 @@ class AuthController extends Controller
                 Auth::login($user, $request->has('remember'));
                 $request->session()->regenerate();
                 
-                $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
+                $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
                 $intendedUrl = session()->pull('url.intended', $redirectUrl);
-                if ($user->role !== 'admin' && str_contains($intendedUrl, '/admin')) {
-                    $intendedUrl = $redirectUrl;
+                
+                if ($user->role === 'admin') {
+                    if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+                } else {
+                    if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
                 }
+                
                 return redirect()->to($intendedUrl);
             }
 
@@ -148,12 +152,13 @@ class AuthController extends Controller
         $request->session()->forget(['otp_user_id', 'remember_me']);
         $request->session()->regenerate();
 
-        $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
-        
+        $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
         $intendedUrl = session()->pull('url.intended', $redirectUrl);
-        // Jika user bukan admin tapi intended url nya ada /admin, paksa ke dashboard biasa
-        if ($user->role !== 'admin' && str_contains($intendedUrl, '/admin')) {
-            $intendedUrl = $redirectUrl;
+        
+        if ($user->role === 'admin') {
+            if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+        } else {
+            if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
         }
 
         $response = redirect()->to($intendedUrl);
@@ -268,11 +273,15 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : 'dashboard';
+            $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
             $intendedUrl = session()->pull('url.intended', $redirectUrl);
-            if ($user->role !== 'admin' && str_contains($intendedUrl, '/admin')) {
-                $intendedUrl = $redirectUrl;
+            
+            if ($user->role === 'admin') {
+                if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+            } else {
+                if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
             }
+            
             return redirect()->to($intendedUrl);
 
         } catch (\Exception $e) {

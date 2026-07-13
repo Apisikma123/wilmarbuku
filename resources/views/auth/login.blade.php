@@ -16,12 +16,18 @@
         }
     </style>
 </head>
-<body class="bg-pattern min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between relative bg-cover bg-center bg-no-repeat bg-fixed" style="background-image: url('{{ asset('images/Login-Background.png') }}');">
+    <div class="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
     
-    <div class="flex-grow flex items-center justify-center p-6">
-        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.05)] max-w-md w-full relative z-10">
+    <div class="flex-grow flex items-center justify-center p-0 md:p-6">
+        <div class="bg-white/85 backdrop-blur-md border-0 md:border md:border-white/40 p-6 sm:p-8 md:p-10 rounded-none md:rounded-2xl shadow-none md:shadow-[0_8px_32px_rgba(0,0,0,0.1)] max-w-md w-full min-h-screen md:min-h-0 flex flex-col justify-center relative z-10">
+            <!-- Back Arrow -->
+            <a href="{{ url('/') }}" class="absolute top-8 left-8 text-gray-400 hover:text-primary transition-transform hover:-translate-x-1 flex items-center justify-center p-2 -ml-2 -mt-2">
+                <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+            </a>
+
             <!-- Logo -->
-            <div class="flex justify-center mb-6">
+            <div class="flex justify-center mb-6 mt-2">
                 <img src="{{ asset('images/wil.png') }}" alt="Wilmar Logo" class="h-12 object-contain">
             </div>
             
