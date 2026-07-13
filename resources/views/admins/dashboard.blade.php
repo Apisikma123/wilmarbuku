@@ -227,8 +227,6 @@
             </div>
         </div>
     </div>
-@endsection
-
 <script>
     function filterTable(input) {
         let filter = input.value.toLowerCase();
@@ -244,4 +242,6 @@
                 tr[i].style.display = "none";
             }
         }
+    }
 </script>
+@endsection
