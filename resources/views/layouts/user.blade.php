@@ -68,7 +68,7 @@
                     }
                 @endphp
 
-                <div class="flex md:hidden items-center gap-4">
+                <div class="flex md:hidden items-center gap-2">
                     @if(auth()->check())
                     <div x-data="{ 
                         unreadPesan: {{ $unreadPesan }},
@@ -85,19 +85,19 @@
                             };
                             setupEcho();
                         }
-                    }">
-                        <a href="/pesan-masuk" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center">
+                    }" class="flex items-center justify-center">
+                        <a href="/pesan-masuk" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10">
                             <span class="material-symbols-outlined text-xl">mail</span>
-                            <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
+                            <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
                         </a>
                     </div>
                     @endif
                     
                     @if(!auth()->check() || auth()->user()->role !== 'admin')
-                    <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform">
+                    <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
                         @if($cartQty > 0)
-                        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $cartQty }}</span>
+                        <span class="absolute top-0 right-0 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $cartQty }}</span>
                         @endif
                     </a>
                     @endif
@@ -119,7 +119,7 @@
             </div>
             
             <!-- User Actions Desktop -->
-            <div class="hidden md:flex items-center gap-6 ml-auto">
+            <div class="hidden md:flex items-center gap-4 ml-auto">
                 @if(auth()->check())
                 <div x-data="{ 
                     unreadPesan: {{ $unreadPesan }},
@@ -136,19 +136,19 @@
                           };
                           setupEcho();
                       }
-                }">
-                    <a href="/pesan-masuk" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center">
-                        <span class="material-symbols-outlined">mail</span>
-                        <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
+                }" class="flex items-center justify-center">
+                    <a href="/pesan-masuk" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
+                        <span class="material-symbols-outlined text-[24px]">mail</span>
+                        <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute top-0.5 right-0.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
                     </a>
                 </div>
                 @endif
 
                 @if(!auth()->check() || auth()->user()->role !== 'admin')
-                <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform">
-                    <span class="material-symbols-outlined">shopping_cart</span>
+                <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
+                    <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
                     @if($cartQty > 0)
-                    <span class="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
+                    <span class="absolute top-0.5 right-0.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
                     @endif
                 </a>
                 @endif
