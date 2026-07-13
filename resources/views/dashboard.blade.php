@@ -3,30 +3,29 @@
 @section('content')
 
     <!-- Banner Section -->
-    <div class="bg-gradient-to-b from-primary to-[#004b23] md:bg-[#004b23] relative">
-        <!-- Subtle Pattern Background -->
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    <div class="relative bg-[#00391a] bg-contain md:bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/dashboard banner.png') }}')">
+        <!-- Dark overlay to ensure content remains readable against the background image -->
+        <div class="absolute inset-0 bg-black/20"></div>
         
         <div class="max-w-[1280px] mx-auto px-0 md:px-6 py-6 md:py-8 relative z-10">
 
 
-            <div class="flex overflow-x-auto hide-scroll snap-x snap-mandatory gap-4 px-4 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4">
+            <div id="book-banner-slider" class="flex overflow-x-auto hide-scroll snap-x snap-mandatory gap-4 px-4 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4">
                 
                 @foreach($buku->take(4) as $index => $item)
                 <a href="{{ route('buku.detail', $item->id) }}" class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-auto md:min-w-[260px] lg:min-w-[280px] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-b {{ $item->cover_image }} @endif rounded-lg aspect-[4/3] md:aspect-[3/4] p-4 md:p-6 flex flex-col justify-between text-white shadow-xl group cursor-pointer border border-white/10 relative overflow-hidden block">
                     @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
                         <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                     @endif
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10"></div>
+
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
-                        <span class="inline-block bg-secondary text-white text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow-sm mb-1 md:mb-2">{{ $item->kategori }}</span>
                         @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http')))
                             <h3 class="text-xl md:text-2xl font-bold font-display uppercase tracking-tight leading-tight">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
                         @endif
-                        <p class="text-[10px] md:text-xs text-white/90 drop-shadow-md font-medium">Oleh: {{ $item->pengarang }}</p>
                     </div>
                     <div class="relative z-20 mt-auto text-center">
-                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-slate-900 transition-colors">Lihat Detail</span>
+                        <span class="inline-block bg-white/10 backdrop-blur border border-white/30 text-white text-[10px] md:text-sm font-semibold px-4 md:px-6 py-1.5 md:py-2 rounded-full group-hover:bg-white group-hover:text-slate-900 transition-colors shadow-[0_4px_15px_rgba(255,255,255,0.15)]">Lihat Detail</span>
                     </div>
                 </a>
                 @endforeach
@@ -48,11 +47,14 @@
     <div class="flex-grow max-w-[1280px] mx-auto w-full px-4 md:px-6 py-6 md:py-12 space-y-8 md:space-y-16 pb-24 md:pb-12">
         
         <!-- Quick Categories -->
+        @php
+            $bookIcons = ['menu_book', 'auto_stories', 'import_contacts', 'library_books', 'book', 'collections_bookmark', 'chrome_reader_mode'];
+        @endphp
         <div class="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
-            @foreach($global_kategoris->take(7) as $kategori)
+            @foreach($global_kategoris->take(7) as $index => $kategori)
             <a href="{{ route('kategori', ['kategori' => [$kategori->nama_kategori]]) }}" class="flex flex-col items-center gap-2 md:gap-3 group min-w-[72px]">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
-                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">{{ $kategori->icon ?? 'auto_stories' }}</span>
+                    <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">{{ $bookIcons[$index % count($bookIcons)] }}</span>
                 </div>
                 <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight line-clamp-2">{!! str_replace(' ', '<br>', $kategori->nama_kategori) !!}</span>
             </a>
@@ -73,11 +75,11 @@
             
             <!-- Pilihan Kampus (Left - 60%) -->
             <div class="w-full lg:w-[60%]">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
+                <div class="flex justify-between items-center mb-6 gap-2">
+                    <h2 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary">
                         <span class="material-symbols-outlined text-secondary">star</span> Pilihan Prioritas Kampus
                     </h2>
-                    <a href="{{ route('kategori', ['filter' => 'prioritas']) }}" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
+                    <a href="{{ route('kategori', ['filter' => 'prioritas']) }}" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -116,11 +118,11 @@
 
             <!-- Kategori Terpopuler (Right - 40%) -->
             <div class="w-full lg:w-[40%]">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
-                        <span class="material-symbols-outlined text-secondary">category</span> Partner Penerbit
+                <div class="flex justify-between items-center mb-6 gap-2">
+                    <h2 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined text-secondary">apartment</span> Partner Penerbit
                     </h2>
-                    <a href="{{ route('kategori') }}" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
+                    <a href="{{ route('kategori') }}" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4">
@@ -142,14 +144,14 @@
 
         <!-- Full Width Section (Buku Resmi & Akademik) -->
         <div>
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-between items-center mb-6 gap-2">
                 <div>
-                    <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
+                    <h2 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary">
                         <span class="material-symbols-outlined text-secondary">local_library</span> Referensi Resmi WBI
                     </h2>
-                    <p class="text-sm text-on-surface-variant mt-1">Daftar buku wajib untuk mahasiswa semester berjalan.</p>
+                    <p class="text-xs md:text-sm text-on-surface-variant mt-1">Daftar buku wajib untuk mahasiswa semester berjalan.</p>
                 </div>
-                <a href="{{ route('kategori') }}" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Semua</a>
+                <a href="{{ route('kategori') }}" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
             </div>
 
             <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30">
@@ -184,11 +186,11 @@
 
         <!-- Donasi Lagi Yuk Section -->
         <div>
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold flex items-center gap-2 text-primary">
+            <div class="flex justify-between items-center mb-6 gap-2">
+                <h2 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary">
                     <span class="material-symbols-outlined text-secondary">history</span> Donasi Lagi Yuk
                 </h2>
-                <a href="/transaksi?status=selesai" class="text-sm text-primary font-semibold border border-primary/20 px-4 py-1.5 rounded-full hover:bg-primary/5 transition-colors">Lihat Riwayat</a>
+                <a href="/transaksi?status=selesai" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Riwayat</a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -216,4 +218,44 @@
         </div>
 
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slider = document.getElementById('book-banner-slider');
+        if (slider) {
+            let currentIndex = 0;
+            const items = slider.children;
+            const totalItems = items.length;
+            let isMoving = false;
+            
+            if (totalItems > 1) {
+                // Track manual scrolls to update current index
+                slider.addEventListener('scroll', () => {
+                    if (isMoving) return;
+                    const scrollLeft = slider.scrollLeft;
+                    const itemWidth = items[0].getBoundingClientRect().width;
+                    const gap = 16; // gap-4 is 16px
+                    currentIndex = Math.round(scrollLeft / (itemWidth + gap));
+                });
+
+                // Auto slide every 4 seconds
+                setInterval(() => {
+                    // Slide only on mobile where items overflow and snap
+                    if (window.innerWidth < 768) {
+                        currentIndex = (currentIndex + 1) % totalItems;
+                        const itemWidth = items[0].getBoundingClientRect().width;
+                        const gap = 16;
+                        isMoving = true;
+                        slider.scrollTo({
+                            left: currentIndex * (itemWidth + gap),
+                            behavior: 'smooth'
+                        });
+                        
+                        setTimeout(() => { isMoving = false; }, 600);
+                    }
+                }, 4000);
+            }
+        }
+    });
+    </script>
 @endsection

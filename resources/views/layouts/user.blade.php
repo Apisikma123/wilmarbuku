@@ -24,6 +24,7 @@
     </style>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col overflow-x-hidden">
+    @if(!View::hasSection('hide_header'))
 
     @if(auth()->check() && auth()->user()->role === 'admin')
     <div class="bg-slate-900 text-white px-4 py-2 flex items-center justify-between z-[100] relative text-xs shrink-0">
@@ -48,7 +49,7 @@
                     <button class="md:hidden text-white flex items-center">
                         <span class="material-symbols-outlined">menu</span>
                     </button>
-                    <a href="/dashboard" class="flex items-center gap-2">
+                    <a href="/dashboard" class="hidden md:flex items-center gap-2">
                         <img src="/images/wil.png" alt="WilmarBOOKS" class="h-7 md:h-12 object-contain bg-white rounded px-2 py-1 md:bg-transparent md:p-0 md:rounded-none">
                     </a>
                 </div>
@@ -151,6 +152,7 @@
                     @endif
                 </a>
                 @endif
+                @auth
                 <div class="relative group pt-4 pb-4">
                     <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
                         <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm uppercase">
@@ -309,6 +311,13 @@
                         </div>
                     </div>
                 </div>
+                @else
+                <div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+                    <a href="{{ route('login') }}" class="flex items-center gap-2 bg-[#003215] text-white font-bold py-2 px-5 rounded-lg hover:bg-[#004b23] transition-colors shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">login</span> Masuk / Daftar
+                    </a>
+                </div>
+                @endauth
             </div>
         </div>
         
@@ -431,6 +440,7 @@
             <span>Akun</span>
         </a>
     </nav>
+    @endif
 
     <!-- Main Content -->
     <main class="flex-grow w-full md:pb-0 pb-16">

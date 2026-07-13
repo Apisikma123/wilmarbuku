@@ -2,7 +2,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-primary relative px-6 md:px-12 py-24 md:py-32 overflow-hidden flex items-center min-h-[819px]">
+<section class="bg-primary relative px-6 md:px-12 py-12 md:py-24 overflow-hidden flex items-center min-h-[500px] md:min-h-[700px]">
 <!-- Background Image with Overlay -->
 <div class="absolute inset-0 z-0">
 <img alt="Wilmar Building" class="w-full h-full object-cover object-center" src="{{ asset('images/landing.jpeg') }}"/>
@@ -10,7 +10,7 @@
 </div>
 <div class="relative z-10 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
 <div class="space-y-8">
-<h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight">Belikan Buku,<br/>Bantu Mahasiswa WBI Lulus</h1>
+<h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight">Donasikan Buku,<br/>Kembangkan Literasi Di Wilmar</h1>
 <p class="text-lg md:text-xl text-white/90 max-w-lg leading-relaxed font-light">
         Pilih buku dari katalog, bayar online, dan buku langsung dikirim ke perpustakaan kampus WBI. Donasi Anda jadi referensi belajar mahasiswa — bukan cuma angka di laporan.
       </p>
@@ -31,42 +31,42 @@
 </div>
 </section>
 <!-- Impact Stats -->
-<section class="bg-surface py-16 border-b border-outline-variant/30">
+<section class="bg-surface py-10 md:py-16 border-b border-outline-variant/30">
 <div class="px-6 md:px-12 max-w-7xl mx-auto">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30">
-<div class="py-6 md:py-0 px-6 text-center md:text-left flex items-center gap-6">
-<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-3xl text-primary">menu_book</span>
+<div class="grid grid-cols-3 gap-2 md:gap-8 divide-x divide-outline-variant/30">
+<div class="py-4 md:py-0 px-2 md:px-6 flex flex-col md:flex-row items-center justify-center md:justify-start text-center md:text-left gap-2 md:gap-6">
+<div class="w-10 h-10 md:w-16 md:h-16 bg-surface-container-low rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-xl md:text-3xl text-primary">menu_book</span>
 </div>
 <div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">{{ number_format($global_total_buku, 0, ',', '.') }}+</p>
-<p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Buku Terkumpul</p>
+<p class="text-xl sm:text-2xl md:text-4xl font-bold text-primary mb-0 md:mb-1 tracking-tight">{{ number_format($global_total_buku, 0, ',', '.') }}+</p>
+<p class="text-[9px] sm:text-[10px] md:text-sm font-medium text-on-surface-variant uppercase tracking-wider leading-tight">Buku Terkumpul</p>
 </div>
 </div>
-<div class="py-6 md:py-0 px-6 text-center md:text-left flex items-center gap-6">
-<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-3xl text-primary">volunteer_activism</span>
-</div>
-<div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">{{ number_format($global_donatur_aktif, 0, ',', '.') }}+</p>
-<p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Donatur Aktif</p>
-</div>
-</div>
-<div class="py-6 md:py-0 px-6 text-center md:text-left flex items-center gap-6">
-<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-3xl text-primary">verified_user</span>
+<div class="py-4 md:py-0 px-2 md:px-6 flex flex-col md:flex-row items-center justify-center md:justify-start text-center md:text-left gap-2 md:gap-6">
+<div class="w-10 h-10 md:w-16 md:h-16 bg-surface-container-low rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-xl md:text-3xl text-primary">volunteer_activism</span>
 </div>
 <div>
-<p class="text-4xl font-bold text-primary mb-1 tracking-tight">100%</p>
-<p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Transparansi Laporan</p>
+<p class="text-xl sm:text-2xl md:text-4xl font-bold text-primary mb-0 md:mb-1 tracking-tight">{{ number_format($global_donatur_aktif, 0, ',', '.') }}+</p>
+<p class="text-[9px] sm:text-[10px] md:text-sm font-medium text-on-surface-variant uppercase tracking-wider leading-tight">Donatur Aktif</p>
+</div>
+</div>
+<div class="py-4 md:py-0 px-2 md:px-6 flex flex-col md:flex-row items-center justify-center md:justify-start text-center md:text-left gap-2 md:gap-6">
+<div class="w-10 h-10 md:w-16 md:h-16 bg-surface-container-low rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-xl md:text-3xl text-primary">verified_user</span>
+</div>
+<div>
+<p class="text-xl sm:text-2xl md:text-4xl font-bold text-primary mb-0 md:mb-1 tracking-tight">100%</p>
+<p class="text-[9px] sm:text-[10px] md:text-sm font-medium text-on-surface-variant uppercase tracking-wider leading-tight">Transparansi Laporan</p>
 </div>
 </div>
 </div>
 </div>
 </section>
 <!-- About/Vision -->
-<section class="px-6 md:px-12 max-w-7xl mx-auto py-32">
-<div class="grid md:grid-cols-2 gap-20 items-center">
+<section class="px-6 md:px-12 max-w-7xl mx-auto py-12 md:py-24">
+<div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
 <div class="order-2 md:order-1 relative rounded-xl overflow-hidden aspect-[4/3] max-w-xl mx-auto w-full shadow-2xl shadow-primary/10">
 <div class="bg-cover bg-center w-full h-full" data-alt="A close-up shot of hands exchanging a stack of high-quality academic and business books. The lighting is warm and inviting, highlighting the crisp pages and professional covers. The setting feels like a modern academic institution with subtle forest green branding in the background. The mood is collaborative and empowering." style="background-image: url('{{ asset('images/perpus.png') }}')"></div>
 </div>
@@ -84,22 +84,24 @@
 </div>
 </section>
 <!-- Featured Catalog -->
-<section class="bg-surface-container-low py-32 border-y border-outline-variant/30">
+<section class="bg-surface-container-low py-12 md:py-24 border-y border-outline-variant/30">
 <div class="px-6 md:px-12 max-w-7xl mx-auto">
-<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-4 md:gap-6">
 <div>
-<h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 tracking-tight">Pilihan Buku Donasi</h2>
-<p class="text-lg text-on-surface-variant">Sedang dibutuhkan perpustakaan kampus.</p>
+<h2 class="text-2xl md:text-4xl font-bold text-primary mb-2 md:mb-4 tracking-tight">Pilihan Buku Donasi</h2>
+<p class="text-sm md:text-lg text-on-surface-variant">Sedang dibutuhkan perpustakaan kampus.</p>
 </div>
-<a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group" href="#">
+<div class="flex flex-wrap items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+<a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group" href="{{ route('kategori') }}">
                 Lihat Semua Buku 
                 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
 </a>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+</div>
+<div id="buku-carousel" class="flex items-stretch overflow-x-auto pb-8 -mx-6 px-6 snap-x snap-mandatory scroll-smooth gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 @foreach($buku as $item)
-<div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-<a href="{{ route('buku.detail', $item->id) }}" class="block">
+<div class="w-[85vw] max-w-[280px] sm:w-[280px] sm:max-w-none flex-shrink-0 snap-start bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
+<a href="{{ route('buku.detail', $item->id) }}" class="flex flex-col flex-grow">
 <div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
 @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
 <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
@@ -125,8 +127,8 @@
 <div class="mb-3">
 <span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">{{ $item->kategori }}</span>
 </div>
-<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">{{ $item->judul_buku }}</h3>
-<p class="text-primary font-bold text-lg mb-4">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors min-h-[3.5rem]">{{ $item->judul_buku }}</h3>
+<p class="text-primary font-bold text-lg mb-4 mt-auto">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
 </a>
 <div class="mt-auto pt-4">
 @if($item->stok_dibutuhkan <= 0)
@@ -160,12 +162,12 @@
 </div>
 </section>
 <!-- How It Works & Tools -->
-<section class="py-32 bg-surface">
+<section class="py-12 md:py-24 bg-surface">
 <div class="px-6 md:px-12 max-w-7xl mx-auto">
-<div class="grid lg:grid-cols-2 gap-20">
+<div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
 <!-- How It Works (Timeline) -->
 <div>
-<h2 class="text-3xl font-bold text-primary mb-12 tracking-tight">Proses Donasi</h2>
+<h2 class="text-3xl font-bold text-primary mb-8 md:mb-12 tracking-tight">Proses Donasi</h2>
 <div class="space-y-10 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-outline-variant before:to-transparent">
 <!-- Step 1 -->
 <div class="relative flex items-start gap-6">
@@ -226,21 +228,28 @@
 </div>
 </section>
 <!-- Final CTA -->
-<section class="px-6 md:px-12 max-w-7xl mx-auto py-24 text-center">
-<div class="bg-primary rounded-2xl p-16 md:p-24 shadow-2xl relative">
-<div class="absolute inset-0 overflow-hidden rounded-2xl">
-<!-- Decorative element -->
-<div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none">
-<span class="material-symbols-outlined text-[400px] text-white">auto_stories</span>
+<section class="px-4 md:px-12 max-w-7xl mx-auto py-8 md:py-16 text-center">
+<div class="relative rounded-[2rem] px-6 py-10 md:p-20 shadow-2xl overflow-hidden group">
+<!-- Background Image with Overlay -->
+<div class="absolute inset-0 z-0 bg-primary">
+<img src="{{ asset('images/Banner.png') }}" alt="Ayo Donasi" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000 ease-out opacity-70">
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-primary/70 to-transparent"></div>
+<!-- Decorative blur blobs -->
+<div class="absolute -left-20 -bottom-20 w-64 h-64 bg-secondary/30 blur-[80px] rounded-full mix-blend-screen hidden md:block"></div>
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary-container/30 blur-[80px] rounded-full mix-blend-screen hidden md:block"></div>
 </div>
-</div>
-<div class="relative z-10">
-<h2 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Rak Perpustakaan Masih Kosong</h2>
-<p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 font-light">Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.</p>
+
+<div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+<h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-5 tracking-tight">
+Rak Perpustakaan Masih Kosong
+</h2>
+<p class="text-sm md:text-lg text-white/90 mb-8 md:mb-10 font-light leading-relaxed">
+Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.
+</p>
 @if(!auth()->check() || auth()->user()->role !== 'admin')
-<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-bold px-10 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-lg inline-block text-center">
-                        Donasi Sekarang
-                    </a>
+<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-bold px-8 py-3 md:px-10 md:py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-sm md:text-lg inline-block text-center">
+Donasi Sekarang
+</a>
 @endif
 </div>
 </div>
@@ -381,6 +390,37 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // Carousel Logic
+    const carousel = document.getElementById('buku-carousel');
+
+    if (carousel) {
+        const scrollAmount = 300;
+        
+        const scrollNext = () => {
+            // Check if reached the end
+            if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 10) {
+                carousel.scrollTo({ left: 0, behavior: 'smooth' }); // Rewind
+            } else {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        };
+
+        // Autoplay logic
+        let autoplayInterval = setInterval(scrollNext, 3000);
+
+        // Pause autoplay on hover/touch
+        const pauseAutoplay = () => clearInterval(autoplayInterval);
+        const resumeAutoplay = () => {
+            clearInterval(autoplayInterval);
+            autoplayInterval = setInterval(scrollNext, 3000);
+        };
+
+        carousel.addEventListener('mouseenter', pauseAutoplay);
+        carousel.addEventListener('mouseleave', resumeAutoplay);
+        carousel.addEventListener('touchstart', pauseAutoplay, {passive: true});
+        carousel.addEventListener('touchend', resumeAutoplay);
+    }
 });
 </script>
 @endsection

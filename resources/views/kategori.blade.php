@@ -15,11 +15,10 @@
     </div>
 </div>
 
-
-
 <div class="max-w-[1280px] mx-auto px-0 md:px-6 py-0 md:py-12">
     <!-- Filters & Results -->
     <form id="filterForm" action="{{ route('kategori') }}" method="GET" class="flex flex-col md:flex-row gap-0 md:gap-10">
+        <input type="hidden" name="sort" id="hidden-sort" value="{{ request('sort', 'Terbaru') }}">
         
         <!-- Mobile Header (Only visible on mobile) -->
         <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 pb-2 shadow-sm w-full">
@@ -79,37 +78,44 @@
             <!-- Sorting & Filters -->
             <div class="flex items-center gap-2 px-4 py-2 justify-between">
                 <div class="flex gap-2 flex-grow overflow-x-auto hide-scroll">
-                    <select name="sort" class="bg-white border border-gray-200 rounded text-xs px-2 py-1.5 text-gray-600 focus:outline-none shrink-0 sort-select">
+                    <select class="bg-white border border-gray-200 rounded text-xs pl-2 pr-8 py-1.5 text-gray-600 focus:outline-none shrink-0 min-w-[210px] sort-select-display">
                         <option value="Terbaru" @if(request('sort') == 'Terbaru') selected @endif>Sortir: Terbaru</option>
                         <option value="Terpopuler" @if(request('sort') == 'Terpopuler') selected @endif>Sortir: Terpopuler</option>
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
                         <option value="Harga: Tinggi ke Rendah" @if(request('sort') == 'Harga: Tinggi ke Rendah') selected @endif>Harga: Tinggi ke Rendah</option>
                     </select>
-                    <select class="bg-white border border-gray-200 rounded text-xs px-2 py-1.5 text-gray-600 focus:outline-none shrink-0">
-                        <option>Garansi Pengiriman</option>
-                    </select>
                 </div>
                 <div class="flex items-center gap-1 shrink-0">
-                    <button type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white"><span class="material-symbols-outlined text-[16px]">swap_vert</span></button>
-                    <button type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white"><span class="material-symbols-outlined text-[16px]">filter_alt</span></button>
+                    <button id="mobile-sort-toggle-btn" type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white" title="Urutkan Harga"><span class="material-symbols-outlined text-[16px]">swap_vert</span></button>
+                    <button id="mobile-filter-btn" type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white" title="Filter"><span class="material-symbols-outlined text-[16px]">filter_alt</span></button>
                 </div>
             </div>
             
             <div class="px-4 py-2 bg-slate-50 border-t border-gray-100 text-[10px] text-gray-500 flex justify-between items-center">
-                <span>Hasil pencarian ditemukan: <strong>{{ $buku->total() }} produk</strong></span>
+                <span id="mobile-product-count">Hasil pencarian ditemukan: <strong>{{ $buku->total() }} produk</strong></span>
             </div>
         </div>
         
+        <!-- Sidebar Drawer Backdrop (Mobile only) -->
+        <div id="filter-backdrop" class="fixed inset-0 bg-black/50 z-[190] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+
         <!-- Sidebar -->
-        <aside class="hidden md:block w-full md:w-64 flex-shrink-0">
-            <div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-5 sticky top-24">
+        <aside id="filter-sidebar" class="fixed inset-y-0 right-0 z-[200] w-[80%] max-w-[320px] bg-white transform translate-x-full transition-transform duration-300 ease-in-out p-6 overflow-y-auto md:static md:w-64 md:translate-x-0 md:z-auto md:bg-transparent md:p-0 md:overflow-visible flex-shrink-0">
+            <div class="md:bg-white md:rounded-xl md:shadow-sm md:border border-outline-variant/30 md:p-5 sticky md:top-24">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">filter_alt</span> Filter
                     </h2>
-                    @if(request()->has('kategori') || request()->has('penerbit') || request()->has('search'))
-                        <a href="{{ route('kategori') }}" class="text-xs text-red-500 hover:underline">Reset</a>
-                    @endif
+                    <div class="flex items-center gap-3">
+                        <div id="reset-filter-container">
+                            @if(!empty(request('kategori')) || !empty(request('penerbit')) || !empty(request('search')) || !empty(request('pengarang')))
+                                <a href="{{ route('kategori') }}" class="text-xs text-red-500 hover:underline">Reset</a>
+                            @endif
+                        </div>
+                        <button type="button" id="close-filter-btn" class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
                 </div>
                 
                 @if(request('search'))
@@ -184,7 +190,7 @@
                 </div>
                 <div class="hidden md:flex items-center gap-3">
                     <label class="text-sm text-on-surface-variant">Urutkan:</label>
-                    <select name="sort" class="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary sort-select">
+                    <select class="bg-white border border-outline-variant rounded-lg pl-3 pr-10 py-1.5 text-sm outline-none focus:border-primary min-w-[210px] sort-select-display">
                         <option value="Terbaru" @if(request('sort') == 'Terbaru') selected @endif>Terbaru</option>
                         <option value="Terpopuler" @if(request('sort') == 'Terpopuler') selected @endif>Terpopuler</option>
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
@@ -257,24 +263,121 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gunakan event delegation agar tidak hilang saat main-content-area diganti
     form.addEventListener('change', function(e) {
         if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+            if(e.target.name === 'kategori[]') {
+                syncMobileChips();
+            }
             fetchResults(new URLSearchParams(new FormData(form)).toString());
         }
         if(e.target.classList.contains('mobile-cat-radio')) {
+            const val = e.target.value;
+            // Uncheck all desktop category checkboxes first
+            document.querySelectorAll('input[name="kategori[]"][type="checkbox"]').forEach(cb => {
+                cb.checked = (cb.value === val);
+            });
+
             // Update active state for mobile chips
             document.querySelectorAll('.mobile-chip').forEach(chip => {
-                chip.classList.remove('border-blue-500', 'text-blue-500', 'bg-blue-50');
+                chip.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
                 chip.classList.add('border-gray-200', 'text-gray-600');
             });
             const activeChip = e.target.nextElementSibling;
             activeChip.classList.remove('border-gray-200', 'text-gray-600');
-            activeChip.classList.add('border-blue-500', 'text-blue-500', 'bg-blue-50');
+            activeChip.classList.add('border-primary', 'text-primary', 'bg-primary/10');
             
             fetchResults(new URLSearchParams(new FormData(form)).toString());
         }
-        if(e.target.classList.contains('sort-select')) {
+        if(e.target.classList.contains('sort-select-display')) {
+            const val = e.target.value;
+            document.getElementById('hidden-sort').value = val;
+            document.querySelectorAll('.sort-select-display').forEach(sel => {
+                sel.value = val;
+            });
             fetchResults(new URLSearchParams(new FormData(form)).toString());
         }
     });
+
+    // Toggle sorting asc/desc on swap_vert click
+    const swapVertBtn = document.getElementById('mobile-sort-toggle-btn');
+    if(swapVertBtn) {
+        swapVertBtn.addEventListener('click', function() {
+            const hiddenSort = document.getElementById('hidden-sort');
+            let currentVal = hiddenSort.value;
+            let newVal = 'Harga: Rendah ke Tinggi';
+            if (currentVal === 'Harga: Rendah ke Tinggi') {
+                newVal = 'Harga: Tinggi ke Rendah';
+            } else if (currentVal === 'Harga: Tinggi ke Rendah') {
+                newVal = 'Harga: Rendah ke Tinggi';
+            }
+            hiddenSort.value = newVal;
+            document.querySelectorAll('.sort-select-display').forEach(sel => {
+                sel.value = newVal;
+            });
+            fetchResults(new URLSearchParams(new FormData(form)).toString());
+        });
+    }
+
+    // Mobile filter drawer toggle
+    const filterBtn = document.getElementById('mobile-filter-btn');
+    const closeFilterBtn = document.getElementById('close-filter-btn');
+    const filterSidebar = document.getElementById('filter-sidebar');
+    const filterBackdrop = document.getElementById('filter-backdrop');
+
+    if(filterBtn && filterSidebar && filterBackdrop) {
+        filterBtn.addEventListener('click', function() {
+            filterSidebar.classList.remove('translate-x-full');
+            filterSidebar.classList.add('translate-x-0');
+            filterBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+            filterBackdrop.classList.add('opacity-100', 'pointer-events-auto');
+            document.body.classList.add('overflow-hidden'); // Prevent background scrolling
+        });
+    }
+
+    function closeFilterDrawer() {
+        if(filterSidebar && filterBackdrop) {
+            filterSidebar.classList.remove('translate-x-0');
+            filterSidebar.classList.add('translate-x-full');
+            filterBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            filterBackdrop.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    if(closeFilterBtn) {
+        closeFilterBtn.addEventListener('click', closeFilterDrawer);
+    }
+    if(filterBackdrop) {
+        filterBackdrop.addEventListener('click', closeFilterDrawer);
+    }
+
+    function syncMobileChips() {
+        const checkedCats = Array.from(document.querySelectorAll('input[name="kategori[]"][type="checkbox"]:checked')).map(cb => cb.value);
+        
+        // Reset all chips style
+        document.querySelectorAll('.mobile-chip').forEach(chip => {
+            chip.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+            chip.classList.add('border-gray-200', 'text-gray-600');
+        });
+
+        let targetVal = null;
+        if (checkedCats.length === 1) {
+            targetVal = checkedCats[0];
+        } else if (checkedCats.length === 0) {
+            targetVal = "";
+        }
+
+        // Find the radio input with the target value
+        const radios = document.querySelectorAll('.mobile-cat-radio');
+        radios.forEach(radio => {
+            if (radio.value === targetVal) {
+                radio.checked = true;
+                const chipDiv = radio.nextElementSibling;
+                chipDiv.classList.remove('border-gray-200', 'text-gray-600');
+                chipDiv.classList.add('border-primary', 'text-primary', 'bg-primary/10');
+            } else {
+                radio.checked = false;
+            }
+        });
+    }
 
     // Handle pagination links
     document.addEventListener('click', function(e) {
@@ -287,12 +390,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchResults(queryString) {
         const url = '{{ route("kategori") }}?' + queryString;
-        window.history.pushState({}, '', url);
+        window.history.replaceState({}, '', url);
 
         const mainContent = document.getElementById('main-content-area');
         if(mainContent) {
             mainContent.style.transition = 'opacity 0.2s ease-in-out';
-            mainContent.style.opacity = '0.8'; // Sangat tipis agar tidak terasa seperti loading lama
+            mainContent.style.opacity = '0.8';
         }
 
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
@@ -305,6 +408,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const currentContent = document.getElementById('main-content-area');
                 currentContent.innerHTML = newContent.innerHTML;
                 currentContent.style.opacity = '1';
+            }
+            // Update mobile product count if it exists
+            const newMobileCount = doc.getElementById('mobile-product-count');
+            const currentMobileCount = document.getElementById('mobile-product-count');
+            if (newMobileCount && currentMobileCount) {
+                currentMobileCount.innerHTML = newMobileCount.innerHTML;
+            }
+            // Update reset button container if it exists
+            const newResetContainer = doc.getElementById('reset-filter-container');
+            const currentResetContainer = document.getElementById('reset-filter-container');
+            if (newResetContainer && currentResetContainer) {
+                currentResetContainer.innerHTML = newResetContainer.innerHTML;
             }
         }).catch(err => {
             console.error(err);
