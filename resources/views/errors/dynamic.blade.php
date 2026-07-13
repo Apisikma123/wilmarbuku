@@ -1,66 +1,135 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error {{ $ERROR_CODE ?? 'Oops' }} - WilmarBuku</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-    </style>
-</head>
-<body class="bg-[#f8f9ff] text-[#121c29] antialiased min-h-screen flex items-center justify-center relative overflow-hidden">
-    
-    <!-- Background Decoration -->
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-[#004b23] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-    <div class="absolute top-20 -right-20 w-72 h-72 bg-[#1b9c85] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-40 left-20 w-80 h-80 bg-[#b8860b] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+@extends('layouts.user')
+@section('hide_header', true)
 
-    <div class="relative z-10 max-w-2xl px-6 py-12 mx-auto text-center">
-        <!-- Icon/Illustration -->
-        <div class="mb-8 flex justify-center">
-            <div class="w-24 h-24 bg-[#EDF6EE] rounded-full flex items-center justify-center border border-[#004b23]/10 shadow-sm relative">
-                @if(($ERROR_CODE ?? 500) == 404)
-                    <span class="material-symbols-outlined text-5xl text-[#004b23]">explore_off</span>
-                @elseif(($ERROR_CODE ?? 500) == 403 || ($ERROR_CODE ?? 500) == 401)
-                    <span class="material-symbols-outlined text-5xl text-[#ba1a1a]">lock</span>
-                @elseif(($ERROR_CODE ?? 500) >= 500)
-                    <span class="material-symbols-outlined text-5xl text-[#ba1a1a]">dns</span>
-                @else
-                    <span class="material-symbols-outlined text-5xl text-[#004b23]">error</span>
-                @endif
-                <!-- Ping Animation -->
-                <div class="absolute inset-0 rounded-full border-2 border-[#004b23]/20 animate-ping opacity-75"></div>
-            </div>
+@section('content')
+<div class="relative w-full min-h-[80vh] flex flex-col items-center justify-center py-16 px-4 bg-white">
+
+    @php
+        $code = $ERROR_CODE ?? (isset($exception) ? $exception->getStatusCode() : 500);
+        $message = $ERROR_DESCRIPTION ?? (isset($exception) ? $exception->getMessage() : null);
+        
+        $errorMap = [
+            401 => [
+                'title' => 'Sesi Berakhir',
+                'desc' => 'Silakan masuk ke akun Anda terlebih dahulu untuk mengakses halaman ini.',
+                'icon' => 'login',
+                'severity' => 'warning',
+            ],
+            403 => [
+                'title' => 'Akses Ditolak',
+                'desc' => 'Anda tidak memiliki izin (hak akses) untuk membuka halaman ini.',
+                'icon' => 'lock',
+                'severity' => 'danger',
+            ],
+            404 => [
+                'title' => 'Halaman Tidak Ditemukan',
+                'desc' => 'Maaf, halaman yang Anda cari tidak ditemukan atau telah dipindahkan ke URL lain.',
+                'icon' => 'explore_off',
+                'severity' => 'warning',
+            ],
+            419 => [
+                'title' => 'Sesi Halaman Kedaluwarsa',
+                'desc' => 'Sesi keamanan halaman telah habis. Silakan segarkan halaman dan coba lagi.',
+                'icon' => 'update',
+                'severity' => 'warning',
+            ],
+            429 => [
+                'title' => 'Terlalu Banyak Permintaan',
+                'desc' => 'Sistem menerima terlalu banyak permintaan dari perangkat Anda. Silakan tunggu beberapa saat.',
+                'icon' => 'hourglass_empty',
+                'severity' => 'warning',
+            ],
+            500 => [
+                'title' => 'Kesalahan Server Internal',
+                'desc' => 'Terjadi kendala teknis pada sistem kami. Tim kami sedang berusaha memperbaikinya secepat mungkin.',
+                'icon' => 'dns',
+                'severity' => 'danger',
+            ],
+            503 => [
+                'title' => 'Layanan Sedang Dimaintain',
+                'desc' => 'Platform sedang dalam masa pemeliharaan berkala untuk peningkatan performa. Silakan kembali lagi nanti.',
+                'icon' => 'construction',
+                'severity' => 'info',
+            ],
+        ];
+
+        $mapped = $errorMap[$code] ?? [
+            'title' => 'Terjadi Kesalahan',
+            'desc' => 'Sistem mendeteksi kesalahan yang tidak terduga.',
+            'icon' => 'warning',
+            'severity' => 'danger',
+        ];
+
+        $title = $ERROR_TITLE ?? $mapped['title'];
+        $desc = $message ?: ($ERROR_DESCRIPTION ?? $mapped['desc']);
+        $icon = $mapped['icon'];
+        $severity = $mapped['severity'];
+
+        if ($severity === 'danger') {
+            $iconBg = 'bg-[#ffdad6]';
+            $iconColorClass = 'text-[#ba1a1a]';
+            $badgeText = 'Critical';
+            $badgeClass = 'bg-[#ffdad6] text-[#93000a]';
+            $ringColor = 'ring-[#ba1a1a]/15';
+        } elseif ($severity === 'warning') {
+            $iconBg = 'bg-[#ffdea6]';
+            $iconColorClass = 'text-[#7b5800]';
+            $badgeText = 'Warning';
+            $badgeClass = 'bg-[#ffdea6] text-[#715000]';
+            $ringColor = 'ring-[#7b5800]/15';
+        } else {
+            $iconBg = 'bg-[#eff4ff]';
+            $iconColorClass = 'text-[#003215]';
+            $badgeText = 'System Info';
+            $badgeClass = 'bg-[#eff4ff] text-[#00210c]';
+            $ringColor = 'ring-[#003215]/15';
+        }
+    @endphp
+
+    <div class="w-full max-w-2xl text-center flex flex-col items-center relative z-10">
+        
+        <!-- Giant Status Code (Background) -->
+        <div class="text-[120px] md:text-[180px] font-extrabold leading-none tracking-tighter text-[#003215]/5 select-none absolute -top-10 left-1/2 -translate-x-1/2 z-0 font-display pointer-events-none">
+            {{ $code }}
         </div>
 
-        <!-- Typography Code -->
-        <h1 class="text-[120px] md:text-[150px] font-bold leading-none tracking-tighter text-[#003215] drop-shadow-sm mb-2" style="text-shadow: 4px 4px 0px rgba(0, 50, 21, 0.05);">
-            {{ $ERROR_CODE ?? '500' }}
-        </h1>
-        
-        <!-- Error Title -->
-        <h2 class="text-3xl md:text-4xl font-bold text-[#004b23] mb-4">{{ $ERROR_TITLE ?? 'Server Error' }}</h2>
-        
-        <!-- Error Description -->
-        <p class="text-lg text-[#404941] mb-10 max-w-lg mx-auto leading-relaxed">
-            {{ $ERROR_DESCRIPTION ?? 'Terjadi kesalahan pada server kami. Silakan coba beberapa saat lagi.' }}
-        </p>
+        <div class="relative z-10 flex flex-col items-center">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {{ $badgeClass }} mb-8">
+                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                {{ $badgeText }}
+            </div>
 
-        <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{{ url('/') }}" class="inline-flex items-center gap-2 bg-[#004b23] text-white font-semibold px-8 py-3.5 rounded-lg hover:bg-[#003215] hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto justify-center">
-                <span class="material-symbols-outlined text-[20px]">home</span>
-                Kembali ke Beranda
-            </a>
-            
-            <a href="javascript:history.back()" class="inline-flex items-center gap-2 bg-white border border-[#c0c9be] text-[#404941] font-semibold px-8 py-3.5 rounded-lg hover:bg-[#f8f9ff] hover:text-[#121c29] transition-all w-full sm:w-auto justify-center">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-                Halaman Sebelumnya
-            </a>
+            <!-- Icon container -->
+            <div class="mb-8">
+                <div class="w-24 h-24 {{ $iconBg }} rounded-full flex items-center justify-center border border-white/50 shadow-sm relative ring-8 {{ $ringColor }}">
+                    <span class="material-symbols-outlined text-5xl {{ $iconColorClass }}">{{ $icon }}</span>
+                </div>
+            </div>
+
+            <!-- Error Heading -->
+            <h1 class="text-3xl md:text-4xl font-bold text-[#003215] mb-4 tracking-tight font-display leading-tight">
+                {{ $title }}
+            </h1>
+            <p class="text-[15px] md:text-[17px] text-[#404941] mb-10 max-w-lg leading-relaxed">
+                {{ $desc }}
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-4 sm:px-0">
+                <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center gap-2 bg-[#003215] text-white font-semibold text-[15px] px-8 py-3.5 rounded-[8px] hover:bg-[#004b23] hover:shadow-md transition-all w-full sm:w-auto h-12">
+                    <span class="material-symbols-outlined text-[20px]">home</span>
+                    Kembali ke Beranda
+                </a>
+                
+                <a href="javascript:history.back()" class="inline-flex items-center justify-center gap-2 bg-white border-2 border-[#7b5800] text-[#7b5800] font-semibold text-[15px] px-8 py-3.5 rounded-[8px] hover:bg-[#7b5800]/5 hover:shadow-sm transition-all w-full sm:w-auto h-12">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                    Halaman Sebelumnya
+                </a>
+            </div>
+
+
         </div>
     </div>
-</body>
-</html>
+</div>
+@endsection

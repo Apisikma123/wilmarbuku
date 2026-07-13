@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksi_checkouts', function (Blueprint $table) {
+        Schema::table('transaksi_checkout', function (Blueprint $table) {
             $table->index(['status_pembayaran', 'created_at'], 'idx_status_created');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksi_checkouts', function (Blueprint $table) {
+        Schema::table('transaksi_checkout', function (Blueprint $table) {
             $table->dropIndex('idx_status_created');
         });
     }
