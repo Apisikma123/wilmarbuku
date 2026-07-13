@@ -79,7 +79,16 @@
                         </div>
                     </div>
                     @error('bukti_pembayaran')
-                        <span class="text-xs text-error mt-2 block">{{ $message }}</span>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Mengunggah',
+                                    text: '{{ $message }}',
+                                    confirmButtonColor: '#003215'
+                                });
+                            });
+                        </script>
                     @enderror
                 </div>
 
