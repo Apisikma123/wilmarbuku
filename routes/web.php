@@ -16,10 +16,6 @@ Route::get('/', function () {
     return app(App\Http\Controllers\KatalogController::class)->index(request());
 })->name('home');
 
-
-
-
-
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
 
 /*
