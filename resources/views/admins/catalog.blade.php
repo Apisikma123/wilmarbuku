@@ -765,12 +765,21 @@ async function submitAddBook(event) {
         } else {
             // Validation errors (422)
             if (response.status === 422) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Form Tidak Lengkap',
-                    text: 'Mohon lengkapi semua data buku yang wajib terisi (*).',
-                    confirmButtonColor: '#003215'
-                });
+                if (result.errors && result.errors.cover_file) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Mengunggah',
+                        text: result.errors.cover_file[0],
+                        confirmButtonColor: '#003215'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Form Tidak Lengkap',
+                        text: 'Mohon lengkapi semua data buku yang wajib terisi (*).',
+                        confirmButtonColor: '#003215'
+                    });
+                }
 
                 // Clear previous errors
                 form.querySelectorAll('.error-text').forEach(el => el.remove());
@@ -909,12 +918,21 @@ async function submitEditBook(event) {
             });
         } else {
             if (response.status === 422 && result.errors) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Form Tidak Lengkap',
-                    text: 'Mohon lengkapi semua data buku yang wajib terisi (*).',
-                    confirmButtonColor: '#003215'
-                });
+                if (result.errors.cover_file) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Mengunggah',
+                        text: result.errors.cover_file[0],
+                        confirmButtonColor: '#003215'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Form Tidak Lengkap',
+                        text: 'Mohon lengkapi semua data buku yang wajib terisi (*).',
+                        confirmButtonColor: '#003215'
+                    });
+                }
 
                 // Tampilkan error inline
                 for (let field in result.errors) {
