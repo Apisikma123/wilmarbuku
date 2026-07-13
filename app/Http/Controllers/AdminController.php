@@ -475,6 +475,25 @@ class AdminController extends Controller
         return view('admins.users', compact('users', 'totalUsers', 'internalUsers', 'externalUsers'));
     }
 
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,user_internal,user_external',
+        ]);
+
+        User::create([
+            'nama_lengkap' => '-',
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => $request->role,
+            'email_verified_at' => now(),
+        ]);
+
+        return back()->with('success', 'Pengguna baru berhasil ditambahkan!');
+    }
+
     public function updateUserRole(Request $request, $id)
     {
         $user = User::findOrFail($id);

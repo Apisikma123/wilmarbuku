@@ -79,13 +79,16 @@
                     <option value="user_internal" {{ request('role') == 'user_internal' ? 'selected' : '' }}>User Internal</option>
                     <option value="user_external" {{ request('role') == 'user_external' ? 'selected' : '' }}>User Eksternal</option>
                 </select>
-                <div class="relative w-full sm:w-64">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" name="search" value="{{ request('search') }}" onkeyup="filterTable()" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
-                </div>
-                <button type="submit" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0">Cari</button>
-            </div>
-        </form>
+                  <div class="relative w-full sm:w-64">
+                      <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                      <input type="text" id="searchInput" name="search" value="{{ request('search') }}" onkeyup="filterTable()" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                  </div>
+                  <button type="submit" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0">Cari</button>
+                  <button type="button" onclick="openAddModal()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0 flex items-center gap-1">
+                      <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+                  </button>
+              </div>
+          </form>
 
         <!-- Table -->
         <div class="overflow-x-auto">
@@ -241,6 +244,44 @@
         </div>
     </div>
 
+    <!-- Modal Tambah Pengguna -->
+    <div id="addModal" class="fixed inset-0 z-50 bg-[#121c29]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-slate-900">Tambah Pengguna Baru</h3>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="addForm" action="{{ route('admin.users.store') }}" method="POST" onsubmit="submitAddForm(event)">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
+                        <input type="email" name="email" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Kata Sandi <span class="text-red-500">*</span></label>
+                        <input type="password" name="password" required minlength="8" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                        <p class="text-[11px] text-slate-500 mt-1">Minimal 8 karakter.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Peran <span class="text-red-500">*</span></label>
+                        <select name="role" id="add_role" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none bg-white">
+                            <option value="user_external">User Eksternal (Luar Kampus)</option>
+                            <option value="user_internal">User Internal (Kampus)</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end gap-3">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Batal</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">Simpan Pengguna</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal Konfirmasi Admin -->
     <div id="adminConfirmModal" class="fixed inset-0 z-[60] bg-[#121c29]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-[#f8f9ff] rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[#c0c9be]">
@@ -319,6 +360,7 @@ function openDeleteModal(id, name) {
 function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
 }
+
 let pendingSelectElement = null;
 let pendingOriginalRole = null;
 let pendingFormId = null;
@@ -350,6 +392,27 @@ function cancelAdminConfirm() {
 function proceedAdminConfirm() {
     if (pendingFormId) {
         document.getElementById(pendingFormId).submit();
+    }
+}
+
+function openAddModal() {
+    document.getElementById('addModal').classList.remove('hidden');
+    if(window.lucide) lucide.createIcons();
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').classList.add('hidden');
+    document.getElementById('addForm').reset();
+}
+
+function submitAddForm(e) {
+    e.preventDefault();
+    const role = document.getElementById('add_role').value;
+    if (role === 'admin') {
+        pendingFormId = 'addForm';
+        document.getElementById('adminConfirmModal').classList.remove('hidden');
+    } else {
+        document.getElementById('addForm').submit();
     }
 }
 </script>

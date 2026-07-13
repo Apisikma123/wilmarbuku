@@ -136,6 +136,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/metode-pembayaran', [AdminController::class, 'storeMetodePembayaran'])->name('admin.metode.store');
     Route::delete('/metode-pembayaran/{id}', [AdminController::class, 'destroyMetodePembayaran'])->name('admin.metode.destroy');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::post('/users/role/{id}', [AdminController::class, 'updateUserRole'])->name('admin.users.role');
     Route::post('/users/nim/{id}/{action}', [AdminController::class, 'validateNIM'])->name('admin.users.nim');
     Route::post('/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
