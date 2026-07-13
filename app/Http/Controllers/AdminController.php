@@ -464,9 +464,16 @@ class AdminController extends Controller
         $query = User::latest();
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('nama_lengkap', 'like', "%{$search}%")
+            $query->where(function($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
+            });
         }
+        
+        if ($request->has('role') && $request->role != 'all' && $request->role != '') {
+            $query->where('role', $request->role);
+        }
+
         $users = $query->paginate(10)->withQueryString();
         $totalUsers = User::count();
         $internalUsers = User::where('role', 'user_internal')->count();
