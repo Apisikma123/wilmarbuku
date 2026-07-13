@@ -51,7 +51,7 @@
         </a>
 
         <!-- Card 3 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6">
+        <a href="{{ route('admin.tersedia') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:scale-105 transition-transform duration-300">
             <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 shrink-0">
                 <i data-lucide="check-circle" class="w-6 h-6 text-emerald-700"></i>
             </div>
@@ -59,7 +59,7 @@
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Berhasil Tersedia</p>
                 <h3 class="text-3xl font-bold text-slate-900">{{ number_format($berhasilTersedia) }} Judul</h3>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Wishlist Detail Table -->

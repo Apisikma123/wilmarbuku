@@ -724,6 +724,12 @@ class AdminController extends Controller
         return view('admins.dibutuhkan', compact('books'));
     }
 
+    public function tersedia()
+    {
+        $books = KatalogBuku::where('status_buku', 'Tersedia')->latest()->paginate(10);
+        return view('admins.tersedia', compact('books'));
+    }
+
     public function support()
     {
         return view('admins.support');
