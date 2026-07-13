@@ -37,6 +37,20 @@ return Application::configure(basePath: dirname(__DIR__))
                 return false; 
             }
 
+            // Biarkan Laravel menangani exception bawaan (Validasi, Login, Redirect)
+            if ($e instanceof \Illuminate\Validation\ValidationException ||
+                $e instanceof \Illuminate\Auth\AuthenticationException ||
+                $e instanceof \Illuminate\Session\TokenMismatchException ||
+                $e instanceof \Illuminate\Http\Exceptions\HttpResponseException) {
+                return false;
+            }
+
+            // Jika dalam mode development (APP_DEBUG=true), biarkan halaman error Ignition muncul untuk error coding (500)
+            // Tapi tetap render halaman dinamis untuk error 404, 403, dsb.
+            if (config('app.debug') && !$e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
+                return false;
+            }
+
             $code = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface ? $e->getStatusCode() : 500;
             
             $errors = [
