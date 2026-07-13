@@ -116,7 +116,7 @@ class AdminController extends Controller
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
                 'cover_image' => 'required_without:cover_file|nullable|string',
-                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             ]);
 
             if ($request->hasFile('cover_file')) {
@@ -194,7 +194,7 @@ class AdminController extends Controller
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
                 'cover_image' => 'required_without:cover_file|nullable|string',
-                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             ]);
 
             if ($request->hasFile('cover_file')) {
