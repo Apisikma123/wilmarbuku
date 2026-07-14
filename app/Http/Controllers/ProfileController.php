@@ -36,7 +36,8 @@ class ProfileController extends Controller
         
         // If identitas_kampus is provided and different from before
         if ($request->identitas_kampus && $request->identitas_kampus !== $user->identitas_kampus) {
-            $user->nim_status = 'pending';
+            $user->nim_status = 'verified';
+            $user->role = 'user_internal';
             $isNimUpdated = true;
         } elseif (empty($request->identitas_kampus)) {
             $user->nim_status = 'unverified';
@@ -56,14 +57,7 @@ class ProfileController extends Controller
         $user->save();
 
         if ($isNimUpdated) {
-            $admins = \App\Models\User::where('role', 'admin')->get();
-            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AdminNotification(
-                'Permintaan Validasi NIM',
-                "Pengguna {$user->nama_lengkap} meminta validasi NIM ({$user->identitas_kampus}).",
-                "/admin/users?search=" . urlencode($user->nama_lengkap)
-            ));
-            
-            return redirect()->back()->with('success', 'Profil berhasil diperbarui. NIM Anda akan divalidasi admin terlebih dahulu untuk akses akun internal.');
+            return redirect()->back()->with('success', 'Profil dan NIM berhasil diperbarui. Akun Anda kini menjadi Internal Kampus.');
         }
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui.');

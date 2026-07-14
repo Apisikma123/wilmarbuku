@@ -59,6 +59,10 @@
                             class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"
                             placeholder="Masukkan nama lengkap" required>
                     </div>
+                    <p class="text-xs text-yellow-600 mt-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">info</span>
+                        Mohon gunakan nama asli anda
+                    </p>
                     @error('nama_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 

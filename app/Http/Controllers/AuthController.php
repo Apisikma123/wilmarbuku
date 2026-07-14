@@ -42,6 +42,10 @@ class AuthController extends Controller
                 Auth::login($user, $request->has('remember'));
                 $request->session()->regenerate();
                 
+                if (!$user->is_onboarding_completed) {
+                    return redirect()->route('onboarding.student-check');
+                }
+                
                 $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
                 $intendedUrl = session()->pull('url.intended', $redirectUrl);
                 
@@ -80,11 +84,15 @@ class AuthController extends Controller
 
     public function showOtp(Request $request)
     {
-        if (!$request->session()->has('otp_user_id')) {
+        $userId = $request->session()->get('otp_user_id');
+        $regData = $request->session()->get('registration_data');
+        
+        if (!$userId && !$regData) {
             return redirect()->route('login');
         }
 
-        $lastSent = \Illuminate\Support\Facades\Cache::get('last_otp_sent_at_' . $request->session()->get('otp_user_id'), 0);
+        $cacheKey = $userId ? 'last_otp_sent_at_' . $userId : 'last_otp_sent_at_' . md5($regData['email']);
+        $lastSent = \Illuminate\Support\Facades\Cache::get($cacheKey, 0);
         $cooldown = max(0, 60 - (now()->timestamp - $lastSent));
 
         return view('auth.otp', compact('cooldown'));
@@ -93,33 +101,46 @@ class AuthController extends Controller
     public function resendOtp(Request $request)
     {
         $userId = $request->session()->get('otp_user_id');
-        if (!$userId) {
-            return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
-        }
-
-        $lastSent = \Illuminate\Support\Facades\Cache::get('last_otp_sent_at_' . $userId, 0);
-        if (now()->timestamp - $lastSent < 60) {
-            return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
-        }
-
-        $user = User::find($userId);
-        if (!$user) return redirect()->route('login');
-
-        // Generate new 6-digit OTP
-        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $regData = $request->session()->get('registration_data');
         
-        $user->update([
-            'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5),
-        ]);
+        if ($userId) {
+            $lastSent = \Illuminate\Support\Facades\Cache::get('last_otp_sent_at_' . $userId, 0);
+            if (now()->timestamp - $lastSent < 60) {
+                return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
+            }
 
-        // Send OTP email
-        Mail::to($user->email)->send(new OtpMail($otpCode));
+            $user = User::find($userId);
+            if (!$user) return redirect()->route('login');
 
-        // Update timestamp
-        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $userId, now()->timestamp, 60);
+            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $user->update([
+                'otp_code' => Hash::make($otpCode),
+                'otp_expires_at' => Carbon::now()->addMinutes(5),
+            ]);
 
-        return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
+            Mail::to($user->email)->send(new OtpMail($otpCode));
+            \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $userId, now()->timestamp, 60);
+
+            return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
+        } elseif ($regData) {
+            $cacheKey = 'last_otp_sent_at_' . md5($regData['email']);
+            $lastSent = \Illuminate\Support\Facades\Cache::get($cacheKey, 0);
+            if (now()->timestamp - $lastSent < 60) {
+                return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
+            }
+
+            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $regData['otp_code'] = Hash::make($otpCode);
+            $regData['otp_expires_at'] = Carbon::now()->addMinutes(5)->timestamp;
+            $request->session()->put('registration_data', $regData);
+
+            Mail::to($regData['email'])->send(new OtpMail($otpCode));
+            \Illuminate\Support\Facades\Cache::put($cacheKey, now()->timestamp, 60);
+
+            return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
+        }
+
+        return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
     }
 
     public function verifyOtp(Request $request)
@@ -129,46 +150,63 @@ class AuthController extends Controller
         ]);
 
         $userId = $request->session()->get('otp_user_id');
-        if (!$userId) {
-            return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
+        $regData = $request->session()->get('registration_data');
+
+        if ($regData) {
+            if (!Hash::check($request->otp_code, $regData['otp_code']) || now()->timestamp > $regData['otp_expires_at']) {
+                return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
+            }
+
+            $regData['otp_verified'] = true;
+            $request->session()->put('registration_data', $regData);
+            
+            return redirect()->route('onboarding.student-check');
+        } elseif ($userId) {
+            $user = User::find($userId);
+
+            if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
+                return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
+            }
+
+            // Clear OTP and log in, also set email_verified_at
+            $user->update([
+                'otp_code' => null,
+                'otp_expires_at' => null,
+                'email_verified_at' => $user->email_verified_at ?? now(),
+            ]);
+
+            $remember = $request->session()->get('remember_me', false);
+            Auth::login($user, $remember);
+            
+            $request->session()->forget(['otp_user_id', 'remember_me']);
+            $request->session()->regenerate();
+
+            if (!$user->is_onboarding_completed) {
+                if ($remember) {
+                    \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
+                }
+                return redirect()->route('onboarding.student-check');
+            }
+
+            $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
+            $intendedUrl = session()->pull('url.intended', $redirectUrl);
+            
+            if ($user->role === 'admin') {
+                if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+            } else {
+                if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+            }
+
+            $response = redirect()->to($intendedUrl);
+
+            if ($remember) {
+                \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
+            }
+
+            return $response;
         }
 
-        $user = User::find($userId);
-
-        if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
-            return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
-        }
-
-        // Clear OTP and log in, also set email_verified_at
-        $user->update([
-            'otp_code' => null,
-            'otp_expires_at' => null,
-            'email_verified_at' => $user->email_verified_at ?? now(),
-        ]);
-
-        $remember = $request->session()->get('remember_me', false);
-        Auth::login($user, $remember);
-        
-        $request->session()->forget(['otp_user_id', 'remember_me']);
-        $request->session()->regenerate();
-
-        $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
-        $intendedUrl = session()->pull('url.intended', $redirectUrl);
-        
-        if ($user->role === 'admin') {
-            if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
-        } else {
-            if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
-        }
-
-        $response = redirect()->to($intendedUrl);
-
-        // Jika user memilih Ingat Saya, simpan cookie trusted device selama 30 hari
-        if ($remember) {
-            \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
-        }
-
-        return $response;
+        return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
     }
 
     public function showRegister()
@@ -187,42 +225,21 @@ class AuthController extends Controller
         $existingUser = User::where('email', $request->email)->first();
 
         if ($existingUser) {
-            if ($existingUser->email_verified_at !== null) {
-                return back()->withErrors(['email' => 'Email ini sudah terdaftar dan terverifikasi. Silakan login.'])->withInput();
-            }
-            
-            // Email ada tapi belum diverifikasi (OTP ditinggalkan)
-            // Timpa data lama dengan data baru
-            $existingUser->update([
-                'nama_lengkap' => $request->nama_lengkap,
-                'password' => Hash::make($request->password),
-                'role' => 'user_external',
-            ]);
-            $user = $existingUser;
-        } else {
-            $user = User::create([
-                'nama_lengkap' => $request->nama_lengkap,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => 'user_external',
-            ]);
+            return back()->withErrors(['email' => 'Email ini sudah terdaftar. Silakan login.'])->withInput();
         }
 
-        // Generate 6-digit OTP
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
-        $user->update([
+        $request->session()->put('registration_data', [
+            'nama_lengkap' => $request->nama_lengkap,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5),
+            'otp_expires_at' => Carbon::now()->addMinutes(5)->timestamp,
         ]);
 
-        // Send OTP email
-        Mail::to($user->email)->send(new OtpMail($otpCode));
-
-        // Store user id and timestamp temporarily
-        $request->session()->put('otp_user_id', $user->id);
-        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $user->id, now()->timestamp, 60);
-        $request->session()->put('remember_me', false); // No remember me on register by default
+        Mail::to($request->email)->send(new OtpMail($otpCode));
+        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . md5($request->email), now()->timestamp, 60);
 
         return redirect()->route('otp.show');
     }
@@ -260,18 +277,20 @@ class AuthController extends Controller
                 if (!$user->google_id) {
                     $user->update(['google_id' => $googleUser->getId()]);
                 }
+                Auth::login($user);
             } else {
-                // Create a new user
-                $user = User::create([
+                // Do not create user yet, store in session
+                session()->put('google_user_data', [
                     'nama_lengkap' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
-                    'password' => Hash::make(Str::random(24)),
-                    'role' => 'user_external',
                 ]);
+                return redirect()->route('onboarding.profile');
             }
 
-            Auth::login($user);
+            if (!$user->is_onboarding_completed) {
+                return redirect()->route('onboarding.profile');
+            }
 
             $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
             $intendedUrl = session()->pull('url.intended', $redirectUrl);
