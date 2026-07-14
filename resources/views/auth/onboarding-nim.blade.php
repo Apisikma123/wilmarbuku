@@ -41,7 +41,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">NIM (Nomor Induk Mahasiswa)</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">badge</span>
-                        <input type="text" name="identitas_kampus" id="identitas_kampus" maxlength="15" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Contoh: 12345678" required>
+                        <input type="text" name="identitas_kampus" id="identitas_kampus" maxlength="15" minlength="15" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" placeholder="Contoh: 123456789012345" required>
                     </div>
                     @error('identitas_kampus') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>

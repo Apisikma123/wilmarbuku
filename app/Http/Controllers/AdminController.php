@@ -575,7 +575,7 @@ class AdminController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'identitas_kampus' => 'nullable|string|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15',
         ]);
 
         $user->update([

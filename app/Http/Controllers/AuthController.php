@@ -305,7 +305,7 @@ class AuthController extends Controller
             }
 
             if (!$user->is_onboarding_completed && $user->role !== 'admin') {
-                return redirect()->route('onboarding.profile');
+                return redirect()->route('onboarding.student-check');
             }
 
             $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';

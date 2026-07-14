@@ -16,9 +16,7 @@
                 <div class="px-6 pb-6 relative">
                     <div class="w-20 h-20 bg-surface-bright rounded-full border-4 border-white flex items-center justify-center -mt-10 mb-4 shadow-sm relative mx-auto lg:mx-0">
                         <span class="text-3xl font-bold text-primary uppercase">{{ substr(Auth::user()->nama_lengkap, 0, 2) }}</span>
-                        <div class="absolute bottom-0 right-0 w-6 h-6 bg-secondary text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                            <span class="material-symbols-outlined text-[12px]">verified</span>
-                        </div>
+
                     </div>
                     
                     <div class="text-center lg:text-left">
@@ -26,6 +24,7 @@
                         <p class="text-sm text-on-surface-variant font-medium mb-4">{{ Auth::user()->role == 'user_internal' ? 'Internal Kampus' : 'Donatur Eksternal' }}</p>
                         
                         <div class="space-y-3 pt-4 border-t border-outline-variant/30">
+                            @if(Auth::user()->role == 'user_internal')
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary shrink-0">
                                     <span class="material-symbols-outlined text-[16px]">badge</span>
@@ -35,17 +34,10 @@
                                         <p class="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">NIM / NIDN</p>
                                         <p class="text-sm font-semibold text-on-surface">{{ Auth::user()->identitas_kampus ?? '-' }}</p>
                                     </div>
-                                    @if(Auth::user()->identitas_kampus)
-                                        @if(Auth::user()->nim_status == 'pending')
-                                            <span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Menunggu Validasi</span>
-                                        @elseif(Auth::user()->nim_status == 'verified')
-                                            <span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">check_circle</span> Terverifikasi</span>
-                                        @elseif(Auth::user()->nim_status == 'rejected')
-                                            <span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Ditolak</span>
-                                        @endif
-                                    @endif
+
                                 </div>
                             </div>
+                            @endif
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary shrink-0">
                                     <span class="material-symbols-outlined text-[16px]">mail</span>
@@ -115,11 +107,13 @@
                             <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', Auth::user()->nama_lengkap) }}" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
                             @error('nama_lengkap') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
                         </div>
+                        @if(Auth::user()->role == 'user_internal')
                         <div>
                             <label class="block text-xs font-bold text-on-surface-variant mb-2">NIM / NIDN (Internal Kampus)</label>
-                            <input type="text" name="identitas_kampus" value="{{ old('identitas_kampus', Auth::user()->identitas_kampus) }}" maxlength="15" placeholder="Masukkan NIM/NIDN Anda" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
+                            <input type="text" name="identitas_kampus" value="{{ old('identitas_kampus', Auth::user()->identitas_kampus) }}" maxlength="15" minlength="15" placeholder="Masukkan NIM/NIDN Anda" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
                             @error('identitas_kampus') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
                         </div>
+                        @endif
                     </div>
                     
                     <div>
