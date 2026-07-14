@@ -83,6 +83,11 @@
                         <option value="Terpopuler" @if(request('sort') == 'Terpopuler') selected @endif>Sortir: Terpopuler</option>
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
                         <option value="Harga: Tinggi ke Rendah" @if(request('sort') == 'Harga: Tinggi ke Rendah') selected @endif>Harga: Tinggi ke Rendah</option>
+                        <option disabled>--- Label / Badge ---</option>
+                        <option value="Trending" @if(request('sort') == 'Trending') selected @endif>Trending</option>
+                        <option value="Prioritas" @if(request('sort') == 'Prioritas') selected @endif>Prioritas</option>
+                        <option value="Rekomendasi" @if(request('sort') == 'Rekomendasi') selected @endif>Rekomendasi</option>
+                        <option value="Pilihan Utama" @if(request('sort') == 'Pilihan Utama') selected @endif>Pilihan Utama</option>
                     </select>
                 </div>
                 <div class="flex items-center gap-1 shrink-0">
@@ -195,6 +200,11 @@
                         <option value="Terpopuler" @if(request('sort') == 'Terpopuler') selected @endif>Terpopuler</option>
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
                         <option value="Harga: Tinggi ke Rendah" @if(request('sort') == 'Harga: Tinggi ke Rendah') selected @endif>Harga: Tinggi ke Rendah</option>
+                        <option disabled>--- Label / Badge ---</option>
+                        <option value="Trending" @if(request('sort') == 'Trending') selected @endif>Trending</option>
+                        <option value="Prioritas" @if(request('sort') == 'Prioritas') selected @endif>Prioritas</option>
+                        <option value="Rekomendasi" @if(request('sort') == 'Rekomendasi') selected @endif>Rekomendasi</option>
+                        <option value="Pilihan Utama" @if(request('sort') == 'Pilihan Utama') selected @endif>Pilihan Utama</option>
                     </select>
                 </div>
             </div>

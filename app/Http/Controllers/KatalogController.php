@@ -94,6 +94,8 @@ class KatalogController extends Controller
                 $query->orderBy('harga_estimasi', 'asc');
             } elseif ($request->sort == 'Harga: Tinggi ke Rendah') {
                 $query->orderBy('harga_estimasi', 'desc');
+            } elseif (in_array($request->sort, ['Trending', 'Prioritas', 'Rekomendasi', 'Pilihan Utama'])) {
+                $query->where('badge', $request->sort)->latest();
             }
         } else {
             $query->latest();
