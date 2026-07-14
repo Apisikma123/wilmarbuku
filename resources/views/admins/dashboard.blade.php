@@ -3,6 +3,24 @@
 @section('content')
     <div class="max-w-7xl mx-auto space-y-6 p-4 md:p-0">
 
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <span class="text-sm font-semibold">{{ session('success') }}</span>
+                </div>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    <span class="text-sm font-semibold">{{ session('error') }}</span>
+                </div>
+            </div>
+        @endif
+
         <!-- Top Header & Actions -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -107,9 +125,9 @@
         </div>
 
         <!-- Charts & Highlight Section -->
-        <div class="mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <!-- Donation Trends Chart -->
-            <div class="w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col h-[350px]">
+            <div class="lg:col-span-2 w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col h-[350px]">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-lg font-bold text-slate-900">Tren Donasi</h3>
                     <div class="flex items-center gap-4">
@@ -150,6 +168,38 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
+
+            <!-- Landing Page Settings -->
+            <div class="lg:col-span-1 w-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col">
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-slate-900">Tampilan Landing Page</h3>
+                    <p class="text-xs text-slate-500 mt-1">Atur kriteria buku yang akan ditampilkan pada halaman utama (Landing Page).</p>
+                </div>
+                <form method="POST" action="{{ route('admin.settings.landing') }}" class="flex-1 flex flex-col">
+                    @csrf
+                    <div class="flex-1 space-y-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">Badge / Label Buku</label>
+                            <div class="relative">
+                                <select name="landing_badge" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium text-sm appearance-none pr-10">
+                                    <option value="Acak" {{ (isset($landing_badge) && $landing_badge === 'Acak') ? 'selected' : '' }}>Acak (Semua Kategori)</option>
+                                    <option value="Prioritas" {{ (isset($landing_badge) && $landing_badge === 'Prioritas') ? 'selected' : '' }}>Prioritas</option>
+                                    <option value="Rekomendasi" {{ (isset($landing_badge) && $landing_badge === 'Rekomendasi') ? 'selected' : '' }}>Rekomendasi</option>
+                                    <option value="Trending" {{ (isset($landing_badge) && $landing_badge === 'Trending') ? 'selected' : '' }}>Trending</option>
+                                    <option value="Pilihan Utama" {{ (isset($landing_badge) && $landing_badge === 'Pilihan Utama') ? 'selected' : '' }}>Pilihan Utama</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                            <p class="mt-2 text-[11px] text-slate-500 leading-relaxed">Buku yang ditampilkan di Landing Page akan diacak dari kumpulan buku dengan badge ini.</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 mt-auto">
+                        <button type="submit" class="w-full px-4 py-2.5 bg-green-900 text-white font-bold rounded-lg hover:bg-green-800 transition-colors shadow-sm text-sm flex items-center justify-center gap-2">
+                            Simpan Pengaturan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 

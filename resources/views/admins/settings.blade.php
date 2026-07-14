@@ -92,33 +92,7 @@
         </form>
     </section>
 
-    <!-- Landing Page Settings -->
-    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-slate-200">
-            <h3 class="text-lg font-bold text-slate-900">Tampilan Landing Page</h3>
-            <p class="text-sm text-slate-500">Atur kriteria buku yang akan ditampilkan pada halaman utama (Landing Page).</p>
-        </div>
-        <form method="POST" action="{{ route('admin.settings.landing') }}" class="p-6">
-            @csrf
 
-            <div class="space-y-5 max-w-xl">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Badge / Label Buku</label>
-                    <select name="landing_badge" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium">
-                        <option value="Acak" {{ (isset($landing_badge) && $landing_badge === 'Acak') ? 'selected' : '' }}>Acak (Semua Kategori)</option>
-                        <option value="Prioritas" {{ (isset($landing_badge) && $landing_badge === 'Prioritas') ? 'selected' : '' }}>Prioritas</option>
-                        <option value="Rekomendasi" {{ (isset($landing_badge) && $landing_badge === 'Rekomendasi') ? 'selected' : '' }}>Rekomendasi</option>
-                        <option value="Trending" {{ (isset($landing_badge) && $landing_badge === 'Trending') ? 'selected' : '' }}>Trending</option>
-                        <option value="Pilihan Utama" {{ (isset($landing_badge) && $landing_badge === 'Pilihan Utama') ? 'selected' : '' }}>Pilihan Utama</option>
-                    </select>
-                    <p class="mt-2 text-xs text-slate-500">Buku yang ditampilkan di Landing Page akan diacak dari kumpulan buku dengan badge ini.</p>
-                </div>
-            </div>
-            <div class="flex justify-end pt-2 border-t border-slate-100 mt-6">
-                <button type="submit" class="px-6 py-2.5 bg-green-900 text-white font-bold rounded-lg hover:bg-green-800 transition-colors shadow-sm text-sm mt-3">Simpan Pengaturan</button>
-            </div>
-        </form>
-    </section>
 
     <!-- Other Actions (Support & Logout) -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-12">
