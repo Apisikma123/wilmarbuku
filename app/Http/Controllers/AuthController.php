@@ -22,6 +22,11 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $throttleKey = 'login|' . $request->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            abort(429, 'Too Many Attempts.');
+        }
+
         $credentials = $request->validate([
             'email' => ['required', 'string'],
             'password' => ['required', 'string'],
@@ -30,6 +35,7 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
+            \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
             \Illuminate\Support\Facades\Log::info('Login attempt', [
                 'user_id' => $user->id,
                 'has_trusted_cookie' => $request->hasCookie('trusted_device_user_' . $user->id),
@@ -77,6 +83,7 @@ class AuthController extends Controller
             return redirect()->route('otp.show');
         }
 
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
         return back()->withErrors([
             'email' => 'Email atau kata sandi yang Anda masukkan salah.',
         ])->onlyInput('email');
@@ -145,6 +152,11 @@ class AuthController extends Controller
 
     public function verifyOtp(Request $request)
     {
+        $throttleKey = 'otp|' . $request->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            abort(429, 'Too Many Attempts.');
+        }
+
         $request->validate([
             'otp_code' => ['required', 'string', 'size:6'],
         ]);
@@ -154,9 +166,11 @@ class AuthController extends Controller
 
         if ($regData) {
             if (!Hash::check($request->otp_code, $regData['otp_code']) || now()->timestamp > $regData['otp_expires_at']) {
+                \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
                 return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
             }
 
+            \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
             $regData['otp_verified'] = true;
             $request->session()->put('registration_data', $regData);
             
@@ -165,9 +179,11 @@ class AuthController extends Controller
             $user = User::find($userId);
 
             if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
+                \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
                 return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
             }
 
+            \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
             // Clear OTP and log in, also set email_verified_at
             $user->update([
                 'otp_code' => null,
@@ -318,6 +334,11 @@ class AuthController extends Controller
 
     public function sendResetOtp(Request $request)
     {
+        $throttleKey = 'forgot_pass|' . $request->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            abort(429, 'Too Many Attempts.');
+        }
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -325,9 +346,11 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
+            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
             return back()->withErrors(['email' => 'Email tidak ditemukan di sistem kami.']);
         }
 
+        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         $user->update([
@@ -386,6 +409,11 @@ class AuthController extends Controller
 
     public function verifyForgotOtp(Request $request)
     {
+        $throttleKey = 'forgot_otp|' . $request->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            abort(429, 'Too Many Attempts.');
+        }
+
         $request->validate([
             'otp_code' => ['required', 'string', 'size:6'],
         ]);
@@ -398,9 +426,11 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
+            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
             return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
         }
 
+        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
         // OTP Valid! Authorize for password reset
         $user->update([
             'otp_code' => null,
