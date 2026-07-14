@@ -1009,7 +1009,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let status = document.getElementById(statusId);
         if (stok && status) {
             stok.addEventListener('input', function() {
-                let val = parseInt(this.value.replace(/[^0-9]/g, '')) || 0;
+                this.value = this.value.replace(/[^0-9]/g, '');
+                let val = parseInt(this.value) || 0;
                 status.value = val > 0 ? 'Dibutuhkan' : 'Tersedia';
             });
         }
