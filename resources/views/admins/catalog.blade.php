@@ -269,14 +269,14 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Stok Dibutuhkan *</label>
-                    <input type="text" inputmode="numeric" name="stok_dibutuhkan" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="10">
+                    <input type="text" inputmode="numeric" id="add_stok_dibutuhkan" name="stok_dibutuhkan" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="10">
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Buku *</label>
-                    <select name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
-                        <option value="Dibutuhkan">Dibutuhkan</option>
+                    <select id="add_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none pointer-events-none bg-slate-100 text-slate-500">
+                        <option value="Dibutuhkan" selected>Dibutuhkan</option>
                         <option value="Tersedia">Tersedia</option>
                     </select>
                 </div>
@@ -396,7 +396,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Buku *</label>
-                    <select id="edit_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                    <select id="edit_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none pointer-events-none bg-slate-100 text-slate-500">
                         <option value="Dibutuhkan">Dibutuhkan</option>
                         <option value="Tersedia">Tersedia</option>
                     </select>
@@ -598,8 +598,8 @@ function openEditModal(book) {
     document.querySelectorAll('.edit_kategori_checkbox').forEach(cb => {
         cb.checked = categories.includes(cb.value);
     });
-    document.getElementById('edit_harga_estimasi').value = formatInputRupiah(book.harga_estimasi ? book.harga_estimasi.toString() : '');
-    document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 1;
+    document.getElementById('edit_harga_estimasi').value = formatInputRupiah(book.harga_estimasi ? Math.floor(book.harga_estimasi).toString() : '');
+    document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 0;
     document.getElementById('edit_status_buku').value = book.status_buku || 'Dibutuhkan';
     document.getElementById('edit_jumlah_halaman').value = book.jumlah_halaman || '';
     document.getElementById('edit_badge').value = book.badge || '';
@@ -1002,4 +1002,19 @@ function formatInputRupiah(value) {
     
     return split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    function attachStokListener(stokId, statusId) {
+        let stok = document.getElementById(stokId);
+        let status = document.getElementById(statusId);
+        if (stok && status) {
+            stok.addEventListener('input', function() {
+                let val = parseInt(this.value.replace(/[^0-9]/g, '')) || 0;
+                status.value = val > 0 ? 'Dibutuhkan' : 'Tersedia';
+            });
+        }
+    }
+    attachStokListener('add_stok_dibutuhkan', 'add_status_buku');
+    attachStokListener('edit_stok_dibutuhkan', 'edit_status_buku');
+});
 </script>
