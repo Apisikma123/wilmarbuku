@@ -155,6 +155,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/reports/export', [AdminController::class, 'exportPdf'])->name('admin.reports.export');
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::post('/settings/landing-badge', [AdminController::class, 'updateLandingBadge'])->name('admin.settings.landing');
     Route::get('/dibutuhkan', [AdminController::class, 'dibutuhkan'])->name('admin.dibutuhkan');
     Route::get('/tersedia', [AdminController::class, 'tersedia'])->name('admin.tersedia');
     Route::post('/notifications/mark-as-read/{id?}', [AdminController::class, 'markNotificationAsRead'])->name('admin.notifications.read');

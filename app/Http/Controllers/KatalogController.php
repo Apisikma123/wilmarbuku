@@ -12,7 +12,12 @@ class KatalogController extends Controller
     public function index(Request $request)
     {
         $bukuIds = \Illuminate\Support\Facades\Cache::remember('random_buku_ids', 60, function () {
-            return KatalogBuku::where('status_buku', 'Dibutuhkan')->pluck('id')->toArray();
+            $badge = \App\Models\Setting::where('key', 'landing_badge')->value('value');
+            $query = KatalogBuku::where('status_buku', 'Dibutuhkan');
+            if ($badge && $badge !== 'Acak') {
+                $query->where('badge', $badge);
+            }
+            return $query->pluck('id')->toArray();
         });
         
         $buku = collect();
@@ -66,8 +71,7 @@ class KatalogController extends Controller
             if ($request->filter == 'bulan_ini') {
                 $query->where('created_at', '>=', now()->subMonth());
             } elseif ($request->filter == 'bestseller') {
-                // Dummy logic for bestseller: assume books with high stok_dibutuhkan or specific badge
-                $query->where('stok_dibutuhkan', '>', 10)->orWhere('badge', 'like', '%Bestseller%');
+                $query->where('terdonasi', '>', 0)->orderBy('terdonasi', 'desc');
             } elseif ($request->filter == 'prioritas') {
                 $query->where('badge', 'Prioritas');
             }
@@ -85,8 +89,7 @@ class KatalogController extends Controller
             if ($request->sort == 'Terbaru') {
                 $query->latest();
             } elseif ($request->sort == 'Terpopuler') {
-                // Dummy sort for popular (we can just use id for now)
-                $query->orderBy('id', 'desc');
+                $query->orderBy('terdonasi', 'desc')->orderBy('id', 'desc');
             } elseif ($request->sort == 'Harga: Rendah ke Tinggi') {
                 $query->orderBy('harga_estimasi', 'asc');
             } elseif ($request->sort == 'Harga: Tinggi ke Rendah') {

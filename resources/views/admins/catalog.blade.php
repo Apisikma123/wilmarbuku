@@ -269,14 +269,14 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Stok Dibutuhkan *</label>
-                    <input type="text" inputmode="numeric" name="stok_dibutuhkan" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="10">
+                    <input type="text" inputmode="numeric" id="add_stok_dibutuhkan" name="stok_dibutuhkan" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600" placeholder="10">
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Buku *</label>
-                    <select name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
-                        <option value="Dibutuhkan">Dibutuhkan</option>
+                    <select id="add_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none pointer-events-none bg-slate-100 text-slate-500">
+                        <option value="Dibutuhkan" selected>Dibutuhkan</option>
                         <option value="Tersedia">Tersedia</option>
                     </select>
                 </div>
@@ -321,7 +321,10 @@
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-50">Batal</button>
-                <button type="submit" id="btnSubmitAddBook" class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm flex items-center gap-2">Simpan Buku</button>
+                <button type="submit" id="btnSubmitAddBook" class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm flex items-center justify-center gap-2">
+                    <span class="btn-text">Simpan Buku</span>
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin hidden spinner"></i>
+                </button>
             </div>
         </form>
     </div>
@@ -393,7 +396,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Buku *</label>
-                    <select id="edit_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                    <select id="edit_status_buku" name="status_buku" required class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none pointer-events-none bg-slate-100 text-slate-500">
                         <option value="Dibutuhkan">Dibutuhkan</option>
                         <option value="Tersedia">Tersedia</option>
                     </select>
@@ -595,8 +598,8 @@ function openEditModal(book) {
     document.querySelectorAll('.edit_kategori_checkbox').forEach(cb => {
         cb.checked = categories.includes(cb.value);
     });
-    document.getElementById('edit_harga_estimasi').value = formatInputRupiah(book.harga_estimasi ? book.harga_estimasi.toString() : '');
-    document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 1;
+    document.getElementById('edit_harga_estimasi').value = formatInputRupiah(book.harga_estimasi ? Math.floor(book.harga_estimasi).toString() : '');
+    document.getElementById('edit_stok_dibutuhkan').value = book.stok_dibutuhkan || 0;
     document.getElementById('edit_status_buku').value = book.status_buku || 'Dibutuhkan';
     document.getElementById('edit_jumlah_halaman').value = book.jumlah_halaman || '';
     document.getElementById('edit_badge').value = book.badge || '';
@@ -711,9 +714,8 @@ async function submitAddBook(event) {
     
     // Disable button & show loading state
     btn.disabled = true;
-    let originalHtml = btn.innerHTML;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menyimpan...';
-    lucide.createIcons();
+    btn.querySelector('.btn-text').classList.add('hidden');
+    btn.querySelector('.spinner').classList.remove('hidden');
 
     fetch('{{ route("admin.catalog.store") }}', {
         method: 'POST',
@@ -832,8 +834,8 @@ async function submitAddBook(event) {
     })
     .finally(() => {
         btn.disabled = false;
-        btn.innerHTML = originalHtml;
-        lucide.createIcons();
+        btn.querySelector('.btn-text').classList.remove('hidden');
+        btn.querySelector('.spinner').classList.add('hidden');
     });
 }
 
@@ -1000,4 +1002,20 @@ function formatInputRupiah(value) {
     
     return split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    function attachStokListener(stokId, statusId) {
+        let stok = document.getElementById(stokId);
+        let status = document.getElementById(statusId);
+        if (stok && status) {
+            stok.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                let val = parseInt(this.value) || 0;
+                status.value = val > 0 ? 'Dibutuhkan' : 'Tersedia';
+            });
+        }
+    }
+    attachStokListener('add_stok_dibutuhkan', 'add_status_buku');
+    attachStokListener('edit_stok_dibutuhkan', 'edit_status_buku');
+});
 </script>

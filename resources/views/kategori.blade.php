@@ -225,8 +225,22 @@
                             <p class="hidden md:block text-[10px] text-on-surface-variant mb-2">{{ $item->pengarang }}</p>
                         </div>
                             <div class="flex flex-col gap-1 mt-auto pt-2">
-                                <div>
+                                <div class="flex items-center justify-between gap-1">
                                     <p class="text-primary font-bold text-[13px] md:text-base whitespace-nowrap">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+                                    @if($item->badge)
+                                        @php
+                                            $badgeColor = match($item->badge) {
+                                                'Prioritas' => 'bg-red-50 text-red-600 border border-red-200',
+                                                'Rekomendasi' => 'bg-emerald-50 text-emerald-600 border border-emerald-200',
+                                                'Trending' => 'bg-orange-50 text-orange-600 border border-orange-200',
+                                                'Pilihan Utama' => 'bg-blue-50 text-blue-600 border border-blue-200',
+                                                default => 'bg-slate-50 text-slate-600 border border-slate-200',
+                                            };
+                                        @endphp
+                                        <span class="px-1.5 py-0.5 text-[8px] md:text-[9px] font-bold rounded {{ $badgeColor }} whitespace-nowrap shadow-sm">
+                                            {{ strtoupper($item->badge) }}
+                                        </span>
+                                    @endif
                                 </div>
                                 @if(auth()->check() && auth()->user()->role === 'admin')
                                 <div class="bg-surface-variant text-on-surface-variant w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center cursor-not-allowed self-end mt-1" title="Admin Tidak Dapat Membeli">
