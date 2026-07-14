@@ -12,7 +12,12 @@ class KatalogController extends Controller
     public function index(Request $request)
     {
         $bukuIds = \Illuminate\Support\Facades\Cache::remember('random_buku_ids', 60, function () {
-            return KatalogBuku::where('status_buku', 'Dibutuhkan')->pluck('id')->toArray();
+            $badge = \App\Models\Setting::where('key', 'landing_badge')->value('value');
+            $query = KatalogBuku::where('status_buku', 'Dibutuhkan');
+            if ($badge && $badge !== 'Acak') {
+                $query->where('badge', $badge);
+            }
+            return $query->pluck('id')->toArray();
         });
         
         $buku = collect();

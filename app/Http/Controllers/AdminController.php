@@ -737,7 +737,24 @@ class AdminController extends Controller
 
     public function settings()
     {
-        return view('admins.settings');
+        $landing_badge = \App\Models\Setting::where('key', 'landing_badge')->value('value') ?? 'Acak';
+        return view('admins.settings', compact('landing_badge'));
+    }
+
+    public function updateLandingBadge(Request $request)
+    {
+        $request->validate([
+            'landing_badge' => 'required|string',
+        ]);
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'landing_badge'],
+            ['value' => $request->landing_badge]
+        );
+
+        \Illuminate\Support\Facades\Cache::forget('random_buku_ids');
+
+        return back()->with('success', 'Pengaturan tampilan buku Landing Page berhasil diperbarui.');
     }
 
     public function storeMetodePembayaran(Request $request)

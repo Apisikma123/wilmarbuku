@@ -321,7 +321,10 @@
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-50">Batal</button>
-                <button type="submit" id="btnSubmitAddBook" class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm flex items-center gap-2">Simpan Buku</button>
+                <button type="submit" id="btnSubmitAddBook" class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm flex items-center justify-center gap-2">
+                    <span class="btn-text">Simpan Buku</span>
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin hidden spinner"></i>
+                </button>
             </div>
         </form>
     </div>
@@ -711,9 +714,8 @@ async function submitAddBook(event) {
     
     // Disable button & show loading state
     btn.disabled = true;
-    let originalHtml = btn.innerHTML;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menyimpan...';
-    lucide.createIcons();
+    btn.querySelector('.btn-text').classList.add('hidden');
+    btn.querySelector('.spinner').classList.remove('hidden');
 
     fetch('{{ route("admin.catalog.store") }}', {
         method: 'POST',
@@ -832,8 +834,8 @@ async function submitAddBook(event) {
     })
     .finally(() => {
         btn.disabled = false;
-        btn.innerHTML = originalHtml;
-        lucide.createIcons();
+        btn.querySelector('.btn-text').classList.remove('hidden');
+        btn.querySelector('.spinner').classList.add('hidden');
     });
 }
 
