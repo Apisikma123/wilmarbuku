@@ -117,7 +117,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-on-surface-variant mb-2">NIM / NIDN (Internal Kampus)</label>
-                            <input type="text" name="identitas_kampus" value="{{ old('identitas_kampus', Auth::user()->identitas_kampus) }}" placeholder="Masukkan NIM/NIDN Anda" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
+                            <input type="text" name="identitas_kampus" value="{{ old('identitas_kampus', Auth::user()->identitas_kampus) }}" maxlength="15" placeholder="Masukkan NIM/NIDN Anda" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
                             @error('identitas_kampus') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>

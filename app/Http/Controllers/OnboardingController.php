@@ -127,10 +127,13 @@ class OnboardingController extends Controller
             } else {
                 $user = Auth::user();
                 if (!$user) return redirect()->route('login');
-                $user->update([
-                    'is_onboarding_completed' => true,
-                    'role' => 'user_external'
-                ]);
+                
+                $updateData = ['is_onboarding_completed' => true];
+                if ($user->role !== 'admin') {
+                    $updateData['role'] = 'user_external';
+                }
+                
+                $user->update($updateData);
             }
             return redirect()->to($this->getRedirectUrl());
         }
@@ -162,7 +165,7 @@ class OnboardingController extends Controller
     public function storeNim(Request $request)
     {
         $request->validate([
-            'identitas_kampus' => ['required', 'string', 'max:50'],
+            'identitas_kampus' => ['required', 'string', 'max:15'],
         ]);
 
         $googleData = session('google_user_data');

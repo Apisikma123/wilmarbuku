@@ -42,7 +42,7 @@ class AuthController extends Controller
                 Auth::login($user, $request->has('remember'));
                 $request->session()->regenerate();
                 
-                if (!$user->is_onboarding_completed) {
+                if (!$user->is_onboarding_completed && $user->role !== 'admin') {
                     return redirect()->route('onboarding.student-check');
                 }
                 
@@ -181,7 +181,7 @@ class AuthController extends Controller
             $request->session()->forget(['otp_user_id', 'remember_me']);
             $request->session()->regenerate();
 
-            if (!$user->is_onboarding_completed) {
+            if (!$user->is_onboarding_completed && $user->role !== 'admin') {
                 if ($remember) {
                     \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
                 }
@@ -288,7 +288,7 @@ class AuthController extends Controller
                 return redirect()->route('onboarding.profile');
             }
 
-            if (!$user->is_onboarding_completed) {
+            if (!$user->is_onboarding_completed && $user->role !== 'admin') {
                 return redirect()->route('onboarding.profile');
             }
 

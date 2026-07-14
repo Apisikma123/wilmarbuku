@@ -22,7 +22,7 @@ class ProfileController extends Controller
 
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
-            'identitas_kampus' => 'nullable|string|max:255',
+            'identitas_kampus' => 'nullable|string|max:15',
         ];
 
         // If not logged in via google, they can update their email
