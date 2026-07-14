@@ -213,7 +213,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Identitas Kampus</label>
-                        <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" placeholder="NIM / NIDN (Opsional)" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                        <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" minlength="15" placeholder="NIM / NIDN (Opsional)" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
                     </div>
                 </div>
 

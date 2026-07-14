@@ -165,7 +165,7 @@ class OnboardingController extends Controller
     public function storeNim(Request $request)
     {
         $request->validate([
-            'identitas_kampus' => ['required', 'string', 'max:15'],
+            'identitas_kampus' => ['required', 'string', 'min:15', 'max:15'],
         ]);
 
         $googleData = session('google_user_data');
