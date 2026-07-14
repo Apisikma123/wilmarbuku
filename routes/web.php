@@ -62,15 +62,13 @@ Route::post('/test-json', function (\Illuminate\Http\Request $request) {
 
 Route::get('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'showProfile'])->name('onboarding.profile');
 Route::post('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'storeProfile'])->name('onboarding.profile.store');
+Route::get('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'showStudentCheck'])->name('onboarding.student-check');
+Route::post('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'storeStudentCheck'])->name('onboarding.student-check.store');
+Route::get('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'showNim'])->name('onboarding.nim');
+Route::post('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'storeNim'])->name('onboarding.nim.store');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    // Onboarding Routes
-    Route::get('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'showStudentCheck'])->name('onboarding.student-check');
-    Route::post('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'storeStudentCheck'])->name('onboarding.student-check.store');
-    Route::get('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'showNim'])->name('onboarding.nim');
-    Route::post('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'storeNim'])->name('onboarding.nim.store');
     
     // Halaman khusus user yang sudah terautentikasi
     Route::get('/dashboard', [App\Http\Controllers\KatalogController::class, 'dashboard'])->name('dashboard');
