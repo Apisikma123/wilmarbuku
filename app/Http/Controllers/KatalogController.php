@@ -71,8 +71,7 @@ class KatalogController extends Controller
             if ($request->filter == 'bulan_ini') {
                 $query->where('created_at', '>=', now()->subMonth());
             } elseif ($request->filter == 'bestseller') {
-                // Dummy logic for bestseller: assume books with high stok_dibutuhkan or specific badge
-                $query->where('stok_dibutuhkan', '>', 10)->orWhere('badge', 'like', '%Bestseller%');
+                $query->where('terdonasi', '>', 0)->orderBy('terdonasi', 'desc');
             } elseif ($request->filter == 'prioritas') {
                 $query->where('badge', 'Prioritas');
             }
