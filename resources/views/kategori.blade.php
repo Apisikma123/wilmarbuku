@@ -7,8 +7,8 @@
 </style>
 
 @section('content')
-<div class="bg-gradient-to-b from-primary to-[#004b23] relative text-white py-12 md:py-20 hidden md:block">
-    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<div class="relative bg-[#00391a] bg-contain md:bg-cover bg-center bg-no-repeat text-white py-12 md:py-20 hidden md:block" style="background-image: url('{{ asset('images/dashboard banner.png') }}')">
+    <div class="absolute inset-0 bg-black/20"></div>
     <div class="relative z-10 max-w-[1280px] mx-auto px-4 md:px-6 text-center">
         <h1 class="text-3xl md:text-5xl font-bold font-display uppercase tracking-tight mb-4">Jelajahi Kategori</h1>
         <p class="text-white/80 max-w-xl mx-auto text-sm md:text-base">Temukan ratusan buku menarik dari berbagai kategori untuk mendukung literasi dan perkuliahan Anda.</p>

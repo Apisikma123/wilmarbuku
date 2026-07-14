@@ -25,24 +25,21 @@
                         <h2 class="text-lg font-bold">Identitas Donatur</h2>
                     </div>
 
-                    <!-- Tipe Donatur Toggle -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <!-- Internal -->
-                        <label
-                            class="relative flex flex-col border border-outline-variant/50 rounded-xl p-4 cursor-pointer transition-colors peer-checked:border-[#004225] peer-checked:border-2"
-                            id="label-internal">
-                            <input type="radio" name="tipe_donatur" value="internal" class="hidden peer" {{ Auth::user()->role == 'user_internal' ? 'checked' : '' }} onchange="toggleIdentitas()">
-                            <span class="font-bold text-on-surface mb-1">Internal Kampus</span>
-                            <span class="text-xs text-on-surface-variant">Mahasiswa / Dosen WBI</span>
-                        </label>
-                        <!-- Eksternal -->
-                        <label
-                            class="relative flex flex-col border border-outline-variant/50 rounded-xl p-4 cursor-pointer transition-colors peer-checked:border-[#004225] peer-checked:border-2"
-                            id="label-eksternal">
-                            <input type="radio" name="tipe_donatur" value="eksternal" class="hidden peer" {{ Auth::user()->role != 'user_internal' ? 'checked' : '' }} onchange="toggleIdentitas()">
-                            <span class="font-bold text-on-surface mb-1">Publik / Umum</span>
-                            <span class="text-xs text-on-surface-variant">Donatur Eksternal</span>
-                        </label>
+                    <!-- Tipe Donatur (Otomatis berdasarkan Role) -->
+                    <div class="mb-6">
+                        @if(Auth::user()->role == 'user_internal')
+                            <div class="relative flex flex-col border-[#004225] border-2 rounded-xl p-4 bg-surface-container-low cursor-default">
+                                <input type="hidden" name="tipe_donatur" value="internal">
+                                <span class="font-bold text-[#004225] mb-1">Internal Kampus</span>
+                                <span class="text-xs text-[#004225]/70">Mahasiswa / Dosen WBI</span>
+                            </div>
+                        @else
+                            <div class="relative flex flex-col border-[#004225] border-2 rounded-xl p-4 bg-surface-container-low cursor-default">
+                                <input type="hidden" name="tipe_donatur" value="eksternal">
+                                <span class="font-bold text-[#004225] mb-1">Publik / Umum</span>
+                                <span class="text-xs text-[#004225]/70">Donatur Eksternal</span>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Form Fields -->
@@ -178,52 +175,4 @@
         </form>
     </div>
 
-    <script>
-        const userNimStatus = '{{ Auth::user()->nim_status }}';
-
-        function toggleIdentitas() {
-            const internalRadio = document.querySelector('input[name="tipe_donatur"][value="internal"]');
-            const eksternalRadio = document.querySelector('input[name="tipe_donatur"][value="eksternal"]');
-            
-            if (internalRadio.checked && userNimStatus !== 'verified') {
-                eksternalRadio.checked = true;
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Akses Ditolak',
-                    text: 'Anda tidak dapat menggunakan role Internal. NIM belum diisi atau sedang menunggu validasi Admin.',
-                    confirmButtonText: 'Buka Profil Akun',
-                    confirmButtonColor: '#004b23',
-                    showCancelButton: true,
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = '{{ route("akun") }}';
-                    }
-                });
-                return;
-            }
-
-            const type = document.querySelector('input[name="tipe_donatur"]:checked').value;
-            const container = document.getElementById('identitas-kampus-container');
-            const internalLabel = document.getElementById('label-internal');
-            const eksternalLabel = document.getElementById('label-eksternal');
-
-            if (type === 'internal') {
-                container.classList.remove('hidden');
-                internalLabel.classList.add('border-[#004225]', 'border-2');
-                internalLabel.classList.remove('border-outline-variant/50');
-                eksternalLabel.classList.remove('border-[#004225]', 'border-2');
-                eksternalLabel.classList.add('border-outline-variant/50');
-            } else {
-                container.classList.add('hidden');
-                eksternalLabel.classList.add('border-[#004225]', 'border-2');
-                eksternalLabel.classList.remove('border-outline-variant/50');
-                internalLabel.classList.remove('border-[#004225]', 'border-2');
-                internalLabel.classList.add('border-outline-variant/50');
-            }
-        }
-
-        // Initial call to set correct styles
-        document.addEventListener("DOMContentLoaded", toggleIdentitas);
-    </script>
 @endsection

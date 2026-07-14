@@ -70,11 +70,12 @@ class OnboardingController extends Controller
             if ($request->is_student) {
                 return redirect()->route('onboarding.nim');
             } else {
-                // Skip NIM, set as external user
-                $user->update([
-                    'is_onboarding_completed' => true,
-                    'role' => 'user_external'
-                ]);
+                // Skip NIM, set as external user (kecuali admin)
+                $updateData = ['is_onboarding_completed' => true];
+                if ($user->role !== 'admin') {
+                    $updateData['role'] = 'user_external';
+                }
+                $user->update($updateData);
                 return redirect()->to($this->getRedirectUrl());
             }
         }
