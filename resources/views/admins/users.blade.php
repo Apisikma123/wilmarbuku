@@ -133,31 +133,6 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="font-medium text-slate-700">{{ $u->identitas_kampus ?? '-' }}</div>
-                            @if($u->identitas_kampus)
-                                @if($u->nim_status == 'pending')
-                                    <div class="mt-2 flex flex-col gap-1">
-                                        <span class="inline-block text-[9px] uppercase tracking-wider font-bold bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full w-max mb-1">Perlu Validasi</span>
-                                        <div class="flex items-center gap-1">
-                                            <form action="{{ route('admin.users.nim', [$u->id, 'accept']) }}" method="POST">
-                                                @csrf
-                                                <button class="bg-green-500 text-white p-1 rounded hover:bg-green-600 transition" title="Terima Validasi">
-                                                    <i data-lucide="check" class="w-3 h-3"></i>
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('admin.users.nim', [$u->id, 'reject']) }}" method="POST">
-                                                @csrf
-                                                <button class="bg-red-500 text-white p-1 rounded hover:bg-red-600 transition" title="Tolak Validasi">
-                                                    <i data-lucide="x" class="w-3 h-3"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                @elseif($u->nim_status == 'verified')
-                                    <span class="inline-block mt-1 text-[9px] uppercase tracking-wider font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Terverifikasi</span>
-                                @elseif($u->nim_status == 'rejected')
-                                    <span class="inline-block mt-1 text-[9px] uppercase tracking-wider font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">Ditolak</span>
-                                @endif
-                            @endif
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($u->id !== auth()->id())
@@ -188,14 +163,14 @@
     </div>
 
     <!-- Modal Edit User -->
-    <div id="editModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i data-lucide="edit" class="w-6 h-6 text-blue-600"></i>
+    <div id="editModal" class="fixed inset-0 z-50 bg-[#121c29]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#f8f9ff] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-[#c0c9be]">
+            <div class="flex items-center justify-between border-b border-[#d9e3f6] pb-4 mb-6">
+                <h3 class="text-lg font-bold text-[#121c29] flex items-center gap-2" style="font-family: Poppins, sans-serif;">
+                    <i data-lucide="edit" class="w-6 h-6 text-[#004b23]"></i>
                     Edit Pengguna
                 </h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <button onclick="closeEditModal()" class="text-[#707970] hover:text-[#404941] transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -204,22 +179,22 @@
                 @csrf
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" name="nama_lengkap" id="edit_nama" required class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                        <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Nama Lengkap <span class="text-[#ba1a1a]">*</span></label>
+                        <input type="text" name="nama_lengkap" id="edit_nama" required class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Email <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" id="edit_email" required class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                        <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Email <span class="text-[#ba1a1a]">*</span></label>
+                        <input type="email" name="email" id="edit_email" required class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Identitas Kampus</label>
-                        <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" minlength="15" placeholder="NIM / NIDN (Opsional)" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                        <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Identitas Kampus</label>
+                        <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" minlength="15" placeholder="NIM / NIDN (Opsional)" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-3 mt-8 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="closeEditModal()" class="px-5 py-2 text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold transition-colors">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-bold transition-colors">Simpan Perubahan</button>
+                <div class="flex items-center justify-end gap-3 mt-8 pt-4 border-t border-[#d9e3f6]">
+                    <button type="button" onclick="closeEditModal()" class="px-5 py-2 text-[#404941] hover:bg-[#eaf1ff] border border-[#c0c9be] rounded-lg text-sm font-bold transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-[#003215] hover:bg-[#004b23] text-[#ffffff] rounded-lg text-sm font-bold transition-colors">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -256,6 +231,14 @@
             <form id="addForm" action="{{ route('admin.users.store') }}" method="POST" onsubmit="submitAddForm(event)">
                 @csrf
                 <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_lengkap" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Identitas Kampus (NIM/NIDN)</label>
+                        <input type="text" name="identitas_kampus" minlength="15" maxlength="15" placeholder="Opsional" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                    </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
                         <input type="email" name="email" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
@@ -344,9 +327,6 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
 }
 
-let pendingSelectElement = null;
-let pendingOriginalRole = null;
-let pendingFormId = null;
 
 function handleRoleChange(selectElement, originalRole, formId) {
     if (selectElement.value === 'admin') {

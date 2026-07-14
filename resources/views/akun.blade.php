@@ -105,24 +105,23 @@
                         <div>
                             <label class="block text-xs font-bold text-on-surface-variant mb-2">Nama Lengkap</label>
                             <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', Auth::user()->nama_lengkap) }}" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
+                            @php
+                                $currentMonth = \Carbon\Carbon::now()->format('Y-m');
+                                $lastChangedMonth = Auth::user()->username_changed_at ? \Carbon\Carbon::parse(Auth::user()->username_changed_at)->format('Y-m') : null;
+                                $count = ($lastChangedMonth === $currentMonth) ? Auth::user()->username_change_count : 0;
+                                $remaining = max(0, 2 - $count);
+                            @endphp
+                            <p class="text-[10px] text-on-surface-variant mt-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">info</span> Sisa kuota ganti nama bulan ini: {{ $remaining }} kali.</p>
                             @error('nama_lengkap') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
                         </div>
-                        @if(Auth::user()->role == 'user_internal')
                         <div>
-                            <label class="block text-xs font-bold text-on-surface-variant mb-2">NIM / NIDN (Internal Kampus)</label>
-                            <input type="text" name="identitas_kampus" value="{{ old('identitas_kampus', Auth::user()->identitas_kampus) }}" maxlength="15" minlength="15" placeholder="Masukkan NIM/NIDN Anda" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
-                            @error('identitas_kampus') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
+                            <label class="block text-xs font-bold text-on-surface-variant mb-2">Email Akun</label>
+                            <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" {{ Auth::user()->google_id ? 'readonly' : '' }} class="w-full {{ Auth::user()->google_id ? 'bg-surface-container-low cursor-not-allowed text-on-surface/70' : 'bg-surface-bright text-on-surface' }} border border-outline-variant/50 rounded-lg py-3 px-4 text-sm font-medium focus:ring-primary focus:border-primary transition-colors">
+                            @error('email') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
+                            @if(Auth::user()->google_id)
+                                <p class="text-[10px] text-on-surface-variant mt-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">info</span> Terhubung dengan akun Google.</p>
+                            @endif
                         </div>
-                        @endif
-                    </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-on-surface-variant mb-2">Email Akun</label>
-                        <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" {{ Auth::user()->google_id ? 'readonly' : '' }} class="w-full {{ Auth::user()->google_id ? 'bg-surface-container-low cursor-not-allowed text-on-surface/70' : 'bg-surface-bright text-on-surface' }} border border-outline-variant/50 rounded-lg py-3 px-4 text-sm font-medium focus:ring-primary focus:border-primary transition-colors">
-                        @error('email') <p class="text-[10px] text-error mt-1">{{ $message }}</p> @enderror
-                        @if(Auth::user()->google_id)
-                            <p class="text-[10px] text-on-surface-variant mt-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">info</span> Terhubung dengan akun Google.</p>
-                        @endif
                     </div>
 
                     <div class="pt-4 flex justify-end">

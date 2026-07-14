@@ -485,17 +485,21 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'identitas_kampus' => 'nullable|string|min:15|max:15',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,user_internal,user_external',
         ]);
 
         User::create([
-            'nama_lengkap' => '-',
+            'nama_lengkap' => $request->nama_lengkap,
+            'identitas_kampus' => $request->identitas_kampus,
             'email' => $request->email,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
             'role' => $request->role,
             'email_verified_at' => now(),
+            'nim_status' => ($request->role == 'user_internal' && !empty($request->identitas_kampus)) ? 'verified' : 'unverified',
         ]);
 
         return back()->with('success', 'Pengguna baru berhasil ditambahkan!');
@@ -578,11 +582,18 @@ class AdminController extends Controller
             'identitas_kampus' => 'nullable|string|min:15|max:15',
         ]);
 
-        $user->update([
+        $updates = [
             'nama_lengkap' => $request->nama_lengkap,
             'email' => $request->email,
             'identitas_kampus' => $request->identitas_kampus,
-        ]);
+        ];
+
+        if ($request->identitas_kampus && $user->role == 'user_external') {
+            $updates['role'] = 'user_internal';
+            $updates['nim_status'] = 'verified';
+        }
+
+        $user->update($updates);
 
         return back()->with('success', 'Data pengguna berhasil diperbarui!');
     }

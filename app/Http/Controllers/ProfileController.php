@@ -22,7 +22,6 @@ class ProfileController extends Controller
 
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
         ];
 
         // If not logged in via google, they can update their email
@@ -32,33 +31,29 @@ class ProfileController extends Controller
 
         $request->validate($rules);
 
-        $isNimUpdated = false;
-        
-        // If identitas_kampus is provided and different from before
-        if ($request->identitas_kampus && $request->identitas_kampus !== $user->identitas_kampus) {
-            $user->nim_status = 'verified';
-            $user->role = 'user_internal';
-            $isNimUpdated = true;
-        } elseif (empty($request->identitas_kampus)) {
-            $user->nim_status = 'unverified';
-            // If they clear the NIM, they should be downgraded to external if they were internal
-            if ($user->role == 'user_internal') {
-                $user->role = 'user_external';
-            }
-        }
+        // Check limits for nama_lengkap
+        if ($request->nama_lengkap !== $user->nama_lengkap) {
+            $currentMonth = \Carbon\Carbon::now()->format('Y-m');
+            $lastChangedMonth = $user->username_changed_at ? \Carbon\Carbon::parse($user->username_changed_at)->format('Y-m') : null;
 
-        $user->nama_lengkap = $request->nama_lengkap;
-        $user->identitas_kampus = $request->identitas_kampus;
+            if ($lastChangedMonth !== $currentMonth) {
+                $user->username_change_count = 0;
+            }
+
+            if ($user->username_change_count >= 2) {
+                return redirect()->back()->with('error', 'Anda telah mencapai batas maksimal perubahan nama (2 kali) untuk bulan ini.');
+            }
+
+            $user->nama_lengkap = $request->nama_lengkap;
+            $user->username_change_count += 1;
+            $user->username_changed_at = now();
+        }
         
         if (!$user->google_id) {
             $user->email = $request->email;
         }
 
         $user->save();
-
-        if ($isNimUpdated) {
-            return redirect()->back()->with('success', 'Profil dan NIM berhasil diperbarui. Akun Anda kini menjadi Internal Kampus.');
-        }
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
     }
