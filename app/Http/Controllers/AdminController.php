@@ -38,6 +38,8 @@ class AdminController extends Controller
         $maxFunds = $chart['maxFunds'];
         $maxBooks = $chart['maxBooks'];
 
+        $landing_badge = \App\Models\Setting::where('key', 'landing_badge')->value('value') ?? 'Acak';
+
         return view('admins.dashboard', compact(
             'totalDonations',
             'booksNeeded',
@@ -46,7 +48,8 @@ class AdminController extends Controller
             'recentTransactions',
             'chartData',
             'maxFunds',
-            'maxBooks'
+            'maxBooks',
+            'landing_badge'
         ));
     }
 
