@@ -90,8 +90,7 @@ class KatalogController extends Controller
             if ($request->sort == 'Terbaru') {
                 $query->latest();
             } elseif ($request->sort == 'Terpopuler') {
-                // Dummy sort for popular (we can just use id for now)
-                $query->orderBy('id', 'desc');
+                $query->orderBy('terdonasi', 'desc')->orderBy('id', 'desc');
             } elseif ($request->sort == 'Harga: Rendah ke Tinggi') {
                 $query->orderBy('harga_estimasi', 'asc');
             } elseif ($request->sort == 'Harga: Tinggi ke Rendah') {
