@@ -466,7 +466,7 @@
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/#buku-donasi">Buku Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/#buku-donasi">Buku Pilihan</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Informasi -->
