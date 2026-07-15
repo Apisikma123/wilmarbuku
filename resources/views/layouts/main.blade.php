@@ -109,7 +109,7 @@
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/">Buku Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/#buku-donasi">Buku Donasi</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Informasi -->
@@ -123,9 +123,10 @@
             </div>
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-xs text-white/50">© {{ date('Y') }} Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs.</p>
-                <div class="flex gap-8 text-xs text-white/50">
+                <div class="flex flex-wrap gap-6 md:gap-8 text-xs text-white/50">
                     <a class="hover:text-white transition-colors" href="/terms">Terms of Service</a>
                     <a class="hover:text-white transition-colors" href="/cookie-policy">Cookie Policy</a>
+                    <a class="hover:text-white transition-colors" href="/sitemap">Sitemap</a>
                 </div>
             </div>
         </div>
