@@ -113,7 +113,8 @@ $staticPages = [
     'kebijakan-privasi' => 'static.privasi',
     'faq' => 'static.faq',
     'terms' => 'static.terms',
-    'cookie-policy' => 'static.cookie'
+    'cookie-policy' => 'static.cookie',
+    'sitemap' => 'static.sitemap'
 ];
 
 foreach ($staticPages as $uri => $view) {
