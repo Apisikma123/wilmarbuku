@@ -166,7 +166,7 @@
 
                             <div class="flex items-center justify-center gap-1.5 text-[11px] text-on-surface-variant">
                                 <span class="material-symbols-outlined text-[14px]">verified_user</span>
-                                <span>Pembayaran aman & terverifikasi oleh Midtrans</span>
+                                <span>Pembayaran aman & terverifikasi</span>
                             </div>
                         </div>
                     </div>
