@@ -285,7 +285,8 @@ class AdminController extends Controller
         if ($request->has('status') && $request->status != '') {
             $status = $request->status;
             if ($status == 'Unpaid') {
-                $query->where('status_pembayaran', 'Unpaid');
+                $query->where('status_pembayaran', 'Unpaid')
+                      ->where('status_tracking', '!=', 'Dibatalkan');
             } elseif ($status == 'DanaDiterima') {
                 $query->where('status_tracking', 'Dana Diterima');
             } elseif ($status == 'InProcess') {
@@ -300,7 +301,9 @@ class AdminController extends Controller
         $transactions = $query->paginate(10)->withQueryString();
 
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
-        $pendingPayments = TransaksiCheckout::where('status_pembayaran', 'Unpaid')->count();
+        $pendingPayments = TransaksiCheckout::where('status_pembayaran', 'Unpaid')
+                                            ->where('status_tracking', '!=', 'Dibatalkan')
+                                            ->count();
         $danaDiterima = TransaksiCheckout::where('status_tracking', 'Dana Diterima')->count();
         $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->count();
         $completed = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
