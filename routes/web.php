@@ -94,9 +94,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'index'])->name('akun');
     Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('user.password.update');
-    Route::get('/support', function () {
-        return view('support');
-    })->name('support');
+
     Route::post('/akun/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('akun.updateProfile');
     Route::post('/akun/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('akun.updatePassword');
     Route::middleware([\App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
@@ -105,6 +103,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/buku/{id}', [App\Http\Controllers\KatalogController::class, 'show'])->name('buku.detail');
 });
+
+Route::get('/support', function () {
+    return view('support');
+})->name('support');
 
 // Static Pages
 $staticPages = [
