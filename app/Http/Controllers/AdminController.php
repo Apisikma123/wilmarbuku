@@ -9,6 +9,7 @@ use App\Models\MetodePembayaran;
 use App\Models\User;
 use App\Models\Kategori;
 use App\Models\Penerbit;
+use App\Models\Label;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -70,8 +71,9 @@ class AdminController extends Controller
         $berhasilTersedia = KatalogBuku::where('status_buku', 'Tersedia')->count();
         $categories = Kategori::orderBy('nama_kategori')->get();
         $penerbits = Penerbit::orderBy('nama_penerbit')->get();
+        $labels = Label::orderBy('nama_label')->get();
 
-        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories', 'penerbits'));
+        return view('admins.catalog', compact('books', 'totalPengajuan', 'dibutuhkanSegera', 'berhasilTersedia', 'categories', 'penerbits', 'labels'));
     }
 
     public function storeKategori(Request $request)
