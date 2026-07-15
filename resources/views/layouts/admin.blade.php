@@ -37,10 +37,10 @@
         <!-- Sidebar -->
         <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-[100] w-64 bg-white border-r border-slate-200 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
             <!-- Logo area -->
-            <div class="h-20 flex flex-col justify-center px-6 border-b border-slate-100">
+            <a href="{{ url('/') }}" class="h-20 flex flex-col justify-center px-6 border-b border-slate-100 hover:bg-slate-50 transition-colors">
                 <img src="{{ asset('images/wil.png') }}" alt="Wilmar Polytechnic Logo" class="h-10 w-auto object-contain object-left">
                 <p class="text-[10px] text-slate-500 font-medium mt-1">Admin Dashboard</p>
-            </div>
+            </a>
 
             <!-- Navigation -->
             <nav class="flex-1 py-6 flex flex-col gap-1 overflow-y-auto">

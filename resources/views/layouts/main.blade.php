@@ -122,7 +122,10 @@
                 </div>
             </div>
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-xs text-white/50">© {{ date('Y') }} Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs.</p>
+                <div class="flex flex-col items-center md:items-start gap-1">
+                    <p class="text-xs text-white/50">&copy; {{ date('Y') }} Wilmar Business Indonesia Polytechnic. Nurturing Entrepreneurs.</p>
+                    <span class="text-[10px] font-bold text-white/30 tracking-widest uppercase">Versi v1.0.0 (Rilis)</span>
+                </div>
                 <div class="flex flex-wrap gap-6 md:gap-8 text-xs text-white/50">
                     <a class="hover:text-white transition-colors" href="/terms">Terms of Service</a>
                     <a class="hover:text-white transition-colors" href="/cookie-policy">Cookie Policy</a>
