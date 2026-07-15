@@ -54,17 +54,44 @@
         </tr>
     </table>
 
-    <div class="table-container">
-        <h3 style="margin-bottom: 0;">Daftar Transaksi Terbaru (Max 50)</h3>
+    <div style="width: 100%; display: block; margin-bottom: 20px;">
+        <h3 style="margin-bottom: 0; color: #004b23;">Top 5 Buku Paling Dibutuhkan</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Judul Buku</th>
+                    <th>Penulis</th>
+                    <th>Kategori</th>
+                    <th style="text-align: center;">Kebutuhan (Eks)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($topNeededBooks as $buku)
+                <tr>
+                    <td style="font-weight: bold;">{{ $buku->judul_buku }}</td>
+                    <td>{{ $buku->penulis }}</td>
+                    <td>{{ $buku->kategori->nama_kategori ?? '-' }}</td>
+                    <td style="text-align: center; color: #d92d20; font-weight: bold;">{{ $buku->stok_dibutuhkan }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" style="text-align: center;">Belum ada data buku dibutuhkan.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div style="width: 100%; display: block;">
+        <h3 style="margin-bottom: 0; color: #004b23;">5 Donasi Terkini</h3>
         <table>
             <thead>
                 <tr>
                     <th>Kode Tracking</th>
-                    <th>Nama User</th>
+                    <th>Nama Donatur</th>
                     <th>Tanggal</th>
-                    <th>Buku</th>
                     <th>Total Harga (Rp)</th>
-                    <th>Status Tracking</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,13 +100,12 @@
                     <td style="font-weight: bold;">{{ $trx->kode_tracking }}</td>
                     <td>{{ $trx->user->nama_lengkap ?? 'Guest' }}</td>
                     <td>{{ $trx->created_at->format('d/m/Y') }}</td>
-                    <td>{{ $trx->details->first()->buku->judul_buku ?? 'Buku Donasi' }}</td>
                     <td>{{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                     <td>{{ $trx->status_tracking }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center;">Tidak ada data transaksi.</td>
+                    <td colspan="5" style="text-align: center;">Tidak ada transaksi donasi terbaru.</td>
                 </tr>
                 @endforelse
             </tbody>

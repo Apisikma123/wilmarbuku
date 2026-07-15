@@ -94,36 +94,56 @@
     </div>
 
     <!-- Metrics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-center">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'Unpaid' ? null : 'Unpaid'])) }}" class="bg-white rounded-xl border {{ request('status') == 'Unpaid' ? 'border-amber-500 ring-2 ring-amber-100' : 'border-slate-200 hover:border-amber-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
-                    <i data-lucide="clock" class="w-4 h-4"></i>
+                <div class="w-7 h-7 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+                    <i data-lucide="clock" class="w-3.5 h-3.5"></i>
                 </div>
             </div>
-            <p class="text-[11px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Belum Dibayar</p>
-            <h3 class="text-2xl font-bold text-slate-900">{{ number_format($pendingPayments) }} Transaksi</h3>
-        </div>
+            <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Belum Dibayar</p>
+            <h3 class="text-xl font-bold text-slate-900">{{ number_format($pendingPayments) }}</h3>
+        </a>
         
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-center">
+        <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'DanaDiterima' ? null : 'DanaDiterima'])) }}" class="bg-white rounded-xl border {{ request('status') == 'DanaDiterima' ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-slate-200 hover:border-indigo-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                    <i data-lucide="truck" class="w-4 h-4"></i>
+                <div class="w-7 h-7 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
                 </div>
             </div>
-            <p class="text-[11px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Dalam Pengiriman</p>
-            <h3 class="text-2xl font-bold text-slate-900">{{ number_format($inProcess) }} Transaksi</h3>
-        </div>
+            <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Dana Diterima</p>
+            <h3 class="text-xl font-bold text-slate-900">{{ number_format($danaDiterima) }}</h3>
+        </a>
 
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-center">
+        <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'InProcess' ? null : 'InProcess'])) }}" class="bg-white rounded-xl border {{ request('status') == 'InProcess' ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-200 hover:border-blue-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
-                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                <div class="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                    <i data-lucide="truck" class="w-3.5 h-3.5"></i>
                 </div>
             </div>
-            <p class="text-[11px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Selesai</p>
-            <h3 class="text-2xl font-bold text-slate-900">{{ number_format($completed) }} Transaksi</h3>
-        </div>
+            <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Dikirim</p>
+            <h3 class="text-xl font-bold text-slate-900">{{ number_format($inProcess) }}</h3>
+        </a>
+
+        <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'Completed' ? null : 'Completed'])) }}" class="bg-white rounded-xl border {{ request('status') == 'Completed' ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-200 hover:border-emerald-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
+            <div class="flex items-center gap-2 mb-2">
+                <div class="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Selesai</p>
+            <h3 class="text-xl font-bold text-slate-900">{{ number_format($completed) }}</h3>
+        </a>
+
+        <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'Cancelled' ? null : 'Cancelled'])) }}" class="bg-white rounded-xl border {{ request('status') == 'Cancelled' ? 'border-red-500 ring-2 ring-red-100' : 'border-slate-200 hover:border-red-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
+            <div class="flex items-center gap-2 mb-2">
+                <div class="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                    <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Dibatalkan</p>
+            <h3 class="text-xl font-bold text-slate-900">{{ number_format($cancelled) }}</h3>
+        </a>
     </div>
 
     <!-- Transactions Table -->
@@ -131,6 +151,9 @@
         <form method="GET" action="{{ route('admin.transactions') }}" class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 flex-wrap gap-4">
             <h3 class="text-lg font-bold text-slate-900">Daftar Transaksi</h3>
             <div class="relative w-64 shrink-0 flex items-center gap-2">
+                @if(request('status'))
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                @endif
                 <div class="relative w-full">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode/nama..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">

@@ -274,22 +274,41 @@ class AdminController extends Controller
         
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('kode_tracking', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('nama_lengkap', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('kode_tracking', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q2) use ($search) {
+                      $q2->where('nama_lengkap', 'like', "%{$search}%");
                   });
+            });
+        }
+        
+        if ($request->has('status') && $request->status != '') {
+            $status = $request->status;
+            if ($status == 'Unpaid') {
+                $query->where('status_pembayaran', 'Unpaid');
+            } elseif ($status == 'DanaDiterima') {
+                $query->where('status_tracking', 'Dana Diterima');
+            } elseif ($status == 'InProcess') {
+                $query->where('status_tracking', 'Dalam Pengiriman');
+            } elseif ($status == 'Completed') {
+                $query->where('status_tracking', 'Selesai');
+            } elseif ($status == 'Cancelled') {
+                $query->where('status_tracking', 'Dibatalkan');
+            }
         }
         
         $transactions = $query->paginate(10)->withQueryString();
 
         $totalDonations = TransaksiCheckout::where('status_pembayaran', 'Paid')->sum('total_harga');
         $pendingPayments = TransaksiCheckout::where('status_pembayaran', 'Unpaid')->count();
-        $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->orWhere('status_tracking', 'Dana Diterima')->count();
+        $danaDiterima = TransaksiCheckout::where('status_tracking', 'Dana Diterima')->count();
+        $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->count();
         $completed = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
+        $cancelled = TransaksiCheckout::where('status_tracking', 'Dibatalkan')->count();
 
         $metodes = MetodePembayaran::all();
 
-        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'inProcess', 'completed', 'metodes'));
+        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'danaDiterima', 'inProcess', 'completed', 'cancelled', 'metodes'));
     }
 
     public function confirmTransaction(Request $request, $kode_tracking)
@@ -720,18 +739,24 @@ class AdminController extends Controller
 
         $recentTransactions = TransaksiCheckout::with(['user', 'details.buku'])
             ->latest('tanggal_checkout')
-            ->take(50)
+            ->take(5)
             ->get();
 
+        $topNeededBooks = KatalogBuku::where('status_buku', 'Dibutuhkan')
+            ->orderBy('stok_dibutuhkan', 'desc')
+            ->take(5)
+            ->get();
+            
         $pdf = Pdf::loadView('admins.pdf_dashboard', compact(
             'totalDonations',
             'booksNeeded',
             'totalBooks',
             'totalUsers',
-            'recentTransactions'
+            'recentTransactions',
+            'topNeededBooks'
         ));
         
-        return $pdf->download('wilmarbuku-dashboard.pdf');
+        return $pdf->download('wilmarbuku-dashboard-overview.pdf');
     }
 
     public function dibutuhkan()
