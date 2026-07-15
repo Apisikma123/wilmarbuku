@@ -46,7 +46,7 @@
                 @if(auth()->check() && auth()->user()->role === 'admin')
                 <a href="{{ route('admin.dashboard') }}" class="hidden md:block border border-primary text-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary/10 transition-colors shadow-sm">Admin Dashboard</a>
                 @endif
-                <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi Sekarang</a>
+                <a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi Sekarang</a>
             </div>
         </div>
     </header>
@@ -79,7 +79,7 @@
                 <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Admin Dashboard
             </a>
             @endif
-            <a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary-container transition-colors">
+            <a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary-container transition-colors">
                 <span class="material-symbols-outlined text-[18px]">volunteer_activism</span> Donasi Sekarang
             </a>
         </div>
@@ -109,7 +109,7 @@
                     <ul class="space-y-4">
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/tentang-kami">Tentang Kami</a></li>
                         <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/panduan-donasi">Panduan Donasi</a></li>
-                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/#buku-donasi">Buku Donasi</a></li>
+                        <li><a class="text-white/70 hover:text-secondary-fixed transition-colors text-sm" href="/#buku-donasi">Buku Pilihan</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Informasi -->

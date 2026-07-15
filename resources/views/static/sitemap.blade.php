@@ -14,7 +14,7 @@
                 <li><a href="/" class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary/70"></span> Beranda</a></li>
                 <li><a href="/kategori" class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary/70"></span> Katalog Buku</a></li>
                 <li><a href="/search" class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary/70"></span> Cari Buku</a></li>
-                <li><a href="/#buku-donasi" class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary/70"></span> Buku Donasi</a></li>
+                <li><a href="/#buku-donasi" class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary/70"></span> Buku Pilihan</a></li>
             </ul>
         </div>
 

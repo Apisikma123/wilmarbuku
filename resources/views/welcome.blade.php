@@ -16,11 +16,11 @@
       </p>
 <div class="flex flex-wrap gap-4 pt-4">
 @if(!auth()->check() || auth()->user()->role !== 'admin')
-<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
+<a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="bg-secondary text-on-secondary font-semibold px-8 py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">volunteer_activism</span>
           Donasi Sekarang
         </a>
-<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
+<a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
           <span class="material-symbols-outlined">library_books</span>
           Pilih Buku Donasi
         </a>
@@ -247,7 +247,7 @@ Rak Perpustakaan Masih Kosong
 Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.
 </p>
 @if(!auth()->check() || auth()->user()->role !== 'admin')
-<a href="{{ Auth::check() ? url('/cart') : route('login') }}" class="bg-secondary text-on-secondary font-bold px-8 py-3 md:px-10 md:py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-sm md:text-lg inline-block text-center">
+<a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="bg-secondary text-on-secondary font-bold px-8 py-3 md:px-10 md:py-4 rounded-md hover:bg-secondary-fixed transition-colors shadow-lg text-sm md:text-lg inline-block text-center">
 Donasi Sekarang
 </a>
 @endif
