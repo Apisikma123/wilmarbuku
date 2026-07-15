@@ -77,11 +77,11 @@
                             <p class="text-[10px] text-slate-400">a/n {{ $metode->atas_nama }}</p>
                         </div>
                     </div>
-                    <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST" onsubmit="return confirm('Hapus metode pembayaran ini?')">
+                    <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST" class="delete-metode-form">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="w-8 h-8 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <button type="button" class="w-8 h-8 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors btn-delete-metode">
+                            <i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i>
                         </button>
                     </form>
                 </div>
@@ -419,5 +419,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     setupTableEcho();
+
+    // SweetAlert2 for Delete Metode Pembayaran
+    document.querySelectorAll('.btn-delete-metode').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Hapus Metode Pembayaran?',
+                text: "Anda yakin ingin menghapus metode pembayaran ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#003215',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-lg font-semibold',
+                    cancelButton: 'rounded-lg font-semibold'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
 });
 </script>

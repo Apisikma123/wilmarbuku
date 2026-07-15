@@ -211,18 +211,18 @@
 <h2 class="text-2xl font-bold text-primary mb-3">Lacak Status Donasi</h2>
 <p class="text-on-surface-variant">Masukkan ID Donasi atau Nomor Resi pengiriman Anda untuk melihat status terkini dari donasi buku Anda.</p>
 </div>
-<div class="space-y-4">
+<form action="{{ url('/track') }}" method="GET" class="space-y-4">
 <div>
 <label class="block text-sm font-semibold text-on-surface mb-2" for="tracking-id">ID Donasi / Nomor Resi</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: DON-2024-892" type="text"/>
+<input name="kode" class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: DON-2024-892" type="text" required/>
 </div>
 </div>
-<a href="{{ route('login') }}" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
+<button type="submit" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
                         Cek Status
-                    </a>
-</div>
+                    </button>
+</form>
 </div>
 </div>
 </div>

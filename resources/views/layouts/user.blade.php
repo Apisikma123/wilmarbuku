@@ -372,7 +372,7 @@
         <div class="p-4 border-b border-outline-variant/20">
             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">Menu Utama</p>
             <nav class="space-y-1">
-                <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('/') ? 'bg-primary/10 text-primary font-bold' : '' }}">
+                <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('dashboard') ? 'bg-primary/10 text-primary font-bold' : '' }}">
                     <span class="material-symbols-outlined text-[20px]">volunteer_activism</span> Donasi
                 </a>
                 <a href="/track" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-surface-container-low text-on-surface {{ request()->is('track') ? 'bg-primary/10 text-primary font-bold' : '' }}">

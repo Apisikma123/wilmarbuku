@@ -34,7 +34,17 @@
                     @endif
                 </div>
 
-                <a href="/dashboard" class="text-gray-600 p-1"><span class="material-symbols-outlined">home</span></a>
+                @auth
+                <a href="/pesan-masuk" class="text-gray-600 p-1 relative">
+                    <span class="material-symbols-outlined">mail</span>
+                    @php
+                        $unreadPesan = \App\Models\PesanMasuk::where('user_id', Auth::id())->where('is_read', false)->count();
+                    @endphp
+                    @if($unreadPesan > 0)
+                        <span class="absolute -top-0 -right-0 bg-red-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">{{ $unreadPesan }}</span>
+                    @endif
+                </a>
+                @endauth
                 <a href="/cart" class="text-gray-600 p-1 relative">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     @php
