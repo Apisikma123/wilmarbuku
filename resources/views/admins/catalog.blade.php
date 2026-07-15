@@ -10,14 +10,7 @@
             <p class="text-slate-500 text-sm mt-1">Kelola daftar buku yang diajukan dan dibutuhkan untuk perpustakaan.</p>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="openCategoryModal()" class="flex items-center gap-2 px-3 py-2.5 bg-[#003128] hover:bg-[#00493d] text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
-                <i data-lucide="tag" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Tambah Kategori</span>
-            </button>
-            <button onclick="openPublisherModal()" class="flex items-center gap-2 px-3 py-2.5 bg-[#7b5800] hover:bg-[#715000] text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
-                <i data-lucide="building" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Tambah Penerbit</span>
-            </button>
+
             <button onclick="openAddModal()" class="flex items-center gap-2 px-3 py-2.5 bg-[#003215] hover:bg-[#004b23] text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
                 <i data-lucide="plus-square" class="w-4 h-4"></i>
                 Tambah Buku Baru
@@ -29,15 +22,16 @@
     <!-- Metrics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Card 1 -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6">
-            <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
-                <i data-lucide="book-open" class="w-6 h-6 text-slate-700"></i>
+        <!-- Card 1 -->
+        <a href="{{ route('admin.master') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:border-[#003128] transition-all cursor-pointer group">
+            <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0 group-hover:bg-slate-200 transition-colors">
+                <i data-lucide="database" class="w-6 h-6 text-slate-700"></i>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Pengajuan</p>
-                <h3 class="text-3xl font-bold text-slate-900">{{ number_format($totalPengajuan) }} Judul</h3>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-slate-700 transition-colors">Master Data</p>
+                <h3 class="text-lg font-bold text-slate-900 leading-tight">Kelola Kategori,<br>Penerbit & Label</h3>
             </div>
-        </div>
+        </a>
 
         <!-- Card 2 -->
         <a href="{{ route('admin.dibutuhkan') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group">
@@ -284,10 +278,9 @@
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
                     <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
                         <option value="" disabled selected>-- Pilih Label --</option>
-                        <option value="Prioritas">Prioritas</option>
-                        <option value="Pilihan Utama">Pilihan Utama</option>
-                        <option value="Trending">Trending</option>
-                        <option value="Rekomendasi">Rekomendasi</option>
+                        @foreach($labels as $lbl)
+                        <option value="{{ $lbl->nama_label }}">{{ $lbl->nama_label }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -403,12 +396,11 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
-                    <select id="edit_badge" name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
+                    <select name="badge" id="edit_badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
                         <option value="" disabled selected>-- Pilih Label --</option>
-                        <option value="Prioritas">Prioritas</option>
-                        <option value="Pilihan Utama">Pilihan Utama</option>
-                        <option value="Trending">Trending</option>
-                        <option value="Rekomendasi">Rekomendasi</option>
+                        @foreach($labels as $lbl)
+                        <option value="{{ $lbl->nama_label }}">{{ $lbl->nama_label }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>

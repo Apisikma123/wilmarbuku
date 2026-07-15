@@ -125,8 +125,23 @@ foreach ($staticPages as $uri => $view) {
 }
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminMasterDataController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    // Master Data
+    Route::get('/master-data', [AdminMasterDataController::class, 'index'])->name('admin.master');
+    Route::post('/master-data/kategori', [AdminMasterDataController::class, 'storeKategori'])->name('admin.master.kategori.store');
+    Route::post('/master-data/kategori/update/{id}', [AdminMasterDataController::class, 'updateKategori'])->name('admin.master.kategori.update');
+    Route::post('/master-data/kategori/delete/{id}', [AdminMasterDataController::class, 'destroyKategori'])->name('admin.master.kategori.delete');
+    
+    Route::post('/master-data/penerbit', [AdminMasterDataController::class, 'storePenerbit'])->name('admin.master.penerbit.store');
+    Route::post('/master-data/penerbit/update/{id}', [AdminMasterDataController::class, 'updatePenerbit'])->name('admin.master.penerbit.update');
+    Route::post('/master-data/penerbit/delete/{id}', [AdminMasterDataController::class, 'destroyPenerbit'])->name('admin.master.penerbit.delete');
+    
+    Route::post('/master-data/label', [AdminMasterDataController::class, 'storeLabel'])->name('admin.master.label.store');
+    Route::post('/master-data/label/update/{id}', [AdminMasterDataController::class, 'updateLabel'])->name('admin.master.label.update');
+    Route::post('/master-data/label/delete/{id}', [AdminMasterDataController::class, 'destroyLabel'])->name('admin.master.label.delete');
+
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard/export', [AdminController::class, 'exportDashboardPdf'])->name('admin.dashboard.export');
     Route::get('/catalog', [AdminController::class, 'catalog'])->name('admin.catalog');
