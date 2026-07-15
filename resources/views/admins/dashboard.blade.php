@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
 @section('content')
     <div class="max-w-7xl mx-auto space-y-6 p-4 md:p-0">
 
@@ -140,33 +142,8 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex items-end gap-2 sm:gap-4 px-2 mt-auto border-b border-slate-200 pb-2 relative">
-
-                    <!-- Grid Lines Background -->
-                    <div
-                        class="absolute inset-0 flex flex-col justify-between z-0 border-t border-slate-100 pointer-events-none">
-                        <div class="w-full border-b border-slate-100 border-dashed flex-1"></div>
-                        <div class="w-full border-b border-slate-100 border-dashed flex-1"></div>
-                        <div class="w-full border-b border-slate-100 border-dashed flex-1"></div>
-                        <div class="w-full flex-1"></div>
-                    </div>
-
-                    @foreach($chartData as $data)
-                        <div class="flex-1 flex items-end justify-center gap-1 group relative z-10 h-full">
-                            <!-- Funds Bar -->
-                            <div class="w-full max-w-[20px] sm:max-w-[30px] bg-green-900 rounded-t transition-opacity hover:opacity-80 cursor-pointer"
-                                style="height: {{ $data['funds'] > 0 ? max(10, ($data['funds'] / $maxFunds) * 100) : 10 }}%"
-                                title="Dana: Rp {{ number_format($data['funds'], 0, ',', '.') }}"></div>
-
-                            <!-- Books Bar -->
-                            <div class="w-full max-w-[20px] sm:max-w-[30px] bg-amber-500 rounded-t transition-opacity hover:opacity-80 cursor-pointer"
-                                style="height: {{ $data['books'] > 0 ? max(10, ($data['books'] / $maxBooks) * 100) : 10 }}%"
-                                title="Buku: {{ $data['books'] }}"></div>
-
-                            <span
-                                class="absolute -bottom-6 text-[10px] font-bold text-slate-400 uppercase">{{ $data['name'] }}</span>
-                        </div>
-                    @endforeach
+                <div class="flex-1 w-full mt-4" style="min-height: 250px;">
+                    <div id="dashboardChart"></div>
                 </div>
             </div>
 
@@ -295,3 +272,60 @@
     }
 </script>
 @endsection
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    if (typeof ApexCharts !== 'undefined') {
+        var chartData = @json($chartData);
+        var categories = chartData.map(d => d.name);
+        var fundsData = chartData.map(d => d.funds);
+        var booksData = chartData.map(d => d.books);
+
+        var options = {
+            series: [{
+                name: 'Total Dana (Rp)',
+                type: 'column',
+                data: fundsData
+            }, {
+                name: 'Buku',
+                type: 'line',
+                data: booksData
+            }],
+            chart: {
+                height: '100%',
+                type: 'line',
+                toolbar: { show: false },
+                fontFamily: 'Poppins, sans-serif'
+            },
+            stroke: {
+                width: [0, 3],
+                curve: 'smooth'
+            },
+            colors: ['#14532d', '#f59e0b'],
+            dataLabels: {
+                enabled: true,
+                enabledOnSeries: [1]
+            },
+            labels: categories,
+            yaxis: [{
+                title: { text: 'Dana (Rp)', style: { color: '#14532d', fontWeight: 600 } },
+                labels: {
+                    formatter: function(val) {
+                        return "Rp " + val.toLocaleString('id-ID');
+                    }
+                }
+            }, {
+                opposite: true,
+                title: { text: 'Buku (Eksemplar)', style: { color: '#f59e0b', fontWeight: 600 } },
+                labels: {
+                    formatter: function(val) { return Math.floor(val); }
+                }
+            }],
+            legend: { show: false }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#dashboardChart"), options);
+        chart.render();
+    }
+});
+</script>
