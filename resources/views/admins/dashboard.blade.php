@@ -97,7 +97,7 @@
                 <div>
                     <p
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-blue-700 transition-colors">
-                        Total Buku</p>
+                        Total Judul</p>
                     <h3 class="text-3xl font-bold text-slate-900">{{ number_format($totalBooks) }}</h3>
                 </div>
             </a>
