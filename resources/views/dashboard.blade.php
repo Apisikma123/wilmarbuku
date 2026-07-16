@@ -156,7 +156,7 @@
 
             <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    @forelse($buku->where('badge', '!=', 'Prioritas Kampus')->take(5) as $item)
+                    @forelse($buku->where('badge', 'Rekomendasi')->take(5) as $item)
                     <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-lg p-3 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 hover:-translate-y-0.5 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block">
                         <div class="w-full aspect-[3/4] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif rounded mb-3 flex items-center justify-center p-2 text-center text-white relative group overflow-hidden">
                             @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
