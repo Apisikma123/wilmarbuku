@@ -14,9 +14,9 @@
     </div>
     
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
             <h3 class="font-bold text-slate-900">Total {{ $books->count() }} Judul Buku Dibutuhkan</h3>
-            <span class="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-full">Prioritas Tinggi</span>
+            <span class="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-full self-start sm:self-auto">Prioritas Tinggi</span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm whitespace-nowrap">

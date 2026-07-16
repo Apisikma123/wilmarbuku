@@ -89,7 +89,7 @@
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-4 md:gap-6">
 <div>
 <h2 class="text-2xl md:text-4xl font-bold text-primary mb-2 md:mb-4 tracking-tight">Pilihan Buku Donasi</h2>
-<p class="text-sm md:text-lg text-on-surface-variant">Sedang dibutuhkan perpustakaan kampus.</p>
+<p class="text-sm md:text-lg text-on-surface-variant">Buku Pilihan Kampus.</p>
 </div>
 <div class="flex flex-wrap items-center gap-4 w-full md:w-auto justify-between md:justify-end">
 <a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group" href="{{ route('kategori') }}">

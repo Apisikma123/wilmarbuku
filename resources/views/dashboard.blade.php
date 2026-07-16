@@ -147,9 +147,9 @@
             <div class="flex justify-between items-center mb-6 gap-2">
                 <div>
                     <h2 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary">
-                        <span class="material-symbols-outlined text-secondary">local_library</span> Referensi Resmi WBI
+                        <span class="material-symbols-outlined text-secondary">local_library</span> Rekomendasi WBI
                     </h2>
-                    <p class="text-xs md:text-sm text-on-surface-variant mt-1">Daftar buku wajib untuk mahasiswa semester berjalan.</p>
+                    <p class="text-xs md:text-sm text-on-surface-variant mt-1">Daftar buku rekomendasi untuk mahasiswa.</p>
                 </div>
                 <a href="{{ route('kategori', ['sort' => 'Rekomendasi']) }}" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
             </div>
