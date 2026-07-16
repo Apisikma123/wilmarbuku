@@ -40,6 +40,7 @@ class AdminController extends Controller
         $maxBooks = $chart['maxBooks'];
 
         $landing_badge = \App\Models\Setting::where('key', 'landing_badge')->value('value') ?? 'Acak';
+        $labels = \App\Models\Label::all();
 
         return view('admins.dashboard', compact(
             'totalDonations',
@@ -50,7 +51,8 @@ class AdminController extends Controller
             'chartData',
             'maxFunds',
             'maxBooks',
-            'landing_badge'
+            'landing_badge',
+            'labels'
         ));
     }
 

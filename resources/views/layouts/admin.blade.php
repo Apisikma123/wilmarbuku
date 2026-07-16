@@ -82,7 +82,7 @@
         </aside>
 
         <!-- Main Content Wrapper -->
-        <div class="flex-1 flex flex-col overflow-hidden w-full">
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
             <!-- Header -->
             <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shrink-0 gap-4 md:gap-8">
                 
@@ -229,7 +229,7 @@
             </header>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto w-full overflow-x-hidden md:p-8">
+            <main class="flex-1 overflow-y-auto w-full overflow-x-hidden md:p-8 min-w-0">
                 @yield('content')
             </main>
         </div>

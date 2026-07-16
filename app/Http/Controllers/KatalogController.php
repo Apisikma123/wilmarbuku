@@ -102,8 +102,9 @@ class KatalogController extends Controller
         }
 
         $buku = $query->paginate(12);
+        $labels = \App\Models\Label::all();
         
-        return view('kategori', compact('buku'));
+        return view('kategori', compact('buku', 'labels'));
     }
 
     public function show($id)

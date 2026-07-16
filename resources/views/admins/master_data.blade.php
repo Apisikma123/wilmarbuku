@@ -105,7 +105,19 @@
             </div>
             <div class="flex-1 p-4 overflow-y-auto max-h-[500px]">
                 <ul class="space-y-2">
-                    @forelse($labels as $l)
+                    @php
+                        $defaultLabels = ['Buku Wajib', 'Prioritas Kampus', 'Bestseller', 'Rekomendasi', 'Trending', 'Pilihan Utama'];
+                    @endphp
+                    @foreach($defaultLabels as $dl)
+                    <li class="flex items-center justify-between bg-slate-100 p-2 rounded border border-slate-200">
+                        <span class="text-sm font-semibold text-slate-700">{{ $dl }} <span class="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded ml-1">Bawaan</span></span>
+                        <div class="flex items-center gap-1" title="Bawaan sistem, tidak bisa diubah">
+                            <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </div>
+                    </li>
+                    @endforeach
+                    
+                    @foreach($labels as $l)
                     <li class="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100 group hover:border-slate-300 transition-colors">
                         <span class="text-sm font-medium text-slate-700">{{ $l->nama_label }}</span>
                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -120,9 +132,7 @@
                             </form>
                         </div>
                     </li>
-                    @empty
-                    <li class="text-sm text-slate-500 text-center py-4">Belum ada data.</li>
-                    @endforelse
+                    @endforeach
                 </ul>
             </div>
         </div>

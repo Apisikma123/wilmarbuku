@@ -35,7 +35,7 @@
                         <td class="px-6 py-4 font-bold text-slate-900">{{ $b->judul_buku }}</td>
                         <td class="px-6 py-4 text-slate-600">{{ $b->pengarang }}</td>
                         <td class="px-6 py-4"><span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-full text-xs font-medium">{{ $b->kategori }}</span></td>
-                        <td class="px-6 py-4 text-center font-bold text-green-600">{{ $b->stok_terkumpul ?? $b->stok_dibutuhkan }} Buku</td>
+                        <td class="px-6 py-4 text-center font-bold text-green-600">{{ $b->terdonasi }} Buku</td>
                         <td class="px-6 py-4 font-bold text-slate-900 text-right">Rp {{ number_format($b->harga_estimasi, 0, ',', '.') }}</td>
                     </tr>
                     @empty

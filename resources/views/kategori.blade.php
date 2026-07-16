@@ -94,10 +94,17 @@
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
                         <option value="Harga: Tinggi ke Rendah" @if(request('sort') == 'Harga: Tinggi ke Rendah') selected @endif>Harga: Tinggi ke Rendah</option>
                         <option disabled>--- Label / Badge ---</option>
-                        <option value="Trending" @if(request('sort') == 'Trending') selected @endif>Trending</option>
-                        <option value="Prioritas" @if(request('sort') == 'Prioritas') selected @endif>Prioritas</option>
-                        <option value="Rekomendasi" @if(request('sort') == 'Rekomendasi') selected @endif>Rekomendasi</option>
-                        <option value="Pilihan Utama" @if(request('sort') == 'Pilihan Utama') selected @endif>Pilihan Utama</option>
+                        @php
+                            $defaultLabels = ['Buku Wajib', 'Prioritas Kampus', 'Bestseller', 'Rekomendasi', 'Trending', 'Pilihan Utama'];
+                        @endphp
+                        @foreach($defaultLabels as $dl)
+                            <option value="{{ $dl }}" @if(request('sort') == $dl) selected @endif>{{ $dl }}</option>
+                        @endforeach
+                        @if(isset($labels))
+                            @foreach($labels as $lbl)
+                                <option value="{{ $lbl->nama_label }}" @if(request('sort') == $lbl->nama_label) selected @endif>{{ $lbl->nama_label }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="flex items-center gap-1 shrink-0">
@@ -211,10 +218,17 @@
                         <option value="Harga: Rendah ke Tinggi" @if(request('sort') == 'Harga: Rendah ke Tinggi') selected @endif>Harga: Rendah ke Tinggi</option>
                         <option value="Harga: Tinggi ke Rendah" @if(request('sort') == 'Harga: Tinggi ke Rendah') selected @endif>Harga: Tinggi ke Rendah</option>
                         <option disabled>--- Label / Badge ---</option>
-                        <option value="Trending" @if(request('sort') == 'Trending') selected @endif>Trending</option>
-                        <option value="Prioritas" @if(request('sort') == 'Prioritas') selected @endif>Prioritas</option>
-                        <option value="Rekomendasi" @if(request('sort') == 'Rekomendasi') selected @endif>Rekomendasi</option>
-                        <option value="Pilihan Utama" @if(request('sort') == 'Pilihan Utama') selected @endif>Pilihan Utama</option>
+                        @php
+                            $defaultLabels = ['Buku Wajib', 'Prioritas Kampus', 'Bestseller', 'Rekomendasi', 'Trending', 'Pilihan Utama'];
+                        @endphp
+                        @foreach($defaultLabels as $dl)
+                            <option value="{{ $dl }}" @if(request('sort') == $dl) selected @endif>{{ $dl }}</option>
+                        @endforeach
+                        @if(isset($labels))
+                            @foreach($labels as $lbl)
+                                <option value="{{ $lbl->nama_label }}" @if(request('sort') == $lbl->nama_label) selected @endif>{{ $lbl->nama_label }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
             </div>

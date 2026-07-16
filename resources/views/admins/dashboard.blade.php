@@ -161,10 +161,15 @@
                             <div class="relative">
                                 <select name="landing_badge" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-medium text-sm appearance-none pr-10">
                                     <option value="Acak" {{ (isset($landing_badge) && $landing_badge === 'Acak') ? 'selected' : '' }}>Acak (Semua Kategori)</option>
-                                    <option value="Prioritas" {{ (isset($landing_badge) && $landing_badge === 'Prioritas') ? 'selected' : '' }}>Prioritas</option>
-                                    <option value="Rekomendasi" {{ (isset($landing_badge) && $landing_badge === 'Rekomendasi') ? 'selected' : '' }}>Rekomendasi</option>
-                                    <option value="Trending" {{ (isset($landing_badge) && $landing_badge === 'Trending') ? 'selected' : '' }}>Trending</option>
-                                    <option value="Pilihan Utama" {{ (isset($landing_badge) && $landing_badge === 'Pilihan Utama') ? 'selected' : '' }}>Pilihan Utama</option>
+                                    @php
+                                        $defaultLabels = ['Buku Wajib', 'Prioritas Kampus', 'Bestseller', 'Rekomendasi', 'Trending', 'Pilihan Utama'];
+                                    @endphp
+                                    @foreach($defaultLabels as $dl)
+                                        <option value="{{ $dl }}" {{ (isset($landing_badge) && $landing_badge === $dl) ? 'selected' : '' }}>{{ $dl }}</option>
+                                    @endforeach
+                                    @foreach($labels as $lbl)
+                                        <option value="{{ $lbl->nama_label }}" {{ (isset($landing_badge) && $landing_badge === $lbl->nama_label) ? 'selected' : '' }}>{{ $lbl->nama_label }}</option>
+                                    @endforeach
                                 </select>
                                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                             </div>

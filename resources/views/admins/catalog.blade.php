@@ -278,6 +278,12 @@
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
                     <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
                         <option value="" disabled selected>-- Pilih Label --</option>
+                        <option value="Buku Wajib">Buku Wajib</option>
+                        <option value="Prioritas Kampus">Prioritas Kampus</option>
+                        <option value="Bestseller">Bestseller</option>
+                        <option value="Rekomendasi">Rekomendasi</option>
+                        <option value="Trending">Trending</option>
+                        <option value="Pilihan Utama">Pilihan Utama</option>
                         @foreach($labels as $lbl)
                         <option value="{{ $lbl->nama_label }}">{{ $lbl->nama_label }}</option>
                         @endforeach
@@ -398,6 +404,12 @@
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
                     <select name="badge" id="edit_badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
                         <option value="" disabled selected>-- Pilih Label --</option>
+                        <option value="Buku Wajib">Buku Wajib</option>
+                        <option value="Prioritas Kampus">Prioritas Kampus</option>
+                        <option value="Bestseller">Bestseller</option>
+                        <option value="Rekomendasi">Rekomendasi</option>
+                        <option value="Trending">Trending</option>
+                        <option value="Pilihan Utama">Pilihan Utama</option>
                         @foreach($labels as $lbl)
                         <option value="{{ $lbl->nama_label }}">{{ $lbl->nama_label }}</option>
                         @endforeach
