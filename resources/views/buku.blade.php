@@ -62,8 +62,30 @@
                 <div class="flex items-center gap-3 mb-5 flex-wrap">
                     <span class="bg-[#EDF6EE] text-primary text-[12px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-primary/20">{{ $buku->kategori }}</span>
                     @if($buku->badge)
-                    <span class="inline-flex bg-[#FFF9E6] text-[#996B00] text-[12px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-[#996B00]/20 items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">verified</span> <span>{{ $buku->badge }}</span>
+                    @php
+                        $badgeColor = match($buku->badge) {
+                            'Buku Wajib' => 'bg-blue-100 text-blue-700 border-blue-200',
+                            'Prioritas Kampus' => 'bg-red-100 text-red-700 border-red-200',
+                            'Bestseller' => 'bg-orange-100 text-orange-700 border-orange-200',
+                            'Prioritas' => 'bg-red-100 text-red-700 border-red-200',
+                            'Rekomendasi' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                            'Trending' => 'bg-orange-100 text-orange-700 border-orange-200',
+                            'Pilihan Utama' => 'bg-blue-100 text-blue-700 border-blue-200',
+                            default => 'bg-slate-100 text-slate-700 border-slate-200',
+                        };
+                        $badgeIcon = match($buku->badge) {
+                            'Buku Wajib' => 'menu_book',
+                            'Prioritas Kampus' => 'workspace_premium',
+                            'Bestseller' => 'trending_up',
+                            'Prioritas' => 'workspace_premium',
+                            'Rekomendasi' => 'thumb_up',
+                            'Trending' => 'local_fire_department',
+                            'Pilihan Utama' => 'emoji_events',
+                            default => 'label',
+                        };
+                    @endphp
+                    <span class="inline-flex {{ $badgeColor }} text-[12px] font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider border items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">{{ $badgeIcon }}</span> <span>{{ $buku->badge }}</span>
                     </span>
                     @endif
                 </div>

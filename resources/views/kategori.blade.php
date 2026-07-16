@@ -264,6 +264,9 @@
                                     @if($item->badge)
                                         @php
                                             $badgeColor = match($item->badge) {
+                                                'Buku Wajib' => 'bg-blue-100 text-blue-700',
+                                                'Prioritas Kampus' => 'bg-red-100 text-red-700',
+                                                'Bestseller' => 'bg-orange-100 text-orange-700',
                                                 'Prioritas' => 'bg-red-100 text-red-700',
                                                 'Rekomendasi' => 'bg-emerald-100 text-emerald-700',
                                                 'Trending' => 'bg-orange-100 text-orange-700',
@@ -271,6 +274,9 @@
                                                 default => 'bg-slate-100 text-slate-700',
                                             };
                                             $badgeIcon = match($item->badge) {
+                                                'Buku Wajib' => 'menu_book',
+                                                'Prioritas Kampus' => 'workspace_premium',
+                                                'Bestseller' => 'trending_up',
                                                 'Prioritas' => 'workspace_premium',
                                                 'Rekomendasi' => 'thumb_up',
                                                 'Trending' => 'local_fire_department',
