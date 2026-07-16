@@ -38,7 +38,7 @@
             <div class="max-w-[1280px] mx-auto px-4 md:px-6 flex md:justify-center gap-6 md:gap-16 text-white/90 text-[10px] md:text-sm font-medium w-max md:w-auto">
                 <div class="flex items-center gap-1.5 md:gap-2 whitespace-nowrap"><span class="material-symbols-outlined text-[16px] md:text-xl text-secondary-fixed">verified_user</span> Transaksi Aman & Terenkripsi</div>
                 <div class="flex items-center gap-1.5 md:gap-2 whitespace-nowrap"><span class="material-symbols-outlined text-[16px] md:text-xl text-secondary-fixed">receipt_long</span> Transparansi Laporan 100%</div>
-                <div class="flex items-center gap-1.5 md:gap-2 whitespace-nowrap"><span class="material-symbols-outlined text-[16px] md:text-xl text-secondary-fixed">support_agent</span> Admin Fast Respond</div>
+                <div class="flex items-center gap-1.5 md:gap-2 whitespace-nowrap"><span class="material-symbols-outlined text-[16px] md:text-xl text-secondary-fixed">support_agent</span> Admin Terpercaya</div>
             </div>
         </div>
     </div>
