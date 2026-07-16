@@ -71,24 +71,28 @@
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-6">
         <!-- Table Toolbar -->
         <form id="filterForm" method="GET" action="{{ route('admin.users') }}" class="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
-            <h3 class="text-lg font-bold text-slate-900">Daftar Pengguna Terdaftar</h3>
-            <div class="relative w-full sm:w-auto shrink-0 flex flex-col sm:flex-row items-center gap-2">
-                <select id="roleFilter" name="role" onchange="document.getElementById('filterForm').submit()" class="bg-white border border-slate-200 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+            <h3 class="text-lg font-bold text-slate-900 shrink-0">Daftar Pengguna Terdaftar</h3>
+            <div class="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2">
+                <select id="roleFilter" name="role" onchange="document.getElementById('filterForm').submit()" class="w-full sm:w-auto bg-white border border-slate-200 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
                     <option value="all">Semua Peran</option>
                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="user_internal" {{ request('role') == 'user_internal' ? 'selected' : '' }}>User Internal</option>
                     <option value="user_external" {{ request('role') == 'user_external' ? 'selected' : '' }}>User Eksternal</option>
                 </select>
-                  <div class="relative w-full sm:w-64">
-                      <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                      <input type="text" id="searchInput" name="search" value="{{ request('search') }}" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
-                  </div>
-                  <button type="submit" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0">Cari</button>
-                  <button type="button" onclick="openAddModal()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0 flex items-center gap-1">
-                      <i data-lucide="plus" class="w-4 h-4"></i> Tambah
-                  </button>
-              </div>
-          </form>
+                <div class="relative w-full sm:w-64">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" name="search" value="{{ request('search') }}" placeholder="Cari pengguna..." class="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button type="submit" class="flex-1 sm:flex-none justify-center bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0 flex items-center">
+                        Cari
+                    </button>
+                    <button type="button" onclick="openAddModal()" class="flex-1 sm:flex-none justify-center bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0 flex items-center gap-1">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+                    </button>
+                </div>
+            </div>
+        </form>
 
         <!-- Table -->
         <div class="overflow-x-auto">

@@ -44,12 +44,9 @@
                             <button onclick="editKategori({{ $k->id }}, '{{ addslashes($k->nama_kategori) }}')" class="p-1 text-slate-400 hover:text-blue-600 transition-colors" title="Edit">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                             </button>
-                            <form action="{{ route('admin.master.kategori.delete', $k->id) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">
-                                @csrf
-                                <button type="submit" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Hapus">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </form>
+                            <button onclick="openDeleteModal('{{ route('admin.master.kategori.delete', $k->id) }}', 'Hapus Kategori', '{{ addslashes($k->nama_kategori) }}')" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Hapus">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
                     </li>
                     @empty
@@ -78,12 +75,9 @@
                             <button onclick="editPenerbit({{ $p->id }}, '{{ addslashes($p->nama_penerbit) }}')" class="p-1 text-slate-400 hover:text-blue-600 transition-colors" title="Edit">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                             </button>
-                            <form action="{{ route('admin.master.penerbit.delete', $p->id) }}" method="POST" onsubmit="return confirm('Hapus penerbit ini?')">
-                                @csrf
-                                <button type="submit" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Hapus">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </form>
+                            <button onclick="openDeleteModal('{{ route('admin.master.penerbit.delete', $p->id) }}', 'Hapus Penerbit', '{{ addslashes($p->nama_penerbit) }}')" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Hapus">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
                     </li>
                     @empty
@@ -105,6 +99,7 @@
             </div>
             <div class="flex-1 p-4 overflow-y-auto max-h-[500px]">
                 <ul class="space-y-2">
+
                     @php
                         $defaultLabels = ['Buku Wajib', 'Prioritas Kampus', 'Bestseller', 'Rekomendasi', 'Trending', 'Pilihan Utama'];
                     @endphp
@@ -120,23 +115,14 @@
                     @foreach($labels as $l)
                     <li class="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100 group hover:border-slate-300 transition-colors">
                         <span class="text-sm font-medium text-slate-700">{{ $l->nama_label }}</span>
-                        @if(in_array($l->nama_label, ['Prioritas', 'Pilihan Utama', 'Trending', 'Rekomendasi']))
-                        <div class="flex items-center gap-1">
-                            <span class="text-[10px] font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded uppercase">Default</span>
-                        </div>
-                        @else
                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button onclick="editLabel({{ $l->id }}, '{{ addslashes($l->nama_label) }}')" class="p-1 text-slate-400 hover:text-blue-600 transition-colors" title="Edit">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                             </button>
-                            <form action="{{ route('admin.master.label.delete', $l->id) }}" method="POST" onsubmit="return confirm('Hapus label ini?')">
-                                @csrf
-                                <button type="submit" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Hapus">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </form>
+                            <button onclick="openDeleteModal('{{ route('admin.master.label.delete', $l->id) }}', 'Hapus Label', '{{ addslashes($l->nama_label) }}')" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Hapus">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
-                        @endif
                     </li>
                     @endforeach
                 </ul>
@@ -266,7 +252,38 @@
     </div>
 </div>
 
+<!-- Modal Hapus -->
+<div id="modal-delete" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 sm:p-8 shadow-2xl border border-slate-200 text-center">
+        <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+        </div>
+        <h3 id="delete-title" class="text-xl font-bold text-slate-900 mb-2">Hapus Data</h3>
+        <p class="text-slate-500 text-sm mb-6">Apakah Anda yakin ingin menghapus <strong id="delete-name" class="text-slate-800"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
+        
+        <form id="form-delete" method="POST" action="">
+            @csrf
+            <div class="flex items-center justify-center gap-3">
+                <button type="button" onclick="closeDeleteModal()" class="px-5 py-2.5 text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold transition-colors flex-1">Batal</button>
+                <button type="submit" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-bold transition-colors flex-1 shadow-sm">Ya, Hapus</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+    function openDeleteModal(url, title, name) {
+        const modal = document.getElementById('modal-delete');
+        document.getElementById('form-delete').action = url;
+        document.getElementById('delete-title').textContent = title;
+        document.getElementById('delete-name').textContent = name;
+        modal.classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('modal-delete').classList.add('hidden');
+    }
+
     function editKategori(id, nama) {
         document.getElementById('form-edit-kategori').action = '/admin/master-data/kategori/update/' + id;
         document.getElementById('edit-nama-kategori').value = nama;
