@@ -56,13 +56,12 @@
                                     <!-- Header Info -->
                                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
                                         <div class="flex gap-5">
-                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http'))) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center p-2 text-center text-white">
-                                                @if((str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')))
-                                                    <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
-                                                @else
-                                                    <h4 class="font-bold text-xs leading-tight tracking-tight relative z-20">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>
+                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow bg-slate-900 flex items-center justify-center p-2 text-center text-white">
+                                                <img src="{{ (str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')) ? $item['cover_image'] : asset('images/default-cover.png') }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                                                @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http')))
+                                                    <h4 class="font-bold text-xs leading-tight tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>
                                                 @endif
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
                                             </div>
                                             <div class="flex flex-col justify-between py-1">
                                                 <div>

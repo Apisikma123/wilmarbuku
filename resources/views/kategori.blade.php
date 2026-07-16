@@ -28,10 +28,10 @@
                 
                 <div class="flex-grow relative flex items-center">
                     <span class="material-symbols-outlined absolute left-2 text-gray-400 text-[18px]">search</span>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari..." class="w-full pl-8 pr-8 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                    @if(request('search'))
-                    <a href="{{ route('kategori') }}" class="absolute right-2 text-gray-400"><span class="material-symbols-outlined text-[16px]">close</span></a>
-                    @endif
+                    <input type="text" name="search" id="mobile-search-input" value="{{ request('search') }}" placeholder="Cari..." class="w-full pl-8 pr-8 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <button type="button" id="mobile-search-clear" class="absolute right-2 text-gray-400 {{ request('search') ? '' : 'hidden' }}">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                    </button>
                 </div>
 
                 @auth
@@ -140,9 +140,7 @@
                     </div>
                 </div>
                 
-                @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                @endif
+                {{-- Hidden search parameter is handled by mobile input when present, which is inside filterForm --}}
                 
                 <!-- Categories -->
                 <div class="mb-8">
@@ -237,11 +235,11 @@
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 relative" id="buku-grid">
                 @forelse($buku as $item)
                 <a href="{{ route('buku.detail', $item->id) }}" class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/20 p-3 hover:-translate-y-1 hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all cursor-pointer flex flex-col h-full block group">
-                    <div class="w-full aspect-[3/4] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif rounded-lg mb-3 flex items-center justify-center p-2 text-center text-white relative overflow-hidden">
-                        @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
-                            <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover">
-                        @else
-                            <h4 class="text-[10px] md:text-xs font-bold uppercase leading-tight relative z-10">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                    <div class="w-full aspect-[3/4] rounded-lg mb-3 flex items-center justify-center p-2 text-center text-white relative overflow-hidden bg-slate-900">
+                        <img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                        @if((!str_starts_with($item->cover_image ?? '', '/storage/') && !str_starts_with($item->cover_image ?? '', 'http')))
+                            <h4 class="text-[10px] md:text-xs font-bold uppercase leading-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
                         @endif
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                             <span class="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-4 group-hover:translate-y-0 transition-transform">Lihat Detail</span>
@@ -326,6 +324,32 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('filterForm');
     
+    // Handle form submit to prevent reload and use AJAX search
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetchResults(new URLSearchParams(new FormData(form)).toString());
+    });
+
+    // Mobile Search Input & Clear Logic
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const mobileSearchClear = document.getElementById('mobile-search-clear');
+
+    if (mobileSearchInput && mobileSearchClear) {
+        mobileSearchInput.addEventListener('input', function() {
+            if (mobileSearchInput.value.trim().length > 0) {
+                mobileSearchClear.classList.remove('hidden');
+            } else {
+                mobileSearchClear.classList.add('hidden');
+            }
+        });
+
+        mobileSearchClear.addEventListener('click', function() {
+            mobileSearchInput.value = '';
+            mobileSearchClear.classList.add('hidden');
+            fetchResults(new URLSearchParams(new FormData(form)).toString());
+        });
+    }
+
     // Gunakan event delegation agar tidak hilang saat main-content-area diganti
     form.addEventListener('change', function(e) {
         if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {

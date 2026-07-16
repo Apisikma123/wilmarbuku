@@ -102,10 +102,10 @@
 @foreach($buku as $item)
 <div class="w-[85vw] max-w-[280px] sm:w-[280px] sm:max-w-none flex-shrink-0 snap-start bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
 <a href="{{ route('buku.detail', $item->id) }}" class="flex flex-col flex-grow">
-<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)]">
-@if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
-<img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
-<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)] bg-slate-900">
+<img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+@if((str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')))
 <div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20">
 <h3 class="font-bold text-xl leading-snug tracking-tight font-display text-transparent text-shadow-sm">{{ $item->judul_buku }}</h3>
 </div>

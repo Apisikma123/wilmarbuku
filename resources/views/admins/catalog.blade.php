@@ -88,19 +88,13 @@
                         <td class="px-6 py-5 font-bold text-slate-900">#{{ $b->id }}</td>
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
-                                @if($b->cover_image)
-                                    @if(str_starts_with($b->cover_image, '/storage/') || str_starts_with($b->cover_image, 'http'))
-                                        <img src="{{ $b->cover_image }}" alt="Cover" class="w-10 h-14 object-cover rounded shadow-sm border border-slate-200 shrink-0">
-                                    @else
-                                        <div class="w-10 h-14 rounded shadow-sm border border-slate-200 shrink-0 bg-gradient-to-br {{ $b->cover_image }} flex items-center justify-center overflow-hidden">
-                                            <span class="text-[5px] text-white font-bold leading-[1.1] text-center p-0.5 uppercase break-all">{!! str_replace(' ', '<br>', $b->judul_buku) !!}</span>
-                                        </div>
+                                <div class="w-10 h-14 rounded shadow-sm border border-slate-200 shrink-0 relative overflow-hidden bg-slate-900 flex items-center justify-center">
+                                    <img src="{{ (str_starts_with($b->cover_image ?? '', '/storage/') || str_starts_with($b->cover_image ?? '', 'http')) ? $b->cover_image : asset('images/default-cover.png') }}" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                                    @if((!str_starts_with($b->cover_image ?? '', '/storage/') && !str_starts_with($b->cover_image ?? '', 'http')))
+                                        <span class="text-[5px] text-white font-bold leading-[1.1] text-center p-0.5 uppercase break-all relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', $b->judul_buku) !!}</span>
                                     @endif
-                                @else
-                                <div class="w-10 h-14 bg-slate-100 border border-slate-200 rounded flex items-center justify-center text-slate-400 shrink-0">
-                                    <i data-lucide="book" class="w-5 h-5"></i>
                                 </div>
-                                @endif
                                 <div>
                                     <div class="font-bold text-slate-900 text-sm max-w-xs truncate">{{ $b->judul_buku }}</div>
                                     <div class="text-xs text-slate-400 font-normal">{{ $b->kategori ?? 'Umum' }} @if($b->badge)<span class="ml-1 px-1.5 py-0.5 bg-green-50 text-green-700 rounded text-[10px] font-bold">{{ $b->badge }}</span>@endif</div>

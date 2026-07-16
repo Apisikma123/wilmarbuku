@@ -55,16 +55,21 @@ class KatalogController extends Controller
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where('judul_buku', 'like', "%{$search}%")
+            $query->where(function($q) use ($search) {
+                $q->where('judul_buku', 'like', "%{$search}%")
                   ->orWhere('pengarang', 'like', "%{$search}%");
+            });
         }
 
         if ($request->has('kategori') && is_array($request->kategori)) {
-            $query->where(function($q) use ($request) {
-                foreach ($request->kategori as $cat) {
-                    $q->orWhere('kategori', 'like', '%' . $cat . '%');
-                }
-            });
+            $categories = array_filter($request->kategori);
+            if (!empty($categories)) {
+                $query->where(function($q) use ($categories) {
+                    foreach ($categories as $cat) {
+                        $q->orWhere('kategori', 'like', '%' . $cat . '%');
+                    }
+                });
+            }
         }
 
         if ($request->has('filter') && !empty($request->filter)) {

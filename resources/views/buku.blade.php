@@ -16,11 +16,10 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-4 lg:col-start-1 flex flex-col gap-4 md:gap-6">
             <div class="md:rounded-lg md:p-8 flex items-center justify-center w-full">
-                <div id="product-cover-image" class="w-full md:max-w-[260px] aspect-[4/3] md:aspect-[3/4] md:rounded-lg md:shadow-lg flex items-center justify-center p-6 text-center text-white md:border border-black/5 relative overflow-hidden @if((!str_starts_with($buku->cover_image, '/storage/') && !str_starts_with($buku->cover_image, 'http'))) bg-gradient-to-br {{ $buku->cover_image }} @endif">
-                    @if((str_starts_with($buku->cover_image, '/storage/') || str_starts_with($buku->cover_image, 'http')))
-                        <img src="{{ $buku->cover_image }}" alt="{{ $buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
-                    @else
+                <div id="product-cover-image" class="w-full md:max-w-[260px] aspect-[4/3] md:aspect-[3/4] md:rounded-lg md:shadow-lg flex items-center justify-center p-6 text-center text-white md:border border-black/5 relative overflow-hidden bg-slate-900">
+                    <img src="{{ (str_starts_with($buku->cover_image ?? '', '/storage/') || str_starts_with($buku->cover_image ?? '', 'http')) ? $buku->cover_image : asset('images/default-cover.png') }}" alt="{{ $buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                    @if((!str_starts_with($buku->cover_image ?? '', '/storage/') && !str_starts_with($buku->cover_image ?? '', 'http')))
                         <div class="relative z-20 pointer-events-none">
                             <h4 class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight">{!! str_replace(' ', '<br/>', $buku->judul_buku) !!}</h4>
                             <p class="text-xs text-white border-t border-white/30 pt-2 mt-2 font-medium">Edisi Terbaru</p>
@@ -93,11 +92,11 @@
                 <h1 class="text-3xl md:text-[36px] lg:text-[44px] font-bold text-on-surface tracking-tight mb-4 leading-[1.2]">{{ $buku->judul_buku }}</h1>
                 <p class="text-lg text-on-surface-variant font-medium mb-8">Oleh <span class="text-on-surface font-semibold">{{ $buku->pengarang }}</span></p>
                 
-                <div class="flex items-baseline gap-3 mb-2 bg-surface-bright p-5 rounded-lg border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)] inline-block">
-                    <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Estimasi Harga Donasi</p>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-3xl lg:text-[36px] font-bold text-primary tracking-tight">Rp {{ number_format($buku->harga_estimasi, 0, ',', '.') }}</span>
-                        <span class="text-sm text-on-surface-variant font-medium">/ buku</span>
+                <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-6 bg-surface-bright p-5 rounded-lg border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)] inline-block">
+                    <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1 sm:mb-0">Estimasi Harga Donasi</p>
+                    <div class="flex items-baseline gap-2 shrink-0">
+                        <span class="text-2xl sm:text-3xl lg:text-[36px] font-bold text-primary tracking-tight whitespace-nowrap">Rp {{ number_format($buku->harga_estimasi, 0, ',', '.') }}</span>
+                        <span class="text-xs sm:text-sm text-on-surface-variant font-medium whitespace-nowrap">/ buku</span>
                     </div>
                 </div>
             </div>
@@ -175,9 +174,9 @@
 @if($buku_terkait->count() > 0)
 <div class="w-full bg-surface-container-low py-12 mt-12 border-t border-outline-variant/30">
     <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl md:text-2xl font-bold text-on-surface tracking-tight">Buku Terkait Kategori {{ $buku->kategori }}</h2>
-            <a href="/kategori" class="bg-transparent border border-outline-variant text-primary font-semibold text-sm px-4 py-2 rounded-md hover:bg-primary/5 transition-colors">Lihat Semua</a>
+        <div class="flex items-center justify-between gap-4 mb-6">
+            <h2 class="text-lg md:text-2xl font-bold text-on-surface tracking-tight leading-snug">Buku Terkait Kategori {{ $buku->kategori }}</h2>
+            <a href="/kategori" class="bg-transparent border border-outline-variant text-primary font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
         </div>
         
         <div class="relative group/slider">
@@ -186,10 +185,10 @@
                 <div class="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant/30 hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col w-[240px] md:w-[260px] flex-shrink-0 snap-start relative overflow-hidden">
                     <a href="{{ route('buku.detail', $item->id) }}" class="flex-grow flex flex-col block">
                         <!-- Image Area -->
-                        <div class="w-full aspect-[5/3] relative @if((!str_starts_with($item->cover_image, '/storage/') && !str_starts_with($item->cover_image, 'http'))) bg-gradient-to-br {{ $item->cover_image }} @endif flex items-center justify-center p-3 text-white text-center">
-                            @if((str_starts_with($item->cover_image, '/storage/') || str_starts_with($item->cover_image, 'http')))
-                                <img src="{{ $item->cover_image }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
-                                <div class="absolute inset-0 bg-black/40 z-10 pointer-events-none"></div>
+                        <div class="w-full aspect-[5/3] relative flex items-center justify-center p-3 text-white text-center bg-slate-900">
+                            <img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                            @if((str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')))
                                 <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{{ $item->judul_buku }}</h3>
                             @else
                                 <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
