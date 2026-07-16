@@ -521,14 +521,16 @@ class AdminController extends Controller
             'role' => 'required|in:admin,user_internal,user_external',
         ]);
 
+        $identitas_kampus = $request->role === 'user_internal' ? $request->identitas_kampus : null;
+
         User::create([
             'nama_lengkap' => $request->nama_lengkap,
-            'identitas_kampus' => $request->identitas_kampus,
+            'identitas_kampus' => $identitas_kampus,
             'email' => $request->email,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
             'role' => $request->role,
             'email_verified_at' => now(),
-            'nim_status' => ($request->role == 'user_internal' && !empty($request->identitas_kampus)) ? 'verified' : 'unverified',
+            'nim_status' => ($request->role == 'user_internal' && !empty($identitas_kampus)) ? 'verified' : 'unverified',
         ]);
 
         return back()->with('success', 'Pengguna baru berhasil ditambahkan!');
@@ -540,21 +542,27 @@ class AdminController extends Controller
         
         $request->validate([
             'role' => 'required|in:admin,user_internal,user_external',
+            'identitas_kampus' => 'nullable|string|min:15|max:15',
         ]);
 
-        if ($request->role == 'user_external' && !empty($user->identitas_kampus)) {
+        if (in_array($request->role, ['user_external', 'admin']) && !empty($user->identitas_kampus)) {
             $user->identitas_kampus = null;
             $user->nim_status = 'unverified';
             $user->save();
             
-            PesanMasuk::create([
-                'user_id' => $user->id,
-                'judul' => 'Perubahan Peran Pengguna',
-                'isi_pesan' => "Peran akun Anda telah diubah menjadi Donatur Eksternal. Jika ini sebuah kesalahan, silakan perbarui NIM Anda di halaman Profil.",
-                'jenis' => 'peringatan',
-                'is_read' => false,
-            ]);
+            if ($request->role == 'user_external') {
+                PesanMasuk::create([
+                    'user_id' => $user->id,
+                    'judul' => 'Perubahan Peran Pengguna',
+                    'isi_pesan' => "Peran akun Anda telah diubah menjadi Donatur Eksternal. Jika ini sebuah kesalahan, silakan perbarui NIM Anda di halaman Profil.",
+                    'jenis' => 'peringatan',
+                    'is_read' => false,
+                ]);
+            }
         } elseif ($request->role == 'user_internal') {
+            if ($request->filled('identitas_kampus')) {
+                $user->identitas_kampus = $request->identitas_kampus;
+            }
             $user->nim_status = 'verified';
             $user->save();
         }
@@ -611,15 +619,18 @@ class AdminController extends Controller
             'identitas_kampus' => 'nullable|string|min:15|max:15',
         ]);
 
+        $identitas_kampus = $user->role == 'user_internal' ? $request->identitas_kampus : null;
+
         $updates = [
             'nama_lengkap' => $request->nama_lengkap,
             'email' => $request->email,
-            'identitas_kampus' => $request->identitas_kampus,
+            'identitas_kampus' => $identitas_kampus,
         ];
 
         if ($request->identitas_kampus && $user->role == 'user_external') {
             $updates['role'] = 'user_internal';
             $updates['nim_status'] = 'verified';
+            $updates['identitas_kampus'] = $request->identitas_kampus; // they get upgraded
         }
 
         $user->update($updates);

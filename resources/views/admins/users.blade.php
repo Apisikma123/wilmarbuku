@@ -190,7 +190,7 @@
                         <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Email <span class="text-[#ba1a1a]">*</span></label>
                         <input type="email" name="email" id="edit_email" required class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
-                    <div>
+                    <div id="edit_identitas_container">
                         <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Identitas Kampus</label>
                         <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" minlength="15" placeholder="NIM / NIDN (Opsional)" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
@@ -239,9 +239,9 @@
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
                         <input type="text" name="nama_lengkap" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
                     </div>
-                    <div>
+                    <div id="add_identitas_container" style="display: none;">
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Identitas Kampus (NIM/NIDN)</label>
-                        <input type="text" name="identitas_kampus" minlength="15" maxlength="15" placeholder="Opsional" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                        <input type="text" name="identitas_kampus" id="add_identitas" minlength="15" maxlength="15" placeholder="Wajib untuk Internal" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
@@ -288,6 +288,25 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Internal -->
+    <div id="internalConfirmModal" class="fixed inset-0 z-[60] bg-[#121c29]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#f8f9ff] rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[#c0c9be]">
+            <div class="flex flex-col">
+                <h3 class="text-xl font-bold text-[#121c29] mb-2" style="font-family: Poppins, sans-serif;">Masukkan Identitas Kampus</h3>
+                <p class="text-[14px] text-[#404941] mb-6" style="font-family: Poppins, sans-serif;">
+                    Untuk mengubah pengguna ini menjadi <strong>User Internal</strong>, Anda harus memasukkan NIM / NIDN pengguna terlebih dahulu.
+                </p>
+                <div class="mb-6">
+                    <input type="text" id="internal_nim_input" placeholder="NIM / NIDN (15 Karakter)" maxlength="15" minlength="15" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
+                </div>
+                <div class="flex items-center gap-3 w-full">
+                    <button type="button" onclick="cancelInternalConfirm()" class="flex-1 px-5 py-3 text-[#404941] hover:bg-[#d0dbed] border border-[#707970] rounded-xl text-sm font-bold transition-colors">Batal</button>
+                    <button type="button" onclick="proceedInternalConfirm()" class="flex-1 px-5 py-3 bg-[#003215] hover:bg-[#004b23] text-white rounded-xl text-sm font-bold transition-colors shadow-sm">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -299,7 +318,17 @@ let pendingFormId = null;
 function openEditModal(user) {
     document.getElementById('edit_nama').value = user.nama_lengkap;
     document.getElementById('edit_email').value = user.email;
-    document.getElementById('edit_identitas').value = user.identitas_kampus || '';
+    
+    const identitasContainer = document.getElementById('edit_identitas_container');
+    const identitasInput = document.getElementById('edit_identitas');
+    
+    if (user.role === 'user_internal') {
+        identitasContainer.style.display = 'block';
+        identitasInput.value = user.identitas_kampus || '';
+    } else {
+        identitasContainer.style.display = 'none';
+        identitasInput.value = '';
+    }
     
     document.getElementById('editForm').action = `/admin/users/update/${user.id}`;
     
@@ -331,6 +360,17 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
 }
 
+document.getElementById('add_role').addEventListener('change', function() {
+    const identitasContainer = document.getElementById('add_identitas_container');
+    const identitasInput = document.getElementById('add_identitas');
+    if (this.value === 'user_internal') {
+        identitasContainer.style.display = 'block';
+    } else {
+        identitasContainer.style.display = 'none';
+        identitasInput.value = '';
+    }
+});
+
 
 function handleRoleChange(selectElement, originalRole, formId) {
     if (selectElement.value === 'admin') {
@@ -341,8 +381,46 @@ function handleRoleChange(selectElement, originalRole, formId) {
         const modal = document.getElementById('adminConfirmModal');
         modal.classList.remove('hidden');
         if(window.lucide) lucide.createIcons();
+    } else if (selectElement.value === 'user_internal' && originalRole !== 'user_internal') {
+        pendingSelectElement = selectElement;
+        pendingOriginalRole = originalRole;
+        pendingFormId = formId;
+        
+        const modal = document.getElementById('internalConfirmModal');
+        modal.classList.remove('hidden');
+        document.getElementById('internal_nim_input').value = '';
     } else {
         document.getElementById(formId).submit();
+    }
+}
+
+function cancelInternalConfirm() {
+    if (pendingSelectElement && pendingOriginalRole) {
+        pendingSelectElement.value = pendingOriginalRole;
+    }
+    document.getElementById('internalConfirmModal').classList.add('hidden');
+    
+    pendingSelectElement = null;
+    pendingOriginalRole = null;
+    pendingFormId = null;
+}
+
+function proceedInternalConfirm() {
+    const nimInput = document.getElementById('internal_nim_input').value;
+    if (nimInput.length !== 15) {
+        alert('NIM / NIDN harus berjumlah 15 karakter.');
+        return;
+    }
+    
+    if (pendingFormId) {
+        const form = document.getElementById(pendingFormId);
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'identitas_kampus';
+        hiddenInput.value = nimInput;
+        form.appendChild(hiddenInput);
+        
+        form.submit();
     }
 }
 
