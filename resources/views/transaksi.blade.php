@@ -4,7 +4,7 @@
 <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10">
     <div class="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-            <h1 class="text-3xl font-bold font-display text-on-surface tracking-tight mb-2">Riwayat & Pelacakan</h1>
+            <h1 class="text-3xl font-bold font-display text-on-surface tracking-tight mb-2">Riwayat Transaksi</h1>
             <p class="text-on-surface-variant font-medium text-sm md:text-base max-w-2xl">Pantau status donasi buku Anda.</p>
         </div>
 
@@ -17,28 +17,9 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Lacak Donasi -->
-        <div class="lg:col-span-1">
-            <div class="bg-surface-bright rounded-2xl p-6 shadow-sm border border-outline-variant/30 sticky top-28">
-                <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary">search</span>
-                    Lacak Kode Tracking
-                </h2>
-                <form action="/track" method="GET" class="flex flex-col gap-3">
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[18px]">tag</span>
-                        <input type="text" name="kode" placeholder="Masukkan Kode (ex: WB-...)" required class="w-full bg-white border border-outline-variant/50 rounded-lg py-3 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow">
-                    </div>
-                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">travel_explore</span> Lacak Sekarang
-                    </button>
-                </form>
-            </div>
-        </div>
-
+    <div class="w-full">
         <!-- Riwayat Transaksi -->
-        <div id="user-transactions-container" class="lg:col-span-2 space-y-6">
+        <div id="user-transactions-container" class="space-y-6">
             @forelse($transaksi as $trx)
             <!-- Loop Transaksi -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all">

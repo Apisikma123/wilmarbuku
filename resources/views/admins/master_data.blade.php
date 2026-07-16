@@ -108,6 +108,11 @@
                     @forelse($labels as $l)
                     <li class="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100 group hover:border-slate-300 transition-colors">
                         <span class="text-sm font-medium text-slate-700">{{ $l->nama_label }}</span>
+                        @if(in_array($l->nama_label, ['Prioritas', 'Pilihan Utama', 'Trending', 'Rekomendasi']))
+                        <div class="flex items-center gap-1">
+                            <span class="text-[10px] font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded uppercase">Default</span>
+                        </div>
+                        @else
                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button onclick="editLabel({{ $l->id }}, '{{ addslashes($l->nama_label) }}')" class="p-1 text-slate-400 hover:text-blue-600 transition-colors" title="Edit">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
@@ -119,6 +124,7 @@
                                 </button>
                             </form>
                         </div>
+                        @endif
                     </li>
                     @empty
                     <li class="text-sm text-slate-500 text-center py-4">Belum ada data.</li>

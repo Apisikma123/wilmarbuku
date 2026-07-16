@@ -241,7 +241,7 @@
 
 <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
 <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-5 tracking-tight">
-Rak Perpustakaan Masih Kosong
+Masih Ada Ruang untuk Kebaikan Anda
 </h2>
 <p class="text-sm md:text-lg text-white/90 mb-8 md:mb-10 font-light leading-relaxed">
 Perpustakaan kampus butuh buku baru tiap semester. Satu donasi Anda bisa dibaca puluhan mahasiswa selama bertahun-tahun.

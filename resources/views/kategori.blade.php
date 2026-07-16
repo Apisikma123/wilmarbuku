@@ -250,16 +250,28 @@
                                     @if($item->badge)
                                         @php
                                             $badgeColor = match($item->badge) {
-                                                'Prioritas' => 'bg-red-50 text-red-600 border border-red-200',
-                                                'Rekomendasi' => 'bg-emerald-50 text-emerald-600 border border-emerald-200',
-                                                'Trending' => 'bg-orange-50 text-orange-600 border border-orange-200',
-                                                'Pilihan Utama' => 'bg-blue-50 text-blue-600 border border-blue-200',
-                                                default => 'bg-slate-50 text-slate-600 border border-slate-200',
+                                                'Prioritas' => 'bg-red-100 text-red-700',
+                                                'Rekomendasi' => 'bg-emerald-100 text-emerald-700',
+                                                'Trending' => 'bg-orange-100 text-orange-700',
+                                                'Pilihan Utama' => 'bg-blue-100 text-blue-700',
+                                                default => 'bg-slate-100 text-slate-700',
+                                            };
+                                            $badgeIcon = match($item->badge) {
+                                                'Prioritas' => 'workspace_premium',
+                                                'Rekomendasi' => 'thumb_up',
+                                                'Trending' => 'local_fire_department',
+                                                'Pilihan Utama' => 'emoji_events',
+                                                default => 'label',
                                             };
                                         @endphp
-                                        <span class="px-1.5 py-0.5 text-[8px] md:text-[9px] font-bold rounded {{ $badgeColor }} whitespace-nowrap shadow-sm">
-                                            {{ strtoupper($item->badge) }}
-                                        </span>
+                                        <div class="group/badge flex items-center h-6 md:h-8 max-w-[24px] md:max-w-[32px] hover:max-w-[140px] rounded-full {{ $badgeColor }} transition-all duration-300 ease-in-out cursor-pointer overflow-hidden shadow-sm hover:shadow-md shrink-0" title="{{ strtoupper($item->badge) }}">
+                                            <div class="flex items-center justify-center min-w-[24px] md:min-w-[32px] h-full shrink-0">
+                                                <span class="material-symbols-outlined text-[14px] md:text-[18px]">{{ $badgeIcon }}</span>
+                                            </div>
+                                            <span class="text-[9px] md:text-[10px] font-bold whitespace-nowrap pr-3 md:pr-4 opacity-0 group-hover/badge:opacity-100 transition-opacity duration-300 ease-in-out">
+                                                {{ strtoupper($item->badge) }}
+                                            </span>
+                                        </div>
                                     @endif
                                 </div>
                                 @if(auth()->check() && auth()->user()->role === 'admin')
