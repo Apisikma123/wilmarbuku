@@ -22,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (str_contains(request()->header('X-Forwarded-Proto') ?? '', 'https') || request()->secure()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             $kategoris = \Illuminate\Support\Facades\Cache::store('array')->remember('global_kategoris', 3600, function () {
                 return \App\Models\Kategori::all();

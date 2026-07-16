@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+        
         // CSRF diaktifkan untuk semua route (except dihapus)
         $middleware->validateCsrfTokens(except: [
             // Jika ada route third party webhook (misal Midtrans nanti), taruh di sini

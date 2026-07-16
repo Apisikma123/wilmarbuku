@@ -41,33 +41,50 @@
 
     <!-- Main Header -->
     <header class="bg-primary md:bg-white text-white md:text-on-surface shadow-sm relative z-50">
-        <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-2 md:py-4 flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-8">
+        <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3 md:gap-8">
             
-            <div class="flex items-center justify-between w-full md:w-auto shrink-0">
-                <!-- Hamburger and Logo -->
-                <div class="flex items-center gap-3 md:gap-2">
-                    <button class="md:hidden text-white flex items-center">
-                        <span class="material-symbols-outlined">menu</span>
-                    </button>
-                    <a href="/dashboard" class="hidden md:flex items-center gap-2">
-                        <img src="/images/wil.png" alt="WilmarBOOKS" class="h-7 md:h-12 object-contain bg-white rounded px-2 py-1 md:bg-transparent md:p-0 md:rounded-none">
-                    </a>
-                </div>
+            <!-- Hamburger and Logo -->
+            <div class="flex items-center gap-2 shrink-0">
+                <button class="md:hidden text-white flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/10 active:scale-95 transition-transform focus:outline-none">
+                    <span class="material-symbols-outlined text-[26px]">menu</span>
+                </button>
+                <a href="/dashboard" class="hidden md:flex items-center gap-2">
+                    <img src="/images/wil.png" alt="WilmarBOOKS" class="h-10 md:h-12 object-contain bg-transparent p-0 rounded-none">
+                </a>
+            </div>
+            
+            <!-- Search Bar -->
+            <div id="global-search-container" class="flex-grow relative max-w-3xl">
+                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border border-transparent md:border-outline-variant/50 rounded-lg flex items-center overflow-hidden h-12 shadow-sm relative z-10 transition-all focus-within:ring-2 focus-within:ring-white/30 md:focus-within:ring-primary/20">
+                    <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500 text-[20px] md:text-[24px]">search</span>
+                    <input type="text" name="search" id="global-search-input" autocomplete="off" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-[14px] md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full px-0" placeholder="Cari Buku...">
+                    <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
+                </form>
                 
-                @php
-                    $cartQty = 0;
-                    $unreadPesan = 0;
-                    $currentCart = Auth::check() ? (Auth::user()->cart_data ?? []) : [];
-                    if($currentCart) {
-                        foreach($currentCart as $c) {
-                            $cartQty += $c['qty'];
-                        }
+                <!-- Search Dropdown -->
+                <div id="global-search-dropdown" class="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible transition-all duration-200 transform translate-y-[-10px] z-[100] max-h-[500px] overflow-y-auto hidden">
+                    <div id="global-search-results" class="py-2"></div>
+                </div>
+            </div>
+            
+            @php
+                $cartQty = 0;
+                $unreadPesan = 0;
+                $currentCart = Auth::check() ? (Auth::user()->cart_data ?? []) : [];
+                if($currentCart) {
+                    foreach($currentCart as $c) {
+                        $cartQty += $c['qty'];
                     }
-                    if(Auth::check()) {
-                        $unreadPesan = \App\Models\PesanMasuk::where('user_id', Auth::id())->where('is_read', false)->count();
-                    }
-                @endphp
-
+                }
+                if(Auth::check()) {
+                    $unreadPesan = \App\Models\PesanMasuk::where('user_id', Auth::id())->where('is_read', false)->count();
+                }
+            @endphp
+            
+            <!-- User Actions -->
+            <div class="flex items-center gap-2 md:gap-4 shrink-0">
+                
+                <!-- Mobile Actions (Hidden on Desktop) -->
                 <div class="flex md:hidden items-center gap-2">
                     @if(auth()->check())
                     <div x-data="{ 
@@ -102,58 +119,45 @@
                     </a>
                     @endif
                 </div>
-            </div>
-            
-            <!-- Search Bar -->
-            <div id="global-search-container" class="w-full md:flex-grow md:w-auto max-w-none md:max-w-3xl relative mt-3 md:mt-0 pb-1 md:pb-0">
-                <form action="/kategori" method="GET" class="bg-white md:bg-surface-bright border md:border-outline-variant/50 rounded flex items-center overflow-hidden h-10 md:h-12 shadow-sm md:shadow-none relative z-10">
-                    <span class="material-symbols-outlined text-outline-variant px-3 text-gray-400 md:text-gray-500">search</span>
-                    <input type="text" name="search" id="global-search-input" autocomplete="off" value="{{ request('search') }}" class="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-gray-800 md:text-on-surface placeholder-gray-400 h-full" placeholder="Cari Judul Buku atau Penulis...">
-                    <button type="submit" class="hidden md:block bg-primary-container text-white text-xs font-bold px-6 h-full hover:bg-primary transition-colors">CARI</button>
-                </form>
-                
-                <!-- Search Dropdown -->
-                <div id="global-search-dropdown" class="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible transition-all duration-200 transform translate-y-[-10px] z-[100] max-h-[500px] overflow-y-auto hidden">
-                    <div id="global-search-results" class="py-2"></div>
-                </div>
-            </div>
-            
-            <!-- User Actions Desktop -->
-            <div class="hidden md:flex items-center gap-4 ml-auto">
-                @if(auth()->check())
-                <div x-data="{ 
-                    unreadPesan: {{ $unreadPesan }},
-                      init() {
-                          const setupEcho = () => {
-                              if(window.Echo) {
-                                  window.Echo.private('App.Models.User.' + {{ auth()->id() }})
-                                      .listen('.pesan.baru', (e) => {
-                                          this.unreadPesan++;
-                                      });
-                              } else {
-                                  setTimeout(setupEcho, 200);
-                              }
-                          };
-                          setupEcho();
-                      }
-                }" class="flex items-center justify-center">
-                    <a href="/pesan-masuk" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
-                        <span class="material-symbols-outlined text-[24px]">mail</span>
-                        <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute top-0.5 right-0.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
-                    </a>
-                </div>
-                @endif
 
-                @if(!auth()->check() || auth()->user()->role !== 'admin')
-                <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
-                    <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
-                    @if($cartQty > 0)
-                    <span class="absolute top-0.5 right-0.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
+                <!-- Desktop Actions (Hidden on Mobile) -->
+                <div class="hidden md:flex items-center gap-4">
+                    @if(auth()->check())
+                    <div x-data="{ 
+                        unreadPesan: {{ $unreadPesan }},
+                        init() {
+                            const setupEcho = () => {
+                                if(window.Echo) {
+                                    window.Echo.private('App.Models.User.' + {{ auth()->id() }})
+                                        .listen('.pesan.baru', (e) => {
+                                            this.unreadPesan++;
+                                        });
+                                } else {
+                                    setTimeout(setupEcho, 200);
+                                }
+                            };
+                            setupEcho();
+                        }
+                    }" class="flex items-center justify-center">
+                        <a href="/pesan-masuk" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
+                            <span class="material-symbols-outlined text-[24px]">mail</span>
+                            <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute top-0.5 right-0.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
+                        </a>
+                    </div>
                     @endif
-                </a>
-                @endif
+
+                    @if(!auth()->check() || auth()->user()->role !== 'admin')
+                    <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
+                        <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+                        @if($cartQty > 0)
+                        <span class="absolute top-0.5 right-0.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
+                        @endif
+                    </a>
+                    @endif
+                </div>
+
                 @auth
-                <div class="relative group pt-4 pb-4">
+                <div class="hidden md:block relative group pt-4 pb-4">
                     <a href="/akun" class="flex items-center gap-3 border-l border-outline-variant/30 pl-6 cursor-pointer">
                         <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm uppercase">
                             {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
@@ -273,7 +277,7 @@
                                                             const newStats = doc.getElementById('quick-stats-dropdown-container');
                                                             const currentStats = document.getElementById('quick-stats-dropdown-container');
                                                             if(newStats && currentStats) {
-                                                                currentStats.innerHTML = newStats.innerHTML;
+                                                                 currentStats.innerHTML = newStats.innerHTML;
                                                             }
                                                         });
                                                 });
@@ -312,7 +316,7 @@
                     </div>
                 </div>
                 @else
-                <div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+                <div class="hidden md:flex items-center gap-3 pl-4 border-l border-outline-variant/30">
                     <a href="{{ route('login') }}" class="flex items-center gap-2 bg-[#003215] text-white font-bold py-2 px-5 rounded-lg hover:bg-[#004b23] transition-colors shadow-sm">
                         <span class="material-symbols-outlined text-[18px]">login</span> Masuk / Daftar
                     </a>
@@ -493,7 +497,81 @@
     </footer>
 
     <!-- PWA Service Worker -->
-    <script>
+    <!-- Mobile Full-Screen Search Overlay -->
+<div id="mobile-search-overlay" class="md:hidden" style="display: none; position: fixed; inset: 0; background-color: #ffffff; z-index: 99999; flex-direction: column; transition: all 0.2s ease-out; transform: translateY(100%); opacity: 0; pointer-events: none;">
+    <!-- Overlay Header -->
+    <div class="flex items-center gap-2 px-3 py-3 border-b border-gray-100 bg-white sticky top-0 z-10 shadow-sm">
+        <button type="button" id="mobile-overlay-close-btn" class="text-gray-600 p-2 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors">
+            <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+        </button>
+        <form id="mobile-overlay-search-form" action="/kategori" method="GET" class="flex-grow relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-[20px]">search</span>
+            <input type="text" id="mobile-overlay-search-input" name="search" autocomplete="off" placeholder="Cari Buku..." class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg text-[14px] focus:outline-none focus:border-primary text-gray-800 placeholder-gray-400" enterkeyhint="search">
+            <button type="button" id="mobile-overlay-clear-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hidden p-1 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Overlay Scrollable Content -->
+    <div class="flex-grow overflow-y-auto bg-white" id="mobile-overlay-content">
+        <!-- Default State: Empty Search -->
+        <div id="mobile-overlay-default-state" class="px-5 py-5">
+            <!-- Pencarian Populer -->
+            <div class="mb-8">
+                <h3 class="text-[14px] font-bold text-gray-800 mb-3">Pencarian Populer</h3>
+                <div class="flex flex-wrap gap-2">
+                    @php
+                        $popularSearches = ['Buku Wajib', 'Prioritas', 'Bestseller', 'Fiksi', 'Sains', 'Komputer', 'Ekonomi'];
+                    @endphp
+                    @foreach($popularSearches as $term)
+                    <button type="button" class="mobile-popular-tag px-3.5 py-1.5 bg-white border border-gray-200 hover:border-primary hover:text-primary text-[13px] font-medium rounded-full text-gray-700 shadow-sm transition-all">
+                        {{ $term }}
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Kategori Populer -->
+            <div class="mb-8">
+                <h3 class="text-[14px] font-bold text-gray-800 mb-3">Kategori Populer</h3>
+                <div class="flex flex-col space-y-3">
+                    @foreach($global_kategoris->take(5) as $cat)
+                    <a href="/kategori?kategori[]={{ urlencode($cat->nama_kategori) }}" class="flex items-center gap-4 py-2.5 hover:bg-gray-50 transition-colors rounded-lg px-2 -mx-2">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px] text-gray-600">menu_book</span>
+                        </div>
+                        <span class="text-[14px] text-gray-700 font-medium flex-grow">{{ $cat->nama_kategori }}</span>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+            
+            <!-- Buku Terbaru -->
+            <div class="mb-8">
+                <h3 class="text-[14px] font-bold text-gray-800 mb-3">Buku Terbaru</h3>
+                <div class="flex flex-col space-y-3">
+                    @foreach(\App\Models\KatalogBuku::latest()->take(5)->get() as $buku)
+                    <a href="/buku/{{ $buku->id }}" class="flex items-center gap-4 py-2.5 hover:bg-gray-50 transition-colors rounded-lg px-2 -mx-2">
+                        <div class="w-10 h-14 flex items-center justify-center shrink-0 overflow-hidden bg-gray-100 rounded shadow-sm">
+                             <img src="{{ $buku->cover_image ? (Str::startsWith($buku->cover_image, ['http', '/storage/']) ? $buku->cover_image : '/images/default-cover.png') : '/images/default-cover.png' }}" class="w-full h-full object-cover" alt="Cover">
+                        </div>
+                        <span class="text-[14px] text-gray-700 font-medium flex-grow truncate">{{ $buku->judul_buku }}</span>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results State: Matching Results -->
+        <div id="mobile-overlay-results-state" class="hidden">
+            <div id="mobile-overlay-results-list" class="space-y-0 pb-10"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').then(reg => {
@@ -564,6 +642,7 @@
 
         if(searchInput && searchDropdown) {
             searchInput.addEventListener('input', function(e) {
+                if (window.innerWidth < 768) return;
                 const keyword = e.target.value.trim();
                 
                 clearTimeout(searchTimeout);
@@ -589,6 +668,7 @@
             });
             
             searchInput.addEventListener('keydown', function(e) {
+                if (window.innerWidth < 768) return;
                 const items = searchDropdown.querySelectorAll('.search-item');
                 
                 if (e.key === 'ArrowDown') {
@@ -676,10 +756,16 @@
                 if (hasBooks) {
                     html += `<div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider sticky top-0 bg-white/95 backdrop-blur z-10 border-b border-gray-50">Buku</div>`;
                     data.books.forEach(book => {
+                        let coverSrc = '/images/default-cover.png';
+                        if (book.cover_image) {
+                            if (book.cover_image.startsWith('/storage/') || book.cover_image.startsWith('http')) {
+                                coverSrc = book.cover_image;
+                            }
+                        }
                         html += `
                             <a href="/buku/${book.id}" class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-50 last:border-0 outline-none">
-                                <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md">menu_book</span>
-                                <div class="flex-1 min-w-0">
+                                <img src="${coverSrc}" class="w-8 h-10 object-cover rounded-md shadow-sm shrink-0" alt="${book.judul_buku}">
+                                <div class="flex-grow min-w-0">
                                     <div class="text-sm font-medium text-gray-800 truncate">${highlight(book.judul_buku)}</div>
                                     <div class="text-xs text-gray-500 truncate">${highlight(book.pengarang)}</div>
                                 </div>
@@ -715,6 +801,252 @@
                 searchResults.innerHTML = html;
             }
         }
+
+        // Mobile Search Overlay Logic
+        const mobileSearchOverlay = document.getElementById('mobile-search-overlay');
+        const mobileOverlaySearchInput = document.getElementById('mobile-overlay-search-input');
+        const mobileOverlayCloseBtn = document.getElementById('mobile-overlay-close-btn');
+        const mobileOverlayClearBtn = document.getElementById('mobile-overlay-clear-btn');
+        const mobileOverlayDefaultState = document.getElementById('mobile-overlay-default-state');
+        const mobileOverlayResultsState = document.getElementById('mobile-overlay-results-state');
+        const mobileOverlayResultsList = document.getElementById('mobile-overlay-results-list');
+        let mobileOverlaySearchTimeout;
+
+        function openSearchOverlay(initialValue = '') {
+            if (!mobileSearchOverlay) return;
+            mobileSearchOverlay.style.display = 'flex';
+            setTimeout(() => {
+                mobileSearchOverlay.style.transform = 'translateY(0)';
+                mobileSearchOverlay.style.opacity = '1';
+                mobileSearchOverlay.style.pointerEvents = 'auto';
+            }, 10);
+            document.body.classList.add('overflow-hidden');
+            
+            if (mobileOverlaySearchInput) {
+                mobileOverlaySearchInput.value = initialValue;
+                mobileOverlaySearchInput.focus();
+                mobileOverlaySearchInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        function closeSearchOverlay() {
+            if (!mobileSearchOverlay) return;
+            mobileSearchOverlay.style.transform = 'translateY(100%)';
+            mobileSearchOverlay.style.opacity = '0';
+            mobileSearchOverlay.style.pointerEvents = 'none';
+            setTimeout(() => {
+                mobileSearchOverlay.style.display = 'none';
+            }, 200);
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Open overlay on input focus/click on mobile screen
+        const attachOverlayTriggers = () => {
+            const containers = [
+                document.getElementById('global-search-container'),
+                document.getElementById('mobile-search-input')
+            ];
+            
+            containers.forEach(container => {
+                if (container && !container.dataset.overlayTriggerAttached) {
+                    container.dataset.overlayTriggerAttached = 'true';
+                    
+                    const handleMobileTap = (e) => {
+                        if (window.innerWidth < 768) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            let val = '';
+                            if (container.tagName === 'INPUT') {
+                                val = container.value;
+                                container.blur();
+                            } else {
+                                const inp = container.querySelector('input');
+                                if (inp) {
+                                    val = inp.value;
+                                    inp.blur();
+                                }
+                            }
+                            openSearchOverlay(val);
+                        }
+                    };
+
+                    container.addEventListener('mousedown', handleMobileTap, true);
+                    container.addEventListener('touchstart', handleMobileTap, { capture: true, passive: false });
+                    
+                    // Also attach to previous sibling if it's an icon (like the search icon in kategori.blade.php)
+                    if (container.previousElementSibling && container.previousElementSibling.tagName === 'SPAN') {
+                        container.previousElementSibling.addEventListener('mousedown', handleMobileTap, true);
+                        container.previousElementSibling.addEventListener('touchstart', handleMobileTap, { capture: true, passive: false });
+                    }
+                }
+            });
+        };
+
+        // Run once, and run after dynamic AJAX updates
+        attachOverlayTriggers();
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'mobile-search-input' || e.target.id === 'global-search-input' || e.target.closest('#mobile-search-input, #global-search-input')) {
+                attachOverlayTriggers();
+            }
+        });
+
+        if (mobileOverlayCloseBtn) {
+            mobileOverlayCloseBtn.addEventListener('click', closeSearchOverlay);
+        }
+
+        if (mobileOverlaySearchInput && mobileOverlayClearBtn) {
+            mobileOverlaySearchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.value.trim().length > 0) {
+                        window.location.href = '/kategori?search=' + encodeURIComponent(this.value.trim());
+                    }
+                }
+            });
+
+            mobileOverlaySearchInput.addEventListener('input', function(e) {
+                const keyword = e.target.value.trim();
+                
+                if (keyword.length > 0) {
+                    mobileOverlayClearBtn.classList.remove('hidden');
+                } else {
+                    mobileOverlayClearBtn.classList.add('hidden');
+                }
+
+                if (keyword.length < 2) {
+                    mobileOverlayDefaultState.classList.remove('hidden');
+                    mobileOverlayResultsState.classList.add('hidden');
+                    return;
+                }
+
+                mobileOverlayResultsList.innerHTML = '<div class="px-4 py-8 text-sm text-gray-500 text-center"><span class="material-symbols-outlined animate-spin text-primary align-middle mr-2">sync</span>Mencari...</div>';
+                mobileOverlayDefaultState.classList.add('hidden');
+                mobileOverlayResultsState.classList.remove('hidden');
+
+                clearTimeout(mobileOverlaySearchTimeout);
+                mobileOverlaySearchTimeout = setTimeout(() => {
+                    fetch(`/search?q=${encodeURIComponent(keyword)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            renderOverlaySearchResults(data, keyword);
+                        })
+                        .catch(err => {
+                            mobileOverlayResultsList.innerHTML = '<div class="px-4 py-8 text-sm text-error text-center">Terjadi kesalahan saat memuat hasil pencarian.</div>';
+                        });
+                }, 300);
+            });
+
+            const mobileOverlaySearchForm = document.getElementById('mobile-overlay-search-form');
+            if(mobileOverlaySearchForm) {
+                mobileOverlaySearchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const query = mobileOverlaySearchInput.value.trim();
+                    const categoryInput = document.getElementById('mobile-search-input');
+                    const form = document.getElementById('filterForm');
+                    
+                    closeSearchOverlay();
+                    
+                    if (categoryInput && form) {
+                        categoryInput.value = query;
+                        categoryInput.dispatchEvent(new Event('input'));
+                        fetchResults(new URLSearchParams(new FormData(form)).toString());
+                    } else {
+                        window.location.href = `/kategori?search=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
+
+            mobileOverlayClearBtn.addEventListener('click', function() {
+                mobileOverlaySearchInput.value = '';
+                mobileOverlayClearBtn.classList.add('hidden');
+                mobileOverlayDefaultState.classList.remove('hidden');
+                mobileOverlayResultsState.classList.add('hidden');
+                mobileOverlaySearchInput.focus();
+            });
+        }
+
+        document.querySelectorAll('.mobile-popular-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const val = tag.textContent.trim();
+                if (mobileOverlaySearchInput) {
+                    mobileOverlaySearchInput.value = val;
+                    mobileOverlaySearchInput.dispatchEvent(new Event('input'));
+                }
+            });
+        });
+
+        function renderOverlaySearchResults(data, keyword) {
+            let html = '';
+            
+            const hasBooks = data.books && data.books.length > 0;
+            const hasCategories = data.categories && data.categories.length > 0;
+            const hasPublishers = data.publishers && data.publishers.length > 0;
+            
+            if (!hasBooks && !hasCategories && !hasPublishers) {
+                mobileOverlayResultsList.innerHTML = `
+                    <div class="px-6 py-12 text-center text-gray-500">
+                        <span class="material-symbols-outlined text-[48px] mb-3 text-gray-300">search_off</span>
+                        <p class="text-[15px] font-medium text-gray-700">Tidak ada buku yang sesuai dengan pencarian Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+            const highlight = (text) => text ? text.replace(regex, '<span class="font-bold text-gray-900">$1</span>') : '';
+
+            if (hasBooks) {
+                html += `<div class="px-4 py-2 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50">Buku</div>`;
+                data.books.forEach(book => {
+                    let coverSrc = '/images/default-cover.png';
+                    if (book.cover_image) {
+                        if (book.cover_image.startsWith('/storage/') || book.cover_image.startsWith('http')) {
+                            coverSrc = book.cover_image;
+                        }
+                    }
+                    html += `
+                        <a href="/buku/${book.id}" class="search-item flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors duration-150 cursor-pointer border-b border-gray-100 last:border-0 outline-none">
+                            <img src="${coverSrc}" class="w-10 h-14 object-cover rounded shadow-sm shrink-0 bg-gray-100" alt="${book.judul_buku}">
+                            <div class="flex-grow min-w-0 text-left">
+                                <div class="text-[14px] font-medium text-gray-800 truncate leading-tight">${highlight(book.judul_buku)}</div>
+                                <div class="text-[12px] text-gray-500 truncate mt-1">${highlight(book.pengarang)}</div>
+                            </div>
+                        </a>
+                    `;
+                });
+            }
+            
+            if (hasCategories) {
+                html += `<div class="px-4 py-2 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50 mt-1">Kategori</div>`;
+                data.categories.forEach(category => {
+                    html += `
+                        <a href="/kategori?kategori[]=${encodeURIComponent(category.nama_kategori)}" class="search-item flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors duration-150 cursor-pointer border-b border-gray-100 last:border-0 outline-none">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[22px] text-gray-600">menu_book</span>
+                            </div>
+                            <div class="text-[14px] font-medium text-gray-800 truncate flex-grow text-left">${highlight(category.nama_kategori)}</div>
+                        </a>
+                    `;
+                });
+            }
+            
+            if (hasPublishers) {
+                html += `<div class="px-4 py-2 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50 mt-1">Penerbit</div>`;
+                data.publishers.forEach(publisher => {
+                    html += `
+                        <a href="/kategori?penerbit[]=${encodeURIComponent(publisher.nama_penerbit)}" class="search-item flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors duration-150 cursor-pointer border-b border-gray-100 last:border-0 outline-none">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[22px] text-gray-600">business</span>
+                            </div>
+                            <div class="text-[14px] font-medium text-gray-800 truncate flex-grow text-left">${highlight(publisher.nama_penerbit)}</div>
+                        </a>
+                    `;
+                });
+            }
+            
+            mobileOverlayResultsList.innerHTML = html;
+        }
     </script>
 
     @if(session('success'))
@@ -732,7 +1064,7 @@
         });
     </script>
     @endif
-        @if(session('error'))
+    @if(session('error'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({

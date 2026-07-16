@@ -66,12 +66,11 @@
                 
                 @foreach($trx->details as $detail)
                 <div class="flex flex-col sm:flex-row gap-5 mb-5">
-                    <div class="w-16 h-24 rounded-lg @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http'))) bg-gradient-to-br {{ $detail->buku->cover_image ?? 'from-primary to-primary-container' }} @endif flex items-center justify-center shrink-0 shadow-sm text-center p-2 text-white overflow-hidden relative">
-                        @if((str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')))
-                            <img src="{{ $detail->buku->cover_image }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
-                        @else
-                            <div class="absolute inset-0 bg-black/30"></div>
-                            <span class="text-[6px] font-bold uppercase leading-tight relative z-10">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
+                    <div class="w-16 h-24 rounded-lg flex items-center justify-center shrink-0 shadow-sm text-center p-2 text-white overflow-hidden relative bg-slate-900">
+                        <img src="{{ (str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')) ? $detail->buku->cover_image : asset('images/default-cover.png') }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                        @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http')))
+                            <span class="text-[6px] font-bold uppercase leading-tight relative z-20">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
                         @endif
                     </div>
                     <div class="flex-grow">

@@ -53,12 +53,11 @@
             <div class="p-6 border-b border-outline-variant/30 divide-y divide-outline-variant/30">
                 @foreach($transaksi->details as $detail)
                 <div class="flex gap-5 py-4 first:pt-0 last:pb-0">
-                    <div class="w-16 h-24 rounded-lg @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http'))) bg-gradient-to-br {{ $detail->buku->cover_image }} @endif flex items-center justify-center shrink-0 shadow-sm text-center overflow-hidden relative bg-slate-100">
-                        @if((str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')))
-                            <img src="{{ $detail->buku->cover_image }}" alt="{{ $detail->buku->judul_buku }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="absolute inset-0 bg-black/30"></div>
-                            <span class="text-[6px] font-bold uppercase leading-tight relative z-10 text-white p-2">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
+                    <div class="w-16 h-24 rounded-lg flex items-center justify-center shrink-0 shadow-sm text-center overflow-hidden relative bg-slate-900">
+                        <img src="{{ (str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')) ? $detail->buku->cover_image : asset('images/default-cover.png') }}" alt="{{ $detail->buku->judul_buku }}" class="w-full h-full object-cover absolute inset-0 z-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                        @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http')))
+                            <span class="text-[6px] font-bold uppercase leading-tight relative z-20 text-white p-2">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
                         @endif
                     </div>
                     <div>

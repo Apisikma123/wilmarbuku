@@ -89,12 +89,11 @@
                         <div class="flex flex-col sm:flex-row gap-6 mb-6">
                             <!-- Book Cover -->
                             <div
-                                class="w-24 aspect-[2/3] rounded-lg @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http'))) bg-gradient-to-br {{ $item['cover_image'] ?? 'from-primary to-primary-container' }} @endif flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden">
-                                @if((str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')))
-                                    <img src="{{ $item['cover_image'] }}" class="absolute inset-0 w-full h-full object-cover z-0"
-                                        alt="">
-                                @else
-                                    <h4 class="text-[9px] font-bold uppercase leading-tight mb-1 relative z-10">
+                                class="w-24 aspect-[2/3] rounded-lg flex-shrink-0 flex flex-col items-center justify-center p-3 text-center text-white border border-black/5 shadow-md relative overflow-hidden bg-slate-900">
+                                <img src="{{ (str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')) ? $item['cover_image'] : asset('images/default-cover.png') }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+                                @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http')))
+                                    <h4 class="text-[9px] font-bold uppercase leading-tight mb-1 relative z-20 pointer-events-none">
                                         {!! str_replace(' ', '<br>', $item['judul_buku']) !!}</h4>
                                 @endif
                             </div>

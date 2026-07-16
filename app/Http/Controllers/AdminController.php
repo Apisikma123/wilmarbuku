@@ -122,8 +122,8 @@ class AdminController extends Controller
                 'stok_dibutuhkan' => 'required|integer',
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
-                'cover_image' => 'required_without:cover_file|nullable|string',
-                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+                'cover_image' => 'nullable|string',
+                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             ]);
 
             if ($request->hasFile('cover_file')) {
@@ -200,8 +200,8 @@ class AdminController extends Controller
                 'stok_dibutuhkan' => 'required|integer',
                 'harga_estimasi' => 'required|numeric',
                 'status_buku' => 'required|string',
-                'cover_image' => 'required_without:cover_file|nullable|string',
-                'cover_file' => 'required_without:cover_image|nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+                'cover_image' => 'nullable|string',
+                'cover_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             ]);
 
             if ($request->hasFile('cover_file')) {
