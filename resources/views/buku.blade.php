@@ -176,7 +176,7 @@
     <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto">
         <div class="flex items-center justify-between gap-4 mb-6">
             <h2 class="text-lg md:text-2xl font-bold text-on-surface tracking-tight leading-snug">Buku Terkait Kategori {{ $buku->kategori }}</h2>
-            <a href="/kategori" class="bg-transparent border border-outline-variant text-primary font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
+            <a href="{{ route('kategori', ['kategori' => [$buku->kategori]]) }}" class="bg-transparent border border-outline-variant text-primary font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
         </div>
         
         <div class="relative group/slider">
