@@ -104,7 +104,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-xs font-bold text-on-surface-variant mb-2">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', Auth::user()->nama_lengkap) }}" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
+                            <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', Auth::user()->nama_lengkap) }}" maxlength="50" class="w-full bg-surface-bright border border-outline-variant/50 rounded-lg py-3 px-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary transition-colors">
                             @php
                                 $currentMonth = \Carbon\Carbon::now()->format('Y-m');
                                 $lastChangedMonth = Auth::user()->username_changed_at ? \Carbon\Carbon::parse(Auth::user()->username_changed_at)->format('Y-m') : null;

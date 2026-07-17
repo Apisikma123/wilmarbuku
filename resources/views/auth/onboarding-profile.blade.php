@@ -40,7 +40,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap / Username</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap) }}" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" required>
+                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap) }}" maxlength="50" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm" required>
                     </div>
                     <p class="text-xs text-yellow-600 mt-1 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px]">info</span>

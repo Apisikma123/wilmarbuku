@@ -233,7 +233,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'nama_lengkap' => ['required', 'string', 'max:50'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);

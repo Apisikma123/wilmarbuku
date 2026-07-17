@@ -58,7 +58,7 @@ class CheckoutController extends Controller
         $request->validate([
             'tipe_donatur' => 'required',
             'identitas_kampus' => 'required_if:tipe_donatur,internal',
-            'nama_lengkap' => 'required',
+            'nama_lengkap' => 'required|string|max:50',
             'email' => 'required|email',
         ]);
 

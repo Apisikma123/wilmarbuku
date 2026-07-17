@@ -21,7 +21,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $rules = [
-            'nama_lengkap' => 'required|string|max:255',
+            'nama_lengkap' => 'required|string|max:50',
         ];
 
         // If not logged in via google, they can update their email

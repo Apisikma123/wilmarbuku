@@ -55,7 +55,7 @@
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}"
+                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" maxlength="50"
                             class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"
                             placeholder="Masukkan nama lengkap" required>
                     </div>

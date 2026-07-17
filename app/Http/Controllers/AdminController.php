@@ -514,7 +514,7 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
+            'nama_lengkap' => 'required|string|max:50',
             'identitas_kampus' => 'nullable|string|min:15|max:15',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
@@ -614,7 +614,7 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         
         $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
+            'nama_lengkap' => 'required|string|max:50',
             'email' => 'required|email|unique:users,email,' . $id,
             'identitas_kampus' => 'nullable|string|min:15|max:15',
         ]);
