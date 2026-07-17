@@ -97,6 +97,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/akun/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('akun.updateProfile');
     Route::post('/akun/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('akun.updatePassword');
+    
+    Route::get('/akun/email/otp', [App\Http\Controllers\ProfileController::class, 'showEmailOtpForm'])->name('akun.email.otp.show');
+    Route::post('/akun/email/otp/resend', [App\Http\Controllers\ProfileController::class, 'resendEmailOtp'])->name('akun.email.otp.resend');
+    Route::post('/akun/email/otp/verify', [App\Http\Controllers\ProfileController::class, 'verifyEmailOtp'])->name('akun.email.otp.verify');
     Route::middleware([\App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
         Route::get('/success', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
     });
