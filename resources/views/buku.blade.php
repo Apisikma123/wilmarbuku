@@ -6,9 +6,9 @@
     <nav class="flex items-center gap-2 text-sm font-medium text-on-surface-variant mb-4 md:mb-10 px-4 md:px-0 overflow-x-auto whitespace-nowrap hide-scroll pt-4 md:pt-0">
         <a href="/dashboard" class="hover:text-primary transition-colors">Beranda</a>
         <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-        <a href="#" class="hover:text-primary transition-colors">Katalog Buku</a>
+        <a href="{{ route('kategori') }}" class="hover:text-primary transition-colors">Katalog Buku</a>
         <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-        <span class="hover:text-primary transition-colors cursor-pointer">{{ $buku->kategori }}</span>
+        <a href="{{ route('kategori', ['kategori' => [$buku->kategori]]) }}" class="hover:text-primary transition-colors cursor-pointer">{{ $buku->kategori }}</a>
         <span class="material-symbols-outlined text-[16px]">chevron_right</span>
         <span class="text-on-surface font-semibold">{{ $buku->judul_buku }}</span>
     </nav>
@@ -176,7 +176,7 @@
     <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto">
         <div class="flex items-center justify-between gap-4 mb-6">
             <h2 class="text-lg md:text-2xl font-bold text-on-surface tracking-tight leading-snug">Buku Terkait Kategori {{ $buku->kategori }}</h2>
-            <a href="/kategori" class="bg-transparent border border-outline-variant text-primary font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
+            <a href="{{ route('kategori', ['kategori' => [$buku->kategori]]) }}" class="bg-transparent border border-outline-variant text-primary font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
         </div>
         
         <div class="relative group/slider">

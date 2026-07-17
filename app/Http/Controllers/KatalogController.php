@@ -127,19 +127,6 @@ class KatalogController extends Controller
             $randomIds = \Illuminate\Support\Arr::random($bukuIdsTerkait, min(10, count($bukuIdsTerkait)));
             $buku_terkait = KatalogBuku::whereIn('id', $randomIds)->get();
         }
-            
-        if ($buku_terkait->isEmpty()) {
-            $semuaBukuIds = \Illuminate\Support\Facades\Cache::remember('semua_buku_ids_kecuali_' . $id, 60, function () use ($id) {
-                return KatalogBuku::where('id', '!=', $id)
-                    ->where('status_buku', 'Dibutuhkan')
-                    ->pluck('id')->toArray();
-            });
-            
-            if (!empty($semuaBukuIds)) {
-                $randomIds = \Illuminate\Support\Arr::random($semuaBukuIds, min(10, count($semuaBukuIds)));
-                $buku_terkait = KatalogBuku::whereIn('id', $randomIds)->get();
-            }
-        }
 
         return view('buku', compact('buku', 'buku_terkait'));
     }

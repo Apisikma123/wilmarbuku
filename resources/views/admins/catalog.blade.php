@@ -6,7 +6,7 @@
     <!-- Top Header & Actions -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900">Wishlist Katalog Buku</h2>
+            <h2 class="text-2xl font-bold text-slate-900">Katalog Buku</h2>
             <p class="text-slate-500 text-sm mt-1">Kelola daftar buku yang diajukan dan dibutuhkan untuk perpustakaan.</p>
         </div>
         <div class="flex items-center gap-2">

@@ -73,7 +73,7 @@ class ProfileController extends Controller
     public function showEmailOtpForm(Request $request)
     {
         if (!$request->session()->has('pending_new_email')) {
-            return redirect()->route('akun');
+            return redirect()->route(Auth::user()->role === 'admin' ? 'admin.settings' : 'akun');
         }
 
         $user = Auth::user();
@@ -87,7 +87,7 @@ class ProfileController extends Controller
     public function resendEmailOtp(Request $request)
     {
         $newEmail = $request->session()->get('pending_new_email');
-        if (!$newEmail) return redirect()->route('akun');
+        if (!$newEmail) return redirect()->route(Auth::user()->role === 'admin' ? 'admin.settings' : 'akun');
 
         $user = Auth::user();
         $lastSent = \Illuminate\Support\Facades\Cache::get('last_email_otp_sent_at_' . $user->id, 0);
@@ -135,7 +135,7 @@ class ProfileController extends Controller
 
         $request->session()->forget('pending_new_email');
 
-        return redirect()->route('akun')->with('success', 'Email berhasil diperbarui.');
+        return redirect()->route($user->role === 'admin' ? 'admin.settings' : 'akun')->with('success', 'Email berhasil diperbarui.');
     }
 
     public function updatePassword(Request $request)

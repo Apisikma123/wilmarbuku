@@ -22,7 +22,7 @@
     <div class="flex-grow flex items-center justify-center p-0 md:p-6">
         <div class="bg-white/85 backdrop-blur-md border-0 md:border md:border-white/40 p-6 sm:p-8 md:p-10 rounded-none md:rounded-2xl shadow-none md:shadow-[0_8px_32px_rgba(0,0,0,0.1)] max-w-md w-full min-h-screen md:min-h-0 flex flex-col justify-center relative z-10">
             <!-- Back Button -->
-            <a href="{{ route('akun') }}" class="absolute top-6 left-6 text-gray-400 hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full hover:bg-gray-50" title="Kembali">
+            <a href="{{ auth()->check() && auth()->user()->role === 'admin' ? route('admin.settings') : route('akun') }}" class="absolute top-6 left-6 text-gray-400 hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full hover:bg-gray-50" title="Kembali">
                 <span class="material-symbols-outlined text-xl">arrow_back</span>
             </a>
 

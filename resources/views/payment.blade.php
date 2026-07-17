@@ -1,8 +1,12 @@
 @extends('layouts.user')
 
 @section('content')
-    <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10 min-h-[60vh] flex items-center justify-center">
-        <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/30 p-8 max-w-lg w-full text-center">
+    <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10 min-h-[60vh] flex flex-col md:flex-row items-start md:items-center justify-center relative">
+        <a href="{{ url()->previous() }}" class="absolute top-4 md:top-10 left-4 md:left-12 xl:left-24 text-gray-500 hover:text-primary transition-colors flex items-center gap-1 z-10 bg-white/80 p-2 rounded-full md:bg-transparent md:p-0 backdrop-blur-sm md:backdrop-blur-none">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="text-sm font-medium hidden md:inline">Kembali</span>
+        </a>
+        <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/30 p-8 max-w-lg w-full text-center mt-8 md:mt-0">
 
             <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
                 <span class="material-symbols-outlined text-3xl">account_balance</span>

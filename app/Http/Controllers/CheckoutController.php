@@ -167,17 +167,25 @@ class CheckoutController extends Controller
             throw $e;
         }
 
-        return redirect()->route('payment')->with('kode_tracking', $kode_tracking);
+        return redirect()->route('payment')->with('token', encrypt($transaksi->id));
     }
 
     public function payment(Request $request)
     {
-        $kode_tracking = session('kode_tracking') ?? $request->input('kode');
-
-        if (! $kode_tracking) {
-            $transaksi = TransaksiCheckout::where('user_id', auth()->id())->where('status_pembayaran', 'Unpaid')->latest()->first();
-        } else {
-            $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->first();
+        $token = session('token') ?? $request->input('token');
+        
+        $transaksi = null;
+        if ($token) {
+            try {
+                $id = decrypt($token);
+                $transaksi = \App\Models\TransaksiCheckout::where('id', $id)->where('user_id', auth()->id())->first();
+            } catch (\Exception $e) {
+                $transaksi = null;
+            }
+        }
+        
+        if (!$transaksi) {
+            $transaksi = \App\Models\TransaksiCheckout::where('user_id', auth()->id())->where('status_pembayaran', 'Unpaid')->latest()->first();
         }
 
         if (! $transaksi) {
