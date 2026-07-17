@@ -269,9 +269,9 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
-                    <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
-                        <option value="" disabled selected>-- Pilih Label --</option>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label</label>
+                    <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                        <option value="" selected>-- Tanpa Badge --</option>
                         <option value="Buku Wajib">Buku Wajib</option>
                         <option value="Prioritas Kampus">Prioritas Kampus</option>
                         <option value="Bestseller">Bestseller</option>
@@ -395,9 +395,9 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label *</label>
-                    <select name="badge" id="edit_badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white" required>
-                        <option value="" disabled selected>-- Pilih Label --</option>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label</label>
+                    <select name="badge" id="edit_badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
+                        <option value="" selected>-- Tanpa Badge --</option>
                         <option value="Buku Wajib">Buku Wajib</option>
                         <option value="Prioritas Kampus">Prioritas Kampus</option>
                         <option value="Bestseller">Bestseller</option>
