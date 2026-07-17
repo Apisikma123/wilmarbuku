@@ -269,7 +269,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label</label>
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <label class="block text-xs font-bold uppercase text-slate-600">Badge / Label</label>
+                        <button type="button" onclick="Swal.fire({title: 'Informasi Badge', text: 'Badge digunakan untuk menyorot buku dengan label khusus di halaman utama (opsional).', icon: 'info', confirmButtonColor: '#003215'})" class="text-slate-400 hover:text-green-600 transition-colors" title="Informasi Kegunaan">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                     <select name="badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
                         <option value="" selected>-- Tanpa Badge --</option>
                         <option value="Buku Wajib">Buku Wajib</option>
@@ -282,6 +287,7 @@
                         <option value="{{ $lbl->nama_label }}">{{ $lbl->nama_label }}</option>
                         @endforeach
                     </select>
+
                 </div>
             </div>
 
@@ -395,7 +401,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Badge / Label</label>
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <label class="block text-xs font-bold uppercase text-slate-600">Badge / Label</label>
+                        <button type="button" onclick="Swal.fire({title: 'Informasi Badge', text: 'Badge digunakan untuk menyorot buku dengan label khusus di halaman utama (opsional).', icon: 'info', confirmButtonColor: '#003215'})" class="text-slate-400 hover:text-green-600 transition-colors" title="Informasi Kegunaan">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                     <select name="badge" id="edit_badge" class="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 bg-white">
                         <option value="" selected>-- Tanpa Badge --</option>
                         <option value="Buku Wajib">Buku Wajib</option>
@@ -408,6 +419,7 @@
                         <option value="{{ $lbl->nama_label }}">{{ $lbl->nama_label }}</option>
                         @endforeach
                     </select>
+
                 </div>
             </div>
 
@@ -692,6 +704,23 @@ async function submitAddBook(event) {
     let form = event.target;
     let formData = new FormData(form);
     
+    if (!formData.get('badge') || formData.get('badge').trim() === '') {
+        const result = await Swal.fire({
+            title: 'Badge Kosong',
+            text: "Anda belum memilih Badge / Label. Badge sangat berguna untuk menyorot buku ini di halaman utama (misal: Bestseller). Anda yakin ingin menyimpan tanpa badge?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#003215',
+            cancelButtonColor: '#707970',
+            confirmButtonText: 'Ya, Simpan',
+            cancelButtonText: 'Batal'
+        });
+        
+        if (!result.isConfirmed) {
+            return;
+        }
+    }
+    
     // Clean up currency format
     let harga = formData.get('harga_estimasi');
     if (harga) {
@@ -841,6 +870,23 @@ async function submitEditBook(event) {
     event.preventDefault();
     let form = event.target;
     let formData = new FormData(form);
+    
+    if (!formData.get('badge') || formData.get('badge').trim() === '') {
+        const result = await Swal.fire({
+            title: 'Badge Kosong',
+            text: "Anda belum memilih Badge / Label. Badge sangat berguna untuk menyorot buku ini di halaman utama (misal: Bestseller). Anda yakin ingin menyimpan tanpa badge?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#003215',
+            cancelButtonColor: '#707970',
+            confirmButtonText: 'Ya, Simpan',
+            cancelButtonText: 'Batal'
+        });
+        
+        if (!result.isConfirmed) {
+            return;
+        }
+    }
     
     // Clean up currency format
     let harga = formData.get('harga_estimasi');
