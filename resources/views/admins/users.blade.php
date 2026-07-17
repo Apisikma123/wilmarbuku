@@ -180,7 +180,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Nama Lengkap <span class="text-[#ba1a1a]">*</span></label>
-                        <input type="text" name="nama_lengkap" id="edit_nama" required class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
+                        <input type="text" name="nama_lengkap" id="edit_nama" maxlength="50" required class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Email <span class="text-[#ba1a1a]">*</span></label>
@@ -233,7 +233,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" name="nama_lengkap" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                        <input type="text" name="nama_lengkap" maxlength="50" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Identitas Kampus (NIM/NIDN)</label>

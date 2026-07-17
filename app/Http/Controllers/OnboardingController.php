@@ -34,7 +34,7 @@ class OnboardingController extends Controller
     public function storeProfile(Request $request)
     {
         $request->validate([
-            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'nama_lengkap' => ['required', 'string', 'max:50'],
         ]);
 
         $googleData = session('google_user_data');
