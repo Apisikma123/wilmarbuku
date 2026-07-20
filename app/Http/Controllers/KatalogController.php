@@ -61,8 +61,9 @@ class KatalogController extends Controller
             });
         }
 
-        if ($request->has('kategori') && is_array($request->kategori)) {
-            $categories = array_filter($request->kategori);
+        if ($request->has('kategori')) {
+            $categories = is_array($request->kategori) ? $request->kategori : [$request->kategori];
+            $categories = array_filter($categories);
             if (!empty($categories)) {
                 $query->where(function($q) use ($categories) {
                     foreach ($categories as $cat) {
@@ -82,12 +83,20 @@ class KatalogController extends Controller
             }
         }
 
-        if ($request->has('penerbit') && is_array($request->penerbit)) {
-            $query->whereIn('penerbit', $request->penerbit);
+        if ($request->has('penerbit')) {
+            $penerbits = is_array($request->penerbit) ? $request->penerbit : [$request->penerbit];
+            $penerbits = array_filter($penerbits);
+            if (!empty($penerbits)) {
+                $query->whereIn('penerbit', $penerbits);
+            }
         }
 
-        if ($request->has('pengarang') && is_array($request->pengarang)) {
-            $query->whereIn('pengarang', $request->pengarang);
+        if ($request->has('pengarang')) {
+            $pengarangs = is_array($request->pengarang) ? $request->pengarang : [$request->pengarang];
+            $pengarangs = array_filter($pengarangs);
+            if (!empty($pengarangs)) {
+                $query->whereIn('pengarang', $pengarangs);
+            }
         }
 
         if ($request->has('sort') && !empty($request->sort)) {

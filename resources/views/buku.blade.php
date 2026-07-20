@@ -90,7 +90,13 @@
                 </div>
                 
                 <h1 class="text-3xl md:text-[36px] lg:text-[44px] font-bold text-on-surface tracking-tight mb-4 leading-[1.2]">{{ $buku->judul_buku }}</h1>
-                <p class="text-lg text-on-surface-variant font-medium mb-8">Oleh <span class="text-on-surface font-semibold">{{ $buku->pengarang }}</span></p>
+                <div class="text-sm md:text-lg text-on-surface-variant font-medium mb-6 md:mb-8 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span>Oleh <a href="{{ route('kategori', ['pengarang' => [$buku->pengarang]]) }}" class="text-on-surface font-semibold hover:text-primary transition-colors">{{ $buku->pengarang }}</a></span>
+                    @if($buku->penerbit)
+                        <span class="text-outline-variant/50 hidden sm:inline">•</span>
+                        <span>Penerbit <a href="{{ route('kategori', ['penerbit' => [$buku->penerbit]]) }}" class="text-on-surface font-semibold hover:text-primary transition-colors">{{ $buku->penerbit }}</a></span>
+                    @endif
+                </div>
                 
                 <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-6 bg-surface-bright p-5 rounded-lg border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)] inline-block">
                     <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1 sm:mb-0">Estimasi Harga Donasi</p>

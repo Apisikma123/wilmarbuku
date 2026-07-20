@@ -538,6 +538,9 @@ class AdminController extends Controller
 
     public function updateUserRole(Request $request, $id)
     {
+        if ($id == 1) {
+            return back()->with('error', 'Akun Admin Utama tidak dapat diubah perannya!');
+        }
         $user = User::findOrFail($id);
         
         $request->validate([
@@ -611,6 +614,9 @@ class AdminController extends Controller
 
     public function updateUser(Request $request, $id)
     {
+        if ($id == 1) {
+            return back()->with('error', 'Akun Admin Utama tidak dapat diubah dari panel ini!');
+        }
         $user = User::findOrFail($id);
         
         $request->validate([
@@ -640,6 +646,9 @@ class AdminController extends Controller
 
     public function destroyUser($id)
     {
+        if ($id == 1) {
+            return back()->with('error', 'Akun Admin Utama tidak dapat dihapus!');
+        }
         $user = User::findOrFail($id);
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Tidak dapat menghapus akun Anda sendiri!');
@@ -895,5 +904,75 @@ class AdminController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function oboForm()
+    {
+        $users = User::where('role', '!=', 'admin')->get();
+        $buku = KatalogBuku::where('stok_dibutuhkan', '>', 0)->get();
+        return view('admins.obo', compact('users', 'buku'));
+    }
+
+    public function oboStore(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'buku_id' => 'required|exists:katalog_buku,id',
+            'qty' => 'required|integer|min:1'
+        ]);
+
+        $buku = KatalogBuku::findOrFail($request->buku_id);
+
+        if ($request->qty > $buku->stok_dibutuhkan) {
+            return back()->with('error', 'Kuantitas melebihi stok yang dibutuhkan.');
+        }
+
+        $total = $buku->harga_estimasi * $request->qty;
+        $kode_tracking = 'WB' . date('Ym') . strtoupper(\Illuminate\Support\Str::random(5));
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+
+        try {
+            TransaksiCheckout::create([
+                'kode_tracking' => $kode_tracking,
+                'user_id' => $request->user_id,
+                'admin_id' => auth()->id(),
+                'total_harga' => $total,
+                'status_pembayaran' => 'Paid',
+                'status_tracking' => 'Donasi Offline',
+                'bukti_pembayaran' => 'Donasi Offline OBO',
+                'validasi_lulus' => 1
+            ]);
+
+            \App\Models\TransaksiDetail::create([
+                'kode_tracking' => $kode_tracking,
+                'buku_id' => $buku->id,
+                'qty' => $request->qty,
+                'harga_satuan' => $buku->harga_estimasi,
+                'pesan_dukungan' => null,
+            ]);
+
+            $newStok = max(0, $buku->stok_dibutuhkan - $request->qty);
+            $updateData = ['stok_dibutuhkan' => $newStok];
+            if ($newStok == 0) {
+                $updateData['status_buku'] = 'Tersedia';
+            }
+            $buku->update($updateData);
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            \App\Models\PesanMasuk::create([
+                'user_id' => $request->user_id,
+                'judul' => 'Pesanan Donasi Offline (#' . $kode_tracking . ') Berhasil',
+                'isi_pesan' => "Donasi offline Anda untuk buku <b>{$buku->judul_buku}</b> sejumlah {$request->qty} eksemplar telah berhasil diproses oleh Admin. Terima kasih atas donasi Anda!",
+                'jenis' => 'info',
+                'is_read' => false,
+            ]);
+
+            return redirect()->route('admin.transactions')->with('success', 'Donasi offline berhasil dicatat.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

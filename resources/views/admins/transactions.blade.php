@@ -387,7 +387,7 @@ function openStatusModal(trx) {
     document.getElementById('statusForm').action = "/admin/transactions/status/" + trx.kode_tracking;
     document.getElementById('modal_status_tracking').value = trx.status_tracking || 'Menunggu Konfirmasi';
     
-    if (trx.bukti_pembayaran) {
+    if (trx.bukti_pembayaran && trx.bukti_pembayaran !== 'Donasi Offline OBO') {
         document.getElementById('buktiPembayaranImgStatus').src = trx.bukti_pembayaran;
         document.getElementById('buktiPembayaranLinkStatus').href = trx.bukti_pembayaran;
         document.getElementById('buktiPembayaranContainerStatus').classList.remove('hidden');

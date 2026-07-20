@@ -213,7 +213,7 @@ class CheckoutController extends Controller
         }
 
         if ($transaksi->bukti_pembayaran) {
-            return redirect()->route('success')->with('kode_tracking', $kode_tracking);
+            return redirect()->route('success')->with('kode_tracking', $transaksi->kode_tracking);
         }
 
         $metodes = MetodePembayaran::where('is_active', true)->get();

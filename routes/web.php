@@ -171,6 +171,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::post('/users/delete/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.delete');
 
+    Route::get('/donasi-offline', [AdminController::class, 'oboForm'])->name('admin.obo');
+    Route::post('/donasi-offline', [AdminController::class, 'oboStore'])->name('admin.obo.store');
+
     Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');
     Route::get('/reports/export', [AdminController::class, 'exportPdf'])->name('admin.reports.export');
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
