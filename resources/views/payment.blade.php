@@ -35,6 +35,9 @@
                     <select id="metodePembayaranSelect"
                         class="w-full bg-white border border-outline-variant/50 rounded-lg px-4 py-3 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm"
                         onchange="updateBankInfo()">
+                        @if(count($metodes) > 0)
+                            <option value="" disabled selected data-bank="-" data-rek="Pilih bank di atas" data-nama="-">-- Pilih Bank Tujuan --</option>
+                        @endif
                         @forelse($metodes as $metode)
                             <option value="{{ $metode->id }}" data-bank="{{ $metode->nama_bank }}"
                                 data-rek="{{ $metode->nomor_rekening }}" data-nama="{{ $metode->atas_nama }}">
@@ -65,7 +68,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data">
+            <form id="paymentForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
                 <input type="hidden" name="metode_pembayaran_id" id="hiddenMetodePembayaran" value="">
@@ -73,7 +76,7 @@
                     <label class="block text-sm font-bold text-on-surface mb-2">Unggah Bukti Pembayaran *</label>
                     <div class="border-2 border-dashed border-outline-variant rounded-xl p-4 text-center hover:border-primary transition-colors cursor-pointer relative"
                         id="drop-zone">
-                        <input type="file" name="bukti_pembayaran" accept="image/*" required
+                        <input type="file" name="bukti_pembayaran" accept="image/*"
                             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                             onchange="previewFile(this)">
                         <div class="flex flex-col items-center gap-2 pointer-events-none" id="file-info">
@@ -109,16 +112,18 @@
     <script>
         function updateBankInfo() {
             const select = document.getElementById('metodePembayaranSelect');
-            if (!select || select.options.length === 0) return;
+            if (!select || select.options.length === 0 || select.selectedIndex === -1) return;
 
             const selectedOption = select.options[select.selectedIndex];
-            const bankName = selectedOption.getAttribute('data-bank');
-            const bankRek = selectedOption.getAttribute('data-rek');
-            const bankNama = selectedOption.getAttribute('data-nama');
+            if (!selectedOption) return;
 
-            document.getElementById('bankIcon').innerText = bankName.substring(0, 3);
+            const bankName = selectedOption.getAttribute('data-bank') || '';
+            const bankRek = selectedOption.getAttribute('data-rek') || '';
+            const bankNama = selectedOption.getAttribute('data-nama') || '';
+
+            document.getElementById('bankIcon').innerText = bankName ? bankName.substring(0, 3) : '';
             document.getElementById('nomorRekening').innerText = bankRek;
-            document.getElementById('atasNama').innerText = "a/n " + bankNama;
+            document.getElementById('atasNama').innerText = bankNama ? "a/n " + bankNama : '';
 
             const hiddenInput = document.getElementById('hiddenMetodePembayaran');
             if (hiddenInput) hiddenInput.value = selectedOption.value;
@@ -229,24 +234,54 @@
             });
         }
 
-         document.querySelector('form').addEventListener('submit', async function(e) {
+         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             let form = this;
             let btn = form.querySelector('button[type="submit"]');
-    let fileInput = form.querySelector('input[type="file"]');
+            let fileInput = form.querySelector('input[type="file"]');
 
-            if (fileInput && fileInput.files && fileInput.files[0]) {
-                btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">sync</span> Mengompres...';
+            const select = document.getElementById('metodePembayaranSelect');
+            const bankVal = select ? select.value : '';
+            const fileSelected = fileInput && fileInput.files && fileInput.files[0];
 
-                let originalFile = fileInput.files[0];
-                if (originalFile.type.startsWith('image/')) {
-                    let compressedFile = await compressImage(originalFile, 1200, 1200, 0.8);
-                    let dt = new DataTransfer();
-                    dt.items.add(compressedFile);
-                    fileInput.files = dt.files;
+            if (!bankVal) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bank Belum Dipilih',
+                        text: 'Silakan pilih bank tujuan transfer terlebih dahulu!',
+                        confirmButtonColor: '#003215'
+                    });
+                } else {
+                    alert("Silakan pilih bank tujuan transfer terlebih dahulu!");
                 }
-    }
+                return;
+            }
+
+            if (!fileSelected) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bukti Pembayaran Belum Diunggah',
+                        text: 'Silakan unggah bukti pembayaran terlebih dahulu!',
+                        confirmButtonColor: '#003215'
+                    });
+                } else {
+                    alert("Silakan unggah bukti pembayaran terlebih dahulu!");
+                }
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">sync</span> Mengompres...';
+
+            let originalFile = fileInput.files[0];
+            if (originalFile.type.startsWith('image/')) {
+                let compressedFile = await compressImage(originalFile, 1200, 1200, 0.8);
+                let dt = new DataTransfer();
+                dt.items.add(compressedFile);
+                fileInput.files = dt.files;
+            }
 
             form.submit();
         });

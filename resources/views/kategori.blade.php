@@ -20,8 +20,8 @@
     <form id="filterForm" action="{{ route('kategori') }}" method="GET" class="flex flex-col md:flex-row gap-0 md:gap-10">
         <input type="hidden" name="sort" id="hidden-sort" value="{{ request('sort', 'Terbaru') }}">
         
-        <!-- Mobile Header (Only visible on mobile) -->
-        <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 pb-2 shadow-sm w-full">
+        <!-- Mobile Header (Sticky search bar) -->
+        <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 shadow-sm w-full">
             <!-- Top Row: Back, Search, Home, Cart -->
             <div class="flex items-center gap-2 px-3 py-2">
                 <a href="javascript:history.back()" class="text-gray-600 p-1"><span class="material-symbols-outlined">arrow_back</span></a>
@@ -61,25 +61,69 @@
             </div>
 
             @if(request('search'))
-            <div class="px-4 py-1">
+            <div class="px-4 py-1 pb-2">
                 <h2 class="text-[13px] font-bold text-gray-800">Hasil Pencarian "{{ request('search') }}"</h2>
             </div>
             @endif
+        </div>
 
+        <!-- Mobile Filters (Not sticky, scrolls with page) -->
+        <div class="md:hidden bg-white w-full border-b border-gray-100 pb-2">
             <!-- Category Chips -->
             <div class="flex overflow-x-auto gap-3 px-4 py-3 scrollbar-hide hide-scroll items-center border-b border-gray-50">
                 <label class="shrink-0">
-                    <input type="radio" name="kategori[]" value="" class="hidden mobile-cat-radio" @if(empty(request('kategori'))) checked @endif>
-                    <div class="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip @if(empty(request('kategori'))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                    <input type="checkbox" class="hidden mobile-chip-checkbox" data-group="kategori" value="" @if(empty(request('kategori'))) checked @endif>
+                    <div class="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip-group-kategori @if(empty(request('kategori'))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
                         Semua Kategori
                     </div>
                 </label>
                 @foreach($global_kategoris as $cat)
                 <label class="shrink-0">
-                    <input type="radio" name="kategori[]" value="{{ $cat->nama_kategori }}" class="hidden mobile-cat-radio" @if(in_array($cat->nama_kategori, request('kategori', []))) checked @endif>
-                    <div class="flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip @if(in_array($cat->nama_kategori, request('kategori', []))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
-                        @if($cat->icon)<span class="material-symbols-outlined text-[16px]">{{ $cat->icon }}</span>@endif
+                    <input type="checkbox" class="hidden mobile-chip-checkbox" data-group="kategori" value="{{ $cat->nama_kategori }}" @if(in_array($cat->nama_kategori, request('kategori', []))) checked @endif>
+                    <div class="flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip-group-kategori @if(in_array($cat->nama_kategori, request('kategori', []))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        <span class="material-symbols-outlined text-[16px]">menu_book</span>
                         {{ $cat->nama_kategori }}
+                    </div>
+                </label>
+                @endforeach
+            </div>
+
+            <!-- Penerbit Chips -->
+            <div class="flex overflow-x-auto gap-3 px-4 py-3 scrollbar-hide hide-scroll items-center border-b border-gray-50">
+                <label class="shrink-0">
+                    <input type="checkbox" class="hidden mobile-chip-checkbox" data-group="penerbit" value="" @if(empty(request('penerbit'))) checked @endif>
+                    <div class="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip-group-penerbit @if(empty(request('penerbit'))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        Semua Penerbit
+                    </div>
+                </label>
+                @foreach($global_penerbits as $pub)
+                <label class="shrink-0">
+                    <input type="checkbox" class="hidden mobile-chip-checkbox" data-group="penerbit" value="{{ $pub->nama_penerbit }}" @if(in_array($pub->nama_penerbit, request('penerbit', []))) checked @endif>
+                    <div class="flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip-group-penerbit @if(in_array($pub->nama_penerbit, request('penerbit', []))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        <span class="material-symbols-outlined text-[16px]">domain</span>
+                        {{ $pub->nama_penerbit }}
+                    </div>
+                </label>
+                @endforeach
+            </div>
+
+            <!-- Pengarang Chips -->
+            <div class="flex overflow-x-auto gap-3 px-4 py-3 scrollbar-hide hide-scroll items-center border-b border-gray-50">
+                <label class="shrink-0">
+                    <input type="checkbox" class="hidden mobile-chip-checkbox" data-group="pengarang" value="" @if(empty(request('pengarang'))) checked @endif>
+                    <div class="px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip-group-pengarang @if(empty(request('pengarang'))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        Semua Pengarang
+                    </div>
+                </label>
+                @php
+                    $dbPengarangMobile = \App\Models\KatalogBuku::select('pengarang')->whereNotNull('pengarang')->where('pengarang', '!=', '')->distinct()->pluck('pengarang');
+                @endphp
+                @foreach($dbPengarangMobile as $pen)
+                <label class="shrink-0">
+                    <input type="checkbox" class="hidden mobile-chip-checkbox" data-group="pengarang" value="{{ $pen }}" @if(in_array($pen, request('pengarang', []))) checked @endif>
+                    <div class="flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-semibold cursor-pointer transition-colors mobile-chip-group-pengarang @if(in_array($pen, request('pengarang', []))) border-primary text-primary bg-primary/10 @else border-gray-200 text-gray-600 @endif">
+                        <span class="material-symbols-outlined text-[16px]">person</span>
+                        {{ $pen }}
                     </div>
                 </label>
                 @endforeach
@@ -109,7 +153,7 @@
                 </div>
                 <div class="flex items-center gap-1 shrink-0">
                     <button id="mobile-sort-toggle-btn" type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white" title="Urutkan Harga"><span class="material-symbols-outlined text-[16px]">swap_vert</span></button>
-                    <button id="mobile-filter-btn" type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white" title="Filter"><span class="material-symbols-outlined text-[16px]">filter_alt</span></button>
+                    <button id="mobile-filter-btn" type="button" class="border border-gray-200 p-1.5 rounded text-gray-600 flex items-center justify-center bg-white" title="Filter"><span class="material-symbols-outlined text-[16px]">tune</span></button>
                 </div>
             </div>
             
@@ -148,6 +192,9 @@
                     <div class="space-y-3">
                         @php
                             $selectedCategories = request('kategori', []);
+                            if (!is_array($selectedCategories)) {
+                                $selectedCategories = [$selectedCategories];
+                            }
                         @endphp
                         @forelse($global_kategoris as $cat)
                         <label class="flex items-center gap-3 cursor-pointer group">
@@ -166,6 +213,9 @@
                     <div class="space-y-3">
                         @php
                             $selectedPenerbit = request('penerbit', []);
+                            if (!is_array($selectedPenerbit)) {
+                                $selectedPenerbit = [$selectedPenerbit];
+                            }
                         @endphp
                         @forelse($global_penerbits as $pub)
                         <label class="flex items-center gap-3 cursor-pointer group">
@@ -185,6 +235,9 @@
                         @php
                             $dbPengarang = \App\Models\KatalogBuku::select('pengarang')->whereNotNull('pengarang')->where('pengarang', '!=', '')->distinct()->pluck('pengarang');
                             $selectedPengarang = request('pengarang', []);
+                            if (!is_array($selectedPengarang)) {
+                                $selectedPengarang = [$selectedPengarang];
+                            }
                         @endphp
                         @foreach($dbPengarang as $pen)
                         <label class="flex items-center gap-3 cursor-pointer group">
@@ -354,25 +407,35 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('change', function(e) {
         if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
             if(e.target.name === 'kategori[]') {
-                syncMobileChips();
+                syncMobileChips('kategori');
+            } else if (e.target.name === 'penerbit[]') {
+                syncMobileChips('penerbit');
+            } else if (e.target.name === 'pengarang[]') {
+                syncMobileChips('pengarang');
             }
             fetchResults(new URLSearchParams(new FormData(form)).toString());
         }
-        if(e.target.classList.contains('mobile-cat-radio')) {
+        if(e.target.classList.contains('mobile-chip-checkbox')) {
             const val = e.target.value;
-            // Uncheck all desktop category checkboxes first
-            document.querySelectorAll('input[name="kategori[]"][type="checkbox"]').forEach(cb => {
-                cb.checked = (cb.value === val);
-            });
-
-            // Update active state for mobile chips
-            document.querySelectorAll('.mobile-chip').forEach(chip => {
-                chip.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
-                chip.classList.add('border-gray-200', 'text-gray-600');
-            });
-            const activeChip = e.target.nextElementSibling;
-            activeChip.classList.remove('border-gray-200', 'text-gray-600');
-            activeChip.classList.add('border-primary', 'text-primary', 'bg-primary/10');
+            const group = e.target.getAttribute('data-group');
+            const fieldName = group + '[]';
+            const isChecked = e.target.checked;
+            
+            if (val === "") {
+                // If "Semua" is clicked, uncheck all others
+                document.querySelectorAll(`input[name="${fieldName}"][type="checkbox"]`).forEach(cb => {
+                    cb.checked = false;
+                });
+            } else {
+                // Toggle specific desktop checkbox
+                const desktopCb = document.querySelector(`input[name="${fieldName}"][type="checkbox"][value="${val}"]`);
+                if (desktopCb) {
+                    desktopCb.checked = isChecked;
+                }
+            }
+            
+            // Sync mobile chips visually to match the desktop checkboxes
+            syncMobileChips(group);
             
             fetchResults(new URLSearchParams(new FormData(form)).toString());
         }
@@ -439,34 +502,42 @@ document.addEventListener('DOMContentLoaded', function() {
         filterBackdrop.addEventListener('click', closeFilterDrawer);
     }
 
-    function syncMobileChips() {
-        const checkedCats = Array.from(document.querySelectorAll('input[name="kategori[]"][type="checkbox"]:checked')).map(cb => cb.value);
+    function syncMobileChips(group) {
+        const fieldName = group + '[]';
+        const checkedItems = Array.from(document.querySelectorAll(`input[name="${fieldName}"][type="checkbox"]:checked`)).map(cb => cb.value);
         
         // Reset all chips style
-        document.querySelectorAll('.mobile-chip').forEach(chip => {
+        document.querySelectorAll(`.mobile-chip-group-${group}`).forEach(chip => {
             chip.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
             chip.classList.add('border-gray-200', 'text-gray-600');
         });
+        
+        // Uncheck all mobile checkboxes
+        document.querySelectorAll(`input.mobile-chip-checkbox[data-group="${group}"]`).forEach(cb => {
+            cb.checked = false;
+        });
 
-        let targetVal = null;
-        if (checkedCats.length === 1) {
-            targetVal = checkedCats[0];
-        } else if (checkedCats.length === 0) {
-            targetVal = "";
-        }
-
-        // Find the radio input with the target value
-        const radios = document.querySelectorAll('.mobile-cat-radio');
-        radios.forEach(radio => {
-            if (radio.value === targetVal) {
-                radio.checked = true;
-                const chipDiv = radio.nextElementSibling;
+        if (checkedItems.length === 0) {
+            // Check "Semua"
+            const btn = document.querySelector(`input.mobile-chip-checkbox[data-group="${group}"][value=""]`);
+            if (btn) {
+                btn.checked = true;
+                const chipDiv = btn.nextElementSibling;
                 chipDiv.classList.remove('border-gray-200', 'text-gray-600');
                 chipDiv.classList.add('border-primary', 'text-primary', 'bg-primary/10');
-            } else {
-                radio.checked = false;
             }
-        });
+        } else {
+            // Check specific ones
+            checkedItems.forEach(val => {
+                const btn = document.querySelector(`input.mobile-chip-checkbox[data-group="${group}"][value="${val}"]`);
+                if (btn) {
+                    btn.checked = true;
+                    const chipDiv = btn.nextElementSibling;
+                    chipDiv.classList.remove('border-gray-200', 'text-gray-600');
+                    chipDiv.classList.add('border-primary', 'text-primary', 'bg-primary/10');
+                }
+            });
+        }
     }
 
     // Handle pagination links
