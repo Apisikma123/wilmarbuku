@@ -56,6 +56,10 @@
                     <i data-lucide="receipt" class="w-5 h-5"></i>
                     Transaksi
                 </a>
+                <a href="{{ route('admin.obo') }}" class="flex items-center gap-3 px-6 py-2.5 border-l-4 font-medium transition-colors {{ request()->routeIs('admin.obo') ? 'bg-green-50 text-green-800 border-green-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent' }}">
+                    <i data-lucide="inbox" class="w-5 h-5"></i>
+                    Donasi Offline
+                </a>
                 <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-6 py-2.5 border-l-4 font-medium transition-colors {{ request()->routeIs('admin.users') ? 'bg-green-50 text-green-800 border-green-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent' }}">
                     <i data-lucide="users" class="w-5 h-5"></i>
                     Pengguna

@@ -198,9 +198,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             if (!$user->is_onboarding_completed && $user->role !== 'admin') {
-                if ($remember) {
-                    \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
-                }
+                \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
                 return redirect()->route('onboarding.student-check');
             }
 
@@ -215,9 +213,7 @@ class AuthController extends Controller
 
             $response = redirect()->to($intendedUrl);
 
-            if ($remember) {
-                \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
-            }
+            \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
 
             return $response;
         }
