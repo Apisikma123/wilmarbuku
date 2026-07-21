@@ -1,39 +1,39 @@
 @extends('layouts.user')
 
 @section('content')
-    <div class="px-6 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-10 min-h-[60vh] flex flex-col md:flex-row items-start md:items-center justify-center relative">
-        <a href="{{ url()->previous() }}" class="absolute top-4 md:top-10 left-4 md:left-12 xl:left-24 text-gray-500 hover:text-primary transition-colors flex items-center gap-1 z-10 bg-white/80 p-2 rounded-full md:bg-transparent md:p-0 backdrop-blur-sm md:backdrop-blur-none">
+    <div class="px-4 md:px-12 xl:px-24 max-w-[1280px] mx-auto py-8 md:py-10 min-h-[60vh] flex flex-col items-center justify-center relative w-full">
+        <a href="{{ url()->previous() }}" class="absolute top-2 md:top-10 left-4 md:left-12 xl:left-24 text-gray-500 hover:text-primary transition-colors flex items-center gap-1 z-10 bg-white/80 p-2 rounded-full md:bg-transparent md:p-0 backdrop-blur-sm md:backdrop-blur-none">
             <span class="material-symbols-outlined">arrow_back</span>
             <span class="text-sm font-medium hidden md:inline">Kembali</span>
         </a>
-        <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/30 p-8 max-w-lg w-full text-center mt-8 md:mt-0">
+        <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/30 p-5 md:p-8 max-w-lg w-full text-center mt-12 md:mt-0">
 
-            <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <span class="material-symbols-outlined text-3xl">account_balance</span>
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                <span class="material-symbols-outlined text-2xl md:text-3xl">account_balance</span>
             </div>
 
-            <h1 class="text-2xl font-bold font-display text-on-surface mb-2">Pembayaran Donasi</h1>
-            <p class="text-sm text-on-surface-variant mb-4">Silakan lakukan transfer ke rekening di bawah ini dan unggah
+            <h1 class="text-xl md:text-2xl font-bold font-display text-on-surface mb-2">Pembayaran Donasi</h1>
+            <p class="text-xs md:text-sm text-on-surface-variant mb-4 md:mb-6">Silakan lakukan transfer ke rekening di bawah ini dan unggah
                 bukti pembayarannya.</p>
 
-            <div class="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 mb-8 flex items-start gap-2 text-left">
-                <span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5">timer</span>
-                <div class="text-xs w-full">
-                    <div class="flex justify-between items-center mb-0.5">
+            <div class="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 md:p-4 mb-6 md:mb-8 flex items-start gap-2 text-left">
+                <span class="material-symbols-outlined text-[18px] md:text-[20px] shrink-0 mt-0.5">timer</span>
+                <div class="text-[11px] md:text-xs w-full">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1">
                         <strong class="block">Batas Waktu Pembayaran</strong>
-                        <strong id="countdown-timer" class="text-red-700 bg-red-100 px-2 py-0.5 rounded">60:00</strong>
+                        <strong id="countdown-timer" class="text-red-700 bg-red-100 px-2 py-0.5 rounded w-fit inline-block">60:00</strong>
                     </div>
-                    Segera selesaikan pembayaran sebelum <span
+                    <span class="block mt-1">Segera selesaikan pembayaran sebelum <span
                         class="font-bold">{{ $transaksi->created_at->addHour()->format('d M Y H:i') }}</span> WIB atau
-                    transaksi Anda akan otomatis dibatalkan.
+                    transaksi Anda akan otomatis dibatalkan.</span>
                 </div>
             </div>
 
-            <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 mb-8 text-left">
+            <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-4 md:p-5 mb-6 md:mb-8 text-left">
                 <div class="mb-4">
-                    <label class="block text-sm font-bold text-on-surface mb-2">Pilih Bank Tujuan Transfer</label>
+                    <label class="block text-xs md:text-sm font-bold text-on-surface mb-2">Pilih Bank Tujuan Transfer</label>
                     <select id="metodePembayaranSelect"
-                        class="w-full bg-white border border-outline-variant/50 rounded-lg px-4 py-3 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm"
+                        class="w-full bg-white border border-outline-variant/50 rounded-lg px-3 py-2 md:px-4 md:py-3 text-xs md:text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm outline-none"
                         onchange="updateBankInfo()">
                         @if(count($metodes) > 0)
                             <option value="" disabled selected data-bank="-" data-rek="Pilih bank di atas" data-nama="-">-- Pilih Bank Tujuan --</option>
@@ -49,21 +49,21 @@
                     </select>
                 </div>
                 <div
-                    class="flex items-center gap-3 mb-4 bg-white border border-outline-variant/30 p-4 rounded-xl shadow-sm">
+                    class="flex items-center gap-3 mb-4 bg-white border border-outline-variant/30 p-3 md:p-4 rounded-xl shadow-sm">
                     <div id="bankIcon"
-                        class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 font-bold uppercase">
+                        class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 font-bold uppercase text-xs md:text-base">
                         BCA
                     </div>
-                    <div>
-                        <h3 id="nomorRekening" class="font-bold text-on-surface text-xl tracking-wider">1234 5678 90</h3>
-                        <p id="atasNama" class="text-xs font-medium text-on-surface-variant mt-0.5">a/n Admin WilmarBOOKS
+                    <div class="overflow-hidden">
+                        <h3 id="nomorRekening" class="font-bold text-on-surface text-base md:text-xl tracking-wider truncate">1234 5678 90</h3>
+                        <p id="atasNama" class="text-[10px] md:text-xs font-medium text-on-surface-variant mt-0.5 truncate">a/n Admin WilmarBOOKS
                         </p>
                     </div>
                 </div>
-                <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4">
-                    <span class="text-sm font-medium text-on-surface-variant">Total Tagihan
+                <div class="flex justify-between items-center border-t border-outline-variant/30 pt-3 md:pt-4 gap-2">
+                    <span class="text-xs md:text-sm font-medium text-on-surface-variant">Total Tagihan
                         ({{ $transaksi->details->sum('qty') }} Buku)</span>
-                    <span class="text-lg font-bold text-primary">Rp
+                    <span class="text-base md:text-lg font-bold text-primary whitespace-nowrap">Rp
                         {{ number_format($transaksi->total_harga, 0, ',', '.') }}</span>
                 </div>
             </div>
@@ -72,17 +72,17 @@
                 @csrf
                 <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
                 <input type="hidden" name="metode_pembayaran_id" id="hiddenMetodePembayaran" value="">
-                <div class="mb-6 text-left">
-                    <label class="block text-sm font-bold text-on-surface mb-2">Unggah Bukti Pembayaran *</label>
-                    <div class="border-2 border-dashed border-outline-variant rounded-xl p-4 text-center hover:border-primary transition-colors cursor-pointer relative"
+                <div class="mb-5 md:mb-6 text-left">
+                    <label class="block text-xs md:text-sm font-bold text-on-surface mb-2">Unggah Bukti Pembayaran *</label>
+                    <div class="border-2 border-dashed border-outline-variant rounded-xl p-4 md:p-5 text-center hover:border-primary transition-colors cursor-pointer relative"
                         id="drop-zone">
                         <input type="file" name="bukti_pembayaran" accept="image/*"
                             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                             onchange="previewFile(this)">
-                        <div class="flex flex-col items-center gap-2 pointer-events-none" id="file-info">
-                            <span class="material-symbols-outlined text-outline-variant text-3xl">upload_file</span>
-                            <span class="text-sm text-on-surface-variant font-medium">Pilih gambar (JPG, PNG)</span>
-                            <span class="text-xs text-outline-variant">Auto Compress</span>
+                        <div class="flex flex-col items-center gap-1.5 md:gap-2 pointer-events-none" id="file-info">
+                            <span class="material-symbols-outlined text-outline-variant text-2xl md:text-3xl">upload_file</span>
+                            <span class="text-xs md:text-sm text-on-surface-variant font-medium">Pilih gambar (JPG, PNG)</span>
+                            <span class="text-[10px] md:text-xs text-outline-variant">Auto Compress</span>
                         </div>
                     </div>
                     @error('bukti_pembayaran')
@@ -100,8 +100,8 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-primary/90 transition-colors shadow-sm flex justify-center items-center gap-2">
-                    <span class="material-symbols-outlined">send</span>
+                    class="w-full bg-primary text-white font-bold py-3 md:py-3.5 rounded-xl hover:bg-primary/90 transition-colors shadow-sm flex justify-center items-center gap-2 text-sm md:text-base">
+                    <span class="material-symbols-outlined text-[18px] md:text-[24px]">send</span>
                     Kirim Bukti Pembayaran
                 </button>
             </form>
