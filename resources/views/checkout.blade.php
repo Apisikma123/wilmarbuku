@@ -53,7 +53,7 @@
                                 placeholder="Masukkan NIM/NIDN Anda" readonly>
                             <div class="flex items-center gap-1 mt-1.5 text-on-surface-variant text-[11px]">
                                 <span class="material-symbols-outlined text-[14px]">info</span>
-                                <span>Perubahan NIM hanya dapat dilakukan melalui Pengaturan Profil.</span>
+                                <span>Perubahan NIM hanya dapat dilakukan melalui Admin.</span>
                             </div>
                             @error('identitas_kampus') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>

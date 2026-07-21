@@ -157,7 +157,7 @@
                         </button>
 
                         <!-- Dropdown -->
-                        <div x-show="open" x-cloak class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 z-50 overflow-hidden"
+                        <div x-show="open" x-cloak class="absolute left-0 sm:right-0 sm:left-auto mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 z-50 overflow-hidden"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 translate-y-1"
                              x-transition:enter-end="opacity-100 translate-y-0"
