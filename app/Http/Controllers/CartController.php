@@ -20,6 +20,11 @@ class CartController extends Controller
         foreach ($cart as $id => &$item) {
             $buku = $bukus->get($id);
             if ($buku) {
+                $item['judul_buku'] = $buku->judul_buku;
+                $item['pengarang'] = $buku->pengarang;
+                $item['kategori'] = $buku->kategori;
+                $item['cover_image'] = $buku->cover_image;
+                $item['harga_estimasi'] = $buku->harga_estimasi;
                 $item['stok_dibutuhkan'] = $buku->stok_dibutuhkan;
                 // Pastikan qty tidak melebihi stok yang ada
                 $item['qty'] = min($item['qty'], $buku->stok_dibutuhkan);

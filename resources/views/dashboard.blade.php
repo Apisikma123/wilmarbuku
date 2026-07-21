@@ -77,7 +77,7 @@
                     <h2 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary">
                         <span class="material-symbols-outlined text-secondary">star</span> Pilihan Prioritas Kampus
                     </h2>
-                    <a href="{{ route('kategori', ['sort' => 'Prioritas']) }}" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
+                    <a href="{{ route('kategori', ['sort' => 'Prioritas Kampus']) }}" class="text-xs md:text-sm text-primary font-semibold border border-primary/20 px-3 md:px-4 py-1 md:py-1.5 rounded-full hover:bg-primary/5 transition-colors whitespace-nowrap shrink-0">Lihat Semua</a>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">

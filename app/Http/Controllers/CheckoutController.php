@@ -28,6 +28,13 @@ class CheckoutController extends Controller
         foreach ($cart as $id => $details) {
             $buku = KatalogBuku::find($id);
             if ($buku && $buku->stok_dibutuhkan > 0) {
+                $details['judul_buku'] = $buku->judul_buku;
+                $details['pengarang'] = $buku->pengarang;
+                $details['kategori'] = $buku->kategori;
+                $details['cover_image'] = $buku->cover_image;
+                $details['harga_estimasi'] = $buku->harga_estimasi;
+                $details['stok_dibutuhkan'] = $buku->stok_dibutuhkan;
+                
                 $filteredCart[$id] = $details;
                 $filteredCart[$id]['qty'] = min($details['qty'], $buku->stok_dibutuhkan);
             }
@@ -83,6 +90,13 @@ class CheckoutController extends Controller
                     if ($buku->stok_dibutuhkan < $details['qty']) {
                         throw new \Exception("STOK_HABIS:{$buku->judul_buku}");
                     }
+                    $details['judul_buku'] = $buku->judul_buku;
+                    $details['pengarang'] = $buku->pengarang;
+                    $details['kategori'] = $buku->kategori;
+                    $details['cover_image'] = $buku->cover_image;
+                    $details['harga_estimasi'] = $buku->harga_estimasi;
+                    $details['stok_dibutuhkan'] = $buku->stok_dibutuhkan;
+                    
                     $checkoutCart[$id] = $details;
                 }
             }
