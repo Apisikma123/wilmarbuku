@@ -128,7 +128,41 @@
 <span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">{{ $item->kategori }}</span>
 </div>
 <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors min-h-[3.5rem]">{{ $item->judul_buku }}</h3>
-<p class="text-primary font-bold text-lg mb-4 mt-auto">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+<div class="flex items-center justify-between gap-1 mb-4 mt-auto">
+    <p class="text-primary font-bold text-lg whitespace-nowrap">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+    @if($item->badge)
+        @php
+            $badgeColor = match($item->badge) {
+                'Buku Wajib' => 'bg-blue-100 text-blue-700',
+                'Prioritas Kampus' => 'bg-red-100 text-red-700',
+                'Bestseller' => 'bg-orange-100 text-orange-700',
+                'Prioritas' => 'bg-red-100 text-red-700',
+                'Rekomendasi' => 'bg-emerald-100 text-emerald-700',
+                'Trending' => 'bg-orange-100 text-orange-700',
+                'Pilihan Utama' => 'bg-blue-100 text-blue-700',
+                default => 'bg-slate-100 text-slate-700',
+            };
+            $badgeIcon = match($item->badge) {
+                'Buku Wajib' => 'menu_book',
+                'Prioritas Kampus' => 'workspace_premium',
+                'Bestseller' => 'trending_up',
+                'Prioritas' => 'workspace_premium',
+                'Rekomendasi' => 'thumb_up',
+                'Trending' => 'local_fire_department',
+                'Pilihan Utama' => 'emoji_events',
+                default => 'label',
+            };
+        @endphp
+        <div class="group/badge flex items-center h-8 max-w-[32px] hover:max-w-[140px] rounded-full {{ $badgeColor }} transition-all duration-300 ease-in-out cursor-pointer overflow-hidden shadow-sm hover:shadow-md shrink-0" title="{{ strtoupper($item->badge) }}">
+            <div class="flex items-center justify-center min-w-[32px] h-full shrink-0">
+                <span class="material-symbols-outlined text-[18px]">{{ $badgeIcon }}</span>
+            </div>
+            <span class="text-[10px] font-bold whitespace-nowrap pr-4 opacity-0 group-hover/badge:opacity-100 transition-opacity duration-300 ease-in-out">
+                {{ strtoupper($item->badge) }}
+            </span>
+        </div>
+    @endif
+</div>
 </a>
 <div class="mt-auto pt-4">
 @if($item->stok_dibutuhkan <= 0)
@@ -216,7 +250,7 @@
 <label class="block text-sm font-semibold text-on-surface mb-2" for="tracking-id">ID Donasi / Nomor Resi</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
-<input name="kode" class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: DON-2024-892" type="text" required/>
+<input name="kode" class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: WB-2024-892" type="text" required/>
 </div>
 </div>
 <button type="submit" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
