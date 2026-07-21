@@ -57,7 +57,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kode OTP (6 Digit)</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">pin</span>
-                        <input type="text" name="otp_code" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm text-center tracking-[0.5em] font-bold text-lg" placeholder="••••••" maxlength="6" required autofocus>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="otp_code" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm text-center tracking-[0.5em] font-bold text-lg" placeholder="••••••" maxlength="6" required autofocus>
                     </div>
                 </div>
 

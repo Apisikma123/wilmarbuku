@@ -22,12 +22,29 @@
     @endif
 
     @if(session('error'))
-    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm">
+    <div class="bg-error-container border border-error text-on-error-container px-4 py-3 rounded-xl flex items-center justify-between shadow-sm mb-4">
         <div class="flex items-center gap-3">
-            <i data-lucide="alert-circle" class="w-5 h-5 text-red-600"></i>
+            <i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>
             <span class="text-sm font-bold">{{ session('error') }}</span>
         </div>
-        <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button onclick="this.parentElement.remove()" class="text-error hover:text-on-error-container"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="bg-error-container border border-error text-on-error-container px-4 py-3 rounded-xl shadow-sm mb-4">
+        <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>
+                <span class="text-sm font-bold">Terjadi Kesalahan:</span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-error hover:text-on-error-container"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <ul class="list-disc list-inside text-sm ml-2">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
     @endif
 

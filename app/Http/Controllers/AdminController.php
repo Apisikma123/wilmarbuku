@@ -917,17 +917,31 @@ class AdminController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'buku_id' => 'required|exists:katalog_buku,id',
-            'qty' => 'required|integer|min:1'
+            'buku_id' => 'required|array|min:1',
+            'buku_id.*' => 'required|exists:katalog_buku,id',
+            'qty' => 'required|array|min:1',
+            'qty.*' => 'required|integer|min:1'
         ]);
 
-        $buku = KatalogBuku::findOrFail($request->buku_id);
+        $total = 0;
+        $bukuList = [];
 
-        if ($request->qty > $buku->stok_dibutuhkan) {
-            return back()->with('error', 'Kuantitas melebihi stok yang dibutuhkan.');
+        // Validasi stok dan kumpulkan buku
+        foreach ($request->buku_id as $index => $id) {
+            $buku = KatalogBuku::findOrFail($id);
+            $qty = $request->qty[$index];
+
+            if ($qty > $buku->stok_dibutuhkan) {
+                return back()->with('error', "Kuantitas untuk buku '{$buku->judul_buku}' melebihi stok yang dibutuhkan ({$buku->stok_dibutuhkan}).");
+            }
+
+            $total += $buku->harga_estimasi * $qty;
+            $bukuList[] = [
+                'model' => $buku,
+                'qty' => $qty
+            ];
         }
 
-        $total = $buku->harga_estimasi * $request->qty;
         $kode_tracking = 'WB' . date('Ym') . strtoupper(\Illuminate\Support\Str::random(5));
 
         \Illuminate\Support\Facades\DB::beginTransaction();
@@ -944,35 +958,46 @@ class AdminController extends Controller
                 'validasi_lulus' => 1
             ]);
 
-            \App\Models\TransaksiDetail::create([
-                'kode_tracking' => $kode_tracking,
-                'buku_id' => $buku->id,
-                'qty' => $request->qty,
-                'harga_satuan' => $buku->harga_estimasi,
-                'pesan_dukungan' => null,
-            ]);
+            $bukuTitles = [];
+            foreach ($bukuList as $item) {
+                $buku = $item['model'];
+                $qty = $item['qty'];
 
-            $newStok = max(0, $buku->stok_dibutuhkan - $request->qty);
-            $updateData = ['stok_dibutuhkan' => $newStok];
-            if ($newStok == 0) {
-                $updateData['status_buku'] = 'Tersedia';
+                \App\Models\TransaksiDetail::create([
+                    'kode_tracking' => $kode_tracking,
+                    'buku_id' => $buku->id,
+                    'qty' => $qty,
+                    'harga_satuan' => $buku->harga_estimasi,
+                    'pesan_dukungan' => null,
+                ]);
+
+                $newStok = max(0, $buku->stok_dibutuhkan - $qty);
+                $updateData = ['stok_dibutuhkan' => $newStok];
+                if ($newStok == 0) {
+                    $updateData['status_buku'] = 'Tersedia';
+                }
+                $buku->update($updateData);
+
+                $bukuTitles[] = "<b>{$buku->judul_buku}</b> ({$qty} eks)";
             }
-            $buku->update($updateData);
 
             \Illuminate\Support\Facades\DB::commit();
+
+            $bukuTitlesText = implode(', ', $bukuTitles);
 
             \App\Models\PesanMasuk::create([
                 'user_id' => $request->user_id,
                 'judul' => 'Pesanan Donasi Offline (#' . $kode_tracking . ') Berhasil',
-                'isi_pesan' => "Donasi offline Anda untuk buku <b>{$buku->judul_buku}</b> sejumlah {$request->qty} eksemplar telah berhasil diproses oleh Admin. Terima kasih atas donasi Anda!",
+                'isi_pesan' => "Donasi offline Anda untuk buku {$bukuTitlesText} telah berhasil diproses oleh Admin. Terima kasih atas donasi Anda!",
                 'jenis' => 'info',
                 'is_read' => false,
             ]);
 
-            return redirect()->route('admin.transactions')->with('success', 'Donasi offline berhasil dicatat.');
+            return back()->with('success', 'Donasi offline berhasil diproses!');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('oboStore error: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat memproses donasi: ' . $e->getMessage());
         }
     }
 }
