@@ -106,221 +106,199 @@
                         Bonus: mahasiswa WBI wajib donasi 1 buku sebagai syarat lulus. Jadi kontribusi Anda juga
                         menginspirasi mereka untuk memberi balik.
                     </p>
-                </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Catalog -->
+<section id="buku-donasi" class="bg-surface-container-low py-12 md:py-24 border-y border-outline-variant/30">
+<div class="px-6 md:px-12 max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-4 md:gap-6">
+<div>
+<h2 class="text-2xl md:text-4xl font-bold text-primary mb-2 md:mb-4 tracking-tight">Pilihan Buku Donasi</h2>
+<p class="text-sm md:text-lg text-on-surface-variant">Buku Pilihan Kampus.</p>
+</div>
+<div class="flex flex-wrap items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+<a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group" href="{{ route('kategori') }}">
+                Lihat Semua Buku 
+                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+<div id="buku-carousel" class="flex items-stretch overflow-x-auto pb-8 -mx-6 px-6 snap-x snap-mandatory scroll-smooth gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+@foreach($buku as $item)
+<div class="w-[85vw] max-w-[280px] sm:w-[280px] sm:max-w-none flex-shrink-0 snap-start bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
+<a href="{{ route('buku.detail', $item->id) }}" class="flex flex-col flex-grow">
+<div class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)] bg-slate-900">
+<img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
+@if((str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')))
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20">
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display text-transparent text-shadow-sm">{{ $item->judul_buku }}</h3>
+</div>
+<div class="mt-auto text-center opacity-90 font-medium text-[10px] tracking-widest uppercase relative z-20">{{ $item->pengarang }}</div>
+@else
+<div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20 pointer-events-none">
+<span class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+<div class="w-12 h-[2px] bg-white/50 mx-auto mt-2 rounded-full"></div>
+</div>
+<div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-20 pointer-events-none">{{ $item->pengarang }}</div>
+@endif
+@if($item->stok_dibutuhkan <= 0)
+<div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none">
+<span class="bg-primary text-white text-[12px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-md">Terpenuhi</span>
+</div>
+@endif
+</div>
+<div class="mb-3">
+<span class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">{{ $item->kategori }}</span>
+</div>
+<h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors min-h-[3.5rem]">{{ $item->judul_buku }}</h3>
+<div class="flex items-center justify-between gap-1 mb-4 mt-auto">
+    <p class="text-primary font-bold text-lg whitespace-nowrap">Rp {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
+    @if($item->badge)
+        @php
+            $badgeColor = match($item->badge) {
+                'Buku Wajib' => 'bg-blue-100 text-blue-700',
+                'Prioritas Kampus' => 'bg-red-100 text-red-700',
+                'Bestseller' => 'bg-orange-100 text-orange-700',
+                'Prioritas' => 'bg-red-100 text-red-700',
+                'Rekomendasi' => 'bg-emerald-100 text-emerald-700',
+                'Trending' => 'bg-orange-100 text-orange-700',
+                'Pilihan Utama' => 'bg-blue-100 text-blue-700',
+                default => 'bg-slate-100 text-slate-700',
+            };
+            $badgeIcon = match($item->badge) {
+                'Buku Wajib' => 'menu_book',
+                'Prioritas Kampus' => 'workspace_premium',
+                'Bestseller' => 'trending_up',
+                'Prioritas' => 'workspace_premium',
+                'Rekomendasi' => 'thumb_up',
+                'Trending' => 'local_fire_department',
+                'Pilihan Utama' => 'emoji_events',
+                default => 'label',
+            };
+        @endphp
+        <div class="group/badge flex items-center h-8 max-w-[32px] hover:max-w-[140px] rounded-full {{ $badgeColor }} transition-all duration-300 ease-in-out cursor-pointer overflow-hidden shadow-sm hover:shadow-md shrink-0" title="{{ strtoupper($item->badge) }}">
+            <div class="flex items-center justify-center min-w-[32px] h-full shrink-0">
+                <span class="material-symbols-outlined text-[18px]">{{ $badgeIcon }}</span>
             </div>
+            <span class="text-[10px] font-bold whitespace-nowrap pr-4 opacity-0 group-hover/badge:opacity-100 transition-opacity duration-300 ease-in-out">
+                {{ strtoupper($item->badge) }}
+            </span>
         </div>
-    </section>
-    <!-- Featured Catalog -->
-    <section id="buku-donasi" class="bg-surface-container-low py-12 md:py-24 border-y border-outline-variant/30">
-        <div class="px-6 md:px-12 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-4 md:gap-6">
-                <div>
-                    <h2 class="text-2xl md:text-4xl font-bold text-primary mb-2 md:mb-4 tracking-tight">Pilihan Buku Donasi
-                    </h2>
-                    <p class="text-sm md:text-lg text-on-surface-variant">Buku Pilihan Kampus.</p>
-                </div>
-                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-                    <a class="text-primary font-semibold hover:text-primary-container transition-colors flex items-center gap-2 group"
-                        href="{{ route('kategori') }}">
-                        Lihat Semua Buku
-                        <span
-                            class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-            <div id="buku-carousel"
-                class="flex items-stretch overflow-x-auto pb-8 -mx-6 px-6 snap-x snap-mandatory scroll-smooth gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                @foreach($buku as $item)
-                    <div
-                        class="w-[85vw] max-w-[280px] sm:w-[280px] sm:max-w-none flex-shrink-0 snap-start bg-white rounded-[8px] shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:-translate-y-[2px] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 flex flex-col p-4 group h-full">
-                        <a href="{{ route('buku.detail', $item->id) }}" class="flex flex-col flex-grow">
-                            <div
-                                class="w-full aspect-[2/3] mb-4 relative overflow-hidden rounded-[4px] flex flex-col p-6 text-white border border-black/5 shadow-[inset_4px_0_12px_rgba(0,0,0,0.2)] bg-slate-900">
-                                <img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}"
-                                    alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none">
-                                </div>
-                                @if((str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')))
-                                    <div
-                                        class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20">
-                                        <h3
-                                            class="font-bold text-xl leading-snug tracking-tight font-display text-transparent text-shadow-sm">
-                                            {{ $item->judul_buku }}</h3>
-                                    </div>
-                                    <div
-                                        class="mt-auto text-center opacity-90 font-medium text-[10px] tracking-widest uppercase relative z-20">
-                                        {{ $item->pengarang }}</div>
-                                @else
-                                    <div
-                                        class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20 pointer-events-none">
-                                        <span
-                                            class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
-                                        <h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">
-                                            {!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
-                                        <div class="w-12 h-[2px] bg-white/50 mx-auto mt-2 rounded-full"></div>
-                                    </div>
-                                    <div
-                                        class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-20 pointer-events-none">
-                                        {{ $item->pengarang }}</div>
-                                @endif
-                                @if($item->stok_dibutuhkan <= 0)
-                                    <div
-                                        class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none">
-                                        <span
-                                            class="bg-primary text-white text-[12px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-md">Terpenuhi</span>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="mb-3">
-                                <span
-                                    class="inline-block bg-[#EDF6EE] text-primary rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase">{{ $item->kategori }}</span>
-                            </div>
-                            <h3
-                                class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors min-h-[3.5rem]">
-                                {{ $item->judul_buku }}</h3>
-                            <p class="text-primary font-bold text-lg mb-4 mt-auto">Rp
-                                {{ number_format($item->harga_estimasi, 0, ',', '.') }}</p>
-                        </a>
-                        <div class="mt-auto pt-4">
-                            @if($item->stok_dibutuhkan <= 0)
-                                <button disabled
-                                    class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Target
-                                    Terpenuhi</button>
-                            @elseif(Auth::check() && isset(Auth::user()->cart_data[$item->id]) && Auth::user()->cart_data[$item->id]['qty'] >= $item->stok_dibutuhkan)
-                                <button disabled
-                                    class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Maksimal
-                                    di Keranjang</button>
-                            @else
-                                @if(auth()->check() && auth()->user()->role === 'admin')
-                                    <button disabled
-                                        class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Admin
-                                        Tidak Dapat Membeli</button>
-                                @else
-                                    @if(Auth::check())
-                                        <form class="ajax-cart-form" action="{{ route('cart.add', $item->id) }}" method="POST">
-                                            @csrf
-                                            <button type="button"
-                                                class="add-cart-btn w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan
-                                                Buku Ini</button>
-                                        </form>
-                                    @else
-                                        <a href="{{ route('login') }}"
-                                            class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan
-                                            Buku Ini</a>
-                                    @endif
-                                @endif
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-            <div class="mt-12 flex justify-center">
-                <a href="{{ route('kategori') }}"
-                    class="inline-flex items-center gap-2 bg-white border-2 border-primary text-primary font-bold px-8 py-3.5 rounded-lg hover:bg-primary hover:text-white transition-all shadow-sm hover:shadow-md group">
-                    <span>Lihat Lebih Banyak</span>
-                    <span
-                        class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                </a>
-            </div>
-        </div>
-    </section>
-    <!-- How It Works & Tools -->
-    <section class="py-12 md:py-24 bg-surface">
-        <div class="px-6 md:px-12 max-w-7xl mx-auto">
-            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
-                <!-- How It Works (Timeline) -->
-                <div>
-                    <h2 class="text-3xl font-bold text-primary mb-8 md:mb-12 tracking-tight">Proses Donasi</h2>
-                    <div
-                        class="space-y-10 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-outline-variant before:to-transparent">
-                        <!-- Step 1 -->
-                        <div class="relative flex items-start gap-6">
-                            <div
-                                class="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-on-primary ring-4 ring-surface shrink-0 z-10 shadow-md">
-                                <span class="material-symbols-outlined text-lg">shopping_cart</span>
-                            </div>
-                            <div class="pt-1">
-                                <h3 class="text-xl font-bold text-on-surface mb-2">1. Pilih Buku</h3>
-                                <p class="text-on-surface-variant leading-relaxed">Pilih buku yang dibutuhkan perpustakaan
-                                    dari katalog dan lakukan checkout.</p>
-                            </div>
-                        </div>
-                        <!-- Step 2 -->
-                        <div class="relative flex items-start gap-6">
-                            <div
-                                class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-low text-primary ring-4 ring-surface shrink-0 z-10 border border-outline-variant shadow-sm">
-                                <span class="material-symbols-outlined text-lg">payments</span>
-                            </div>
-                            <div class="pt-1">
-                                <h3 class="text-xl font-bold text-on-surface mb-2">2. Pembayaran Otomatis</h3>
-                                <p class="text-on-surface-variant leading-relaxed">Lakukan pembayaran secara instan dan aman
-                                    melalui Payment Gateway terintegrasi.</p>
-                            </div>
-                        </div>
-                        <!-- Step 3 -->
-                        <div class="relative flex items-start gap-6">
-                            <div
-                                class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-low text-primary ring-4 ring-surface shrink-0 z-10 border border-outline-variant shadow-sm">
-                                <span class="material-symbols-outlined text-lg">track_changes</span>
-                            </div>
-                            <div class="pt-1">
-                                <h3 class="text-xl font-bold text-on-surface mb-2">3. Lacak Pesanan</h3>
-                                <p class="text-on-surface-variant leading-relaxed">Dapatkan Kode Tracking untuk memantau
-                                    status pesanan hingga buku tiba di rak perpustakaan.</p>
-                            </div>
-                        </div>
+    @endif
+</div>
+</a>
+<div class="mt-auto pt-4">
+@if($item->stok_dibutuhkan <= 0)
+<button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Target Terpenuhi</button>
+@elseif(Auth::check() && isset(Auth::user()->cart_data[$item->id]) && Auth::user()->cart_data[$item->id]['qty'] >= $item->stok_dibutuhkan)
+<button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Maksimal di Keranjang</button>
+@else
+@if(auth()->check() && auth()->user()->role === 'admin')
+<button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Admin Tidak Dapat Membeli</button>
+@else
+@if(Auth::check())
+<form class="ajax-cart-form" action="{{ route('cart.add', $item->id) }}" method="POST">
+    @csrf
+    <button type="button" class="add-cart-btn w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
+</form>
+@else
+<a href="{{ route('login') }}" class="w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</a>
+@endif
+@endif
+@endif
+</div>
+</div>
+@endforeach
+</div>
+<div class="mt-12 flex justify-center">
+    <a href="{{ route('kategori') }}" class="inline-flex items-center gap-2 bg-white border-2 border-primary text-primary font-bold px-8 py-3.5 rounded-lg hover:bg-primary hover:text-white transition-all shadow-sm hover:shadow-md group">
+        <span>Lihat Lebih Banyak</span>
+        <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+    </a>
+</div>
+</div>
+</section>
+<!-- How It Works & Tools -->
+<section class="py-12 md:py-24 bg-surface">
+<div class="px-6 md:px-12 max-w-7xl mx-auto">
+<div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+<!-- How It Works (Timeline) -->
+<div>
+<h2 class="text-3xl font-bold text-primary mb-8 md:mb-12 tracking-tight">Proses Donasi</h2>
+<div class="space-y-10 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-outline-variant before:to-transparent">
+<!-- Step 1 -->
+<div class="relative flex items-start gap-6">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-on-primary ring-4 ring-surface shrink-0 z-10 shadow-md">
+<span class="material-symbols-outlined text-lg">shopping_cart</span>
+</div>
+<div class="pt-1">
+<h3 class="text-xl font-bold text-on-surface mb-2">1. Pilih Buku</h3>
+<p class="text-on-surface-variant leading-relaxed">Pilih buku yang dibutuhkan perpustakaan dari katalog dan lakukan checkout.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative flex items-start gap-6">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-low text-primary ring-4 ring-surface shrink-0 z-10 border border-outline-variant shadow-sm">
+<span class="material-symbols-outlined text-lg">payments</span>
+</div>
+<div class="pt-1">
+<h3 class="text-xl font-bold text-on-surface mb-2">2. Pembayaran Otomatis</h3>
+<p class="text-on-surface-variant leading-relaxed">Lakukan pembayaran secara instan dan aman melalui Payment Gateway terintegrasi.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative flex items-start gap-6">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-low text-primary ring-4 ring-surface shrink-0 z-10 border border-outline-variant shadow-sm">
+<span class="material-symbols-outlined text-lg">track_changes</span>
+</div>
+<div class="pt-1">
+<h3 class="text-xl font-bold text-on-surface mb-2">3. Lacak Pesanan</h3>
+<p class="text-on-surface-variant leading-relaxed">Dapatkan Kode Tracking untuk memantau status pesanan hingga buku tiba di rak perpustakaan.</p>
+</div>
+</div>
 
-                    </div>
-                </div>
-                <!-- Tracking Utility -->
-                <div
-                    class="bg-surface-container-lowest p-8 md:p-12 rounded-2xl shadow-xl shadow-primary/5 border border-outline-variant/20 flex flex-col justify-center">
-                    <div class="mb-8">
-                        <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
-                            <span class="material-symbols-outlined text-primary text-2xl">troubleshoot</span>
-                        </div>
-                        <h2 class="text-2xl font-bold text-primary mb-3">Lacak Status Donasi</h2>
-                        <p class="text-on-surface-variant">Masukkan ID Donasi atau Nomor Resi pengiriman Anda untuk melihat
-                            status terkini dari donasi buku Anda.</p>
-                    </div>
-                    <form action="{{ url('/track') }}" method="GET" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-on-surface mb-2" for="tracking-id">ID Donasi /
-                                Nomor Resi</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
-                                <input name="kode"
-                                    class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface"
-                                    id="tracking-id" placeholder="Misal: WB202607H4MRT" type="text" required />
-                            </div>
-                        </div>
-                        <button type="submit"
-                            class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
-                            Cek Status
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Final CTA -->
-    <section class="px-4 md:px-12 max-w-7xl mx-auto py-8 md:py-16 text-center">
-        <div class="relative rounded-[2rem] px-6 py-10 md:p-20 shadow-2xl overflow-hidden group">
-            <!-- Background Image with Overlay -->
-            <div class="absolute inset-0 z-0 bg-primary">
-                <img src="{{ asset('images/Banner.png') }}" alt="Ayo Donasi"
-                    class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000 ease-out opacity-70">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-primary/70 to-transparent"></div>
-                <!-- Decorative blur blobs -->
-                <div
-                    class="absolute -left-20 -bottom-20 w-64 h-64 bg-secondary/30 blur-[80px] rounded-full mix-blend-screen hidden md:block">
-                </div>
-                <div
-                    class="absolute -right-20 -top-20 w-64 h-64 bg-primary-container/30 blur-[80px] rounded-full mix-blend-screen hidden md:block">
-                </div>
-            </div>
+</div>
+</div>
+<!-- Tracking Utility -->
+<div class="bg-surface-container-lowest p-8 md:p-12 rounded-2xl shadow-xl shadow-primary/5 border border-outline-variant/20 flex flex-col justify-center">
+<div class="mb-8">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-2xl">troubleshoot</span>
+</div>
+<h2 class="text-2xl font-bold text-primary mb-3">Lacak Status Donasi</h2>
+<p class="text-on-surface-variant">Masukkan ID Donasi atau Nomor Resi pengiriman Anda untuk melihat status terkini dari donasi buku Anda.</p>
+</div>
+<form action="{{ url('/track') }}" method="GET" class="space-y-4">
+<div>
+<label class="block text-sm font-semibold text-on-surface mb-2" for="tracking-id">ID Donasi / Nomor Resi</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
+<input name="kode" class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: WB-2024-892" type="text" required/>
+</div>
+</div>
+<button type="submit" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">
+                        Cek Status
+                    </button>
+</form>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="px-4 md:px-12 max-w-7xl mx-auto py-8 md:py-16 text-center">
+<div class="relative rounded-[2rem] px-6 py-10 md:p-20 shadow-2xl overflow-hidden group">
+<!-- Background Image with Overlay -->
+<div class="absolute inset-0 z-0 bg-primary">
+<img src="{{ asset('images/Banner.png') }}" alt="Ayo Donasi" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000 ease-out opacity-70">
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-primary/70 to-transparent"></div>
+<!-- Decorative blur blobs -->
+<div class="absolute -left-20 -bottom-20 w-64 h-64 bg-secondary/30 blur-[80px] rounded-full mix-blend-screen hidden md:block"></div>
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary-container/30 blur-[80px] rounded-full mix-blend-screen hidden md:block"></div>
+</div>
 
             <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
                 <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-5 tracking-tight">

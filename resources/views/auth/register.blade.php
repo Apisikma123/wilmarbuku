@@ -19,6 +19,12 @@
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 20px 20px;
         }
+
+        /* Hide default browser password reveal icon */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
     </style>
 </head>
 

@@ -139,7 +139,9 @@
                             <div class="font-medium text-slate-700">{{ $u->identitas_kampus ?? '-' }}</div>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            @if($u->id !== auth()->id())
+                            @if($u->id === 1)
+                            <span class="text-xs text-slate-400 italic font-medium">Admin Utama</span>
+                            @elseif($u->id !== auth()->id())
                             <div class="flex items-center justify-center gap-1">
                                 <button onclick='openEditModal({{ json_encode($u) }})' class="p-1.5 text-slate-400 hover:text-blue-500 transition-colors" title="Edit Pengguna">
                                     <i data-lucide="edit" class="w-4 h-4"></i>

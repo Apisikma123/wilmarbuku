@@ -14,6 +14,12 @@
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 20px 20px;
         }
+
+        /* Hide default browser password reveal icon */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative bg-cover bg-center bg-no-repeat bg-fixed" style="background-image: url('{{ asset('images/Login-Background.png') }}');">

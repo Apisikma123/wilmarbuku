@@ -10,9 +10,9 @@
             </a>
         </div>
 
-        <div class="flex items-center gap-3 mb-8">
-            <span class="material-symbols-outlined text-primary text-3xl">shopping_bag</span>
-            <h1 class="text-3xl font-bold font-display text-on-surface tracking-tight">Keranjang Donasi</h1>
+        <div class="flex items-center gap-2 md:gap-3 mb-6 md:mb-8">
+            <span class="material-symbols-outlined text-primary text-2xl md:text-3xl">shopping_bag</span>
+            <h1 class="text-2xl md:text-3xl font-bold font-display text-on-surface tracking-tight">Keranjang Donasi</h1>
         </div>
 
         @if(session('error'))
@@ -43,44 +43,44 @@
                             $count += $item['qty'];
                         @endphp
                         <!-- Cart Item -->
-                        <div id="cart-item-{{ $id }}" class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 grayscale bg-surface-container-low' : '' }}">
-                            <div class="flex gap-5">
-                                <div class="flex items-start justify-center pt-2">
+                        <div id="cart-item-{{ $id }}" class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-outline-variant/40 hover-lift transition-all group {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 grayscale bg-surface-container-low' : '' }}">
+                            <div class="flex gap-3 md:gap-5">
+                                <div class="flex items-start justify-center pt-1 md:pt-2">
                                     @if($item['stok_dibutuhkan'] > 0)
-                                    <input type="checkbox" checked class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
+                                    <input type="checkbox" checked class="w-5 h-5 md:w-6 md:h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
                                     @else
-                                    <span class="material-symbols-outlined text-outline">block</span>
+                                    <span class="material-symbols-outlined text-outline text-[20px] md:text-[24px]">block</span>
                                     @endif
                                 </div>
-                                <div class="flex-grow">
+                                <div class="flex-grow overflow-hidden">
                                     <!-- Header Info -->
-                                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
-                                        <div class="flex gap-5">
-                                            <div class="w-24 h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow bg-slate-900 flex items-center justify-center p-2 text-center text-white">
+                                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4 md:mb-5">
+                                        <div class="flex gap-3 md:gap-5 w-full">
+                                            <div class="w-20 h-28 md:w-24 md:h-36 rounded-xl shadow-md flex-shrink-0 relative overflow-hidden group-hover:shadow-lg transition-shadow bg-slate-900 flex items-center justify-center p-2 text-center text-white">
                                                 <img src="{{ (str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')) ? $item['cover_image'] : asset('images/default-cover.png') }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                                                 @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http')))
-                                                    <h4 class="font-bold text-xs leading-tight tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>
+                                                    <h4 class="font-bold text-[10px] md:text-xs leading-tight tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>
                                                 @endif
                                             </div>
-                                            <div class="flex flex-col justify-between py-1">
+                                            <div class="flex flex-col justify-between py-1 overflow-hidden w-full">
                                                 <div>
-                                                    <span class="inline-block px-2.5 py-1 bg-surface-container-low text-primary text-[10px] font-bold rounded-md mb-2 uppercase tracking-wider">{{ $item['kategori'] }}</span>
+                                                    <span class="inline-block px-2 py-1 md:px-2.5 md:py-1 bg-surface-container-low text-primary text-[9px] md:text-[10px] font-bold rounded-md mb-1.5 md:mb-2 uppercase tracking-wider">{{ $item['kategori'] }}</span>
                                                     @if($item['stok_dibutuhkan'] <= 0)
-                                                    <span class="inline-block px-2.5 py-1 bg-error-container text-error text-[10px] font-bold rounded-md mb-2 uppercase tracking-wider">Stok Terpenuhi</span>
+                                                    <span class="inline-block px-2 py-1 md:px-2.5 md:py-1 bg-error-container text-error text-[9px] md:text-[10px] font-bold rounded-md mb-1.5 md:mb-2 uppercase tracking-wider">Stok Terpenuhi</span>
                                                     @endif
-                                                    <h3 class="font-bold text-on-surface leading-tight text-xl mb-1 group-hover:text-primary transition-colors line-clamp-2">{{ $item['judul_buku'] }}</h3>
-                                                    <p class="text-sm text-on-surface-variant font-medium">Oleh: {{ $item['pengarang'] }}</p>
+                                                    <h3 class="font-bold text-on-surface leading-tight text-base md:text-xl mb-1 group-hover:text-primary transition-colors line-clamp-2">{{ $item['judul_buku'] }}</h3>
+                                                    <p class="text-xs md:text-sm text-on-surface-variant font-medium truncate">Oleh: {{ $item['pengarang'] }}</p>
                                                 </div>
-                                                <p class="font-bold text-primary text-2xl mt-4">Rp {{ number_format($item['harga_estimasi'], 0, ',', '.') }}</p>
+                                                <p class="font-bold text-primary text-lg md:text-2xl mt-2 md:mt-4">Rp {{ number_format($item['harga_estimasi'], 0, ',', '.') }}</p>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <!-- Informasi Pesanan -->
-                                    <div class="bg-surface-bright rounded-xl p-5 border border-outline-variant/30">
-                                        <h4 class="text-sm font-bold text-on-surface flex items-center gap-2 mb-4">
-                                            <span class="material-symbols-outlined text-primary text-[18px]">edit_note</span> Detail Penyaluran
+                                    <div class="bg-surface-bright rounded-xl p-3.5 md:p-5 border border-outline-variant/30">
+                                        <h4 class="text-xs md:text-sm font-bold text-on-surface flex items-center gap-2 mb-3 md:mb-4">
+                                            <span class="material-symbols-outlined text-primary text-[16px] md:text-[18px]">edit_note</span> Detail Penyaluran
                                         </h4>
                                         <form id="update-form-{{ $id }}" action="{{ route('cart.update') }}" method="POST">
                                             @csrf
@@ -93,11 +93,11 @@
                                                         <input type="text" name="pesan_dukungan" value="{{ $item['pesan_dukungan'] ?? '' }}" placeholder="Tulis semangat untuk penerima..." class="w-full bg-white border border-outline-variant/50 rounded-lg py-2.5 pl-10 pr-4 text-sm text-on-surface focus:ring-primary focus:border-primary shadow-sm transition-shadow focus:shadow-md" onchange="submitUpdate(this.form)" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
                                                     </div>
                                                 </div>
-                                                <div class="flex justify-end items-center gap-5 pt-2 border-t border-outline-variant/30">
-                                                    <div class="flex gap-2">
-                                                        <button type="button" onclick="removeItem('{{ $id }}')" class="w-9 h-9 rounded-full text-outline-variant hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors" title="Hapus"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                                                <div class="flex justify-between items-center gap-2 md:gap-5 pt-2 border-t border-outline-variant/30">
+                                                    <div class="flex gap-2 shrink-0">
+                                                        <button type="button" onclick="removeItem('{{ $id }}')" class="w-8 h-8 md:w-9 md:h-9 rounded-full text-outline-variant hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors" title="Hapus"><span class="material-symbols-outlined text-[18px] md:text-[20px]">delete</span></button>
                                                     </div>
-                                                    <div class="h-6 w-px bg-outline-variant/40"></div>
+                                                    <div class="h-6 w-px bg-outline-variant/40 shrink-0"></div>
                                                     <div class="flex items-center gap-1 bg-white border border-outline-variant/50 rounded-lg p-1 shadow-sm {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 pointer-events-none' : '' }}">
                                                         <button type="button" onclick="updateQty(this, -1)" class="w-7 h-7 rounded-md bg-surface-bright text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">remove</span></button>
                                                         <input type="number" name="qty" value="{{ $item['qty'] }}" data-price="{{ $item['harga_estimasi'] }}" class="qty-input font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="clearTimeout(updateTimeout); updateTimeout = setTimeout(() => submitUpdate(this.form), 400); recalculateLocalCart();" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
