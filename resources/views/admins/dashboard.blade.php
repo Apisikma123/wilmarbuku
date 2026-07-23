@@ -11,6 +11,7 @@
                     <i data-lucide="check-circle" class="w-5 h-5"></i>
                     <span class="text-sm font-semibold">{{ session('success') }}</span>
                 </div>
+                <button onclick="this.parentElement.remove()" class="text-green-500 hover:text-green-700"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
         @endif
 
