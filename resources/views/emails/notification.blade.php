@@ -8,7 +8,7 @@
     <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
         <h2 style="color: #004225; border-bottom: 2px solid #004225; padding-bottom: 10px;">{{ $pesanMasuk->judul }}</h2>
         <div style="margin-top: 20px;">
-            {!! $pesanMasuk->isi_pesan !!}
+            {!! strip_tags($pesanMasuk->isi_pesan, '<br><b><i><strong><em><p><span>') !!}
         </div>
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #777;">
             <p>Email ini dikirim secara otomatis oleh sistem WilmarBuku. Mohon untuk tidak membalas email ini.</p>

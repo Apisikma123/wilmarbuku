@@ -113,9 +113,7 @@
                     @if(!auth()->check() || auth()->user()->role !== 'admin')
                     <a href="/cart" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
-                        @if($cartQty > 0)
-                        <span class="absolute top-0 right-0 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm">{{ $cartQty }}</span>
-                        @endif
+                        <span id="cart-badge-mobile" class="absolute top-0 right-0 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-primary shadow-sm" style="{{ $cartQty > 0 ? '' : 'display: none;' }}">{{ $cartQty }}</span>
                     </a>
                     @endif
                 </div>
@@ -149,9 +147,7 @@
                     @if(!auth()->check() || auth()->user()->role !== 'admin')
                     <a href="/cart" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
                         <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
-                        @if($cartQty > 0)
-                        <span class="absolute top-0.5 right-0.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $cartQty }}</span>
-                        @endif
+                        <span id="cart-badge-desktop" class="absolute top-0.5 right-0.5 bg-secondary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm" style="{{ $cartQty > 0 ? '' : 'display: none;' }}">{{ $cartQty }}</span>
                     </a>
                     @endif
                 </div>
@@ -602,6 +598,48 @@
                     }
                 }, 300);
             }
+        });
+
+        // Real-time Cart Badge Update Listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const setupEchoCart = () => {
+                if (window.Echo) {
+                    @auth
+                    const channel = window.Echo.private('user.{{ auth()->id() }}');
+                    @else
+                    const channel = window.Echo.channel('cart.guest.{{ session()->getId() }}');
+                    @endauth
+
+                    channel.listen('.cart.updated', (e) => {
+                        const count = e.cartCount;
+                        
+                        // Update Mobile Badge
+                        const mobileBadge = document.getElementById('cart-badge-mobile');
+                        if (mobileBadge) {
+                            mobileBadge.innerText = count;
+                            mobileBadge.style.display = count > 0 ? 'flex' : 'none';
+                            
+                            // Optional animation
+                            mobileBadge.classList.add('scale-125');
+                            setTimeout(() => mobileBadge.classList.remove('scale-125'), 300);
+                        }
+
+                        // Update Desktop Badge
+                        const desktopBadge = document.getElementById('cart-badge-desktop');
+                        if (desktopBadge) {
+                            desktopBadge.innerText = count;
+                            desktopBadge.style.display = count > 0 ? 'flex' : 'none';
+                            
+                            // Optional animation
+                            desktopBadge.classList.add('scale-125');
+                            setTimeout(() => desktopBadge.classList.remove('scale-125'), 300);
+                        }
+                    });
+                } else {
+                    setTimeout(setupEchoCart, 200);
+                }
+            };
+            setupEchoCart();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1079,6 +1117,64 @@
         });
     </script>
     @endif
+    
+    @auth
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const setupCartEcho = () => {
+                if(window.Echo) {
+                    window.Echo.private('user.{{ auth()->id() }}')
+                        .listen('CartUpdated', (e) => {
+                            const mobileBadge = document.getElementById('cart-badge-mobile');
+                            const desktopBadge = document.getElementById('cart-badge-desktop');
+                            
+                            if (mobileBadge) {
+                                mobileBadge.innerText = e.cartCount;
+                                mobileBadge.style.display = e.cartCount > 0 ? 'flex' : 'none';
+                            }
+                            if (desktopBadge) {
+                                desktopBadge.innerText = e.cartCount;
+                                desktopBadge.style.display = e.cartCount > 0 ? 'flex' : 'none';
+                            }
+                        });
+                } else {
+                    setTimeout(setupCartEcho, 200);
+                }
+            };
+            setupCartEcho();
+        });
+    </script>
+    @endauth
+
+    <script>
+        window.addEventListener('pageshow', function(event) {
+            // Force reload if restored from BFCache (e.g. user clicks back button)
+            if (event.persisted) {
+                window.location.reload();
+                return;
+            }
+
+            // Sync cart count via lightweight API for standard loads
+            fetch('{{ route("cart.count") }}', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const count = data.cart_count;
+                ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+                    const badge = document.getElementById(id);
+                    if (badge) {
+                        badge.innerText = count;
+                        badge.style.display = count > 0 ? 'flex' : 'none';
+                    }
+                });
+            })
+            .catch(err => console.error('Error syncing cart count:', err));
+        });
+    </script>
 
 </body>
 </html>

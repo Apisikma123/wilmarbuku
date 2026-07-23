@@ -91,7 +91,7 @@
                                     <img src="{{ (str_starts_with($b->cover_image ?? '', '/storage/') || str_starts_with($b->cover_image ?? '', 'http')) ? $b->cover_image : asset('images/default-cover.png') }}" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                                     @if((!str_starts_with($b->cover_image ?? '', '/storage/') && !str_starts_with($b->cover_image ?? '', 'http')))
-                                        <span class="text-[5px] text-white font-bold leading-[1.1] text-center p-0.5 uppercase break-all relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', $b->judul_buku) !!}</span>
+                                        <span class="text-[5px] text-white font-bold leading-[1.1] text-center p-0.5 uppercase break-all relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', e($b->judul_buku)) !!}</span>
                                     @endif
                                 </div>
                                 <div>

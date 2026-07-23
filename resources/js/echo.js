@@ -7,11 +7,11 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.q
 
 window.Echo = new Echo({
     broadcaster: 'reverb',
-    key: 'reverbkey123',
-    wsHost: window.location.hostname,
-    wsPort: 8080,
-    wssPort: 8080,
-    forceTLS: false,
+    key: import.meta.env.VITE_REVERB_APP_KEY || 'reverbkey123',
+    wsHost: import.meta.env.VITE_REVERB_HOST || window.location.hostname,
+    wsPort: import.meta.env.VITE_REVERB_PORT ? parseInt(import.meta.env.VITE_REVERB_PORT) : 8080,
+    wssPort: import.meta.env.VITE_REVERB_PORT ? parseInt(import.meta.env.VITE_REVERB_PORT) : 8080,
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'http') === 'https',
     enabledTransports: ['ws', 'wss'],
     auth: {
         headers: {

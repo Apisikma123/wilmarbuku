@@ -57,7 +57,7 @@
                         <img src="{{ (str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')) ? $detail->buku->cover_image : asset('images/default-cover.png') }}" alt="{{ $detail->buku->judul_buku }}" class="w-full h-full object-cover absolute inset-0 z-0">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                         @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http')))
-                            <span class="text-[6px] font-bold uppercase leading-tight relative z-20 text-white p-2">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
+                            <span class="text-[6px] font-bold uppercase leading-tight relative z-20 text-white p-2">{!! str_replace(' ', '<br>', e($detail->buku->judul_buku)) !!}</span>
                         @endif
                     </div>
                     <div>
