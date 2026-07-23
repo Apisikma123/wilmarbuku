@@ -158,9 +158,9 @@
                         <div class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-sm uppercase">
                             {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
                         </div>
-                        <div>
+                        <div class="min-w-0">
                             <p class="text-xs text-on-surface-variant group-hover:text-primary leading-tight transition-colors">Halo,</p>
-                            <p class="text-sm font-bold text-on-surface leading-tight group-hover:text-primary transition-colors">{{ Auth::user()->nama_lengkap }}</p>
+                            <p class="text-sm font-bold text-on-surface leading-tight group-hover:text-primary transition-colors max-w-[150px] truncate" title="{{ Auth::user()->nama_lengkap }}">{{ Auth::user()->nama_lengkap }}</p>
                         </div>
                     </a>
 
@@ -171,16 +171,16 @@
                         <div class="bg-primary text-white p-4 rounded-t-2xl relative overflow-hidden">
                             <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
                             <div class="flex items-center justify-between relative z-10">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-2 border-primary-fixed uppercase">
+                                <div class="flex items-center gap-3 w-full">
+                                    <div class="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-2 border-primary-fixed uppercase shrink-0">
                                         {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
                                     </div>
-                                    <div>
+                                    <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-base leading-tight">{{ Auth::user()->nama_lengkap }}</h4>
-                                            <a href="/akun" class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors" title="Edit Profil">edit</a>
+                                            <h4 class="font-bold text-base leading-tight break-words flex-1">{{ Auth::user()->nama_lengkap }}</h4>
+                                            <a href="/akun" class="material-symbols-outlined text-[14px] cursor-pointer hover:text-secondary-fixed transition-colors shrink-0" title="Edit Profil">edit</a>
                                         </div>
-                                        <p class="text-xs text-white/80 mt-0.5">{{ Auth::user()->role == 'user_internal' ? 'Internal WBI' : 'Donatur Umum' }}</p>
+                                        <p class="text-xs text-white/80 mt-1">{{ Auth::user()->role == 'user_internal' ? 'Internal WBI' : 'Donatur Umum' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -404,9 +404,9 @@
                     <div class="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-base uppercase shrink-0">
                         {{ substr(Auth::user()->nama_lengkap, 0, 1) }}
                     </div>
-                    <div>
-                        <p class="text-sm font-bold text-on-surface leading-tight">{{ Auth::user()->nama_lengkap }}</p>
-                        <p class="text-xs text-on-surface-variant">{{ Auth::user()->email }}</p>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-on-surface leading-tight truncate" title="{{ Auth::user()->nama_lengkap }}">{{ Auth::user()->nama_lengkap }}</p>
+                        <p class="text-xs text-on-surface-variant truncate" title="{{ Auth::user()->email }}">{{ Auth::user()->email }}</p>
                     </div>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
