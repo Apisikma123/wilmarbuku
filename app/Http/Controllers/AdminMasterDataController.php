@@ -18,6 +18,32 @@ class AdminMasterDataController extends Controller
         return view('admins.master_data', compact('kategoris', 'penerbits', 'labels'));
     }
 
+    public function getBooks(Request $request)
+    {
+        $type = $request->query('type');
+        $name = $request->query('name');
+
+        if (!$type || !$name) {
+            return response()->json(['error' => 'Missing parameters'], 400);
+        }
+
+        $query = \App\Models\KatalogBuku::query();
+
+        if ($type === 'kategori') {
+            $query->where('kategori', 'like', "%{$name}%");
+        } elseif ($type === 'penerbit') {
+            $query->where('penerbit', 'like', "%{$name}%");
+        } elseif ($type === 'badge') {
+            $query->where('badge', 'like', "%{$name}%");
+        } else {
+            return response()->json(['error' => 'Invalid type'], 400);
+        }
+
+        $books = $query->select('id', 'judul_buku', 'cover_image', 'stok_dibutuhkan', 'terdonasi')->get();
+
+        return response()->json(['books' => $books]);
+    }
+
     // KATEGORI
     public function storeKategori(Request $request)
     {

@@ -62,9 +62,12 @@ class AdminController extends Controller
         
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('judul_buku', 'like', "%{$search}%")
+            $query->where(function($q) use ($search) {
+                $q->where('id', $search)
+                  ->orWhere('judul_buku', 'like', "%{$search}%")
                   ->orWhere('pengarang', 'like', "%{$search}%")
                   ->orWhere('kategori', 'like', "%{$search}%");
+            });
         }
         
         $books = $query->paginate(10)->withQueryString();

@@ -14,10 +14,24 @@
         </a>
     </div>
 
-    @if(session('error'))
-        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200" role="alert">
-            {{ session('error') }}
+    @if(session('success'))
+    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm mb-4">
+        <div class="flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
+            <span class="text-sm font-bold">{{ session('success') }}</span>
         </div>
+        <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="bg-error-container border border-error text-on-error-container px-4 py-3 rounded-xl flex items-center justify-between shadow-sm mb-4">
+        <div class="flex items-center gap-3">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>
+            <span class="text-sm font-bold">{{ session('error') }}</span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-error hover:text-on-error-container"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
     @endif
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

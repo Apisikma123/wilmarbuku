@@ -136,6 +136,7 @@ use App\Http\Controllers\AdminMasterDataController;
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Master Data
     Route::get('/master-data', [AdminMasterDataController::class, 'index'])->name('admin.master');
+    Route::get('/master-data/books', [AdminMasterDataController::class, 'getBooks'])->name('admin.master.books');
     Route::post('/master-data/kategori', [AdminMasterDataController::class, 'storeKategori'])->name('admin.master.kategori.store');
     Route::post('/master-data/kategori/update/{id}', [AdminMasterDataController::class, 'updateKategori'])->name('admin.master.kategori.update');
     Route::post('/master-data/kategori/delete/{id}', [AdminMasterDataController::class, 'destroyKategori'])->name('admin.master.kategori.delete');

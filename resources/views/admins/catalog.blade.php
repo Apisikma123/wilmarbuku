@@ -22,8 +22,7 @@
     <!-- Metrics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Card 1 -->
-        <!-- Card 1 -->
-        <a href="{{ route('admin.master') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:border-[#003128] transition-all cursor-pointer group">
+        <a href="{{ route('admin.master') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:-translate-y-1 hover:border-[#003128] transition-all duration-300 cursor-pointer group">
             <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0 group-hover:bg-slate-200 transition-colors">
                 <i data-lucide="database" class="w-6 h-6 text-slate-700"></i>
             </div>
@@ -34,7 +33,7 @@
         </a>
 
         <!-- Card 2 -->
-        <a href="{{ route('admin.dibutuhkan') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group">
+        <a href="{{ route('admin.dibutuhkan') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:-translate-y-1 hover:border-amber-400 transition-all duration-300 cursor-pointer group">
             <div class="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0 group-hover:bg-amber-100 transition-colors">
                 <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-700"></i>
             </div>
@@ -45,12 +44,12 @@
         </a>
 
         <!-- Card 3 -->
-        <a href="{{ route('admin.tersedia') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:scale-105 transition-transform duration-300">
-            <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 shrink-0">
+        <a href="{{ route('admin.tersedia') }}" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex items-center gap-6 hover:shadow-md hover:-translate-y-1 hover:border-emerald-400 transition-all duration-300 cursor-pointer group">
+            <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 shrink-0 group-hover:bg-emerald-100 transition-colors">
                 <i data-lucide="check-circle" class="w-6 h-6 text-emerald-700"></i>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Berhasil Tersedia</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 group-hover:text-emerald-700 transition-colors">Berhasil Tersedia</p>
                 <h3 class="text-3xl font-bold text-slate-900">{{ number_format($berhasilTersedia) }} Judul</h3>
             </div>
         </a>
@@ -63,7 +62,7 @@
             <div class="relative w-full sm:w-auto shrink-0 flex items-center gap-2">
                 <div class="relative w-full sm:w-64">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari buku..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari ID/judul/pengarang..." class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all">
                 </div>
                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shrink-0">Cari</button>
             </div>
