@@ -70,7 +70,7 @@
                         <img src="{{ (str_starts_with($detail->buku->cover_image ?? '', '/storage/') || str_starts_with($detail->buku->cover_image ?? '', 'http')) ? $detail->buku->cover_image : asset('images/default-cover.png') }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                         @if((!str_starts_with($detail->buku->cover_image ?? '', '/storage/') && !str_starts_with($detail->buku->cover_image ?? '', 'http')))
-                            <span class="text-[5px] md:text-[6px] font-bold uppercase leading-tight relative z-20">{!! str_replace(' ', '<br>', $detail->buku->judul_buku) !!}</span>
+                            <span class="text-[5px] md:text-[6px] font-bold uppercase leading-tight relative z-20">{!! str_replace(' ', '<br>', e($detail->buku->judul_buku)) !!}</span>
                         @endif
                     </div>
                     <div class="flex-grow">

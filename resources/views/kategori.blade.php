@@ -295,7 +295,7 @@
                         <img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                         @if((!str_starts_with($item->cover_image ?? '', '/storage/') && !str_starts_with($item->cover_image ?? '', 'http')))
-                            <h4 class="text-[10px] md:text-xs font-bold uppercase leading-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                            <h4 class="text-[10px] md:text-xs font-bold uppercase leading-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', e($item->judul_buku)) !!}</h4>
                         @endif
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                             <span class="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-4 group-hover:translate-y-0 transition-transform">Lihat Detail</span>

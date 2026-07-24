@@ -15,6 +15,7 @@
         <form action="{{ route('checkout.process') }}" method="POST" class="flex flex-col lg:flex-row gap-8 items-start">
             @csrf
             <input type="hidden" name="type" value="{{ request('type') }}">
+            <input type="hidden" name="selected" value="{{ request('selected') }}">
             <!-- Kiri: Identitas & Buku -->
             <div class="w-full lg:w-[60%] flex flex-col gap-6">
 
@@ -94,7 +95,7 @@
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                                 @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http')))
                                     <h4 class="text-[9px] font-bold uppercase leading-tight mb-1 relative z-20 pointer-events-none">
-                                        {!! str_replace(' ', '<br>', $item['judul_buku']) !!}</h4>
+                                        {!! str_replace(' ', '<br>', e($item['judul_buku'])) !!}</h4>
                                 @endif
                             </div>
 

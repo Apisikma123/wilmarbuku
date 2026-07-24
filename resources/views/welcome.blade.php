@@ -140,7 +140,7 @@
 @else
 <div class="flex-grow flex flex-col justify-center items-center text-center space-y-4 relative z-20 pointer-events-none">
 <span class="material-symbols-outlined text-4xl opacity-80 font-light">account_balance</span>
-<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+<h3 class="font-bold text-xl leading-snug tracking-tight font-display uppercase">{!! str_replace(' ', '<br/>', e($item->judul_buku)) !!}</h3>
 <div class="w-12 h-[2px] bg-white/50 mx-auto mt-2 rounded-full"></div>
 </div>
 <div class="mt-auto text-center opacity-70 text-[10px] tracking-widest uppercase relative z-20 pointer-events-none">{{ $item->pengarang }}</div>
@@ -384,10 +384,16 @@
 
                     // OPTIMISTIC UI UPDATE
                     let originalBadgeCounts = [];
-                    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+                    const badges = [];
+                    ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+                        const b = document.getElementById(id);
+                        if(b) badges.push(b);
+                    });
+                    
                     badges.forEach((badge, i) => {
                         originalBadgeCounts[i] = parseInt(badge.innerText) || 0;
                         badge.innerText = originalBadgeCounts[i] + 1;
+                        badge.style.display = 'flex';
                         badge.classList.remove('animate-bounce');
                         void badge.offsetWidth; // trigger reflow
                         badge.classList.add('animate-bounce');
@@ -398,21 +404,23 @@
                         method: 'POST',
                         body: formData,
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         }
                     })
                         .then(res => res.json())
                         .then(data => {
-                            // Restore button state
-                            btn.disabled = false;
-                            btn.innerHTML = originalContent;
-                            btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
-
                             if (data.success) {
                                 // Update to server's true count
                                 if (badges.length > 0) {
                                     badges.forEach(badge => {
                                         badge.innerText = data.cart_count;
+                                        if (data.cart_count > 0) {
+                                            badge.style.display = 'flex';
+                                        } else {
+                                            badge.style.display = 'none';
+                                        }
                                     });
                                 } else if (cartBtn) {
                                     // Create badge if it didn't exist
@@ -429,10 +437,25 @@
                                     timer: 2000,
                                     timerProgressBar: true,
                                 });
+                                
+                                setTimeout(() => {
+                                    if (data.item_qty >= data.stok_dibutuhkan) {
+                                        btn.innerHTML = 'Maksimal di Keranjang';
+                                        btn.classList.remove('bg-primary', 'text-white', 'hover:bg-primary-container');
+                                        btn.classList.add('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+                                    } else {
+                                        btn.disabled = false;
+                                        btn.innerHTML = originalContent;
+                                        btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+                                    }
+                                }, 1200);
                             } else {
                                 // Revert Optimistic UI on failure
                                 badges.forEach((badge, i) => {
                                     badge.innerText = originalBadgeCounts[i] > 0 ? originalBadgeCounts[i] : '';
+                                    if (originalBadgeCounts[i] <= 0) {
+                                        badge.style.display = 'none';
+                                    }
                                 });
 
                                 Swal.fire({
@@ -444,12 +467,20 @@
                                     timer: 3000,
                                     timerProgressBar: true,
                                 });
+                                
+                                setTimeout(() => {
+                                    btn.disabled = false;
+                                    btn.innerHTML = originalContent;
+                                    btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+                                }, 800);
                             }
                         }).catch(err => {
-                            btn.disabled = false;
-                            btn.innerHTML = originalContent;
-                            btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
-                            form.submit();
+                            setTimeout(() => {
+                                btn.disabled = false;
+                                btn.innerHTML = originalContent;
+                                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+                            }, 800);
+                            console.error('Fetch error:', err);
                         });
                 });
             });

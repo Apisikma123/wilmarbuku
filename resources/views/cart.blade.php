@@ -18,7 +18,7 @@
         @if(session('error'))
         <div class="bg-error-container/20 border border-error/30 text-error px-4 py-4 rounded-xl flex items-start gap-3 shadow-sm mb-8">
             <span class="material-symbols-outlined shrink-0 mt-0.5 text-error">error</span>
-            <div class="font-medium text-sm leading-relaxed">{!! session('error') !!}</div>
+            <div class="font-medium text-sm leading-relaxed">{{ session('error') }}</div>
             <button onclick="this.parentElement.remove()" class="text-error/70 hover:text-error ml-auto shrink-0"><span class="material-symbols-outlined text-[20px]">close</span></button>
         </div>
         @endif
@@ -26,12 +26,12 @@
         @if(session('success'))
         <div class="bg-primary/10 border border-primary/20 text-primary px-4 py-4 rounded-xl flex items-start gap-3 shadow-sm mb-8">
             <span class="material-symbols-outlined shrink-0 mt-0.5 text-primary">check_circle</span>
-            <div class="font-medium text-sm leading-relaxed">{!! session('success') !!}</div>
+            <div class="font-medium text-sm leading-relaxed">{{ session('success') }}</div>
             <button onclick="this.parentElement.remove()" class="text-primary/70 hover:text-primary ml-auto shrink-0"><span class="material-symbols-outlined text-[20px]">close</span></button>
         </div>
         @endif
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div id="cart-main-container" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Left Column: Cart Items -->
             <div class="lg:col-span-8 space-y-6">
                 @if(isset($cart) && count($cart) > 0)
@@ -47,7 +47,7 @@
                             <div class="flex gap-3 md:gap-5">
                                 <div class="flex items-start justify-center pt-1 md:pt-2">
                                     @if($item['stok_dibutuhkan'] > 0)
-                                    <input type="checkbox" checked class="w-5 h-5 md:w-6 md:h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
+                                    <input type="checkbox" checked data-id="{{ $id }}" onchange="recalculateLocalCart()" class="item-checkbox w-5 h-5 md:w-6 md:h-6 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer bg-white">
                                     @else
                                     <span class="material-symbols-outlined text-outline text-[20px] md:text-[24px]">block</span>
                                     @endif
@@ -60,7 +60,7 @@
                                                 <img src="{{ (str_starts_with($item['cover_image'] ?? '', '/storage/') || str_starts_with($item['cover_image'] ?? '', 'http')) ? $item['cover_image'] : asset('images/default-cover.png') }}" class="absolute inset-0 w-full h-full object-cover z-0" alt="">
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                                                 @if((!str_starts_with($item['cover_image'] ?? '', '/storage/') && !str_starts_with($item['cover_image'] ?? '', 'http')))
-                                                    <h4 class="font-bold text-[10px] md:text-xs leading-tight tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item['judul_buku']) !!}</h4>
+                                                    <h4 class="font-bold text-[10px] md:text-xs leading-tight tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', e($item['judul_buku'])) !!}</h4>
                                                 @endif
                                             </div>
                                             <div class="flex flex-col justify-between py-1 overflow-hidden w-full">
@@ -100,7 +100,7 @@
                                                     <div class="h-6 w-px bg-outline-variant/40 shrink-0"></div>
                                                     <div class="flex items-center gap-1 bg-white border border-outline-variant/50 rounded-lg p-1 shadow-sm {{ $item['stok_dibutuhkan'] <= 0 ? 'opacity-50 pointer-events-none' : '' }}">
                                                         <button type="button" onclick="updateQty(this, -1)" class="w-7 h-7 rounded-md bg-surface-bright text-on-surface flex items-center justify-center hover:bg-outline-variant/20 transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">remove</span></button>
-                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" data-price="{{ $item['harga_estimasi'] }}" class="qty-input font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" onchange="clearTimeout(updateTimeout); updateTimeout = setTimeout(() => submitUpdate(this.form), 400); recalculateLocalCart();" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
+                                                        <input type="number" name="qty" value="{{ $item['qty'] }}" data-price="{{ $item['harga_estimasi'] }}" class="qty-input font-bold text-sm w-12 text-center text-on-surface border-none focus:ring-0 p-0 bg-transparent" min="1" max="{{ $item['stok_dibutuhkan'] ?? 999 }}" readonly onchange="clearTimeout(updateTimeout); updateTimeout = setTimeout(() => submitUpdate(this.form), 400); recalculateLocalCart();" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}>
                                                         <button type="button" onclick="updateQty(this, 1)" class="w-7 h-7 rounded-md bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors" {{ $item['stok_dibutuhkan'] <= 0 ? 'disabled' : '' }}><span class="material-symbols-outlined text-[18px]">add</span></button>
                                                     </div>
                                                 </div>
@@ -153,11 +153,11 @@
                     </div>
                     
                     @if($count > 0)
-                    <a href="{{ route('checkout') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-container transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                    <a href="{{ route('checkout') }}" id="checkout-btn" onclick="checkoutCart(event)" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-container transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                         <span class="material-symbols-outlined">payments</span> Donasikan Sekarang
                     </a>
                     @else
-                    <button disabled class="flex items-center justify-center gap-2 w-full bg-outline-variant/30 text-on-surface-variant font-bold py-4 rounded-xl cursor-not-allowed">
+                    <button disabled id="checkout-btn" class="flex items-center justify-center gap-2 w-full bg-outline-variant/30 text-on-surface-variant font-bold py-4 rounded-xl cursor-not-allowed">
                         <span class="material-symbols-outlined">payments</span> Tidak Ada Buku
                     </button>
                     @endif
@@ -177,8 +177,16 @@ function formatRupiah(num) {
 }
 
 let updateTimeout;
+window.isUpdatingCartLocally = false;
+
+function setLocalUpdateFlag() {
+    window.isUpdatingCartLocally = true;
+    clearTimeout(window.localUpdateTimer);
+    window.localUpdateTimer = setTimeout(() => window.isUpdatingCartLocally = false, 2000);
+}
 
 function updateQty(btn, delta) {
+    setLocalUpdateFlag();
     const form = btn.closest('form');
     const input = form.querySelector('input[name="qty"]');
     let val = parseInt(input.value) + delta;
@@ -202,32 +210,73 @@ function updateQty(btn, delta) {
     }, 400);
 }
 
+function checkoutCart(event) {
+    event.preventDefault();
+    const checkedBoxes = document.querySelectorAll('input.item-checkbox:checked');
+    if (checkedBoxes.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Pilih Buku',
+            text: 'Silakan pilih minimal satu buku untuk didonasikan.',
+            confirmButtonColor: '#003215'
+        });
+        return;
+    }
+    const ids = Array.from(checkedBoxes).map(cb => cb.getAttribute('data-id')).join(',');
+    window.location.href = `{{ route('checkout') }}?selected=` + ids;
+}
+
 function recalculateLocalCart() {
-    let totalCount = 0;
+    let totalCheckedCount = 0;
+    let totalCartCount = 0;
     let totalPrice = 0;
     const inputs = document.querySelectorAll('input.qty-input');
     inputs.forEach(input => {
         if(!input.disabled) {
             let qty = parseInt(input.value) || 0;
             let price = parseInt(input.getAttribute('data-price')) || 0;
-            totalCount += qty;
-            totalPrice += (qty * price);
+            totalCartCount += qty;
+
+            const itemDiv = input.closest('[id^="cart-item-"]');
+            const checkbox = itemDiv ? itemDiv.querySelector('input.item-checkbox') : null;
+            if (!checkbox || checkbox.checked) {
+                totalCheckedCount += qty;
+                totalPrice += (qty * price);
+            }
         }
     });
 
     if(document.getElementById('summary-count')) {
-        document.getElementById('summary-count').innerText = `Total Harga (${totalCount} Buku)`;
+        document.getElementById('summary-count').innerText = `Total Harga (${totalCheckedCount} Buku)`;
         document.getElementById('summary-subtotal').innerText = formatRupiah(totalPrice);
         document.getElementById('summary-total').innerText = formatRupiah(totalPrice);
     }
     
-    const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
-    badges.forEach(badge => {
-        badge.innerText = totalCount;
+    ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+        const badge = document.getElementById(id);
+        if (badge) {
+            badge.innerText = totalCartCount;
+            badge.style.display = totalCartCount > 0 ? 'flex' : 'none';
+        }
     });
+    
+    // Disable/enable checkout button based on totalCheckedCount
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        if (totalCheckedCount > 0) {
+            checkoutBtn.classList.remove('bg-outline-variant/30', 'text-on-surface-variant', 'cursor-not-allowed');
+            checkoutBtn.classList.add('bg-primary', 'text-white', 'hover:bg-primary-container', 'shadow-md', 'hover:shadow-lg', 'transform', 'hover:-translate-y-0.5');
+            checkoutBtn.style.pointerEvents = 'auto';
+        } else {
+            checkoutBtn.classList.add('bg-outline-variant/30', 'text-on-surface-variant', 'cursor-not-allowed');
+            checkoutBtn.classList.remove('bg-primary', 'text-white', 'hover:bg-primary-container', 'shadow-md', 'hover:shadow-lg', 'transform', 'hover:-translate-y-0.5');
+            checkoutBtn.style.pointerEvents = 'none';
+        }
+    }
 }
 
 function removeItem(id) {
+    setLocalUpdateFlag();
     const itemDiv = document.getElementById('cart-item-' + id);
     if(itemDiv) {
         // Optimistic UI: hide and disable immediately
@@ -253,27 +302,116 @@ function removeItem(id) {
     const form = document.getElementById('remove-form-' + id);
     if(form) {
         let formData = new FormData(form);
-        fetch(form.action, {
+        fetch(form.getAttribute('action'), {
             method: 'POST',
             body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        }).catch(err => console.error(err));
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+                    const badge = document.getElementById(id);
+                    if (badge) {
+                        badge.innerText = data.cart_count;
+                        badge.style.display = data.cart_count > 0 ? 'flex' : 'none';
+                    }
+                });
+                recalculateLocalCart();
+            }
+        })
+        .catch(err => console.error(err));
     }
 }
 
 function submitUpdate(form) {
+    setLocalUpdateFlag();
     let formData = new FormData(form);
-    fetch(form.action, {
+    fetch(form.getAttribute('action'), {
         method: 'POST',
         body: formData,
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+                const badge = document.getElementById(id);
+                if (badge) {
+                    badge.innerText = data.cart_count;
+                    badge.style.display = data.cart_count > 0 ? 'flex' : 'none';
+                }
+            });
+            recalculateLocalCart();
+            
+            // If item subtotal is needed, we update it too
+            if (data.item_subtotal !== undefined) {
+                const idInput = form.querySelector('input[name="id"]');
+                if (idInput) {
+                    const id = idInput.value;
+                    const itemDiv = document.getElementById('cart-item-' + id);
+                    if (itemDiv) {
+                        const priceElem = itemDiv.querySelector('p.font-bold.text-primary.text-lg.md\\:text-2xl');
+                        // Note: The UI previously showed base price. If we want it to show subtotal, we can update it.
+                        // But UI design seems to show unit price.
+                    }
+                }
+            }
         }
     })
     .catch(err => {
-        console.error(err);
-        form.submit(); // fallback
+        console.error('Fetch error:', err);
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const setupCartPageEcho = () => {
+        if(window.Echo) {
+            window.Echo.private('user.{{ auth()->id() }}')
+                .listen('CartUpdated', (e) => {
+                    // Jika update berasal dari tab ini sendiri, abaikan agar tidak refresh DOM (mencegah scroll jump)
+                    if (window.isUpdatingCartLocally) return;
+
+                    // Cek apakah user sedang mengetik di input pesan, jika ya jangan refresh UI
+                    const active = document.activeElement;
+                    if (active && active.tagName === 'INPUT' && active.name === 'pesan_dukungan') {
+                        return;
+                    }
+                    
+                    fetch(window.location.href)
+                        .then(res => res.text())
+                        .then(html => {
+                            const doc = new DOMParser().parseFromString(html, 'text/html');
+                            const newContainer = doc.getElementById('cart-main-container');
+                            const currentContainer = document.getElementById('cart-main-container');
+                            
+                            if (newContainer && currentContainer) {
+                                currentContainer.innerHTML = newContainer.innerHTML;
+                            }
+
+                            // Update badges
+                            ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+                                const badge = document.getElementById(id);
+                                if (badge) {
+                                    badge.innerText = e.cartCount;
+                                    badge.style.display = e.cartCount > 0 ? 'flex' : 'none';
+                                }
+                            });
+                        });
+                });
+        } else {
+            setTimeout(setupCartPageEcho, 200);
+        }
+    };
+    setupCartPageEcho();
+});
 </script>
 @endsection

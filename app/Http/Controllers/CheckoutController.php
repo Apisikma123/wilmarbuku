@@ -23,6 +23,14 @@ class CheckoutController extends Controller
         $type = $request->query('type');
         $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : (Auth::user()->cart_data ?? []);
 
+        $selected = $request->query('selected');
+        if ($selected) {
+            $selectedIds = explode(',', $selected);
+            $cart = array_filter($cart, function($key) use ($selectedIds) {
+                return in_array($key, $selectedIds);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
         // Filter out items that have no stock
         $filteredCart = [];
         foreach ($cart as $id => $details) {
@@ -57,6 +65,14 @@ class CheckoutController extends Controller
     {
         $type = $request->input('type');
         $cart = $type === 'buy_now' ? session()->get('buy_now_cart', []) : (Auth::user()->cart_data ?? []);
+
+        $selected = $request->input('selected');
+        if ($selected) {
+            $selectedIds = explode(',', $selected);
+            $cart = array_filter($cart, function($key) use ($selectedIds) {
+                return in_array($key, $selectedIds);
+            }, ARRAY_FILTER_USE_KEY);
+        }
 
         if (empty($cart)) {
             return redirect()->route('cart');

@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "start": "concurrently -c \"cyan,magenta,green,yellow,blue\" \"php artisan serve\" \"php artisan queue:work\" \"php artisan schedule:work\" \"php artisan reverb:start\" \"npm run dev\""
+        "start": "concurrently -c \"cyan,magenta,green,yellow,blue\" \"php artisan serve\" \"php artisan queue:work\" \"php artisan schedule:work\" \"php artisan reverb:start\""
     },
     "devDependencies": {
         "@tailwindcss/container-queries": "^0.1.1",

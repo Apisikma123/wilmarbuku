@@ -19,7 +19,7 @@
 
                     <div class="relative z-20 text-center space-y-1.5 mt-2 md:mt-4">
                         @if((!str_starts_with($item->cover_image ?? '', '/storage/') && !str_starts_with($item->cover_image ?? '', 'http')))
-                            <h3 class="text-xl md:text-2xl font-bold font-display uppercase tracking-tight leading-tight">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+                            <h3 class="text-xl md:text-2xl font-bold font-display uppercase tracking-tight leading-tight">{!! str_replace(' ', '<br/>', e($item->judul_buku)) !!}</h3>
                         @endif
                     </div>
                     <div class="relative z-20 mt-auto text-center">
@@ -54,7 +54,7 @@
                 <div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-surface rounded-xl md:rounded-[20px] shadow-[0px_4px_10px_rgba(15,23,42,0.03)] flex items-center justify-center border border-outline-variant/30 group-hover:border-primary transition-colors group-hover:shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
                     <span class="material-symbols-outlined text-2xl md:text-3xl text-primary">{{ $bookIcons[$index % count($bookIcons)] }}</span>
                 </div>
-                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight line-clamp-2">{!! str_replace(' ', '<br>', $kategori->nama_kategori) !!}</span>
+                <span class="text-[9px] md:text-xs font-semibold text-on-surface-variant text-center leading-tight line-clamp-2">{!! str_replace(' ', '<br>', e($kategori->nama_kategori)) !!}</span>
             </a>
             @endforeach
             
@@ -87,7 +87,7 @@
                             <img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                             @if((!str_starts_with($item->cover_image ?? '', '/storage/') && !str_starts_with($item->cover_image ?? '', 'http')))
-                                <h4 class="text-[9px] font-bold uppercase leading-tight z-20 pointer-events-none">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                                <h4 class="text-[9px] font-bold uppercase leading-tight z-20 pointer-events-none">{!! str_replace(' ', '<br>', e($item->judul_buku)) !!}</h4>
                             @endif
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                                 <span class="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-4 group-hover:translate-y-0 transition-transform">Lihat Detail</span>
@@ -160,7 +160,7 @@
                             <img src="{{ (str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')) ? $item->cover_image : asset('images/default-cover.png') }}" alt="{{ $item->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                             @if((!str_starts_with($item->cover_image ?? '', '/storage/') && !str_starts_with($item->cover_image ?? '', 'http')))
-                                <h4 class="text-[9px] font-bold uppercase leading-tight z-20 pointer-events-none">{!! str_replace(' ', '<br>', $item->judul_buku) !!}</h4>
+                                <h4 class="text-[9px] font-bold uppercase leading-tight z-20 pointer-events-none">{!! str_replace(' ', '<br>', e($item->judul_buku)) !!}</h4>
                             @endif
                         </div>
                         <div class="flex-grow flex flex-col">
@@ -198,7 +198,7 @@
                         <img src="{{ (str_starts_with($trx->buku->cover_image ?? '', '/storage/') || str_starts_with($trx->buku->cover_image ?? '', 'http')) ? $trx->buku->cover_image : asset('images/default-cover.png') }}" alt="{{ $trx->buku->judul_buku }}" class="absolute inset-0 w-full h-full object-cover z-0">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                         @if((!str_starts_with($trx->buku->cover_image ?? '', '/storage/') && !str_starts_with($trx->buku->cover_image ?? '', 'http')))
-                            <span class="text-[6px] font-bold uppercase leading-tight z-20 pointer-events-none">{!! str_replace(' ', '<br>', $trx->buku->judul_buku) !!}</span>
+                            <span class="text-[6px] font-bold uppercase leading-tight z-20 pointer-events-none">{!! str_replace(' ', '<br>', e($trx->buku->judul_buku)) !!}</span>
                         @endif
                     </div>
                     <div>

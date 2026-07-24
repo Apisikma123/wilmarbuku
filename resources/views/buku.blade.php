@@ -21,7 +21,7 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 z-10 pointer-events-none"></div>
                     @if((!str_starts_with($buku->cover_image ?? '', '/storage/') && !str_starts_with($buku->cover_image ?? '', 'http')))
                         <div class="relative z-20 pointer-events-none">
-                            <h4 class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight">{!! str_replace(' ', '<br/>', $buku->judul_buku) !!}</h4>
+                            <h4 class="text-xl md:text-2xl font-bold uppercase leading-tight mb-2 tracking-tight">{!! str_replace(' ', '<br/>', e($buku->judul_buku)) !!}</h4>
                             <p class="text-xs text-white border-t border-white/30 pt-2 mt-2 font-medium">Edisi Terbaru</p>
                         </div>
                     @endif
@@ -135,18 +135,19 @@
                                 <span class="material-symbols-outlined text-[20px]">check_circle</span>
                                 Target Buku Terpenuhi
                             </button>
-                            @elseif(Auth::check() && isset(Auth::user()->cart_data[$buku->id]) && Auth::user()->cart_data[$buku->id]['qty'] >= $buku->stok_dibutuhkan)
+                            @elseif((Auth::check() && isset(Auth::user()->cart_data[$buku->id]) && Auth::user()->cart_data[$buku->id]['qty'] >= $buku->stok_dibutuhkan) || (!Auth::check() && isset(session()->get('cart_data')[$buku->id]) && session()->get('cart_data')[$buku->id]['qty'] >= $buku->stok_dibutuhkan))
                             <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
                                 <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
                                 Maksimal di Keranjang
                             </button>
+
                             @elseif(auth()->check() && auth()->user()->role === 'admin')
                             <button type="button" disabled class="w-full sm:w-auto flex-grow bg-surface-variant text-on-surface-variant font-semibold text-sm md:text-base h-[52px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
                                 <span class="material-symbols-outlined text-[20px]">block</span>
                                 Admin Tidak Dapat Membeli
                             </button>
                             @else
-                            <form id="add-to-cart-form" action="{{ route('cart.add', $buku->id) }}" method="POST" class="w-full sm:w-auto flex-grow flex gap-3">
+                            <form id="add-to-cart-form" action="/cart/add/{{ $buku->id }}" method="POST" class="w-full sm:w-auto flex-grow flex gap-3">
                                 @csrf
                                 <input type="hidden" name="qty" id="form-qty" value="1">
                                 <input type="hidden" name="action" id="form-action" value="cart">
@@ -197,7 +198,7 @@
                             @if((str_starts_with($item->cover_image ?? '', '/storage/') || str_starts_with($item->cover_image ?? '', 'http')))
                                 <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{{ $item->judul_buku }}</h3>
                             @else
-                                <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', $item->judul_buku) !!}</h3>
+                                <h3 class="font-bold text-xs leading-snug tracking-tight relative z-20 pointer-events-none">{!! str_replace(' ', '<br/>', e($item->judul_buku)) !!}</h3>
                             @endif
                             @if($item->stok_dibutuhkan <= 0)
                                 <div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-30 flex items-center justify-center pointer-events-none">
@@ -253,10 +254,11 @@
     <button type="button" disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
         <span class="material-symbols-outlined text-[18px]">check_circle</span> Terpenuhi
     </button>
-    @elseif(Auth::check() && isset(Auth::user()->cart_data[$buku->id]) && Auth::user()->cart_data[$buku->id]['qty'] >= $buku->stok_dibutuhkan)
+    @elseif((Auth::check() && isset(Auth::user()->cart_data[$buku->id]) && Auth::user()->cart_data[$buku->id]['qty'] >= $buku->stok_dibutuhkan) || (!Auth::check() && isset(session()->get('cart_data')[$buku->id]) && session()->get('cart_data')[$buku->id]['qty'] >= $buku->stok_dibutuhkan))
     <button type="button" disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
         <span class="material-symbols-outlined text-[18px]">shopping_cart</span> Maksimal
     </button>
+
     @elseif(auth()->check() && auth()->user()->role === 'admin')
     <button type="button" disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold text-sm h-[48px] rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
         <span class="material-symbols-outlined text-[18px]">block</span> Admin
@@ -387,36 +389,51 @@
             
             // OPTIMISTIC UI UPDATE
             let originalBadgeCounts = [];
-            const badges = document.querySelectorAll('.bg-secondary.text-white.text-\\[9px\\]');
+            const badges = [];
+            ['cart-badge-desktop', 'cart-badge-mobile'].forEach(id => {
+                const b = document.getElementById(id);
+                if(b) badges.push(b);
+            });
+            
             badges.forEach((badge, i) => {
                 originalBadgeCounts[i] = parseInt(badge.innerText) || 0;
                 badge.innerText = originalBadgeCounts[i] + addedQty;
+                badge.style.display = 'flex';
                 badge.classList.remove('animate-bounce');
                 void badge.offsetWidth; // trigger reflow
                 badge.classList.add('animate-bounce');
                 setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
             });
 
-            fetch(form.action, {
+            fetch(form.getAttribute('action'), {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
-            .then(res => res.json())
-            .then(data => {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalContent;
-                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            .then(async (res) => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return res.json();
+                } else {
+                    const text = await res.text();
+                    throw new Error(`Server merespon dengan format yang tidak dikenali (HTTP ${res.status}). Kemungkinan sesi berakhir, silakan muat ulang (refresh) halaman ini.`);
                 }
-
+            })
+            .then(data => {
                 if(data.success) {
                     // Update to server's true count
                     if(badges.length > 0) {
                         badges.forEach(badge => {
                             badge.innerText = data.cart_count;
+                            if (data.cart_count > 0) {
+                                badge.style.display = 'flex';
+                            } else {
+                                badge.style.display = 'none';
+                            }
                         });
                     }
 
@@ -429,10 +446,27 @@
                         timer: 1500,
                         timerProgressBar: true,
                     });
+                    
+                    setTimeout(() => {
+                        if (btn) {
+                            if (data.item_qty >= data.stok_dibutuhkan) {
+                                btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">check_circle</span>';
+                                btn.classList.remove('bg-white', 'text-primary', 'border-primary');
+                                btn.classList.add('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed', 'border-transparent');
+                            } else {
+                                btn.disabled = false;
+                                btn.innerHTML = originalContent;
+                                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                            }
+                        }
+                    }, 1200);
                 } else {
                     // Revert Optimistic UI on failure
                     badges.forEach((badge, i) => {
                         badge.innerText = originalBadgeCounts[i] > 0 ? originalBadgeCounts[i] : '';
+                        if (originalBadgeCounts[i] <= 0) {
+                            badge.style.display = 'none';
+                        }
                     });
 
                     Swal.fire({
@@ -444,15 +478,41 @@
                         timer: 3000,
                         timerProgressBar: true,
                     });
+                    
+                    setTimeout(() => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = originalContent;
+                            btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                        }
+                    }, 800);
                 }
             }).catch(err => {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalContent;
-                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                }
-                console.error(err);
-                document.getElementById('add-to-cart-form').submit();
+                setTimeout(() => {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalContent;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    }
+                }, 800);
+                // Revert Optimistic UI on network failure
+                badges.forEach((badge, i) => {
+                    badge.innerText = originalBadgeCounts[i] > 0 ? originalBadgeCounts[i] : '';
+                    if (originalBadgeCounts[i] <= 0) {
+                        badge.style.display = 'none';
+                    }
+                });
+                
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: err.message || 'Gagal menghubungi server. Pastikan internet stabil dan muat ulang halaman.',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                });
+                console.error('Fetch error:', err);
             });
         }
     }
