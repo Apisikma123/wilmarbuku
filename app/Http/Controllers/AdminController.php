@@ -518,10 +518,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:50',
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15|unique:users,identitas_kampus',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,user_internal,user_external',
+        ], [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         $identitas_kampus = $request->role === 'user_internal' ? $request->identitas_kampus : null;
@@ -548,7 +550,9 @@ class AdminController extends Controller
         
         $request->validate([
             'role' => 'required|in:admin,user_internal,user_external',
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15|unique:users,identitas_kampus,' . $id,
+        ], [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         if (in_array($request->role, ['user_external', 'admin']) && !empty($user->identitas_kampus)) {
@@ -625,7 +629,9 @@ class AdminController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:50',
             'email' => 'required|email|unique:users,email,' . $id,
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15|unique:users,identitas_kampus,' . $id,
+        ], [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         $identitas_kampus = $user->role == 'user_internal' ? $request->identitas_kampus : null;

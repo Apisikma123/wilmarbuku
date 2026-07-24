@@ -165,8 +165,17 @@ class OnboardingController extends Controller
      */
     public function storeNim(Request $request)
     {
-        $request->validate([
-            'identitas_kampus' => ['required', 'string', 'min:15', 'max:15'],
+        $rules = [
+            'identitas_kampus' => ['required', 'string', 'min:15', 'max:15', 'unique:users,identitas_kampus'],
+        ];
+        
+        $currentUser = \Illuminate\Support\Facades\Auth::user();
+        if ($currentUser) {
+            $rules['identitas_kampus'] = ['required', 'string', 'min:15', 'max:15', 'unique:users,identitas_kampus,' . $currentUser->id];
+        }
+
+        $request->validate($rules, [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         $googleData = session('google_user_data');
