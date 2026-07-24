@@ -93,9 +93,15 @@
                     @if($trx->status_pembayaran != 'Paid' && $filter == 'menunggu_konfirmasi' && !$trx->bukti_pembayaran)
                     <form action="{{ route('payment') }}" method="GET" class="inline">
                         <input type="hidden" name="token" value="{{ encrypt($trx->id) }}">
+                        @if(Auth::check() && Auth::user()->role === 'admin')
+                        <button type="button" disabled class="px-4 py-2 text-sm font-bold text-on-surface-variant bg-surface-variant rounded-lg cursor-not-allowed flex items-center gap-2 shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">block</span> Mode Lihat (Admin)
+                        </button>
+                        @else
                         <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary-container rounded-lg transition-colors flex items-center gap-2 shadow-sm">
                             <span class="material-symbols-outlined text-[18px]">payments</span> Bayar / Unggah Bukti
                         </button>
+                        @endif
                     </form>
                     @endif
                 </div>
