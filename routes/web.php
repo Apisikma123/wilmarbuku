@@ -51,21 +51,24 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
-Route::post('/test-json', function (\Illuminate\Http\Request $request) {
-    return response()->json([
-        'ajax' => $request->ajax(),
-        'expectsJson' => $request->expectsJson(),
-        'wantsJson' => $request->wantsJson(),
-        'headers' => $request->headers->all()
-    ]);
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'showProfile'])->name('onboarding.profile');
+    Route::post('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'storeProfile'])->name('onboarding.profile.store');
+    Route::get('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'showStudentCheck'])->name('onboarding.student-check');
+    Route::post('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'storeStudentCheck'])->name('onboarding.student-check.store');
+    Route::get('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'showNim'])->name('onboarding.nim');
+    Route::post('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'storeNim'])->name('onboarding.nim.store');
 });
 
-Route::get('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'showProfile'])->name('onboarding.profile');
-Route::post('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'storeProfile'])->name('onboarding.profile.store');
-Route::get('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'showStudentCheck'])->name('onboarding.student-check');
-Route::post('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'storeStudentCheck'])->name('onboarding.student-check.store');
-Route::get('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'showNim'])->name('onboarding.nim');
-Route::post('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'storeNim'])->name('onboarding.nim.store');
+Route::middleware(['auth', \App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
+    Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
+    Route::get('/cart/count', [App\Http\Controllers\CartController::class, 'getCount'])->name('cart.count');
+    Route::post('/cart/add/{id}', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+});
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -74,11 +77,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\KatalogController::class, 'dashboard'])->name('dashboard');
 
     Route::middleware([\App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
-        Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
-        Route::post('/cart/add/{id}', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
-        Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
-        Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
-
         Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
         Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 

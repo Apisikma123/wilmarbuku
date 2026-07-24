@@ -51,7 +51,7 @@
                             @endif
                         </div>
                         <p class="text-sm {{ $p->is_read ? 'text-on-surface-variant/80' : 'text-on-surface-variant' }} leading-relaxed">
-                            {!! $p->isi_pesan !!}
+                            {!! strip_tags($p->isi_pesan, '<br><b><i><strong><em><p><span>') !!}
                         </p>
                     </div>
                 </div>
