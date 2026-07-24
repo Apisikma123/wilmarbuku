@@ -427,7 +427,12 @@ function cancelInternalConfirm() {
 function proceedInternalConfirm() {
     const nimInput = document.getElementById('internal_nim_input').value;
     if (nimInput.length !== 15) {
-        alert('NIM / NIDN harus berjumlah 15 karakter.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Validasi Gagal',
+            text: 'NIM / NIDN harus berjumlah 15 karakter.',
+            confirmButtonColor: '#003215'
+        });
         return;
     }
     

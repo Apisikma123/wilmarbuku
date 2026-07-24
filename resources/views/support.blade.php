@@ -22,9 +22,18 @@
         </div>
 
         <div class="space-y-4">
-            
-            
-            
+            <!-- Notice Alert -->
+            <div class="flex items-start gap-4 bg-emerald-50 border border-emerald-100 rounded-xl p-5 mb-2">
+                <div class="w-10 h-10 bg-emerald-200/50 rounded-full flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-emerald-700 text-xl">support_agent</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-emerald-900 mb-1">Bantuan & Laporan</h3>
+                    <p class="text-sm font-medium text-emerald-700/90 leading-relaxed">
+                        Jika ada kendala apapun silahkan melapor ke admin.
+                    </p>
+                </div>
+            </div>
             <!-- Telepon -->
             <div class="flex items-center gap-4 bg-surface-bright rounded-xl p-5 border border-outline-variant/30">
                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-outline-variant/30 shrink-0">

@@ -300,6 +300,8 @@ class AdminController extends Controller
                 $query->where('status_tracking', 'Selesai');
             } elseif ($status == 'Cancelled') {
                 $query->where('status_tracking', 'Dibatalkan');
+            } elseif ($status == 'Offline') {
+                $query->where('status_tracking', 'Donasi Offline');
             }
         }
         
@@ -313,10 +315,11 @@ class AdminController extends Controller
         $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->count();
         $completed = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
         $cancelled = TransaksiCheckout::where('status_tracking', 'Dibatalkan')->count();
+        $offline = TransaksiCheckout::where('status_tracking', 'Donasi Offline')->count();
 
         $metodes = MetodePembayaran::all();
 
-        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'danaDiterima', 'inProcess', 'completed', 'cancelled', 'metodes'));
+        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'danaDiterima', 'inProcess', 'completed', 'cancelled', 'offline', 'metodes'));
     }
 
     public function confirmTransaction(Request $request, $kode_tracking)
@@ -518,10 +521,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:50',
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15|unique:users,identitas_kampus',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,user_internal,user_external',
+        ], [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         $identitas_kampus = $request->role === 'user_internal' ? $request->identitas_kampus : null;
@@ -548,7 +553,9 @@ class AdminController extends Controller
         
         $request->validate([
             'role' => 'required|in:admin,user_internal,user_external',
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15|unique:users,identitas_kampus,' . $id,
+        ], [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         if (in_array($request->role, ['user_external', 'admin']) && !empty($user->identitas_kampus)) {
@@ -625,7 +632,9 @@ class AdminController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:50',
             'email' => 'required|email|unique:users,email,' . $id,
-            'identitas_kampus' => 'nullable|string|min:15|max:15',
+            'identitas_kampus' => 'nullable|string|min:15|max:15|unique:users,identitas_kampus,' . $id,
+        ], [
+            'identitas_kampus.unique' => 'NIM sudah terdaftar.',
         ]);
 
         $identitas_kampus = $user->role == 'user_internal' ? $request->identitas_kampus : null;

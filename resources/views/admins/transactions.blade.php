@@ -117,7 +117,7 @@
         </div>
 
         <!-- Metrics Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
             <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'Unpaid' ? null : 'Unpaid'])) }}"
                 class="bg-white rounded-xl border {{ request('status') == 'Unpaid' ? 'border-amber-500 ring-2 ring-amber-100' : 'border-slate-200 hover:border-amber-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
                 <div class="flex items-center gap-2 mb-2">
@@ -173,6 +173,17 @@
                 </div>
                 <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Dibatalkan</p>
                 <h3 class="text-xl font-bold text-slate-900">{{ number_format($cancelled) }}</h3>
+            </a>
+
+            <a href="{{ route('admin.transactions', array_merge(request()->except('page'), ['status' => request('status') == 'Offline' ? null : 'Offline'])) }}"
+                class="bg-white rounded-xl border {{ request('status') == 'Offline' ? 'border-purple-500 ring-2 ring-purple-100' : 'border-slate-200 hover:border-purple-300' }} p-4 shadow-sm flex flex-col justify-center transition-all cursor-pointer">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-7 h-7 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
+                        <i data-lucide="store" class="w-3.5 h-3.5"></i>
+                    </div>
+                </div>
+                <p class="text-[10px] font-bold text-slate-500 mb-1 leading-tight uppercase tracking-wider">Donasi Offline</p>
+                <h3 class="text-xl font-bold text-slate-900">{{ number_format($offline ?? 0) }}</h3>
             </a>
         </div>
 
