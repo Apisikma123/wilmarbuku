@@ -52,16 +52,13 @@ Route::middleware('guest')->group(function () {
 });
 
 
-
-Route::middleware('auth')->group(function () {
-    Route::get('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'showProfile'])->name('onboarding.profile');
-    Route::post('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'storeProfile'])->name('onboarding.profile.store');
-    Route::get('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'showStudentCheck'])->name('onboarding.student-check');
-    Route::post('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'storeStudentCheck'])->name('onboarding.student-check.store');
-    Route::get('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'showNim'])->name('onboarding.nim');
-    Route::post('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'storeNim'])->name('onboarding.nim.store');
-});
-
+// Onboarding Routes (Accessible to guests during registration and authenticated users during onboarding)
+Route::get('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'showProfile'])->name('onboarding.profile');
+Route::post('/onboarding/profile', [\App\Http\Controllers\OnboardingController::class, 'storeProfile'])->name('onboarding.profile.store');
+Route::get('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'showStudentCheck'])->name('onboarding.student-check');
+Route::post('/onboarding/student-check', [\App\Http\Controllers\OnboardingController::class, 'storeStudentCheck'])->name('onboarding.student-check.store');
+Route::get('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'showNim'])->name('onboarding.nim');
+Route::post('/onboarding/nim', [\App\Http\Controllers\OnboardingController::class, 'storeNim'])->name('onboarding.nim.store');
 Route::middleware(['auth', \App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
     Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::get('/cart/count', [App\Http\Controllers\CartController::class, 'getCount'])->name('cart.count');
