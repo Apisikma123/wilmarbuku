@@ -110,7 +110,7 @@
             <div class="bg-white rounded-2xl p-10 text-center shadow-sm border border-outline-variant/40">
                 <span class="material-symbols-outlined text-5xl text-outline-variant mb-4">receipt_long</span>
                 <p class="text-on-surface-variant font-medium">Anda belum memiliki riwayat transaksi donasi.</p>
-                <a href="/" class="inline-block mt-4 text-primary font-bold hover:underline">Mulai Donasi Sekarang</a>
+                <a href="/kategori" class="inline-block mt-4 text-primary font-bold hover:underline">Mulai Donasi Sekarang</a>
             </div>
             @endforelse
         </div>
