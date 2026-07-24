@@ -118,6 +118,15 @@
                                                 created_at: new Date().toISOString()
                                             });
                                         });
+                                        
+                                    window.Echo.private('admin')
+                                        .listen('AdminNotificationSync', (e) => {
+                                            if (e.dataString === 'ALL') {
+                                                this.notifications = [];
+                                            } else {
+                                                this.notifications = this.notifications.filter(n => JSON.stringify(n.data) !== e.dataString);
+                                            }
+                                        });
                                 } else {
                                     setTimeout(setupEcho, 200);
                                 }

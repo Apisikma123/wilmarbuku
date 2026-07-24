@@ -910,9 +910,20 @@ class AdminController extends Controller
     public function markNotificationAsRead($id = null)
     {
         if ($id) {
-            auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+            $notification = auth()->user()->notifications()->where('id', $id)->first();
+            if ($notification) {
+                // Find all identical notifications for other admins
+                $dataString = $notification->data;
+                \Illuminate\Support\Facades\DB::table('notifications')
+                    ->where('data', json_encode($dataString))
+                    ->whereNull('read_at')
+                    ->update(['read_at' => now()]);
+                
+                broadcast(new \App\Events\AdminNotificationSync(json_encode($dataString)));
+            }
         } else {
             auth()->user()->unreadNotifications->markAsRead();
+            broadcast(new \App\Events\AdminNotificationSync('ALL'));
         }
 
         return response()->json(['success' => true]);

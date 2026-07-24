@@ -22,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Login::class,
+            \App\Listeners\InvalidateOtherSessions::class,
+        );
+
         if (str_contains(request()->header('X-Forwarded-Proto') ?? '', 'https') || request()->secure()) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
