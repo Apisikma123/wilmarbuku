@@ -300,6 +300,8 @@ class AdminController extends Controller
                 $query->where('status_tracking', 'Selesai');
             } elseif ($status == 'Cancelled') {
                 $query->where('status_tracking', 'Dibatalkan');
+            } elseif ($status == 'Offline') {
+                $query->where('status_tracking', 'Donasi Offline');
             }
         }
         
@@ -313,10 +315,11 @@ class AdminController extends Controller
         $inProcess = TransaksiCheckout::where('status_tracking', 'Dalam Pengiriman')->count();
         $completed = TransaksiCheckout::where('status_tracking', 'Selesai')->count();
         $cancelled = TransaksiCheckout::where('status_tracking', 'Dibatalkan')->count();
+        $offline = TransaksiCheckout::where('status_tracking', 'Donasi Offline')->count();
 
         $metodes = MetodePembayaran::all();
 
-        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'danaDiterima', 'inProcess', 'completed', 'cancelled', 'metodes'));
+        return view('admins.transactions', compact('transactions', 'totalDonations', 'pendingPayments', 'danaDiterima', 'inProcess', 'completed', 'cancelled', 'offline', 'metodes'));
     }
 
     public function confirmTransaction(Request $request, $kode_tracking)
