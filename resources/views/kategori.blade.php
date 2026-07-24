@@ -19,6 +19,9 @@
     <!-- Filters & Results -->
     <form id="filterForm" action="{{ route('kategori') }}" method="GET" class="flex flex-col md:flex-row gap-0 md:gap-10">
         <input type="hidden" name="sort" id="hidden-sort" value="{{ request('sort', 'Terbaru') }}">
+        @if(request()->has('filter'))
+            <input type="hidden" name="filter" value="{{ request('filter') }}">
+        @endif
         
         <!-- Mobile Header (Sticky search bar) -->
         <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 shadow-sm w-full">
