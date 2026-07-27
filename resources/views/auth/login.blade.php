@@ -34,21 +34,22 @@
 
     @if(session('kicked_out_warning'))
         <!-- Modal Peringatan Sesi Berakhir (Sesuai DESIGN.md) -->
-        <div id="session-warning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300">
-            <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-gray-100 text-center relative transform transition-all scale-100 animate-[fadeIn_0.3s_ease-in-out]">
-                <div class="w-16 h-16 bg-[#fff8eb] text-[#b8860b] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#fdeab5] shadow-sm">
+        <div id="session-warning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300" style="background-color: rgba(15, 23, 42, 0.6);">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-gray-100 text-center relative transform transition-all scale-100" style="background-color: #ffffff; border-radius: 1rem;">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border shadow-sm" style="background-color: #fff8eb; color: #b8860b; border-color: #fdeab5; width: 4rem; height: 4rem;">
                     <span class="material-symbols-outlined text-[36px]">phonelink_erase</span>
                 </div>
-                <h3 class="text-xl font-bold text-[#003215] mb-2 font-['Poppins']">Sesi Anda Telah Berakhir</h3>
-                <p class="text-sm text-[#454f5e] mb-6 leading-relaxed font-['Poppins']">
+                <h3 class="text-xl font-bold mb-2 font-['Poppins'] text-primary" style="color: #003215;">Sesi Anda Telah Berakhir</h3>
+                <p class="text-sm mb-6 leading-relaxed font-['Poppins']" style="color: #454f5e;">
                     Akun Anda baru saja masuk dari perangkat atau peramban (browser) lain. Untuk menjaga keamanan Anda, sesi pada layar ini telah dinonaktifkan.
                     <br><br>
-                    <span class="text-xs text-gray-500 italic block border-t border-gray-100 pt-3">Jika ini bukan Anda, segera masuk kembali dan ubah kata sandi akun Anda.</span>
+                    <span class="text-xs text-gray-500 italic block border-t border-gray-100 pt-3" style="color: #64748b;">Jika ini bukan Anda, segera masuk kembali dan ubah kata sandi akun Anda.</span>
                 </p>
                 <button type="button" onclick="document.getElementById('session-warning-modal').remove()" 
-                        class="w-full bg-[#004b23] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#003215] transition-colors shadow-sm font-['Poppins'] flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-lg">check_circle</span>
-                    Mengerti & Masuk Kembali
+                        class="w-full bg-primary text-white font-semibold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors shadow-sm font-['Poppins'] flex items-center justify-center gap-2 mt-4"
+                        style="background-color: #004b23; color: #ffffff; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; width: 100%;">
+                    <span class="material-symbols-outlined text-lg" style="color: #ffffff;">check_circle</span>
+                    <span>Mengerti & Masuk Kembali</span>
                 </button>
             </div>
         </div>
