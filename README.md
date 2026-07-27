@@ -1,12 +1,12 @@
 # Wilmar Buku
 
-Wilmar Buku is a comprehensive web-based library and book management system. The application is designed to handle the core operations of a library, including inventory management, book borrowing and returns, user authentication, and data reporting. It provides a centralized dashboard for administrators to monitor transactions and a user-facing platform for browsing and checking out books.
+Wilmar Buku is a comprehensive web-based platform dedicated to managing library donations. The application is specifically designed to handle both internal and external donations, streamlining the contribution process for the library rather than traditional book borrowing and returns. It provides a centralized dashboard for administrators to monitor incoming donations and a user-facing platform for contributors to submit their donations.
 
 ## Motivation and Architecture
 
-Traditional library management systems often suffer from fragmented data, slow transaction processing, and outdated user interfaces. Wilmar Buku was developed to modernize this workflow by providing a robust, real-time platform that minimizes manual administrative overhead.
+Traditional donation management processes often suffer from fragmented data, slow transaction processing, and outdated user interfaces. Wilmar Buku was developed to modernize this workflow by providing a robust, real-time platform dedicated specifically to library donations, minimizing manual administrative overhead.
 
-From an architectural standpoint, the system relies on the TALL stack (Tailwind, Alpine.js, Laravel) to decouple the frontend reactivity from heavy JavaScript frameworks, keeping the application lightweight. It leverages Laravel's service container and Eloquent ORM for streamlined data access, and integrates Laravel Reverb for real-time WebSocket communication, ensuring immediate synchronization of book availability and system notifications across active clients. 
+From an architectural standpoint, the system relies on the TALL stack (Tailwind, Alpine.js, Laravel) to decouple the frontend reactivity from heavy JavaScript frameworks, keeping the application lightweight. It leverages Laravel's service container and Eloquent ORM for streamlined data access, and integrates Laravel Reverb for real-time WebSocket communication, ensuring immediate synchronization of donation updates and system notifications across active clients. 
 
 Google OAuth is implemented via Laravel Socialite to ensure secure and frictionless user onboarding, delegating authentication security to Google's infrastructure.
 
@@ -34,11 +34,10 @@ Google OAuth is implemented via Laravel Socialite to ensure secure and frictionl
 ## Features
 
 - **OAuth 2.0 Authentication**: Secure single sign-on integration allowing users to authenticate via their Google accounts, reducing friction and password management overhead.
-- **Inventory and Asset Management**: Full lifecycle management of library assets with automated cover image processing and resizing using Intervention Image.
-- **Transactional Checkout System**: A robust borrowing engine optimized with composite database indexing to handle concurrent checkout requests efficiently.
-- **Real-Time Event Broadcasting**: Immediate UI updates and notifications for book availability and transaction status powered by WebSockets.
-- **Automated PDF Reporting**: Programmatic generation of checkout logs, inventory status, and user activity reports for administrative compliance.
-- **Analytical Dashboard**: Interactive metrics and historical data visualization utilizing Chart.js to help administrators make data-driven decisions.
+- **Internal & External Donations**: Comprehensive management of library donations from both internal members and external contributors.
+- **Real-Time Event Broadcasting**: Immediate UI updates and notifications for donation status and processing powered by WebSockets.
+- **Automated PDF Reporting**: Programmatic generation of donation logs and user activity reports for administrative compliance.
+- **Analytical Dashboard**: Interactive metrics and historical data visualization utilizing Chart.js to help administrators make data-driven decisions regarding library donations.
 
 ## Getting Started
 
@@ -128,7 +127,7 @@ wilmarbuku/
 This project is open-source software licensed under the MIT License.
 
 - **GitHub**: [https://github.com/Apisikma123](https://github.com/Apisikma123)
-- **Email**: agaputra62@gmail.com
+- **Email**: [agaputra62@gmail.com](https://mail.google.com/mail/?view=cm&fs=1&to=agaputra62@gmail.com)
 
 - **GitHub**: [https://github.com/r4hmansun](https://github.com/r4hmansun)
-- **Email**: 4rrahman5578@gmail.com
+- **Email**: [4rrahman5578@gmail.com](https://mail.google.com/mail/?view=cm&fs=1&to=4rrahman5578@gmail.com)
