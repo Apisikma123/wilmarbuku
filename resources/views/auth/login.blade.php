@@ -32,6 +32,28 @@
     style="background-image: url('{{ asset('images/Login-Background.png') }}');">
     <div class="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
 
+    @if(session('kicked_out_warning'))
+        <!-- Modal Peringatan Sesi Berakhir (Sesuai DESIGN.md) -->
+        <div id="session-warning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-gray-100 text-center relative transform transition-all scale-100 animate-[fadeIn_0.3s_ease-in-out]">
+                <div class="w-16 h-16 bg-[#fff8eb] text-[#b8860b] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#fdeab5] shadow-sm">
+                    <span class="material-symbols-outlined text-[36px]">phonelink_erase</span>
+                </div>
+                <h3 class="text-xl font-bold text-[#003215] mb-2 font-['Poppins']">Sesi Anda Telah Berakhir</h3>
+                <p class="text-sm text-[#454f5e] mb-6 leading-relaxed font-['Poppins']">
+                    Akun Anda baru saja masuk dari perangkat atau peramban (browser) lain. Untuk menjaga keamanan Anda, sesi pada layar ini telah dinonaktifkan.
+                    <br><br>
+                    <span class="text-xs text-gray-500 italic block border-t border-gray-100 pt-3">Jika ini bukan Anda, segera masuk kembali dan ubah kata sandi akun Anda.</span>
+                </p>
+                <button type="button" onclick="document.getElementById('session-warning-modal').remove()" 
+                        class="w-full bg-[#004b23] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#003215] transition-colors shadow-sm font-['Poppins'] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">check_circle</span>
+                    Mengerti & Masuk Kembali
+                </button>
+            </div>
+        </div>
+    @endif
+
     <div class="flex-grow flex items-center justify-center p-0 md:p-6">
         <div
             class="bg-white/85 backdrop-blur-md border-0 md:border md:border-white/40 p-6 sm:p-8 md:p-10 rounded-none md:rounded-2xl shadow-none md:shadow-[0_8px_32px_rgba(0,0,0,0.1)] max-w-md w-full min-h-screen md:min-h-0 flex flex-col justify-center relative z-10">

@@ -21,10 +21,16 @@ class InvalidateOtherSessions
      */
     public function handle(Login $event): void
     {
-        // Delete all other sessions for this user from the database
-        DB::table('sessions')
-            ->where('user_id', $event->user->id)
-            ->where('id', '!=', Session::getId())
-            ->delete();
+        // Generate token unik baru untuk sesi login saat ini
+        $token = \Illuminate\Support\Str::random(60);
+        
+        /** @var \App\Models\User $user */
+        $user = $event->user;
+        
+        // Simpan token di database pada akun user dan di dalam session aktif saat ini
+        $user->last_login_token = $token;
+        $user->save();
+
+        Session::put('last_login_token', $token);
     }
 }

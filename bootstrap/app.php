@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureIsAdmin::class,
         ]);
         $middleware->appendToGroup('web', \Illuminate\Routing\Middleware\ThrottleRequests::class.':60,1');
+        $middleware->appendToGroup('web', \App\Http\Middleware\CheckSingleSession::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
