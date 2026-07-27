@@ -131,3 +131,7 @@ This project is open-source software licensed under the MIT License.
 
 - **GitHub**: [https://github.com/r4hmansun](https://github.com/r4hmansun)
 - **Email**: [4rrahman5578@gmail.com](https://mail.google.com/mail/?view=cm&fs=1&to=4rrahman5578@gmail.com)
+
+- **GitHub**: [https://github.com/M-RapeliHSN](https://github.com/M-RapeliHSN)
+- **Email**: [raflyhusaini0290@gmail.com](https://mail.google.com/mail/?view=cm&fs=1&to=raflyhusaini0290@gmail.com)
+
