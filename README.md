@@ -129,3 +129,6 @@ This project is open-source software licensed under the MIT License.
 
 - **GitHub**: [https://github.com/Apisikma123](https://github.com/Apisikma123)
 - **Email**: agaputra62@gmail.com
+
+- **GitHub**: [https://github.com/r4hmansun](https://github.com/r4hmansun)
+- **Email**: 4rrahman5578@gmail.com
