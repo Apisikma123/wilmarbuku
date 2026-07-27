@@ -600,6 +600,16 @@
             }
         });
 
+        // Restore button state on back navigation (bfcache)
+        window.addEventListener('pageshow', function(e) {
+            document.querySelectorAll('button[type="submit"][data-original-text]').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btn.innerHTML = btn.dataset.originalText;
+            });
+        });
+
+
         // Real-time Cart Badge Update Listener
         document.addEventListener('DOMContentLoaded', () => {
             const setupEchoCart = () => {

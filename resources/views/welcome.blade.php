@@ -277,7 +277,7 @@
 <label class="block text-sm font-semibold text-on-surface mb-2" for="tracking-id">ID Donasi / Nomor Resi</label>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
-<input name="kode" class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: WB-2024-892" type="text" required/>
+<input name="kode" class="w-full pl-12 pr-4 py-4 bg-surface-bright border border-outline-variant rounded-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface" id="tracking-id" placeholder="Misal: WB2026892" type="text" required/>
 </div>
 </div>
 <button type="submit" class="block text-center w-full bg-primary text-on-primary font-semibold py-4 rounded-md hover:bg-primary-container transition-colors shadow-sm">

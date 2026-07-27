@@ -1,58 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Wilmar Buku
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Wilmar Buku is a comprehensive web-based library and book management system. The application is designed to handle the core operations of a library, including inventory management, book borrowing and returns, user authentication, and data reporting. It provides a centralized dashboard for administrators to monitor transactions and a user-facing platform for browsing and checking out books.
 
-## About Laravel
+## Motivation and Architecture
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Traditional library management systems often suffer from fragmented data, slow transaction processing, and outdated user interfaces. Wilmar Buku was developed to modernize this workflow by providing a robust, real-time platform that minimizes manual administrative overhead.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+From an architectural standpoint, the system relies on the TALL stack (Tailwind, Alpine.js, Laravel) to decouple the frontend reactivity from heavy JavaScript frameworks, keeping the application lightweight. It leverages Laravel's service container and Eloquent ORM for streamlined data access, and integrates Laravel Reverb for real-time WebSocket communication, ensuring immediate synchronization of book availability and system notifications across active clients. 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Google OAuth is implemented via Laravel Socialite to ensure secure and frictionless user onboarding, delegating authentication security to Google's infrastructure.
 
-## Learning Laravel
+## Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Backend**
+- PHP 8.3
+- Laravel 13.x
+- MySQL
+- Laravel Reverb (WebSocket server)
+- Laravel Echo (Client-side event broadcasting)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Frontend**
+- Blade (Templating engine)
+- Tailwind CSS (Utility-first styling)
+- Alpine.js (Lightweight DOM manipulation)
+- Chart.js (Data visualization)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+**Libraries and Tools**
+- Laravel Socialite (OAuth authentication)
+- Intervention Image (Image manipulation and optimization)
+- DomPDF (Automated PDF report generation)
+- Vite (Frontend asset bundling)
 
-## Agentic Development
+## Features
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- **OAuth 2.0 Authentication**: Secure single sign-on integration allowing users to authenticate via their Google accounts, reducing friction and password management overhead.
+- **Inventory and Asset Management**: Full lifecycle management of library assets with automated cover image processing and resizing using Intervention Image.
+- **Transactional Checkout System**: A robust borrowing engine optimized with composite database indexing to handle concurrent checkout requests efficiently.
+- **Real-Time Event Broadcasting**: Immediate UI updates and notifications for book availability and transaction status powered by WebSockets.
+- **Automated PDF Reporting**: Programmatic generation of checkout logs, inventory status, and user activity reports for administrative compliance.
+- **Analytical Dashboard**: Interactive metrics and historical data visualization utilizing Chart.js to help administrators make data-driven decisions.
 
-```bash
-composer require laravel/boost --dev
+## Getting Started
 
-php artisan boost:install
+### Prerequisites
+
+Ensure the following runtimes and services are installed on your host machine:
+- PHP >= 8.3
+- Composer >= 2.0
+- Node.js >= 20.x and npm
+- MySQL >= 8.0
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Apisikma123/wilmarbuku.git
+   cd wilmarbuku
+   ```
+
+2. **Install application dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Configure the environment**
+   Copy the example environment configuration and generate the application encryption key.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Initialize the database**
+   Ensure your MySQL server is running and the database specified in your `.env` is created. Run the migrations to build the schema.
+   ```bash
+   php artisan migrate
+   ```
+
+5. **Start the local development servers**
+   The project includes a unified npm script that utilizes `concurrently` to boot the PHP server, Vite, Queue Worker, and Reverb WebSocket server simultaneously.
+   ```bash
+   npm start
+   ```
+   
+   To compile frontend assets for development:
+   ```bash
+   npm run dev
+   ```
+
+   The application will be accessible at `http://localhost:8000`.
+
+## Environment Variables
+
+The following configuration keys must be defined in your `.env` file to enable all application features.
+
+| Variable | Description | Example Value |
+| :--- | :--- | :--- |
+| `DB_DATABASE` | Target MySQL database name | `wilmarbuku` |
+| `DB_USERNAME` | Database user account | `root` |
+| `DB_PASSWORD` | Database user password | `secret` |
+| `GOOGLE_CLIENT_ID` | OAuth Client ID from Google Cloud Console | `your-client-id.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | OAuth Secret from Google Cloud Console | `your-client-secret` |
+| `GOOGLE_REDIRECT_URI` | Authorized redirect URI for Google Auth | `http://127.0.0.1:8000/auth/google/callback` |
+| `REVERB_APP_KEY` | Public identifier for Reverb WebSockets | `your-reverb-key` |
+| `REVERB_APP_SECRET`| Secret key for Reverb authentication | `your-reverb-secret` |
+| `MAIL_MAILER` | Mail driver used for system notifications | `smtp` |
+
+## Project Structure
+
+```text
+wilmarbuku/
+├── app/
+│   ├── Http/Controllers/    # Request handling logic (e.g., KatalogController, PesanController)
+│   ├── Repositories/        # Data access abstraction (e.g., BukuRepository)
+│   └── Models/              # Eloquent models
+├── database/
+│   └── migrations/          # Schema definitions and indexing
+├── resources/
+│   └── views/               # Blade templates and frontend architecture
+├── routes/
+│   └── web.php              # HTTP routing definitions
+└── public/                  # Publicly accessible assets and entry point
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## License and Author Information
 
-## Contributing
+This project is open-source software licensed under the MIT License.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **GitHub**: [https://github.com/Apisikma123](https://github.com/Apisikma123)
+- **Email**: agaputra62@gmail.com
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **GitHub**: [https://github.com/r4hmansun](https://github.com/r4hmansun)
+- **Email**: 4rrahman5578@gmail.com

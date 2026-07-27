@@ -13,7 +13,7 @@
             <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-grow">
                     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">tag</span>
-                    <input type="text" name="kode" value="{{ $kode ?? '' }}" placeholder="Masukkan Kode Tracking (ex: WB-...)" required class="w-full bg-surface-bright border border-outline-variant/50 rounded-xl py-4 pl-12 pr-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary shadow-sm transition-shadow">
+                    <input type="text" name="kode" value="{{ $kode ?? '' }}" placeholder="Masukkan Kode Tracking (ex: WB...)" required class="w-full bg-surface-bright border border-outline-variant/50 rounded-xl py-4 pl-12 pr-4 text-sm text-on-surface font-medium focus:ring-primary focus:border-primary shadow-sm transition-shadow">
                 </div>
                 <button type="submit" class="bg-primary text-white font-bold py-4 px-8 rounded-xl hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2 shrink-0">
                     <span class="material-symbols-outlined text-[18px]">travel_explore</span> Lacak
@@ -25,7 +25,7 @@
             <div class="bg-error-container text-error rounded-2xl p-6 text-center shadow-sm">
                 <span class="material-symbols-outlined text-4xl mb-2">error</span>
                 <p class="font-bold">Kode Tracking tidak ditemukan.</p>
-                <p class="text-sm">Pastikan Anda memasukkan kode yang benar (ex: WB-xxxxxx).</p>
+                <p class="text-sm">Pastikan Anda memasukkan kode yang benar (ex: WB2026892).</p>
             </div>
         @elseif($transaksi)
         <!-- Tracking Result -->

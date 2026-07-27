@@ -138,9 +138,15 @@
                     </div>
 
                     <div class="pt-4 flex justify-end">
+                        @if(Auth::check() && Auth::user()->role === 'admin')
+                        <button type="button" disabled class="bg-surface-variant text-on-surface-variant font-bold px-8 py-3 rounded-xl cursor-not-allowed flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">block</span> Mode Lihat (Admin)
+                        </button>
+                        @else
                         <button type="submit" class="bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-primary-container transition-colors shadow-sm flex items-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">save</span> Simpan Perubahan
                         </button>
+                        @endif
                     </div>
                 </form>
             </div>
@@ -186,9 +192,15 @@
                         </div>
 
                         <div class="pt-4 flex justify-end">
+                            @if(Auth::check() && Auth::user()->role === 'admin')
+                            <button type="button" disabled class="bg-surface-variant text-on-surface-variant font-bold px-8 py-3 rounded-xl cursor-not-allowed flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">block</span> Mode Lihat (Admin)
+                            </button>
+                            @else
                             <button type="submit" class="bg-surface-container-high text-on-surface font-bold px-8 py-3 rounded-xl hover:bg-outline-variant/50 transition-colors shadow-sm flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">key</span> Perbarui Sandi
                             </button>
+                            @endif
                         </div>
                     </form>
                 @endif

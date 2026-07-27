@@ -8,7 +8,7 @@
             <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Donasi Offline</h2>
             <p class="text-slate-500 mt-2">Input donasi buku secara offline mewakili donatur.</p>
         </div>
-        <a href="{{ route('admin.transactions') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors shadow-sm text-sm">
+        <a href="{{ route('admin.transactions', ['status' => 'Offline']) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors shadow-sm text-sm">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             Riwayat Transaksi
         </a>
