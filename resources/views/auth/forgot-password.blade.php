@@ -38,7 +38,7 @@
             </div>
 
             <!-- Form -->
-            <form action="{{ route('password.email') }}" method="POST" class="space-y-5">
+            <form action="{{ route('password.email') }}" method="POST" class="space-y-5" autocomplete="off">
                 @csrf
                 
                 @if($errors->any())

@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <form id="paymentForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data">
+            <form id="paymentForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
                 <input type="hidden" name="metode_pembayaran_id" id="hiddenMetodePembayaran" value="">

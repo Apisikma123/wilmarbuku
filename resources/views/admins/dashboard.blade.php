@@ -154,7 +154,7 @@
                     <h3 class="text-lg font-bold text-slate-900">Tampilan Landing Page</h3>
                     <p class="text-xs text-slate-500 mt-1">Atur kriteria buku yang akan ditampilkan pada halaman utama (Landing Page).</p>
                 </div>
-                <form method="POST" action="{{ route('admin.settings.landing') }}" class="flex-1 flex flex-col">
+                <form method="POST" action="{{ route('admin.settings.landing') }}" class="flex-1 flex flex-col" autocomplete="off">
                     @csrf
                     <div class="flex-1 space-y-4">
                         <div>

@@ -149,7 +149,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Tambah Kategori</h3>
-            <form action="{{ route('admin.master.kategori.store') }}" method="POST">
+            <form action="{{ route('admin.master.kategori.store') }}" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Kategori</label>
@@ -169,7 +169,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Edit Kategori</h3>
-            <form id="form-edit-kategori" method="POST">
+            <form id="form-edit-kategori" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Kategori</label>
@@ -189,7 +189,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Tambah Penerbit</h3>
-            <form action="{{ route('admin.master.penerbit.store') }}" method="POST">
+            <form action="{{ route('admin.master.penerbit.store') }}" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Penerbit</label>
@@ -209,7 +209,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Edit Penerbit</h3>
-            <form id="form-edit-penerbit" method="POST">
+            <form id="form-edit-penerbit" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Penerbit</label>
@@ -229,7 +229,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Tambah Label</h3>
-            <form action="{{ route('admin.master.label.store') }}" method="POST">
+            <form action="{{ route('admin.master.label.store') }}" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Label</label>
@@ -249,7 +249,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4">Edit Label</h3>
-            <form id="form-edit-label" method="POST">
+            <form id="form-edit-label" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Label</label>
@@ -273,7 +273,7 @@
         <h3 id="delete-title" class="text-xl font-bold text-slate-900 mb-2">Hapus Data</h3>
         <p class="text-slate-500 text-sm mb-6">Apakah Anda yakin ingin menghapus <strong id="delete-name" class="text-slate-800"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
         
-        <form id="form-delete" method="POST" action="">
+        <form id="form-delete" method="POST" action="" autocomplete="off">
             @csrf
             <div class="flex items-center justify-center gap-3">
                 <button type="button" onclick="closeDeleteModal()" class="px-5 py-2.5 text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold transition-colors flex-1">Batal</button>

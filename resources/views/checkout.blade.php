@@ -12,7 +12,7 @@
             </a>
         </div>
 
-        <form action="{{ route('checkout.process') }}" method="POST" class="flex flex-col lg:flex-row gap-8 items-start">
+        <form action="{{ route('checkout.process') }}" method="POST" class="flex flex-col lg:flex-row gap-8 items-start" autocomplete="off">
             @csrf
             <input type="hidden" name="type" value="{{ request('type') }}">
             <input type="hidden" name="selected" value="{{ request('selected') }}">
@@ -49,7 +49,7 @@
                             class="{{ Auth::user()->role == 'user_internal' ? '' : 'hidden' }}">
                             <label class="block text-sm font-medium text-on-surface mb-1">Nomor Induk Mahasiswa / NIDN <span
                                     class="text-red-500">*</span></label>
-                            <input type="text" name="identitas_kampus" value="{{ Auth::user()->identitas_kampus }}" maxlength="15" minlength="15"
+                            <input type="text" name="identitas_kampus" value="{{ Auth::user()->identitas_kampus }}" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 class="w-full px-4 py-3 bg-[#f8fafc] border border-outline-variant/30 rounded-lg outline-none transition-colors text-sm text-gray-500 cursor-not-allowed"
                                 placeholder="Masukkan NIM/NIDN Anda" readonly>
                             <div class="flex items-center gap-1 mt-1.5 text-on-surface-variant text-[11px]">

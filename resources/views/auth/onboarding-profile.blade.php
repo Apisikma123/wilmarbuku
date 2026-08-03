@@ -33,7 +33,7 @@
             </div>
 
             <!-- Form -->
-            <form action="{{ route('onboarding.profile.store') }}" method="POST" class="space-y-5">
+            <form action="{{ route('onboarding.profile.store') }}" method="POST" class="space-y-5" autocomplete="off">
                 @csrf
 
                 <div>

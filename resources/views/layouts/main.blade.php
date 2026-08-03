@@ -48,7 +48,7 @@
                 <a href="{{ route('admin.dashboard') }}" class="hidden md:block border border-primary text-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary/10 transition-colors shadow-sm">Admin Dashboard</a>
                 @endif
                 <a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="hidden md:block bg-primary text-on-primary text-sm font-semibold px-6 py-2.5 rounded-md hover:bg-primary-container transition-colors shadow-sm">
-                    {{ Auth::check() ? 'Dashboard' : 'Donasi Sekarang' }}
+                    {{ Auth::check() ? 'Dashboard' : 'Login' }}
                 </a>
                 
                 <!-- Mobile Menu Button -->

@@ -142,7 +142,7 @@
                             @if($u->role == 'admin')
                                 <span class="text-xs bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 font-bold rounded-full">Admin</span>
                             @else
-                                <form action="{{ route('admin.users.role', $u->id) }}" method="POST" class="inline-flex items-center gap-2" id="form-role-{{ $u->id }}">
+                                <form action="{{ route('admin.users.role', $u->id) }}" method="POST" class="inline-flex items-center gap-2" id="form-role-{{ $u->id }}" autocomplete="off">
                                     @csrf
                                     <select name="role" onchange="handleRoleChange(this, '{{ $u->role }}', 'form-role-{{ $u->id }}')" class="text-xs border border-slate-200 rounded-full pl-3 pr-8 py-1 font-bold {{ $u->role == 'user_internal' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-700' }}">
                                         <option value="user_external" {{ $u->role == 'user_external' ? 'selected' : '' }}>User External</option>
@@ -198,7 +198,7 @@
                 </button>
             </div>
             
-            <form id="editForm" method="POST" action="">
+            <form id="editForm" method="POST" action="" autocomplete="off">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -211,7 +211,7 @@
                     </div>
                     <div id="edit_identitas_container">
                         <label class="block text-sm font-semibold text-[#404941] mb-1.5" style="font-family: Poppins, sans-serif;">Identitas Kampus</label>
-                        <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" minlength="15" placeholder="NIM / NIDN (Opsional)" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
+                        <input type="text" name="identitas_kampus" id="edit_identitas" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="NIM / NIDN (Opsional)" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                     </div>
                 </div>
 
@@ -232,7 +232,7 @@
             <h3 class="text-xl font-bold text-slate-900 mb-2">Hapus Pengguna</h3>
             <p class="text-slate-500 text-sm mb-6">Apakah Anda yakin ingin menghapus akun <strong id="delete_user_name" class="text-slate-800"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
             
-            <form id="deleteForm" method="POST" action="">
+            <form id="deleteForm" method="POST" action="" autocomplete="off">
                 @csrf
                 <div class="flex items-center justify-center gap-3">
                     <button type="button" onclick="closeDeleteModal()" class="px-5 py-2.5 text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold transition-colors flex-1">Batal</button>
@@ -251,7 +251,7 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <form id="addForm" action="{{ route('admin.users.store') }}" method="POST" onsubmit="submitAddForm(event)">
+            <form id="addForm" action="{{ route('admin.users.store') }}" method="POST" onsubmit="submitAddForm(event)" autocomplete="off">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -260,7 +260,7 @@
                     </div>
                     <div id="add_identitas_container" style="display: none;">
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Identitas Kampus (NIM/NIDN)</label>
-                        <input type="text" name="identitas_kampus" id="add_identitas" minlength="15" maxlength="15" placeholder="Wajib untuk Internal" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
+                        <input type="text" name="identitas_kampus" id="add_identitas" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Wajib untuk Internal" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
@@ -316,7 +316,7 @@
                     Untuk mengubah pengguna ini menjadi <strong>User Internal</strong>, Anda harus memasukkan NIM / NIDN pengguna terlebih dahulu.
                 </p>
                 <div class="mb-6">
-                    <input type="text" id="internal_nim_input" placeholder="NIM / NIDN (15 Karakter)" maxlength="15" minlength="15" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
+                    <input type="text" id="internal_nim_input" placeholder="NIM / NIDN" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full bg-[#eff4ff] border border-[#c0c9be] rounded-lg py-2 px-3 text-sm text-[#121c29] focus:bg-[#ffffff] focus:border-[#003215] focus:ring-1 focus:ring-[#003215] outline-none transition-all">
                 </div>
                 <div class="flex items-center gap-3 w-full">
                     <button type="button" onclick="cancelInternalConfirm()" class="flex-1 px-5 py-3 text-[#404941] hover:bg-[#d0dbed] border border-[#707970] rounded-xl text-sm font-bold transition-colors">Batal</button>
@@ -426,11 +426,11 @@ function cancelInternalConfirm() {
 
 function proceedInternalConfirm() {
     const nimInput = document.getElementById('internal_nim_input').value;
-    if (nimInput.length !== 15) {
+    if (!nimInput) {
         Swal.fire({
             icon: 'error',
             title: 'Validasi Gagal',
-            text: 'NIM / NIDN harus berjumlah 15 karakter.',
+            text: 'NIM / NIDN tidak boleh kosong.',
             confirmButtonColor: '#003215'
         });
         return;

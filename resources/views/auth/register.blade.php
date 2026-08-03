@@ -53,7 +53,7 @@
             </div>
 
             <!-- Form -->
-            <form action="{{ route('register.post') }}" method="POST" class="space-y-5">
+            <form action="{{ route('register.post') }}" method="POST" class="space-y-5" autocomplete="off">
                 @csrf
 
                 <div>
@@ -61,7 +61,7 @@
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">person</span>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" maxlength="50"
+                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" maxlength="50" autocomplete="off"
                             class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"
                             placeholder="Masukkan nama lengkap" required>
                     </div>
@@ -77,7 +77,7 @@
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">mail</span>
-                        <input type="email" name="email" value="{{ old('email') }}"
+                        <input type="email" name="email" value="{{ old('email') }}" autocomplete="off"
                             class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"
                             placeholder="Masukkan email" required>
                     </div>
@@ -91,7 +91,7 @@
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
-                        <input type="password" name="password" id="password"
+                        <input type="password" name="password" id="password" autocomplete="new-password"
                             class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"
                             placeholder="Buat kata sandi (min 8 karakter)" required>
                         <button type="button" onclick="toggleVisibility('password', 'toggleIcon1')"
@@ -107,7 +107,7 @@
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
-                        <input type="password" name="password_confirmation" id="password_confirmation"
+                        <input type="password" name="password_confirmation" id="password_confirmation" autocomplete="new-password"
                             class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"
                             placeholder="Ulangi kata sandi" required>
                         <button type="button" onclick="toggleVisibility('password_confirmation', 'toggleIcon2')"

@@ -38,7 +38,7 @@
             </div>
 
             <!-- Form -->
-            <form action="{{ route('akun.email.otp.verify') }}" method="POST" class="space-y-5">
+            <form action="{{ route('akun.email.otp.verify') }}" method="POST" class="space-y-5" autocomplete="off">
                 @csrf
                 
                 @if($errors->any())
@@ -70,7 +70,7 @@
             </form>
 
             <div class="text-center mt-8 text-sm">
-                <form action="{{ route('akun.email.otp.resend') }}" method="POST" id="resendForm">
+                <form action="{{ route('akun.email.otp.resend') }}" method="POST" id="resendForm" autocomplete="off">
                     @csrf
                     <span class="text-gray-600">Belum menerima kode?</span> 
                     <button type="submit" id="resendButton" class="text-secondary font-bold hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline ml-1" {{ $cooldown > 0 ? 'disabled' : '' }}>
