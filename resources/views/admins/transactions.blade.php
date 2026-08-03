@@ -470,7 +470,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor Rekening</label>
-                        <input type="text" name="nomor_rekening" placeholder="Masukkan nomor rekening..." required
+                        <input type="text" name="nomor_rekening" placeholder="Masukkan nomor rekening..." required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-green-600 focus:border-green-600">
                     </div>
                     <div>
