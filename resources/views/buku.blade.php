@@ -28,19 +28,26 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-4 px-4 md:px-0 mt-4 md:mt-0">
-                <div class="bg-white rounded-lg p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
-                    <span class="material-symbols-outlined text-primary text-[28px]">import_contacts</span>
+            <div class="grid grid-cols-3 gap-4 px-4 md:px-0 mt-4 md:mt-0">
+                <div class="bg-white rounded-lg p-3 md:p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
+                    <span class="material-symbols-outlined text-primary text-[24px] md:text-[28px]">import_contacts</span>
                     <div>
-                        <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Halaman</span>
-                        <span class="block text-sm font-semibold text-on-surface">{{ $buku->jumlah_halaman }}</span>
+                        <span class="block text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Halaman</span>
+                        <span class="block text-xs md:text-sm font-semibold text-on-surface">{{ $buku->jumlah_halaman }}</span>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
-                    <span class="material-symbols-outlined text-primary text-[28px]">inventory_2</span>
+                <div class="bg-white rounded-lg p-3 md:p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
+                    <span class="material-symbols-outlined text-primary text-[24px] md:text-[28px]">inventory_2</span>
                     <div>
-                        <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Dibutuhkan</span>
-                        <span class="block text-sm font-semibold text-on-surface">{{ $buku->stok_dibutuhkan }} Buku</span>
+                        <span class="block text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Dibutuhkan</span>
+                        <span class="block text-xs md:text-sm font-semibold text-on-surface">{{ $buku->stok_dibutuhkan }} Buku</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-3 md:p-5 flex flex-col items-center justify-center text-center gap-2 border border-outline-variant/30 shadow-[0px_4px_20px_rgba(15,23,42,0.02)]">
+                    <span class="material-symbols-outlined text-primary text-[24px] md:text-[28px]">volunteer_activism</span>
+                    <div>
+                        <span class="block text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Terdonasi</span>
+                        <span class="block text-xs md:text-sm font-semibold text-on-surface">{{ $buku->terdonasi }} Buku</span>
                     </div>
                 </div>
             </div>

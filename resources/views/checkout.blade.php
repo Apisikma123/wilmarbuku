@@ -132,14 +132,7 @@
                                 <span class="text-on-surface-variant">Subtotal ({{ $total_qty }} Buku)</span>
                                 <span class="font-medium text-on-surface">Rp {{ number_format($total, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-on-surface-variant">Biaya Platform</span>
-                                <span class="font-medium text-on-surface">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-on-surface-variant">Pajak (Termasuk)</span>
-                                <span class="font-medium text-on-surface">Rp 0</span>
-                            </div>
+
                         </div>
 
                         <div class="flex flex-col gap-2 mb-6 border-t border-outline-variant/30 pt-6">

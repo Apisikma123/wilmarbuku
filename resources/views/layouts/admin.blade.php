@@ -207,7 +207,7 @@
                     <!-- Logout Button Form -->
                     <form method="POST" action="{{ route('logout') }}" class="flex items-center m-0" autocomplete="off">
                         @csrf
-                        <button type="submit" class="w-10 h-10 shrink-0 rounded-full border border-slate-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-100 hover:text-red-700 flex items-center justify-center transition-colors shadow-sm" title="Logout">
+                        <button type="submit" class="no-loading w-10 h-10 shrink-0 rounded-full border border-slate-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-100 hover:text-red-700 flex items-center justify-center transition-colors shadow-sm" title="Logout">
                             <i data-lucide="log-out" class="w-4 h-4"></i>
                         </button>
                     </form>

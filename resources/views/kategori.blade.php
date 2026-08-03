@@ -353,8 +353,9 @@
                                     <span class="material-symbols-outlined text-[14px] md:text-[18px]">block</span>
                                 </div>
                                 @else
-                                <div class="flex items-center gap-1.5 text-[10px] text-gray-500 mt-1">
-                                    <span>{{ $item->stok_dibutuhkan }} dibutuhkan</span>
+                                <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                    <span class="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded">{{ $item->stok_dibutuhkan }} dibutuhkan</span>
+                                    <span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded">{{ $item->terdonasi }} terdonasi</span>
                                 </div>
                                 @endif
                             </div>

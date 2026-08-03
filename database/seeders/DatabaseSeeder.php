@@ -15,18 +15,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Hapus semua data user sebelumnya
+        User::query()->delete();
 
+        // Buat Admin Dummy
         User::factory()->create([
-            'nama_lengkap' => 'Test User',
-            'email' => 'test@example.com',
-            'role' => 'user_internal',
+            'nama_lengkap' => 'Admin Dummy',
+            'email' => 'admin@dummy.com',
+            'role' => 'admin',
         ]);
 
+        // Buat User Dummy
         User::factory()->create([
-            'nama_lengkap' => 'Administrator',
-            'email' => 'admin@wilmar.com',
-            'role' => 'admin',
+            'nama_lengkap' => 'User Dummy',
+            'email' => 'user@dummy.com',
+            'role' => 'user_internal',
         ]);
 
         // $this->call([

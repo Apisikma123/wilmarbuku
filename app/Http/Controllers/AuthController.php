@@ -38,9 +38,6 @@ class AuthController extends Controller
             \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
             \Illuminate\Support\Facades\Log::info('Login attempt', [
                 'user_id' => $user->id,
-                'has_trusted_cookie' => $request->hasCookie('trusted_device_user_' . $user->id),
-                'remember_input' => $request->has('remember'),
-                'remember_value' => $request->input('remember')
             ]);
 
             // Jika memilih Ingat Saya sebelumnya dan ada cookie, langsung login
@@ -192,14 +189,12 @@ class AuthController extends Controller
                 'email_verified_at' => $user->email_verified_at ?? now(),
             ]);
 
-            $remember = $request->session()->get('remember_me', false);
-            Auth::login($user, $remember);
+            Auth::login($user);
             
-            $request->session()->forget(['otp_user_id', 'remember_me']);
+            $request->session()->forget('otp_user_id');
             $request->session()->regenerate();
 
             if (!$user->is_onboarding_completed && $user->role !== 'admin') {
-                \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
                 return redirect()->route('onboarding.student-check');
             }
 
@@ -212,11 +207,7 @@ class AuthController extends Controller
                 if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
             }
 
-            $response = redirect()->to($intendedUrl);
-
-            \Illuminate\Support\Facades\Cookie::queue('trusted_device_user_' . $user->id, '1', 60 * 24 * 30);
-
-            return $response;
+            return redirect()->to($intendedUrl);
         }
 
         return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);

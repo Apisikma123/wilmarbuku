@@ -96,9 +96,12 @@
                         <div class="flex-grow flex flex-col justify-between">
                             <div>
                                 <h3 class="text-xs font-bold text-on-surface line-clamp-2 leading-tight mb-1">{{ $item->judul_buku }}</h3>
-                                <p class="text-[10px] text-on-surface-variant mb-1">{{ $item->pengarang }}</p>
+                                <p class="text-[10px] text-on-surface-variant mb-1 line-clamp-1" title="{{ $item->pengarang }}">{{ $item->pengarang }}</p>
                                 @if($item->penerbit)
-                                <p class="text-[10px] text-primary/80 flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[12px]">apartment</span> {{ $item->penerbit }}</p>
+                                <p class="text-[10px] text-primary/80 flex items-center gap-1 mb-2" title="{{ $item->penerbit }}">
+                                    <span class="material-symbols-outlined text-[12px] shrink-0">apartment</span> 
+                                    <span class="line-clamp-1">{{ $item->penerbit }}</span>
+                                </p>
                                 @else
                                 <div class="mb-2"></div>
                                 @endif
@@ -204,7 +207,7 @@
                     <div>
                         <h4 class="text-xs font-bold text-on-surface line-clamp-1">{{ $trx->buku->judul_buku }}</h4>
                         <p class="text-[10px] text-on-surface-variant">Donasi: {{ $trx->created_at->format('d M Y') }}</p>
-                        <a href="{{ route('kategori') }}" class="inline-block mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</a>
+                        <a href="{{ route('buku.detail', $trx->buku->id) }}" class="inline-block mt-2 text-[10px] font-bold text-primary border border-primary px-3 py-1 rounded hover:bg-primary/10 transition-colors">Donasi Lagi</a>
                     </div>
                 </div>
                 @empty

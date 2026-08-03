@@ -140,6 +140,13 @@ class CheckoutController extends Controller
                 'status_tracking' => 'Menunggu Pembayaran',
             ]);
 
+            // Buat Notifikasi Pesan Masuk untuk User
+            PesanMasuk::create([
+                'user_id' => $user->id,
+                'judul' => 'Menunggu Pembayaran',
+                'isi_pesan' => 'Transaksi donasi Anda berhasil dibuat. Silakan segera selesaikan pembayaran agar buku dapat segera diproses.<br><br>Detail Transaksi:<br>Total Tagihan: Rp '.number_format($transaksi->total_harga, 0, ',', '.').'<br><a href="'.route('payment', ['token' => encrypt($transaksi->id)]).'" class="text-[#004b23] font-bold underline mt-2 block">Lihat Tagihan & Bayar</a>',
+            ]);
+
             foreach ($checkoutCart as $id => $details) {
                 TransaksiDetail::create([
                     'kode_tracking' => $kode_tracking,
@@ -289,6 +296,12 @@ class CheckoutController extends Controller
                     'bank_pengirim' => $request->input('bank_pengirim'),
                 ]);
             }
+
+            // Tandai pesan 'Menunggu Pembayaran' sebelumnya sebagai sudah dibaca agar jumlah notifikasi tidak ganda
+            PesanMasuk::where('user_id', $transaksi->user_id)
+                ->where('judul', 'Menunggu Pembayaran')
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
 
             PesanMasuk::create([
                 'user_id' => $transaksi->user_id,

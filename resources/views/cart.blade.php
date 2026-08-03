@@ -138,10 +138,7 @@
                             <span id="summary-count" class="text-on-surface-variant font-medium">Total Harga ({{ $count }} Buku)</span>
                             <span id="summary-subtotal" class="font-bold text-on-surface">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-on-surface-variant font-medium">Biaya Penyaluran</span>
-                            <span class="font-bold text-primary">Gratis</span>
-                        </div>
+
                     </div>
                     
                     <div class="flex justify-between items-end mb-8 pt-4 border-t border-outline-variant/40">

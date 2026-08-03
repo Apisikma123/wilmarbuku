@@ -66,7 +66,7 @@ class CancelExpiredTransactions extends Command
             try {
                 $user = User::find($transaction->user_id);
                 if ($user) {
-                    Mail::to($user->email)->send(new NotificationMail($pesan));
+                    // Mail::to($user->email)->send(new NotificationMail($pesan));
                 }
             } catch (\Exception $e) {
                 Log::error("Gagal mengirim email pembatalan transaksi otomatis: " . $e->getMessage());

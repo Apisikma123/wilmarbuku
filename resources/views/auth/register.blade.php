@@ -124,17 +124,7 @@
                 </button>
             </form>
 
-            <div class="my-6 flex items-center gap-3">
-                <hr class="flex-grow border-gray-200">
-                <span class="text-sm text-gray-500">Atau</span>
-                <hr class="flex-grow border-gray-200">
-            </div>
 
-            <a href="{{ route('auth.google') }}"
-                class="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-3 shadow-sm">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
-                Daftar dengan Google
-            </a>
 
             <p class="text-center text-sm text-gray-600 mt-8">
                 Sudah punya akun? <a href="/login" class="text-secondary font-bold hover:underline">Masuk</a>

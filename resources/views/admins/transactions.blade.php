@@ -97,8 +97,7 @@
                                 <p class="text-[10px] text-slate-400">a/n {{ $metode->atas_nama }}</p>
                             </div>
                         </div>
-                        <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST" autocomplete="off">
-                            class="delete-metode-form">
+                        <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST" class="delete-metode-form" autocomplete="off">
                             @csrf
                             @method('DELETE')
                             <button type="button"

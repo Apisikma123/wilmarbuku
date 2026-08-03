@@ -70,6 +70,8 @@
             @php
                 $cartQty = 0;
                 $unreadPesan = 0;
+                $unreadTrxCount = 0;
+                $recentPesan = collect();
                 $currentCart = Auth::check() ? (Auth::user()->cart_data ?? []) : [];
                 if($currentCart) {
                     foreach($currentCart as $c) {
@@ -78,6 +80,8 @@
                 }
                 if(Auth::check()) {
                     $unreadPesan = \App\Models\PesanMasuk::where('user_id', Auth::id())->where('is_read', false)->count();
+                    $recentPesan = \App\Models\PesanMasuk::where('user_id', Auth::id())->latest()->take(3)->get();
+                    $unreadTrxCount = \App\Models\TransaksiCheckout::where('user_id', Auth::id())->where('is_read_by_user', false)->count();
                 }
             @endphp
             
@@ -89,6 +93,7 @@
                     @if(auth()->check())
                     <div x-data="{ 
                         unreadPesan: {{ $unreadPesan }},
+                        openMobileNotif: false,
                         init() {
                             const setupEcho = () => {
                                 if(window.Echo) {
@@ -102,11 +107,63 @@
                             };
                             setupEcho();
                         }
-                    }" class="flex items-center justify-center">
-                        <a href="/pesan-masuk" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10">
+                    }" class="relative flex items-center justify-center">
+                        <button type="button" @click="openMobileNotif = !openMobileNotif" @click.away="openMobileNotif = false" class="text-white hover:text-white/80 relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10 focus:outline-none">
                             <span class="material-symbols-outlined text-xl">mail</span>
                             <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
-                        </a>
+                        </button>
+
+                        <!-- Popup 3 Notifikasi Singkat versi Mobile -->
+                        <div x-show="openMobileNotif" x-transition x-cloak class="fixed left-4 right-4 top-16 bg-white rounded-2xl shadow-2xl border border-outline-variant/30 z-[150] overflow-hidden text-left">
+                            <!-- Header Notifikasi -->
+                            <div class="bg-primary text-white p-3.5 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">notifications</span>
+                                    <h4 class="font-bold text-sm">Notifikasi Terkini</h4>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                        {{ $unreadPesan }} Baru
+                                    </span>
+                                    <button type="button" @click="openMobileNotif = false" class="text-white/80 hover:text-white p-0.5">
+                                        <span class="material-symbols-outlined text-base">close</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- List 3 Notifikasi Singkat -->
+                            <div class="divide-y divide-outline-variant/20 max-h-[280px] overflow-y-auto bg-surface-container-lowest">
+                                @forelse($recentPesan as $pesan)
+                                <a href="/pesan-masuk" class="block p-3.5 hover:bg-surface-container-low transition-colors {{ !$pesan->is_read ? 'bg-primary/5' : '' }}">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 {{ !$pesan->is_read ? 'bg-primary text-white' : 'bg-surface-container-high text-on-surface-variant' }}">
+                                            <span class="material-symbols-outlined text-base">
+                                                {{ str_contains(strtolower($pesan->judul), 'pembayaran') ? 'account_balance_wallet' : (str_contains(strtolower($pesan->judul), 'dikirim') ? 'local_shipping' : 'mail') }}
+                                            </span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-1 mb-0.5">
+                                                <h5 class="text-xs font-bold text-on-surface truncate">{{ $pesan->judul }}</h5>
+                                                <span class="text-[10px] text-on-surface-variant/60 shrink-0">{{ $pesan->created_at->diffForHumans(null, true, true) }}</span>
+                                            </div>
+                                            <p class="text-[11px] text-on-surface-variant line-clamp-2 leading-relaxed">{!! strip_tags($pesan->isi_pesan) !!}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                @empty
+                                <div class="p-6 text-center text-on-surface-variant/60 text-xs italic">
+                                    Tidak ada notifikasi saat ini
+                                </div>
+                                @endforelse
+                            </div>
+
+                            <!-- Footer Link -->
+                            <div class="p-3 bg-surface-container-low border-t border-outline-variant/20 text-center">
+                                <a href="/pesan-masuk" class="text-xs font-bold text-primary hover:text-primary-container transition-colors inline-flex items-center gap-1">
+                                    Lihat Semua Pesan <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     @endif
                     
@@ -136,11 +193,59 @@
                             };
                             setupEcho();
                         }
-                    }" class="flex items-center justify-center">
+                    }" class="relative group pt-4 pb-4">
                         <a href="/pesan-masuk" class="text-on-surface-variant hover:text-primary relative cursor-pointer active:scale-95 transition-transform flex items-center justify-center w-9 h-9 rounded-full hover:bg-black/5">
                             <span class="material-symbols-outlined text-[24px]">mail</span>
                             <span x-show="unreadPesan > 0" x-text="unreadPesan" x-cloak class="absolute top-0.5 right-0.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm"></span>
                         </a>
+
+                        <!-- Hover Dropdown Menu Notifikasi -->
+                        <div class="absolute right-0 top-full w-[360px] bg-white rounded-2xl shadow-xl border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] transform origin-top group-hover:translate-y-0 -translate-y-2 pointer-events-none group-hover:pointer-events-auto overflow-hidden">
+                            
+                            <!-- Header Notifikasi -->
+                            <div class="bg-primary text-white p-4 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">notifications</span>
+                                    <h4 class="font-bold text-sm">Notifikasi Terkini</h4>
+                                </div>
+                                <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                    {{ $unreadPesan }} Baru
+                                </span>
+                            </div>
+
+                            <!-- List 3 Notifikasi Singkat -->
+                            <div class="divide-y divide-outline-variant/20 max-h-[300px] overflow-y-auto bg-surface-container-lowest">
+                                @forelse($recentPesan as $pesan)
+                                <a href="/pesan-masuk" class="block p-3.5 hover:bg-surface-container-low transition-colors {{ !$pesan->is_read ? 'bg-primary/5' : '' }}">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 {{ !$pesan->is_read ? 'bg-primary text-white' : 'bg-surface-container-high text-on-surface-variant' }}">
+                                            <span class="material-symbols-outlined text-base">
+                                                {{ str_contains(strtolower($pesan->judul), 'pembayaran') ? 'account_balance_wallet' : (str_contains(strtolower($pesan->judul), 'dikirim') ? 'local_shipping' : 'mail') }}
+                                            </span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-1 mb-0.5">
+                                                <h5 class="text-xs font-bold text-on-surface truncate">{{ $pesan->judul }}</h5>
+                                                <span class="text-[10px] text-on-surface-variant/60 shrink-0">{{ $pesan->created_at->diffForHumans(null, true, true) }}</span>
+                                            </div>
+                                            <p class="text-[11px] text-on-surface-variant line-clamp-2 leading-relaxed">{!! strip_tags($pesan->isi_pesan) !!}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                @empty
+                                <div class="p-6 text-center text-on-surface-variant/60 text-xs italic">
+                                    Tidak ada notifikasi saat ini
+                                </div>
+                                @endforelse
+                            </div>
+
+                            <!-- Footer Link -->
+                            <div class="p-3 bg-surface-container-low border-t border-outline-variant/20 text-center">
+                                <a href="/pesan-masuk" class="text-xs font-bold text-primary hover:text-primary-container transition-colors inline-flex items-center gap-1">
+                                    Lihat Semua Pesan <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     @endif
 
@@ -431,8 +536,13 @@
             <span>Beranda</span>
         </a>
 
-        <a href="/transaksi" class="flex flex-col items-center gap-1 {{ request()->is('transaksi*') ? 'text-primary' : 'hover:text-primary' }}">
-            <span class="material-symbols-outlined text-xl {{ request()->is('transaksi*') ? 'fill-1' : '' }}">receipt_long</span>
+        <a href="/transaksi" class="flex flex-col items-center gap-1 {{ request()->is('transaksi*') ? 'text-primary' : 'hover:text-primary' }} relative">
+            <div class="relative">
+                <span class="material-symbols-outlined text-xl {{ request()->is('transaksi*') ? 'fill-1' : '' }}">receipt_long</span>
+                @if($unreadTrxCount > 0)
+                <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">{{ $unreadTrxCount }}</span>
+                @endif
+            </div>
             <span>Transaksi</span>
         </a>
         <a href="/akun" class="flex flex-col items-center gap-1 {{ request()->is('akun*') ? 'text-primary' : 'hover:text-primary' }}">
