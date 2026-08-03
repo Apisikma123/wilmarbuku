@@ -123,7 +123,7 @@
                                 <button onclick='openEditModal({{ json_encode($b) }})' class="p-1.5 hover:text-slate-900 hover:bg-slate-100 rounded transition-colors" title="Edit Buku">
                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                 </button>
-                                <form action="{{ route('admin.catalog.delete', $b->id) }}" method="POST" onsubmit="confirmDelete(event, this)" class="m-0 flex items-center">
+                                <form action="{{ route('admin.catalog.delete', $b->id) }}" method="POST" onsubmit="confirmDelete(event, this)" class="m-0 flex items-center" autocomplete="off">
                                     @csrf
                                     <button type="submit" class="p-1.5 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus Buku">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -207,7 +207,7 @@
             <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
-        <form id="addBookForm" onsubmit="submitAddBook(event)" enctype="multipart/form-data" class="space-y-4" novalidate>
+        <form id="addBookForm" onsubmit="submitAddBook(event)" enctype="multipart/form-data" class="space-y-4" novalidate autocomplete="off">
             @csrf
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Judul Buku *</label>
@@ -339,7 +339,7 @@
             <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
-        <form id="editForm" onsubmit="submitEditBook(event)" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form id="editForm" onsubmit="submitEditBook(event)" method="POST" enctype="multipart/form-data" class="space-y-4" autocomplete="off">
             @csrf
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Judul Buku *</label>

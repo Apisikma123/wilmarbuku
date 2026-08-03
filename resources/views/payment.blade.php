@@ -68,7 +68,7 @@
 
             <!-- Kanan: Form Konfirmasi -->
             <div class="lg:col-span-7">
-                <form id="paymentForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-2xl p-6 md:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-50 h-full">
+                <form id="paymentForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-2xl p-6 md:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-50 h-full" autocomplete="off">
                     @csrf
                     <input type="hidden" name="kode_tracking" value="{{ $transaksi->kode_tracking }}">
                     <input type="hidden" name="metode_pembayaran_id" id="hiddenMetodePembayaran" value="">

@@ -97,7 +97,7 @@
                                 <p class="text-[10px] text-slate-400">a/n {{ $metode->atas_nama }}</p>
                             </div>
                         </div>
-                        <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST"
+                        <form action="{{ route('admin.metode.destroy', $metode->id) }}" method="POST" autocomplete="off">
                             class="delete-metode-form">
                             @csrf
                             @method('DELETE')
@@ -379,7 +379,7 @@
                         class="w-5 h-5"></i></button>
             </div>
 
-            <form id="statusForm" method="POST" class="space-y-4">
+            <form id="statusForm" method="POST" class="space-y-4" autocomplete="off">
                 @csrf
 
                 <div id="dataPengirimContainer" class="hidden mb-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
@@ -453,7 +453,7 @@
                 </button>
             </div>
 
-            <form action="{{ route('admin.metode.store') }}" method="POST" class="p-6">
+            <form action="{{ route('admin.metode.store') }}" method="POST" class="p-6" autocomplete="off">
                 @csrf
                 <div class="space-y-4">
                     <div>

@@ -104,7 +104,7 @@
                             <button disabled class="bg-surface-variant text-on-surface-variant text-sm font-semibold px-4 py-2 rounded-md cursor-not-allowed">Admin</button>
                         @else
                             @if(Auth::check())
-                            <form class="ajax-cart-form-donasi" action="{{ route('cart.add', $item->id) }}" method="POST">
+                            <form class="ajax-cart-form-donasi" action="{{ route('cart.add', $item->id) }}" method="POST" autocomplete="off">
                                 @csrf
                                 <button type="button" class="add-cart-btn bg-primary text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-primary-container transition-colors shadow-sm">Donasi</button>
                             </form>

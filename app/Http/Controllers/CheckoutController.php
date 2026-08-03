@@ -80,11 +80,13 @@ class CheckoutController extends Controller
 
         $request->validate([
             'tipe_donatur' => 'required',
-            'identitas_kampus' => 'required_if:tipe_donatur,internal|nullable|string|min:15|max:15|unique:users,identitas_kampus,' . \Illuminate\Support\Facades\Auth::id(),
+            'identitas_kampus' => 'required_if:tipe_donatur,internal|nullable|string|max:15|regex:/^[0-9]+$/|unique:users,identitas_kampus,' . \Illuminate\Support\Facades\Auth::id(),
             'nama_lengkap' => 'required|string|max:50',
             'email' => 'required|email',
         ], [
             'identitas_kampus.unique' => 'NIM sudah terdaftar.',
+            'identitas_kampus.regex' => 'NIM harus berisi angka.',
+            'identitas_kampus.max' => 'NIM maksimal 15 angka.',
         ]);
 
         $user = Auth::user();

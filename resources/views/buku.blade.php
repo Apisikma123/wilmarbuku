@@ -147,7 +147,7 @@
                                 Admin Tidak Dapat Membeli
                             </button>
                             @else
-                            <form id="add-to-cart-form" action="/cart/add/{{ $buku->id }}" method="POST" class="w-full sm:w-auto flex-grow flex gap-3">
+                            <form id="add-to-cart-form" action="/cart/add/{{ $buku->id }}" method="POST" class="w-full sm:w-auto flex-grow flex gap-3" autocomplete="off">
                                 @csrf
                                 <input type="hidden" name="qty" id="form-qty" value="1">
                                 <input type="hidden" name="action" id="form-action" value="cart">

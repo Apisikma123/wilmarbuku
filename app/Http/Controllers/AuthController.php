@@ -64,23 +64,24 @@ class AuthController extends Controller
                 return redirect()->to($intendedUrl);
             }
 
-            // Generate 6-digit OTP
-            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            // Bypass OTP for Login
+            Auth::login($user, $request->has('remember'));
+            $request->session()->regenerate();
             
-            $user->update([
-                'otp_code' => Hash::make($otpCode),
-                'otp_expires_at' => Carbon::now()->addMinutes(5),
-            ]);
-
-            // Send OTP email
-            Mail::to($user->email)->send(new OtpMail($otpCode));
-
-            // Store user id and timestamp temporarily
-            $request->session()->put('otp_user_id', $user->id);
-            \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $user->id, now()->timestamp, 60);
-            $request->session()->put('remember_me', $request->has('remember'));
-
-            return redirect()->route('otp.show');
+            if (!$user->is_onboarding_completed && $user->role !== 'admin') {
+                return redirect()->route('onboarding.student-check');
+            }
+            
+            $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
+            $intendedUrl = session()->pull('url.intended', $redirectUrl);
+            
+            if ($user->role === 'admin') {
+                if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+            } else {
+                if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
+            }
+            
+            return redirect()->to($intendedUrl);
         }
 
         \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
@@ -240,20 +241,15 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email ini sudah terdaftar. Silakan login.'])->withInput();
         }
 
-        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
+        // Bypass OTP for Registration
         $request->session()->put('registration_data', [
             'nama_lengkap' => $request->nama_lengkap,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5)->timestamp,
+            'otp_verified' => true,
         ]);
 
-        Mail::to($request->email)->send(new OtpMail($otpCode));
-        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . md5($request->email), now()->timestamp, 60);
-
-        return redirect()->route('otp.show');
+        return redirect()->route('onboarding.student-check');
     }
 
     public function logout(Request $request)

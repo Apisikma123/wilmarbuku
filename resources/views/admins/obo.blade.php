@@ -35,7 +35,7 @@
     @endif
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <form action="{{ route('admin.obo.store') }}" method="POST" class="p-6 md:p-8 space-y-6">
+        <form action="{{ route('admin.obo.store') }}" method="POST" class="p-6 md:p-8 space-y-6" autocomplete="off">
             @csrf
 
             <!-- User Selection -->

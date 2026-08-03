@@ -82,7 +82,7 @@
                                         <h4 class="text-xs md:text-sm font-bold text-on-surface flex items-center gap-2 mb-3 md:mb-4">
                                             <span class="material-symbols-outlined text-primary text-[16px] md:text-[18px]">edit_note</span> Detail Penyaluran
                                         </h4>
-                                        <form id="update-form-{{ $id }}" action="{{ route('cart.update') }}" method="POST">
+                                        <form id="update-form-{{ $id }}" action="{{ route('cart.update') }}" method="POST" autocomplete="off">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $id }}">
                                             <div class="space-y-5">
@@ -106,7 +106,7 @@
                                                 </div>
                                             </div>
                                         </form>
-                                        <form id="remove-form-{{ $id }}" action="{{ route('cart.remove') }}" method="POST" class="hidden">
+                                        <form id="remove-form-{{ $id }}" action="{{ route('cart.remove') }}" method="POST" class="hidden" autocomplete="off">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $id }}">
                                         </form>

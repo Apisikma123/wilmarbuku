@@ -14,7 +14,7 @@
             <h3 class="text-lg font-bold text-slate-900">Profil Saya</h3>
             <p class="text-sm text-slate-500">Perbarui informasi pribadi dan foto Anda.</p>
         </div>
-        <form method="POST" action="{{ route('akun.updateProfile') }}" class="p-6">
+        <form method="POST" action="{{ route('akun.updateProfile') }}" class="p-6" autocomplete="off">
             @csrf
             
             @if(session('success') && str_contains(session('success'), 'Profil'))
@@ -56,7 +56,7 @@
             <h3 class="text-lg font-bold text-slate-900">Ubah Kata Sandi</h3>
             <p class="text-sm text-slate-500">Pastikan akun Anda menggunakan kata sandi acak dan panjang agar tetap aman.</p>
         </div>
-        <form method="POST" action="{{ route('user.password.update') }}" class="p-6">
+        <form method="POST" action="{{ route('user.password.update') }}" class="p-6" autocomplete="off">
             @csrf
             @method('put')
 

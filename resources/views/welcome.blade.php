@@ -201,7 +201,7 @@
 <button disabled class="w-full bg-surface-variant text-on-surface-variant font-semibold py-2.5 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-not-allowed">Admin Tidak Dapat Membeli</button>
 @else
 @if(Auth::check())
-<form class="ajax-cart-form" action="{{ route('cart.add', $item->id) }}" method="POST">
+<form class="ajax-cart-form" action="{{ route('cart.add', $item->id) }}" method="POST" autocomplete="off">
     @csrf
     <button type="button" class="add-cart-btn w-full bg-primary text-white font-semibold py-2.5 rounded-[8px] hover:bg-primary-container transition-colors text-sm flex items-center justify-center gap-2">Belikan Buku Ini</button>
 </form>

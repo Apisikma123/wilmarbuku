@@ -53,7 +53,7 @@
             </div>
 
             <!-- Logout Button -->
-            <form method="POST" action="{{ route('logout') }}" class="w-full">
+            <form method="POST" action="{{ route('logout') }}" class="w-full" autocomplete="off">
                 @csrf
                 <button type="submit" class="w-full bg-white border border-error/50 text-error font-bold py-3.5 rounded-xl hover:bg-error/10 transition-colors shadow-sm flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">logout</span> Keluar Akun
@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 
-                <form method="POST" action="{{ route('akun.updateProfile') }}" class="space-y-5">
+                <form method="POST" action="{{ route('akun.updateProfile') }}" class="space-y-5" autocomplete="off">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
@@ -169,7 +169,7 @@
                         </div>
                     </div>
                 @else
-                    <form method="POST" action="{{ route('akun.updatePassword') }}" class="space-y-5">
+                    <form method="POST" action="{{ route('akun.updatePassword') }}" class="space-y-5" autocomplete="off">
                         @csrf
                         <div>
                             <div class="flex justify-between items-center mb-2">

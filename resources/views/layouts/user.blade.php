@@ -301,7 +301,7 @@
                                 <span class="material-symbols-outlined text-outline group-hover/link:text-primary text-[20px] transition-colors">help</span>
                                 <span class="text-sm font-medium">Support</span>
                             </a>
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" autocomplete="off">
                                 @csrf
                                 <button type="submit" class="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-error-container hover:text-error transition-colors text-on-surface group/link mt-1 text-left">
                                     <span class="material-symbols-outlined text-outline group-hover/link:text-error text-[20px] transition-colors">logout</span>
@@ -409,7 +409,7 @@
                         <p class="text-xs text-on-surface-variant truncate" title="{{ Auth::user()->email }}">{{ Auth::user()->email }}</p>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" autocomplete="off">
                     @csrf
                     <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-error/10 text-error rounded-lg text-sm font-bold hover:bg-error/20 transition-colors">
                         <span class="material-symbols-outlined text-[18px]">logout</span> Keluar

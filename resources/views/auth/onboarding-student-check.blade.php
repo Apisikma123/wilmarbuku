@@ -29,7 +29,7 @@
             </div>
 
             <!-- Form -->
-            <form action="{{ route('onboarding.student-check.store') }}" method="POST">
+            <form action="{{ route('onboarding.student-check.store') }}" method="POST" autocomplete="off">
                 @csrf
                 <div class="flex flex-col gap-4">
                     <button type="submit" name="is_student" value="1" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm">
