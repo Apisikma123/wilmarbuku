@@ -229,20 +229,8 @@ class CheckoutController extends Controller
         }
 
         // Check expiration here to prevent infinite loop on auto-reload
-        if (\Carbon\Carbon::parse($transaksi->created_at)->addHour()->isPast()) {
-            if ($transaksi->status_pembayaran == 'Unpaid') {
-                $transaksi->update(['status_tracking' => 'Dibatalkan']);
-                
-                // Return stock
-                foreach ($transaksi->details as $detail) {
-                    if ($detail->buku) {
-                        $detail->buku->increment('stok_dibutuhkan', $detail->qty);
-                    }
-                }
-                
-                return redirect()->route('dashboard')->with('error', 'Waktu pembayaran untuk donasi ini telah habis.');
-            }
-        }
+        // (Revisi: Batas waktu dihapus. Admin akan membatalkan secara manual jika perlu)
+
 
         if ($transaksi->bukti_pembayaran) {
             return redirect()->route('success')->with('kode_tracking', $transaksi->kode_tracking);
@@ -258,25 +246,13 @@ class CheckoutController extends Controller
         $kode_tracking = $request->input('kode_tracking');
         $transaksi = TransaksiCheckout::where('kode_tracking', $kode_tracking)->where('user_id', auth()->id())->firstOrFail();
 
-        if (\Carbon\Carbon::parse($transaksi->created_at)->addHour()->isPast()) {
-            if ($transaksi->status_pembayaran == 'Unpaid') {
-                $transaksi->update(['status_tracking' => 'Dibatalkan']);
-                
-                // Return stock
-                foreach ($transaksi->details as $detail) {
-                    if ($detail->buku) {
-                        $detail->buku->increment('stok_dibutuhkan', $detail->qty);
-                    }
-                }
-                
-                return redirect()->route('dashboard')->with('error', 'Waktu pembayaran untuk donasi ini telah habis. Transaksi dibatalkan.');
-            }
-            return redirect()->route('dashboard')->with('error', 'Transaksi sudah tidak valid.');
-        }
+        // Pengecekan kedaluwarsa dihapus (Revisi)
 
         $request->validate([
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
             'metode_pembayaran_id' => 'required|exists:metode_pembayarans,id',
+            'nama_pengirim' => 'required|string|max:255',
+            'bank_pengirim' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {
@@ -297,6 +273,8 @@ class CheckoutController extends Controller
                     'bukti_pembayaran' => '/storage/'.$path,
                     'status_tracking' => 'Menunggu Konfirmasi',
                     'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
+                    'nama_pengirim' => $request->input('nama_pengirim'),
+                    'bank_pengirim' => $request->input('bank_pengirim'),
                 ]);
             } catch (\Exception $e) {
                 // Fallback jika ekstensi GD tidak aktif (termasuk MissingDependencyException)
@@ -305,6 +283,8 @@ class CheckoutController extends Controller
                     'bukti_pembayaran' => '/storage/'.$path,
                     'status_tracking' => 'Menunggu Konfirmasi',
                     'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
+                    'nama_pengirim' => $request->input('nama_pengirim'),
+                    'bank_pengirim' => $request->input('bank_pengirim'),
                 ]);
             }
 

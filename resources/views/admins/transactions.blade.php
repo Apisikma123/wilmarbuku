@@ -382,6 +382,20 @@
             <form id="statusForm" method="POST" class="space-y-4">
                 @csrf
 
+                <div id="dataPengirimContainer" class="hidden mb-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Data Rekening Pengirim (Donatur)</label>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <span class="block text-slate-500 text-[11px] uppercase tracking-wider mb-0.5">Bank Asal</span>
+                            <strong id="modalBankPengirim" class="text-slate-800 font-bold"></strong>
+                        </div>
+                        <div>
+                            <span class="block text-slate-500 text-[11px] uppercase tracking-wider mb-0.5">Atas Nama</span>
+                            <strong id="modalNamaPengirim" class="text-slate-800 font-bold"></strong>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="buktiPembayaranContainerStatus" class="hidden mb-4">
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Bukti Pembayaran Donatur</label>
                     <a id="buktiPembayaranLinkStatus" href="#" target="_blank"
@@ -484,6 +498,14 @@
     function openStatusModal(trx) {
         document.getElementById('statusForm').action = "/admin/transactions/status/" + trx.kode_tracking;
         document.getElementById('modal_status_tracking').value = trx.status_tracking || 'Menunggu Konfirmasi';
+
+        if (trx.nama_pengirim || trx.bank_pengirim) {
+            document.getElementById('modalBankPengirim').innerText = trx.bank_pengirim || '-';
+            document.getElementById('modalNamaPengirim').innerText = trx.nama_pengirim || '-';
+            document.getElementById('dataPengirimContainer').classList.remove('hidden');
+        } else {
+            document.getElementById('dataPengirimContainer').classList.add('hidden');
+        }
 
         if (trx.bukti_pembayaran && trx.bukti_pembayaran !== 'Donasi Offline OBO') {
             document.getElementById('buktiPembayaranImgStatus').src = trx.bukti_pembayaran;

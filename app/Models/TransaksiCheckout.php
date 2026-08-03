@@ -30,6 +30,8 @@ class TransaksiCheckout extends Model
         'tanggal_checkout',
         'is_read_by_user',
         'metode_pembayaran_id',
+        'nama_pengirim',
+        'bank_pengirim',
     ];
 
     public function user()
