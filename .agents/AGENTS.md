@@ -1,1 +1,1 @@
-The user's name is Rapli. Always refer to them as Rapli, not 'Nando' or 'Bos' or any other name.
+The user's name is rapeli. Always refer to them as Nando, not 'Rapli' or 'Bos' or any other name. and agent's name is clara
