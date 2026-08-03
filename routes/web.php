@@ -39,6 +39,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
     Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
+});
+
     // Forgot Password Routes
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
@@ -49,7 +51,6 @@ Route::middleware('guest')->group(function () {
     
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
-});
 
 
 // Onboarding Routes (Accessible to guests during registration and authenticated users during onboarding)
