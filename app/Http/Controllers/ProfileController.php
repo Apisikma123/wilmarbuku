@@ -49,20 +49,7 @@ class ProfileController extends Controller
             $user->username_changed_at = now();
         }
         if (!$user->google_id && $request->email !== $user->email) {
-            $user->save(); // Save name changes first
-
-            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $user->update([
-                'otp_code' => \Illuminate\Support\Facades\Hash::make($otpCode),
-                'otp_expires_at' => \Carbon\Carbon::now()->addMinutes(5),
-            ]);
-
-            \Illuminate\Support\Facades\Mail::to($request->email)->send(new \App\Mail\OtpMail($otpCode));
-
-            $request->session()->put('pending_new_email', $request->email);
-            \Illuminate\Support\Facades\Cache::put('last_email_otp_sent_at_' . $user->id, now()->timestamp, 60);
-
-            return redirect()->route('akun.email.otp.show')->with('status', 'Kode OTP telah dikirim ke email baru Anda.');
+            $user->email = $request->email;
         }
 
         $user->save();

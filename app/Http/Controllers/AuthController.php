@@ -333,20 +333,10 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email tidak ditemukan di sistem kami.']);
         }
 
-        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
-        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
-        $user->update([
-            'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5),
-        ]);
+        // Bypass OTP for Forgot Password
+        $request->session()->put('reset_authorized_email', $user->email);
 
-        Mail::to($user->email)->send(new OtpMail($otpCode));
-
-        $request->session()->put('reset_user_email', $user->email);
-        \Illuminate\Support\Facades\Cache::put('last_reset_otp_sent_at_' . $user->email, now()->timestamp, 60);
-
-        return redirect()->route('password.otp.show');
+        return redirect()->route('password.reset');
     }
 
     public function showForgotOtpForm(Request $request)
