@@ -433,6 +433,12 @@
                     <span class="material-symbols-outlined text-lg">home</span> Beranda
                 </a>
                 
+                @auth
+                <a href="/transaksi" class="flex items-center gap-2 font-bold text-on-surface hover:text-primary transition-colors py-3">
+                    <span class="material-symbols-outlined text-lg">receipt_long</span> Transaksi
+                </a>
+                @endauth
+                
                 <div class="relative group h-full flex items-center">
                     <a href="/kategori" class="flex items-center gap-2 font-bold text-primary hover:text-primary/80 transition-colors py-3 cursor-pointer">
                         <span class="material-symbols-outlined text-lg">grid_view</span> Kategori

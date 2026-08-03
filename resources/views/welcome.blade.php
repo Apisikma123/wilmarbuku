@@ -25,11 +25,7 @@
                             <span class="material-symbols-outlined">volunteer_activism</span>
                             Donasi Sekarang
                         </a>
-                        <a href="{{ Auth::check() ? route('dashboard') : route('login') }}"
-                            class="border border-white/30 text-white font-semibold px-8 py-4 rounded-md hover:bg-white/10 transition-colors backdrop-blur-sm inline-flex items-center gap-2 justify-center">
-                            <span class="material-symbols-outlined">library_books</span>
-                            Pilih Buku Donasi
-                        </a>
+
                     @endif
                 </div>
             </div>

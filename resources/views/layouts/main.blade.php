@@ -88,7 +88,7 @@
             </a>
             @endif
             <a href="{{ Auth::check() ? route('dashboard') : route('login') }}" class="flex items-center justify-center gap-2 w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary-container transition-colors">
-                <span class="material-symbols-outlined text-[18px]">{{ Auth::check() ? 'dashboard' : 'volunteer_activism' }}</span> {{ Auth::check() ? 'Dashboard' : 'Donasi Sekarang' }}
+                <span class="material-symbols-outlined text-[18px]">{{ Auth::check() ? 'dashboard' : 'login' }}</span> {{ Auth::check() ? 'Dashboard' : 'Login' }}
             </a>
         </div>
     </aside>
