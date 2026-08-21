@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OtpMail;
-use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -87,132 +84,6 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    public function showOtp(Request $request)
-    {
-        $userId = $request->session()->get('otp_user_id');
-        $regData = $request->session()->get('registration_data');
-        
-        if (!$userId && !$regData) {
-            return redirect()->route('login');
-        }
-
-        $cacheKey = $userId ? 'last_otp_sent_at_' . $userId : 'last_otp_sent_at_' . md5($regData['email']);
-        $lastSent = \Illuminate\Support\Facades\Cache::get($cacheKey, 0);
-        $cooldown = max(0, 60 - (now()->timestamp - $lastSent));
-
-        return view('auth.otp', compact('cooldown'));
-    }
-
-    public function resendOtp(Request $request)
-    {
-        $userId = $request->session()->get('otp_user_id');
-        $regData = $request->session()->get('registration_data');
-        
-        if ($userId) {
-            $lastSent = \Illuminate\Support\Facades\Cache::get('last_otp_sent_at_' . $userId, 0);
-            if (now()->timestamp - $lastSent < 60) {
-                return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
-            }
-
-            $user = User::find($userId);
-            if (!$user) return redirect()->route('login');
-
-            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $user->update([
-                'otp_code' => Hash::make($otpCode),
-                'otp_expires_at' => Carbon::now()->addMinutes(5),
-            ]);
-
-            Mail::to($user->email)->send(new OtpMail($otpCode));
-            \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . $userId, now()->timestamp, 60);
-
-            return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
-        } elseif ($regData) {
-            $cacheKey = 'last_otp_sent_at_' . md5($regData['email']);
-            $lastSent = \Illuminate\Support\Facades\Cache::get($cacheKey, 0);
-            if (now()->timestamp - $lastSent < 60) {
-                return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
-            }
-
-            $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $regData['otp_code'] = Hash::make($otpCode);
-            $regData['otp_expires_at'] = Carbon::now()->addMinutes(5)->timestamp;
-            $request->session()->put('registration_data', $regData);
-
-            Mail::to($regData['email'])->send(new OtpMail($otpCode));
-            \Illuminate\Support\Facades\Cache::put($cacheKey, now()->timestamp, 60);
-
-            return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
-        }
-
-        return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
-    }
-
-    public function verifyOtp(Request $request)
-    {
-        $throttleKey = 'otp|' . $request->ip();
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            abort(429, 'Too Many Attempts.');
-        }
-
-        $request->validate([
-            'otp_code' => ['required', 'string', 'size:6'],
-        ]);
-
-        $userId = $request->session()->get('otp_user_id');
-        $regData = $request->session()->get('registration_data');
-
-        if ($regData) {
-            if (!Hash::check($request->otp_code, $regData['otp_code']) || now()->timestamp > $regData['otp_expires_at']) {
-                \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
-                return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
-            }
-
-            \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
-            $regData['otp_verified'] = true;
-            $request->session()->put('registration_data', $regData);
-            
-            return redirect()->route('onboarding.student-check');
-        } elseif ($userId) {
-            $user = User::find($userId);
-
-            if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
-                \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
-                return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
-            }
-
-            \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
-            // Clear OTP and log in, also set email_verified_at
-            $user->update([
-                'otp_code' => null,
-                'otp_expires_at' => null,
-                'email_verified_at' => $user->email_verified_at ?? now(),
-            ]);
-
-            Auth::login($user);
-            
-            $request->session()->forget('otp_user_id');
-            $request->session()->regenerate();
-
-            if (!$user->is_onboarding_completed && $user->role !== 'admin') {
-                return redirect()->route('onboarding.student-check');
-            }
-
-            $redirectUrl = $user->role === 'admin' ? route('admin.dashboard', absolute: false) : '/dashboard';
-            $intendedUrl = session()->pull('url.intended', $redirectUrl);
-            
-            if ($user->role === 'admin') {
-                if (!str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
-            } else {
-                if (str_contains($intendedUrl, '/admin')) $intendedUrl = $redirectUrl;
-            }
-
-            return redirect()->to($intendedUrl);
-        }
-
-        return redirect()->route('login')->withErrors(['email' => 'Sesi login telah habis.']);
-    }
-
     public function showRegister()
     {
         return view('auth.register');
@@ -232,20 +103,14 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email ini sudah terdaftar. Silakan login.'])->withInput();
         }
 
-        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
         $request->session()->put('registration_data', [
             'nama_lengkap' => $request->nama_lengkap,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5)->timestamp,
+            'otp_verified' => true,
         ]);
 
-        Mail::to($request->email)->send(new OtpMail($otpCode));
-        \Illuminate\Support\Facades\Cache::put('last_otp_sent_at_' . md5($request->email), now()->timestamp, 60);
-
-        return redirect()->route('otp.show');
+        return redirect()->route('onboarding.student-check');
     }
 
     public function logout(Request $request)
@@ -339,94 +204,8 @@ class AuthController extends Controller
         }
 
         \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
-        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
-        $user->update([
-            'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5),
-        ]);
-
-        Mail::to($user->email)->send(new OtpMail($otpCode));
-
-        $request->session()->put('reset_user_email', $user->email);
-        \Illuminate\Support\Facades\Cache::put('last_reset_otp_sent_at_' . $user->email, now()->timestamp, 60);
-
-        return redirect()->route('password.otp.show');
-    }
-
-    public function showForgotOtpForm(Request $request)
-    {
-        if (!$request->session()->has('reset_user_email')) {
-            return redirect()->route('password.request');
-        }
-
-        $lastSent = \Illuminate\Support\Facades\Cache::get('last_reset_otp_sent_at_' . $request->session()->get('reset_user_email'), 0);
-        $cooldown = max(0, 60 - (now()->timestamp - $lastSent));
-
-        return view('auth.forgot-otp', compact('cooldown'));
-    }
-
-    public function resendForgotOtp(Request $request)
-    {
-        $email = $request->session()->get('reset_user_email');
-        if (!$email) {
-            return redirect()->route('password.request')->withErrors(['email' => 'Sesi telah habis.']);
-        }
-
-        $lastSent = \Illuminate\Support\Facades\Cache::get('last_reset_otp_sent_at_' . $email, 0);
-        if (now()->timestamp - $lastSent < 60) {
-            return back()->withErrors(['otp_code' => 'Harap tunggu 1 menit sebelum meminta kode baru.']);
-        }
-
-        $user = User::where('email', $email)->first();
-        if (!$user) return redirect()->route('password.request');
-
-        $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
-        $user->update([
-            'otp_code' => Hash::make($otpCode),
-            'otp_expires_at' => Carbon::now()->addMinutes(5),
-        ]);
-
-        Mail::to($user->email)->send(new OtpMail($otpCode));
-
-        \Illuminate\Support\Facades\Cache::put('last_reset_otp_sent_at_' . $email, now()->timestamp, 60);
-
-        return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
-    }
-
-    public function verifyForgotOtp(Request $request)
-    {
-        $throttleKey = 'forgot_otp|' . $request->ip();
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            abort(429, 'Too Many Attempts.');
-        }
-
-        $request->validate([
-            'otp_code' => ['required', 'string', 'size:6'],
-        ]);
-
-        $email = $request->session()->get('reset_user_email');
-        if (!$email) {
-            return redirect()->route('password.request')->withErrors(['email' => 'Sesi telah habis.']);
-        }
-
-        $user = User::where('email', $email)->first();
-
-        if (!$user || !Hash::check($request->otp_code, $user->otp_code ?? '') || Carbon::now()->greaterThan($user->otp_expires_at)) {
-            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
-            return back()->withErrors(['otp_code' => 'Kode OTP salah atau sudah kedaluwarsa.']);
-        }
-
-        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
-        // OTP Valid! Authorize for password reset
-        $user->update([
-            'otp_code' => null,
-            'otp_expires_at' => null,
-        ]);
 
         $request->session()->put('reset_authorized_email', $user->email);
-        $request->session()->forget(['reset_user_email']);
 
         return redirect()->route('password.reset');
     }

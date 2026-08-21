@@ -34,7 +34,7 @@
             <!-- Headers -->
             <div class="text-center mb-8">
                 <h1 class="text-xl font-bold text-primary mb-2">Lupa Kata Sandi</h1>
-                <p class="text-sm text-gray-500">Masukkan email Anda. Kami akan mengirimkan 6 digit OTP untuk mereset kata sandi Anda.</p>
+                <p class="text-sm text-gray-500">Masukkan email akun Anda untuk langsung mereset kata sandi.</p>
             </div>
 
             <!-- Form -->
@@ -57,8 +57,8 @@
 
                 <div class="pt-4">
                     <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                        <span class="material-symbols-outlined text-lg">send</span>
-                        Kirim OTP
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        Lanjutkan Reset Kata Sandi
                     </button>
                 </div>
             </form>

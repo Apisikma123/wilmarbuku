@@ -33,11 +33,20 @@ Google OAuth is implemented via Laravel Socialite to ensure secure and frictionl
 
 ## Features
 
-- **OAuth 2.0 Authentication**: Secure single sign-on integration allowing users to authenticate via their Google accounts, reducing friction and password management overhead.
-- **Internal & External Donations**: Comprehensive management of library donations from both internal members and external contributors.
-- **Real-Time Event Broadcasting**: Immediate UI updates and notifications for donation status and processing powered by WebSockets.
+- **Streamlined Authentication**: Fast and seamless user registration, instant password reset, and Google OAuth 2.0 Single Sign-On.
+- **Role-Based Access Control**: Separate privileges and dashboards for administrators, internal campus users, and external contributors.
+- **Internal & External Donations**: Comprehensive management of library donations from both internal students and external contributors.
+- **Real-Time Event Broadcasting**: Immediate UI updates and notifications for donation status and processing powered by Laravel Reverb WebSockets.
 - **Automated PDF Reporting**: Programmatic generation of donation logs and user activity reports for administrative compliance.
 - **Analytical Dashboard**: Interactive metrics and historical data visualization utilizing Chart.js to help administrators make data-driven decisions regarding library donations.
+
+## Default Credentials (Testing)
+
+For development and evaluation purposes, default administrator credentials are provided via the database seeder:
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@wilmarbuku.com` | `password` |
 
 ## Getting Started
 
@@ -70,10 +79,10 @@ Ensure the following runtimes and services are installed on your host machine:
    php artisan key:generate
    ```
 
-4. **Initialize the database**
-   Ensure your MySQL server is running and the database specified in your `.env` is created. Run the migrations to build the schema.
+4. **Initialize and Seed the database**
+   Ensure your MySQL server is running and the database specified in your `.env` is created. Run the migrations and seeders:
    ```bash
-   php artisan migrate
+   php artisan migrate --seed
    ```
 
 5. **Start the local development servers**
@@ -91,7 +100,7 @@ Ensure the following runtimes and services are installed on your host machine:
 
 ## Environment Variables
 
-The following configuration keys must be defined in your `.env` file to enable all application features.
+The following configuration keys must be defined in your `.env` file to enable all application features:
 
 | Variable | Description | Example Value |
 | :--- | :--- | :--- |
@@ -103,18 +112,19 @@ The following configuration keys must be defined in your `.env` file to enable a
 | `GOOGLE_REDIRECT_URI` | Authorized redirect URI for Google Auth | `http://127.0.0.1:8000/auth/google/callback` |
 | `REVERB_APP_KEY` | Public identifier for Reverb WebSockets | `your-reverb-key` |
 | `REVERB_APP_SECRET`| Secret key for Reverb authentication | `your-reverb-secret` |
-| `MAIL_MAILER` | Mail driver used for system notifications | `smtp` |
+| `MAIL_MAILER` | Mail driver used for system logs/notifications | `log` |
 
 ## Project Structure
 
 ```text
 wilmarbuku/
 ├── app/
-│   ├── Http/Controllers/    # Request handling logic (e.g., KatalogController, PesanController)
+│   ├── Http/Controllers/    # Request handling logic (e.g., AuthController, KatalogController, AdminController)
 │   ├── Repositories/        # Data access abstraction (e.g., BukuRepository)
 │   └── Models/              # Eloquent models
 ├── database/
-│   └── migrations/          # Schema definitions and indexing
+│   ├── migrations/          # Schema definitions and indexing
+│   └── seeders/             # Database seeders
 ├── resources/
 │   └── views/               # Blade templates and frontend architecture
 ├── routes/
@@ -134,4 +144,3 @@ This project is open-source software licensed under the MIT License.
 
 - **GitHub**: [https://github.com/M-RapeliHSN](https://github.com/M-RapeliHSN)
 - **Email**: [raflyhusaini0290@gmail.com](https://mail.google.com/mail/?view=cm&fs=1&to=raflyhusaini0290@gmail.com)
-

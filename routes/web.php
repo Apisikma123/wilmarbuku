@@ -33,24 +33,14 @@ Route::middleware('guest')->group(function () {
     // Google OAuth Routes
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
-    
-    // OTP Routes (Login)
-    Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp.show');
-    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
-    Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
-
 });
 
-    // Forgot Password Routes
-    Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
-    Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
-    
-    Route::get('/forgot-password/otp', [AuthController::class, 'showForgotOtpForm'])->name('password.otp.show');
-    Route::post('/forgot-password/otp/verify', [AuthController::class, 'verifyForgotOtp'])->name('password.otp.verify');
-    Route::post('/forgot-password/otp/resend', [AuthController::class, 'resendForgotOtp'])->name('password.otp.resend');
-    
-    Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
-    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+// Forgot Password Routes
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetOtp'])->name('password.email');
+
+Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 
 // Onboarding Routes (Accessible to guests during registration and authenticated users during onboarding)
@@ -94,9 +84,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/akun/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('akun.updateProfile');
     Route::post('/akun/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('akun.updatePassword');
     
-    Route::get('/akun/email/otp', [App\Http\Controllers\ProfileController::class, 'showEmailOtpForm'])->name('akun.email.otp.show');
-    Route::post('/akun/email/otp/resend', [App\Http\Controllers\ProfileController::class, 'resendEmailOtp'])->name('akun.email.otp.resend');
-    Route::post('/akun/email/otp/verify', [App\Http\Controllers\ProfileController::class, 'verifyEmailOtp'])->name('akun.email.otp.verify');
     Route::middleware([\App\Http\Middleware\EnsureIsNotAdmin::class])->group(function () {
         Route::get('/success', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
     });

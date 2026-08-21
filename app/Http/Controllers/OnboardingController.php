@@ -93,10 +93,6 @@ class OnboardingController extends Controller
             return redirect()->route('login');
         }
 
-        if ($regData && !isset($regData['otp_verified'])) {
-            return redirect()->route('otp.show');
-        }
-
         if ($user && $user->is_onboarding_completed) {
             return redirect()->to($this->getRedirectUrl());
         }
@@ -114,7 +110,7 @@ class OnboardingController extends Controller
         } else {
             $regData = session('registration_data');
             
-            if ($regData && isset($regData['otp_verified'])) {
+            if ($regData) {
                 $user = \App\Models\User::create([
                     'nama_lengkap' => $regData['nama_lengkap'],
                     'email' => $regData['email'],
@@ -196,7 +192,7 @@ class OnboardingController extends Controller
             ]);
             Auth::login($user);
             session()->forget('google_user_data');
-        } elseif ($regData && isset($regData['otp_verified'])) {
+        } elseif ($regData) {
             $user = \App\Models\User::create([
                 'nama_lengkap' => $regData['nama_lengkap'],
                 'email' => $regData['email'],

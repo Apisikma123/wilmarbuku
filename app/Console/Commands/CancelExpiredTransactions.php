@@ -11,8 +11,6 @@ use App\Models\KatalogBuku;
 use App\Models\PesanMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificationMail;
 use App\Models\User;
 
 #[Signature('app:cancel-expired-transactions')]
@@ -54,23 +52,13 @@ class CancelExpiredTransactions extends Command
             }
 
             // Kirim pesan inbox
-            $pesan = PesanMasuk::create([
+            PesanMasuk::create([
                 'user_id' => $transaction->user_id,
                 'judul' => 'Pesanan #' . $transaction->kode_tracking . ' Dibatalkan',
                 'isi_pesan' => "Mohon maaf, pesanan Anda <b>#{$transaction->kode_tracking}</b> telah dibatalkan secara otomatis.<br><br>Alasan Pembatalan:<br>Batas waktu pembayaran (1 jam) telah habis.",
                 'jenis' => 'peringatan',
                 'is_read' => false,
             ]);
-
-            // Kirim notifikasi email
-            try {
-                $user = User::find($transaction->user_id);
-                if ($user) {
-                    // Mail::to($user->email)->send(new NotificationMail($pesan));
-                }
-            } catch (\Exception $e) {
-                Log::error("Gagal mengirim email pembatalan transaksi otomatis: " . $e->getMessage());
-            }
 
             $this->info("Transaksi #{$transaction->kode_tracking} dibatalkan.");
         }
