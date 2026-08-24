@@ -157,6 +157,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/transactions/status/{kode_tracking}', [AdminController::class, 'updateTransactionStatus'])->name('admin.transactions.status');
     Route::post('/transactions/confirm/{kode_tracking}', [AdminController::class, 'confirmTransaction'])->name('admin.transactions.confirm');
     Route::post('/transactions/cancel/{kode_tracking}', [AdminController::class, 'cancelTransaction'])->name('admin.transactions.cancel');
+    Route::post('/transactions/delete/{kode_tracking}', [AdminController::class, 'deleteTransaction'])->name('admin.transactions.delete');
 
     Route::post('/metode-pembayaran', [AdminController::class, 'storeMetodePembayaran'])->name('admin.metode.store');
     Route::delete('/metode-pembayaran/{id}', [AdminController::class, 'destroyMetodePembayaran'])->name('admin.metode.destroy');

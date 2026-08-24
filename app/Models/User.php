@@ -35,4 +35,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TransaksiCheckout::class, 'user_id');
     }
+
+    public function isAdminUtama(): bool
+    {
+        return $this->id === 1;
+    }
 }

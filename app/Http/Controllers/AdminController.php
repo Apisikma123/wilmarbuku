@@ -494,6 +494,46 @@ class AdminController extends Controller
         return back()->with('success', 'Status transaksi berhasil diperbarui dan pesan dikirim ke pengguna!');
     }
 
+    public function deleteTransaction($kode_tracking)
+    {
+        if (auth()->id() !== 1) {
+            return back()->with('error', 'Akses ditolak! Fitur hapus transaksi khusus untuk Admin Utama.');
+        }
+
+        $transaction = TransaksiCheckout::findOrFail($kode_tracking);
+
+        // Jika status transaksi belum Dibatalkan, kembalikan stok buku yang dibutuhkan
+        if ($transaction->status_tracking !== 'Dibatalkan') {
+            $transaction->load('details.buku');
+            $isPaid = $transaction->status_pembayaran === 'Paid';
+            foreach ($transaction->details as $detail) {
+                if ($detail->buku) {
+                    $newStok = $detail->buku->stok_dibutuhkan + $detail->qty;
+                    $updateDataBuku = ['stok_dibutuhkan' => $newStok];
+                    if ($isPaid) {
+                        $updateDataBuku['terdonasi'] = max(0, $detail->buku->terdonasi - $detail->qty);
+                    }
+                    if ($newStok > 0 && $detail->buku->status_buku === 'Tersedia') {
+                        $updateDataBuku['status_buku'] = 'Dibutuhkan';
+                    }
+                    $detail->buku->update($updateDataBuku);
+                }
+            }
+        }
+
+        // Hapus file bukti pembayaran dari storage jika ada
+        if ($transaction->bukti_pembayaran && str_starts_with($transaction->bukti_pembayaran, '/storage/')) {
+            $filePath = str_replace('/storage/', '', $transaction->bukti_pembayaran);
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($filePath);
+            }
+        }
+
+        $transaction->delete();
+
+        return back()->with('success', "Transaksi #{$kode_tracking} berhasil dihapus dari sistem.");
+    }
+
     public function users(Request $request)
     {
         $query = User::latest();

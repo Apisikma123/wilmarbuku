@@ -213,8 +213,7 @@
                             <th class="px-6 py-4">Kode Tracking</th>
                             <th class="px-6 py-4">Donatur / User</th>
                             <th class="px-6 py-4">Buku</th>
-                            <th class="px-6 py-4 text-center">Status Pembayaran</th>
-                            <th class="px-6 py-4 text-center">Metode</th>
+                            <th class="px-6 py-4">Metode</th>
                             <th class="px-6 py-4">Status Tracking</th>
                             <th class="px-6 py-4 text-center">Tindakan Admin</th>
                         </tr>
@@ -222,44 +221,47 @@
                     <tbody class="divide-y divide-slate-100">
                         @forelse($transactions as $trx)
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-5 font-bold text-slate-900">
+                                <td class="px-6 py-5 font-bold text-slate-900 align-middle">
                                     #{{ $trx->kode_tracking }}
-                                    <div class="text-[10px] font-normal text-slate-400">
+                                    <div class="text-[10px] font-normal text-slate-400 mt-0.5">
                                         {{ $trx->tanggal_checkout ? \Carbon\Carbon::parse($trx->tanggal_checkout)->format('d M Y H:i') : $trx->created_at->format('d M Y H:i') }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-9 h-9 rounded-full bg-green-100 text-green-800 flex items-center justify-center font-bold text-xs shrink-0">
-                                            {{ strtoupper(substr($trx->user->nama_lengkap ?? 'US', 0, 2)) }}
-                                        </div>
-                                        <div>
-                                            <div class="font-bold text-slate-900 text-sm">
-                                                {{ $trx->user->nama_lengkap ?? 'User' }}</div>
-                                            <div class="text-xs text-slate-500">{{ $trx->user->email ?? '-' }}</div>
-                                        </div>
+                                <td class="px-6 py-5 align-middle">
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-sm">
+                                            {{ $trx->user->nama_lengkap ?? 'User' }}</div>
+                                        <div class="text-xs text-slate-500 mt-0.5">{{ $trx->user->email ?? '-' }}</div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-5 whitespace-nowrap min-w-[200px]">
-                                    <div class="font-bold text-slate-900 text-sm cursor-pointer hover:text-green-700 transition-colors"
-                                        onclick="document.getElementById('buku-expand-{{ $trx->kode_tracking }}').classList.toggle('hidden')">
-                                        {{ $trx->details->first()->buku->judul_buku ?? 'Buku Donasi' }}
+                                <td class="px-6 py-5 align-middle max-w-[240px]">
+                                    @php
+                                        $mainBookTitle = $trx->details->first()->buku->judul_buku ?? 'Buku Donasi';
+                                        $isLongTitleTrx = mb_strlen($mainBookTitle) > 25;
+                                    @endphp
+                                    <div class="font-bold text-slate-900 text-sm cursor-pointer hover:text-green-700 transition-colors inline-flex items-start gap-1 group"
+                                        onclick="toggleTrxBuku('{{ $trx->kode_tracking }}')">
+                                        <span id="trx-judul-short-{{ $trx->kode_tracking }}">
+                                            {{ $isLongTitleTrx ? Str::limit($mainBookTitle, 25, '...') : $mainBookTitle }}
+                                        </span>
+                                        <span id="trx-judul-full-{{ $trx->kode_tracking }}" class="hidden whitespace-normal break-words max-w-[220px] block leading-snug">
+                                            {{ $mainBookTitle }}
+                                        </span>
                                         @if($trx->details->count() > 1)
                                             <span class="text-xs text-slate-400 font-normal ml-1">(+{{ $trx->details->count() - 1 }}
-                                                item lainnya) <i data-lucide="chevron-down" class="w-3 h-3 inline"></i></span>
+                                                item) <i id="trx-icon-{{ $trx->kode_tracking }}" data-lucide="chevron-down" class="w-3 h-3 inline group-hover:text-green-600 transition-transform shrink-0 mt-1"></i></span>
                                         @else
-                                            <span class="text-xs text-slate-400 font-normal ml-1"><i data-lucide="chevron-down"
-                                                    class="w-3 h-3 inline"></i></span>
+                                            <span class="text-xs text-slate-400 font-normal ml-1"><i id="trx-icon-{{ $trx->kode_tracking }}" data-lucide="chevron-down"
+                                                    class="w-3 h-3 inline group-hover:text-green-600 transition-transform shrink-0 mt-1"></i></span>
                                         @endif
                                     </div>
 
                                     <div id="buku-expand-{{ $trx->kode_tracking }}"
-                                        class="hidden mt-2 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-normal text-slate-600 whitespace-normal min-w-[200px]">
+                                        class="hidden mt-2 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-normal text-slate-600 whitespace-normal max-w-[240px]">
                                         <ul class="space-y-3">
                                             @foreach($trx->details as $detail)
                                                 <li class="border-b border-slate-100 pb-2 last:border-0 last:pb-0">
-                                                    <div class="font-medium text-slate-700">&bull;
+                                                    <div class="font-medium text-slate-700 whitespace-normal break-words max-w-[220px]">&bull;
                                                         {{ $detail->buku->judul_buku ?? 'Buku Donasi' }} <span
                                                             class="text-slate-400">(x{{ $detail->qty }})</span></div>
                                                     @if($detail->pesan_dukungan && !in_array($trx->status_tracking, ['Menunggu Pembayaran']))
@@ -275,37 +277,20 @@
                                         </ul>
                                     </div>
 
-                                    <div class="text-xs font-medium text-slate-500 mt-2">Rp
+                                    <div class="text-xs font-medium text-slate-500 mt-1.5">Rp
                                         {{ number_format($trx->total_harga, 0, ',', '.') }}</div>
                                 </td>
-                                <td class="px-6 py-5 text-center">
-                                    @if($trx->status_pembayaran == 'Paid')
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Lunas</span>
-                                    @elseif($trx->status_pembayaran == 'Failed')
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">Gagal</span>
-                                    @elseif($trx->bukti_pembayaran)
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 whitespace-nowrap">Menunggu
-                                            Konfirmasi</span>
-                                    @else
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Belum
-                                            Dibayar</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-5 text-center">
+                                <td class="px-6 py-5 align-middle">
                                     @if($trx->metodePembayaran)
-                                        <div
-                                            class="inline-flex px-2 py-1 bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-bold">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-bold">
                                             {{ $trx->metodePembayaran->nama_bank }}
-                                        </div>
+                                        </span>
                                     @else
-                                        <span class="text-xs text-slate-400">-</span>
+                                        <span class="text-xs text-slate-400 font-semibold">-</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-5">
+                                <td class="px-6 py-5 align-middle">
                                     <div class="flex flex-col gap-1">
                                         <div class="flex items-center gap-2">
                                             <div
@@ -321,7 +306,7 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-5 text-center">
+                                <td class="px-6 py-5 text-center align-middle">
                                     <div class="flex items-center justify-center gap-2">
                                         <!-- Ubah Status Manual & Kirim Pesan -->
                                         @if(in_array($trx->status_tracking, ['Selesai', 'Dibatalkan']) || in_array($trx->status_pembayaran, ['Failed', 'Expired']))
@@ -336,6 +321,13 @@
                                                     <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Dibatalkan
                                                 </span>
                                             @endif
+                                            @if(auth()->id() === 1)
+                                                <button type="button" onclick="confirmDeleteTransaction('{{ $trx->kode_tracking }}')"
+                                                    class="p-1.5 border border-red-200 hover:bg-red-50 text-red-500 hover:text-red-700 rounded-lg text-xs font-bold transition-colors flex items-center justify-center"
+                                                    title="Hapus Transaksi (Khusus Admin Utama)">
+                                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            @endif
                                         @else
                                             <button onclick='openStatusModal({{ json_encode($trx) }})'
                                                 class="px-3 py-1.5 border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
@@ -348,7 +340,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                     <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3 text-slate-300"></i>
                                     <p class="text-base font-bold text-slate-600">Belum ada transaksi donasi.</p>
                                     <p class="text-sm text-slate-400 mt-1">Transaksi pengguna yang telah menyelesaikan donasi
@@ -364,6 +356,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden Delete Transaction Form -->
+    <form id="deleteTransactionForm" method="POST" class="hidden">
+        @csrf
+    </form>
 
     <!-- Modal Update Status Manual & Kirim Pesan -->
     <div id="statusModal"
@@ -429,12 +426,21 @@
                         placeholder="Ketik pesan yang ingin Anda sampaikan langsung ke kotak masuk pengguna..."></textarea>
                 </div>
 
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="closeStatusModal()"
-                        class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-50">Batal</button>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm">Simpan
-                        & Kirim Pesan</button>
+                <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-slate-100">
+                    @if(auth()->id() === 1)
+                        <button type="button" onclick="confirmDeleteCurrentTransaction()"
+                            class="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-sm font-bold flex items-center justify-center gap-1.5 transition-colors"
+                            title="Hapus Transaksi (Khusus Admin Utama)">
+                            <i data-lucide="trash-2" class="w-4 h-4 text-red-500"></i> Hapus Transaksi
+                        </button>
+                    @else
+                        <div></div>
+                    @endif
+                    <div class="flex items-center justify-end">
+                        <button type="submit"
+                            class="w-full sm:w-auto px-6 py-2.5 bg-green-900 text-white rounded-lg text-sm font-bold hover:bg-green-800 shadow-sm transition-colors">Simpan
+                            & Kirim Pesan</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -494,7 +500,10 @@
 @endsection
 
 <script>
+    let currentActiveKodeTracking = '';
+
     function openStatusModal(trx) {
+        currentActiveKodeTracking = trx.kode_tracking;
         document.getElementById('statusForm').action = "/admin/transactions/status/" + trx.kode_tracking;
         document.getElementById('modal_status_tracking').value = trx.status_tracking || 'Menunggu Konfirmasi';
 
@@ -519,6 +528,63 @@
 
     function closeStatusModal() {
         document.getElementById('statusModal').classList.add('hidden');
+    }
+
+    function confirmDeleteCurrentTransaction() {
+        if (currentActiveKodeTracking) {
+            confirmDeleteTransaction(currentActiveKodeTracking);
+        }
+    }
+
+    function confirmDeleteTransaction(kodeTracking) {
+        Swal.fire({
+            title: 'Hapus Transaksi?',
+            html: `<p class="text-sm text-slate-600 mb-3">Apakah Anda yakin ingin menghapus transaksi <strong>#${kodeTracking}</strong> dari sistem?</p><div class="text-xs text-amber-900 bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-left leading-relaxed"><strong>⚠️ Peringatan Keamanan:</strong><ul class="list-disc ml-4 mt-1 space-y-0.5"><li>Data riwayat transaksi akan dihapus secara permanen.</li><li>Stok kebutuhan buku akan otomatis dikembalikan jika transaksi belum dibatalkan.</li><li>Tindakan ini tidak dapat dibatalkan (irreversible).</li></ul></div>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Hapus Transaksi!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-2xl',
+                confirmButton: 'rounded-lg font-semibold px-4 py-2.5',
+                cancelButton: 'rounded-lg font-semibold px-4 py-2.5'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById('deleteTransactionForm');
+                form.action = `/admin/transactions/delete/${kodeTracking}`;
+                form.submit();
+            }
+        });
+    }
+
+    function toggleTrxBuku(kodeTracking) {
+        const shortEl = document.getElementById('trx-judul-short-' + kodeTracking);
+        const fullEl = document.getElementById('trx-judul-full-' + kodeTracking);
+        const iconEl = document.getElementById('trx-icon-' + kodeTracking);
+        const expandBox = document.getElementById('buku-expand-' + kodeTracking);
+
+        if (shortEl && fullEl) {
+            if (shortEl.classList.contains('hidden')) {
+                shortEl.classList.remove('hidden');
+                fullEl.classList.add('hidden');
+            } else {
+                shortEl.classList.add('hidden');
+                fullEl.classList.remove('hidden');
+            }
+        }
+
+        if (expandBox) {
+            expandBox.classList.toggle('hidden');
+        }
+
+        if (iconEl) {
+            const isExpanded = (expandBox && !expandBox.classList.contains('hidden')) || (fullEl && !fullEl.classList.contains('hidden'));
+            iconEl.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
     }
 
     function filterTable(input) {
