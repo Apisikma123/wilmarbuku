@@ -180,3 +180,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/tersedia', [AdminController::class, 'tersedia'])->name('admin.tersedia');
     Route::post('/notifications/mark-as-read/{id?}', [AdminController::class, 'markNotificationAsRead'])->name('admin.notifications.read');
 });
+
+// Fallback Route for storage files (Guarantees images work on any shared hosting or server without symlink)
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    $mimeType = mime_content_type($filePath) ?: 'application/octet-stream';
+    return response()->file($filePath, [
+        'Content-Type' => $mimeType,
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+})->where('path', '.*')->name('storage.fallback');
+
+
