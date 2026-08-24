@@ -139,7 +139,11 @@
                         </td>
                         <td class="px-6 py-4 text-slate-600">{{ $u->email }}</td>
                         <td class="px-6 py-4">
-                            @if($u->role == 'admin')
+                            @if($u->id === 1)
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 font-bold rounded-full inline-flex items-center gap-1">
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> Admin Utama
+                                </span>
+                            @elseif($u->role == 'admin')
                                 <span class="text-xs bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 font-bold rounded-full">Admin</span>
                             @else
                                 <form action="{{ route('admin.users.role', $u->id) }}" method="POST" class="inline-flex items-center gap-2" id="form-role-{{ $u->id }}" autocomplete="off">

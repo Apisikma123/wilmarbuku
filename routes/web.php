@@ -145,6 +145,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/transactions/status/{kode_tracking}', [AdminController::class, 'updateTransactionStatus'])->name('admin.transactions.status');
     Route::post('/transactions/confirm/{kode_tracking}', [AdminController::class, 'confirmTransaction'])->name('admin.transactions.confirm');
     Route::post('/transactions/cancel/{kode_tracking}', [AdminController::class, 'cancelTransaction'])->name('admin.transactions.cancel');
+    Route::post('/transactions/delete/{kode_tracking}', [AdminController::class, 'deleteTransaction'])->name('admin.transactions.delete');
 
     Route::post('/metode-pembayaran', [AdminController::class, 'storeMetodePembayaran'])->name('admin.metode.store');
     Route::delete('/metode-pembayaran/{id}', [AdminController::class, 'destroyMetodePembayaran'])->name('admin.metode.destroy');
@@ -167,3 +168,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/tersedia', [AdminController::class, 'tersedia'])->name('admin.tersedia');
     Route::post('/notifications/mark-as-read/{id?}', [AdminController::class, 'markNotificationAsRead'])->name('admin.notifications.read');
 });
+
+// Fallback Route for storage files (Guarantees images work on any shared hosting or server without symlink)
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    $mimeType = mime_content_type($filePath) ?: 'application/octet-stream';
+    return response()->file($filePath, [
+        'Content-Type' => $mimeType,
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+})->where('path', '.*')->name('storage.fallback');
+
+

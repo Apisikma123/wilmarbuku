@@ -84,8 +84,8 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($books as $b)
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-5 font-bold text-slate-900">#{{ $b->id }}</td>
-                        <td class="px-6 py-5">
+                        <td class="px-6 py-5 font-bold text-slate-900 align-middle">#{{ $b->id }}</td>
+                        <td class="px-6 py-5 align-middle">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-14 rounded shadow-sm border border-slate-200 shrink-0 relative overflow-hidden bg-slate-900 flex items-center justify-center">
                                     <img src="{{ (str_starts_with($b->cover_image ?? '', '/storage/') || str_starts_with($b->cover_image ?? '', 'http')) ? $b->cover_image : asset('images/default-cover.png') }}" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0">
@@ -94,14 +94,40 @@
                                         <span class="text-[5px] text-white font-bold leading-[1.1] text-center p-0.5 uppercase break-all relative z-20 pointer-events-none">{!! str_replace(' ', '<br>', e($b->judul_buku)) !!}</span>
                                     @endif
                                 </div>
-                                <div>
-                                    <div class="font-bold text-slate-900 text-sm max-w-xs truncate">{{ $b->judul_buku }}</div>
-                                    <div class="text-xs text-slate-400 font-normal">{{ $b->kategori ?? 'Umum' }} @if($b->badge)<span class="ml-1 px-1.5 py-0.5 bg-green-50 text-green-700 rounded text-[10px] font-bold">{{ $b->badge }}</span>@endif</div>
+                                @php
+                                    $isLongJudul = mb_strlen($b->judul_buku) > 25;
+                                @endphp
+                                <div class="max-w-[240px]">
+                                    @if($isLongJudul)
+                                        <div class="font-bold text-slate-900 text-sm cursor-pointer hover:text-green-700 transition-colors inline-flex items-start gap-1 group"
+                                            onclick="toggleCatalogExpand('title-short-{{ $b->id }}', 'title-full-{{ $b->id }}', 'title-icon-{{ $b->id }}')"
+                                            title="Klik untuk melihat judul lengkap">
+                                            <span id="title-short-{{ $b->id }}">{{ Str::limit($b->judul_buku, 25, '...') }}</span>
+                                            <span id="title-full-{{ $b->id }}" class="hidden whitespace-normal break-words max-w-[220px] block leading-snug">{{ $b->judul_buku }}</span>
+                                            <i id="title-icon-{{ $b->id }}" data-lucide="chevron-down" class="w-3 h-3 text-slate-400 group-hover:text-green-600 transition-transform shrink-0 mt-1"></i>
+                                        </div>
+                                    @else
+                                        <div class="font-bold text-slate-900 text-sm whitespace-normal break-words max-w-[220px]">{{ $b->judul_buku }}</div>
+                                    @endif
+                                    <div class="text-xs text-slate-400 font-normal mt-0.5">{{ $b->kategori ?? 'Umum' }} @if($b->badge)<span class="ml-1 px-1.5 py-0.5 bg-green-50 text-green-700 rounded text-[10px] font-bold">{{ $b->badge }}</span>@endif</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
-                            <div class="text-slate-900 font-medium">{{ $b->pengarang }}</div>
+                        <td class="px-6 py-5 align-middle max-w-[200px]">
+                            @php
+                                $isLongPengarang = mb_strlen($b->pengarang) > 20;
+                            @endphp
+                            @if($isLongPengarang)
+                                <div class="text-slate-900 font-medium cursor-pointer hover:text-green-700 transition-colors inline-flex items-start gap-1 group"
+                                    onclick="toggleCatalogExpand('author-short-{{ $b->id }}', 'author-full-{{ $b->id }}', 'author-icon-{{ $b->id }}')"
+                                    title="Klik untuk melihat pengarang lengkap">
+                                    <span id="author-short-{{ $b->id }}">{{ Str::limit($b->pengarang, 20, '...') }}</span>
+                                    <span id="author-full-{{ $b->id }}" class="hidden whitespace-normal break-words max-w-[180px] block leading-snug">{{ $b->pengarang }}</span>
+                                    <i id="author-icon-{{ $b->id }}" data-lucide="chevron-down" class="w-3 h-3 text-slate-400 group-hover:text-green-600 transition-transform shrink-0 mt-1"></i>
+                                </div>
+                            @else
+                                <div class="text-slate-900 font-medium whitespace-normal break-words max-w-[180px]">{{ $b->pengarang }}</div>
+                            @endif
                             @if($b->penerbit)
                             <div class="text-xs text-slate-500 flex items-center gap-1 mt-1">
                                 <i data-lucide="building" class="w-3 h-3"></i> {{ $b->penerbit }}
@@ -1061,4 +1087,21 @@ document.addEventListener('DOMContentLoaded', function() {
     attachStokListener('add_stok_dibutuhkan', 'add_status_buku');
     attachStokListener('edit_stok_dibutuhkan', 'edit_status_buku');
 });
+
+function toggleCatalogExpand(shortId, fullId, iconId) {
+    const shortEl = document.getElementById(shortId);
+    const fullEl = document.getElementById(fullId);
+    const iconEl = document.getElementById(iconId);
+    if (!shortEl || !fullEl) return;
+
+    if (shortEl.classList.contains('hidden')) {
+        shortEl.classList.remove('hidden');
+        fullEl.classList.add('hidden');
+        if (iconEl) iconEl.style.transform = 'rotate(0deg)';
+    } else {
+        shortEl.classList.add('hidden');
+        fullEl.classList.remove('hidden');
+        if (iconEl) iconEl.style.transform = 'rotate(180deg)';
+    }
+}
 </script>
